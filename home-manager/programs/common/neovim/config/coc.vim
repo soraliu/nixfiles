@@ -4,6 +4,29 @@ function! s:check_back_space() abort
 endfunction
 
 
+let g:coc_global_extensions = [
+  \'coc-css',
+  \'coc-emoji',
+  \'coc-eslint',
+  \'coc-git',
+  \'coc-html',
+  \'coc-json',
+  \'coc-lists',
+  \'coc-prettier',
+  \'coc-pyright',
+  \'coc-sh',
+  \'coc-snippets',
+  \'coc-solidity',
+  \'coc-stylelintplus',
+  \'coc-svg',
+  \'coc-swagger',
+  \'coc-tsserver',
+  \'coc-word',
+  \'coc-yaml',
+  \'coc-yank'
+\]
+
+
 inoremap <silent><expr> <TAB>
       \ coc#pum#visible() ? coc#pum#next(1):
       \ CheckBackspace() ? "\<Tab>" :
