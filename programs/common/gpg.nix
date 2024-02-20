@@ -7,6 +7,7 @@
     enableBashIntegration = true;
     enableZshIntegration = true;
 
-    pinentryFlavor = "curses";
+    # pinentryFlavor = "curses";
+    pinentryFlavor = "tty";
   };
 }
