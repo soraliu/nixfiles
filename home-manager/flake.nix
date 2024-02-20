@@ -1,5 +1,5 @@
 {
-  description = "Home Manager configuration of root";
+  description = "Home Manager configuration";
 
   nixConfig = {
     # substituers will be appended to the default substituters when fetching packages
@@ -20,24 +20,27 @@
 
   outputs = { nixpkgs, home-manager, ... }:
     let
-      system = "x86_64-linux";
-      pkgs = nixpkgs.legacyPackages.${system};
-    in {
-      homeConfigurations."root" = home-manager.lib.homeManagerConfiguration {
-        inherit pkgs;
+      mkHome = { system, user }: home-manager.lib.homeManagerConfiguration {
+        pkgs = nixpkgs.legacyPackages.${system};
 
         # Specify your home configuration modules here, for example,
         # the path to your home.nix.
         modules = [
-          ./home.nix
+          ./users/${user}
+          ./programs/common
         ];
 
         # Optionally use extraSpecialArgs
         # to pass through arguments to home.nix
-        #extraSpecialArgs = {
-        #  useGlobalPkgs = true;
-        #  useUserPackages = true;
-        #};
+        extraSpecialArgs = {
+          useGlobalPkgs = true;
+          useUserPackages = true;
+        };
+      };
+    in {
+      homeConfigurations."root" = mkHome {
+        system = "x86_64-linux";
+        user = "root";
       };
     };
 }

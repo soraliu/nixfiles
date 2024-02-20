@@ -11,11 +11,10 @@
 
     coc = {
       enable = true;
-
     };
 
     extraConfig = builtins.concatStringsSep "\n\n\n" [
-      (builtins.readFile ./config/vim-plug.vim)
+      (builtins.readFile ./config/settings.vim)
     ];
   };
 
