@@ -1,9 +1,8 @@
-{ config, pkgs, ... }: {
+{ pkgs, ... }: {
   programs.neovim.coc = {
     enable = true;
     pluginConfig = builtins.readFile ./config/coc.vim;
-    settings = {
-    };
+    settings = {};
   };
 
   programs.neovim.plugins = with pkgs.vimPlugins; [
