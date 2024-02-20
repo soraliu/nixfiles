@@ -9,10 +9,6 @@
     vimAlias = true;
     defaultEditor = true;
 
-    coc = {
-      enable = true;
-    };
-
     extraConfig = builtins.concatStringsSep "\n\n\n" [
       (builtins.readFile ./config/settings.vim)
     ];

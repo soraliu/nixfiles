@@ -1,7 +1,9 @@
 { config, pkgs, ... }: {
   imports = [
     ./home-manager.nix
-    ./neovim
     ./git.nix
+    ./gpg.nix
+
+    ./neovim
   ];
 }

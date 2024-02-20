@@ -1,2 +1,2 @@
-switch:
+s:
 	nix run .#homeConfigurations.root.activationPackage
