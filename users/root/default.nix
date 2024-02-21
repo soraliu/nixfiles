@@ -1,4 +1,6 @@
-{ config, pkgs, ... }: {
+{ config, pkgs, lib, ... }: let 
+  placeholderGitCredentials = pkgs.writeText ".git-credentials" "";
+in {
   # Home Manager needs a bit of information about you and the paths it should
   # manage.
   home.username = "root";
@@ -35,6 +37,7 @@
     #   org.gradle.console=verbose
     #   org.gradle.daemon.idletimeout=3600000
     # '';
+    ".git-credentials".source = placeholderGitCredentials;
   };
 
   # Home Manager can also manage your environment variables through
@@ -53,4 +56,41 @@
   #  /etc/profiles/per-user/root/etc/profile.d/hm-session-vars.sh
   #
   home.sessionVariables = {};
+
+  # Custom activation scripts
+  home.activation.decryptSopsFiles = let
+    scriptPath = "${pkgs.writeScript "decrypt-sops-files.sh" ''
+      #!${pkgs.runtimeShell}
+
+      encrypted_file="$1"
+
+      target_dir_or_file="$2"
+      if [ -z "$target_dir_or_file" ]; then
+        target_dir_or_file=$(dirname "$encrypted_file")
+      fi
+
+      target_file="$target_dir_or_file"
+      if [ -d "$target_file" ]; then
+        target_file="$target_dir_or_file/$(basename "$encrypted_file" .enc)"
+      fi
+
+      # ensure that directory exists
+      mkdir -p "$(basename $target_file)"
+
+      ${pkgs.sops}/bin/sops --decrypt "$encrypted_file" > "$target_file"
+
+      echo "$encrypted_file -> $target_file"
+    ''}";
+  in lib.hm.dag.entryAfter ["writeBoundary"] ''
+    echo "🟡🟡🟡 Start to decrypt files..."
+
+    project_root_dir="${builtins.toPath ../..}"
+
+    export GPG_TTY=$(tty)
+    export SOPS_GPG_EXEC=${pkgs.gnupg}/bin/gpg
+
+    ${scriptPath} "$project_root_dir/secrets/.git-credentials.enc" ${placeholderGitCredentials}
+
+    echo "🎉🎉🎉 Finish decrypting!"
+  '';
 }
