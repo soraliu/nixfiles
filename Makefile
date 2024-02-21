@@ -1,2 +1,2 @@
 s:
-	nix run .#homeConfigurations.root.activationPackage
+	nix run .#homeConfigurations.root.activationPackage --show-trace
