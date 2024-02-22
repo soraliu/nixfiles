@@ -1,6 +1,11 @@
 { config, pkgs, ... }: {
+
   imports = [
+    ./theme.nix
     ./coc.nix
+    ./nerdtree.nix
+    ./airline.nix
+    ./ansiesc.nix
   ];
 
   programs.neovim = {
@@ -10,11 +15,7 @@
     defaultEditor = true;
 
     extraConfig = builtins.concatStringsSep "\n\n\n" [
-      (builtins.readFile ./config/settings.vim)
+      (builtins.readFile ./default.vim)
     ];
-  };
-
-  home = {
-    sessionVariables.EDITOR = "nvim";
   };
 }
