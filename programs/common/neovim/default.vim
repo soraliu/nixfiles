@@ -26,6 +26,10 @@ vmap <silent> k gk
 inoremap <special> jk <ESC>
 nnoremap <special> <C-t> <C-i>
 
+" allow undo/redo in INSERT mode
+inoremap <c-u> <c-o>u
+inoremap <c-r> <c-o><c-r>
+
 
 " ------------------------------------------------------------------------------------------------------------------------------
 " vim configuration

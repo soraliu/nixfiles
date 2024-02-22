@@ -7,6 +7,7 @@
     ./airline.nix
     ./ansiesc.nix
     ./coc.nix
+    ./fzf.nix
   ];
 
   programs.neovim = {
