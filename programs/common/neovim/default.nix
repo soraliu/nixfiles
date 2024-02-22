@@ -2,10 +2,11 @@
 
   imports = [
     ./theme.nix
-    ./coc.nix
+    ./startify.nix
     ./nerdtree.nix
     ./airline.nix
     ./ansiesc.nix
+    ./coc.nix
   ];
 
   programs.neovim = {

@@ -2,7 +2,7 @@
   programs.neovim.coc = {
     enable = true;
     pluginConfig = builtins.readFile ./coc.vim;
-    settings = {};
+    settings = builtins.fromJSON (builtins.readFile ./coc-setings.json);
   };
 
   programs.neovim.plugins = with pkgs.vimPlugins; [
