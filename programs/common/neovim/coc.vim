@@ -109,15 +109,15 @@ function! s:GrepArgs(...)
 endfunction
 
 " Formatting selected code.
-xmap <leader><leader>f  <Plug>(coc-format-selected)
-nmap <leader><leader>f  <Plug>(coc-format)
+xmap <space><space>f  <Plug>(coc-format-selected)
+nmap <space><space>f  <Plug>(coc-format)
 " organize imports of the current buffer.
-nmap <leader><leader>o  :call CocAction('runCommand', 'editor.action.organizeImport')<CR>
+nmap <space><space>o  :call CocAction('runCommand', 'editor.action.organizeImport')<CR>
 
 " Applying codeAction
-xmap <leader>n  <Plug>(coc-codeaction-selected)
-nmap <leader>n  <Plug>(coc-codeaction)
-nmap <leader>l  <Plug>(lsp-code-action)
+xmap <space>n  <Plug>(coc-codeaction-selected)
+nmap <space>n  <Plug>(coc-codeaction)
+nmap <space>l  <Plug>(lsp-code-action)
 
 " Use CTRL-S for selections ranges.
 " Requires 'textDocument/selectionRange' support of language server.
@@ -135,26 +135,26 @@ command! -nargs=0 OR   :call     CocAction('runCommand', 'editor.action.organize
 set statusline^=%{coc#status()}%{get(b:,'coc_current_function','')}
 
 " keymapping
-nnoremap <silent> <Leader>ar :<C-U>call       CocActionAsync('rename')<cr>
+nnoremap <silent> <space>ar :<C-U>call       CocActionAsync('rename')<cr>
 " Show all diagnostics.
-nnoremap <silent> <Leader>d :<C-u>CocList --normal diagnostics<cr>
+nnoremap <silent> <space>d :<C-u>CocList --normal diagnostics<cr>
 " Manage extensions.
-nnoremap <silent><nowait> <Leader>e :<C-u>CocList extensions<cr>
+nnoremap <silent><nowait> <space>e :<C-u>CocList extensions<cr>
 " Show commands.
-nnoremap <silent><nowait> <Leader>m :<C-u>CocList -A commands<cr>
-nnoremap <silent><nowait> <Leader>gh :<C-u>CocCommand git.copyUrl<cr>
-nnoremap <silent><nowait> <Leader>go :<C-u>CocCommand git.browserOpen<cr>
+nnoremap <silent><nowait> <space>m :<C-u>CocList -A commands<cr>
+nnoremap <silent><nowait> <space>gh :<C-u>CocCommand git.copyUrl<cr>
+nnoremap <silent><nowait> <space>go :<C-u>CocCommand git.browserOpen<cr>
 " Find symbol of current document.
-nnoremap <silent><nowait> <Leader>o :<C-u>CocList --normal outline<cr>
-" Search workLeader symbols.
-" nnoremap <silent> <Leader>s  :<C-u>CocList -I symbols<cr>
+nnoremap <silent><nowait> <space>o :<C-u>CocList --normal outline<cr>
+" Search workspace symbols.
+" nnoremap <silent> <space>s  :<C-u>CocList -I symbols<cr>
 " Keymapping for grep word under cursor with interactive mode
-nnoremap <silent> <Leader>w :exe 'CocList --normal --input='.expand('<cword>').' grep'<CR>
-nnoremap <silent><nowait> <Leader>s :<C-u>CocList grep<cr>
+nnoremap <silent> <space>w :exe 'CocList --normal --input='.expand('<cword>').' grep'<CR>
+nnoremap <silent><nowait> <space>s :<C-u>CocList grep<cr>
 " Resume latest coc list.
-nnoremap <silent><nowait> <Leader>r :<C-u>CocListResume<CR>
+nnoremap <silent><nowait> <space>r :<C-u>CocListResume<CR>
 " Show yank
-nnoremap <silent><nowait> <Leader>y :<C-u>CocList -A --normal yank<cr>
+nnoremap <silent><nowait> <space>y :<C-u>CocList -A --normal yank<cr>
 " float
 function FindCursorPopUp()
   let radius = get(a:000, 0, 2)

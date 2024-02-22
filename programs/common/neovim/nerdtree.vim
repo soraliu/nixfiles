@@ -1,5 +1,5 @@
 " ------------------------------------------------------------------------------------------------------------------------------
-" nerdtree
+" preservim/nerdtree
 " ------------------------------------------------------------------------------------------------------------------------------
 " 将 NERDTree 的窗口设置在 vim 窗口的右侧（默认为左侧）
 let NERDTreeWinPos="right"
@@ -62,7 +62,7 @@ map <space>w[ gT
 
 
 " ------------------------------------------------------------------------------------------------------------------------------
-" nerd tree git
+" Xuyuanp/nerdtree-git-plugin
 " ------------------------------------------------------------------------------------------------------------------------------
 let g:NERDTreeGitStatusIndicatorMapCustom = {
     \ "Modified"  : "✹",
@@ -79,7 +79,7 @@ let g:NERDTreeGitStatusIndicatorMapCustom = {
 
 
 " ------------------------------------------------------------------------------------------------------------------------------
-" nerdcommenter
+" preservim/nerdcommenter
 " ------------------------------------------------------------------------------------------------------------------------------
 " Add spaces after comment delimiters by default
 let g:NERDSpaceDelims = 1
@@ -98,9 +98,9 @@ let g:NERDTrimTrailingWhitespace = 1
 " Enable NERDCommenterToggle to check all selected lines is commented or not 
 let g:NERDToggleCheckAllLines = 1
 
-nnoremap <C-_> :NERDCommenterToggle<CR>
-vnoremap <C-_> :NERDCommenterToggle<CR>
-inoremap  <C-_> <Esc>:NERDCommenterToggle<CR>
+nnoremap <C-_> <Plug>NERDCommenterToggle
+vnoremap <C-_> <Plug>NERDCommenterToggle
+inoremap  <C-_> <Esc><Plug>NERDCommenterToggle
 
 
 
