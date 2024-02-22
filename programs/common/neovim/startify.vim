@@ -2,7 +2,7 @@
 " mhinz/vim-startify
 " ------------------------------------------------------------------------------------------------------------------------------
 let g:startify_change_to_vcs_root = 1
-nnoremap <Leader>t :Startify<CR>
+nnoremap <space>t :Startify<CR>
 
 
 

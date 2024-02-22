@@ -51,6 +51,7 @@ nnoremap <C-c> :Commits<CR>
 
 " Mapping selecting mappings
 nmap <space><tab> <plug>(fzf-maps-n)
+" imap <space><tab> <plug>(fzf-maps-i)
 xmap <space><tab> <plug>(fzf-maps-x)
 nmap <space>g :Rg 
 

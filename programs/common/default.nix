@@ -9,7 +9,6 @@
     ./git.nix
 
     # encrypt & decrypt
-    ./gpg.nix
     ./sops.nix
 
     # search
