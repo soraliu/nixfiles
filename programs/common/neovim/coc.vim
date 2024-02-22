@@ -197,3 +197,6 @@ let g:coc_snippet_prev = '<c-h>'
 " diagnostics appear/become resolved.
 set shortmess+=c
 set signcolumn=yes
+
+
+
