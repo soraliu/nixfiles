@@ -1,0 +1,23 @@
+{
+  "$schema": "https://raw.githubusercontent.com/nix-community/nixd/main/nixd/docs/nixd-schema.json",
+  "eval": {
+    "depth": 10,
+    "target": {
+      "args": [
+        "--expr",
+        "with import <nixpkgs> { }; callPackage ./flake.nix { }"
+      ],
+      "installable": ""
+    }
+  },
+  "formatting": {
+    "command": "nixpkgs-fmt"
+  },
+  "options": {
+    "enable": true,
+    "target": {
+      "args": [],
+      "installable": "/flakeref#homeConfigurations.root.options"
+    }
+  }
+}

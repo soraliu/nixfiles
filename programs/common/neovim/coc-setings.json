@@ -4,8 +4,9 @@
   "diagnostic.warningSign": "",
   "diagnostic.infoSign": "",
   "diagnostic.checkCurrentLine": true,
-
-  "coc.source.emoji.triggerCharacters": [":"],
+  "coc.source.emoji.triggerCharacters": [
+    ":"
+  ],
   "coc.preferences.formatOnSaveFiletypes": [
     "markdown",
     "css",
@@ -22,7 +23,6 @@
     ".hg",
     ".projections.json"
   ],
-
   "prettier.formatterPriority": -1,
   "prettier.jsxSingleQuote": false,
   "prettier.printWidth": 120,
@@ -31,33 +31,47 @@
   "prettier.tabWidth": 2,
   "prettier.trailingComma": "all",
   "prettier.eslintIntegration": true,
-
   "stylelintplus.autoFixOnSave": true,
-
   "typescript.autoClosingTags": true,
-
   "git.enableGutters": true,
   "git.realtimeGutters": false,
-
-  "list.source.files.args": ["--hidden", "--files"],
-
+  "list.source.files.args": [
+    "--hidden",
+    "--files"
+  ],
   "yank.highlight.duration": 200,
   "yank.enableCompletion": true,
-
   "languageserver": {
     "bash": {
       "command": "bash-language-server",
-      "args": ["start"],
-      "filetypes": ["sh", "zsh"],
-      "ignoredRootPaths": ["~"]
+      "args": [
+        "start"
+      ],
+      "filetypes": [
+        "sh",
+        "zsh"
+      ],
+      "ignoredRootPaths": [
+        "~"
+      ]
+    },
+    "nixd": {
+      "command": "nixd",
+      "rootPatterns": [
+        ".nixd.json"
+      ],
+      "filetypes": [
+        "nix"
+      ]
     }
   },
   "tsserver.log": "normal",
-
   "yaml.format.enable": true,
   "yaml.format.singleQuote": true,
   "yaml.schemaStore.enable": true,
   "yaml.schemas": {
-    "https://raw.githubusercontent.com/OAI/OpenAPI-Specification/main/schemas/v3.0/schema.yaml": ["api.yaml"]
+    "https://raw.githubusercontent.com/OAI/OpenAPI-Specification/main/schemas/v3.0/schema.yaml": [
+      "api.yaml"
+    ]
   }
 }

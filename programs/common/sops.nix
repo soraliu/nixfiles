@@ -2,6 +2,11 @@
   cfg = config.programs.sops;
   files = with lib; map ({from, to}: {inherit from to; placeholder = pkgs.writeText (baseNameOf to) "";}) cfg.decryptFiles;
 in {
+  imports = [
+    ./gpg.nix
+  ];
+
+
   options.programs.sops = {
     enable = lib.mkOption {
       type = lib.types.bool;

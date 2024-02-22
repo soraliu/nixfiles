@@ -10,6 +10,10 @@
     ./fzf.nix
   ];
 
+  home.packages = with pkgs; [
+    nixd
+  ];
+
   programs.neovim = {
     enable = true;
     viAlias = true;

@@ -58,9 +58,11 @@ endfunction
 inoremap <silent><expr> <C-j>
   \ coc#pum#visible() ? coc#pum#next(1) :
   \ coc#refresh()
-imap <silent><expr> <C-k>
+inoremap <silent><expr> <C-k>
   \ coc#pum#visible() ? coc#pum#prev(1) :
   \ coc#refresh()
+
+
 
 
 " Use `[g` and `]g` to navigate diagnostics
@@ -96,7 +98,7 @@ nmap <space>rn <Plug>(coc-rename)
 
 " Formatting selected code
 xmap <space>f  <Plug>(coc-format-selected)
-nmap <space>f  <Plug>(coc-format-selected)
+nmap <space>f  <Plug>(coc-format)
 
 augroup mygroup
   autocmd!
@@ -109,7 +111,7 @@ augroup end
 " Applying code actions to the selected code block
 " Example: `<space>aap` for current paragraph
 xmap <space>a  <Plug>(coc-codeaction-selected)
-nmap <space>a  <Plug>(coc-codeaction-selected)
+nmap <space>a  <Plug>(coc-codeaction)
 
 " Remap keys for applying code actions at the cursor position
 nmap <space>ac  <Plug>(coc-codeaction-cursor)
@@ -121,21 +123,9 @@ nmap <space>qf  <Plug>(coc-fix-current)
 " Remap keys for applying refactor code actions
 nmap <silent> <space>re <Plug>(coc-codeaction-refactor)
 xmap <silent> <space>r  <Plug>(coc-codeaction-refactor-selected)
-nmap <silent> <space>r  <Plug>(coc-codeaction-refactor-selected)
 
 " Run the Code Lens action on the current line
 nmap <space>cl  <Plug>(coc-codelens-action)
-
-" Map function and class text objects
-" NOTE: Requires 'textDocument.documentSymbol' support from the language server
-xmap if <Plug>(coc-funcobj-i)
-omap if <Plug>(coc-funcobj-i)
-xmap af <Plug>(coc-funcobj-a)
-omap af <Plug>(coc-funcobj-a)
-xmap ic <Plug>(coc-classobj-i)
-omap ic <Plug>(coc-classobj-i)
-xmap ac <Plug>(coc-classobj-a)
-omap ac <Plug>(coc-classobj-a)
 
 " Remap <C-f> and <C-b> to scroll float windows/popups
 if has('nvim-0.4.0') || has('patch-8.2.0750')
@@ -204,10 +194,9 @@ endfunction
 nmap <space><space>o  :call CocAction('runCommand', 'editor.action.organizeImport')<CR>
 
 nnoremap <silent><nowait> <space>s  :<C-u>CocList grep<cr>
-nnoremap <silent><nowait> <space>ar :<C-U>call CocActionAsync('rename')<cr>
 nnoremap <silent><nowait> <space>gh :<C-u>CocCommand git.copyUrl<cr>
 nnoremap <silent><nowait> <space>go :<C-u>CocCommand git.browserOpen<cr>
-nnoremap <silent><nowait> <space>w  :exe 'CocList --normal --input='.expand('<cword>').' grep'<CR>
+nnoremap <silent>         <space>w  :exe 'CocList --normal --input='.expand('<cword>').' grep'<CR>
 " Resume latest coc list.
 " Show yank
 nnoremap <silent><nowait> <space>y :<C-u>CocList -A --normal yank<cr>
@@ -246,8 +235,9 @@ function ScrollPopUp(down)
 
   return 1
 endfunction
-nnoremap <expr> <Up> ScrollPopUp(0) ? '<esc>' : '<Up>'
-nnoremap <expr> <Down> ScrollPopUp(1) ? '<esc>' : '<Down>'
+" Having issues
+" nnoremap <expr> <Up> ScrollPopUp(0) ? '<esc>' : '<Up>'
+" nnoremap <expr> <Down> ScrollPopUp(1) ? '<esc>' : '<Down>'
 
 
 
