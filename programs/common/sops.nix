@@ -6,7 +6,6 @@ in {
     ./gpg.nix
   ];
 
-
   options.programs.sops = {
     enable = lib.mkOption {
       type = lib.types.bool;

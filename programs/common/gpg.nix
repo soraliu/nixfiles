@@ -7,7 +7,9 @@
     enableBashIntegration = true;
     enableZshIntegration = true;
 
-    # pinentryFlavor = "curses";
-    pinentryFlavor = "tty";
+    pinentryFlavor = "curses";
   };
+  home.packages = with pkgs; [
+    pinentry.curses
+  ];
 }

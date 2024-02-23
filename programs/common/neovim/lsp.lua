@@ -4,14 +4,15 @@
 ---------------------------------------------------------------------------------------------------------------------------------
 -- Setup language servers.
 local lspconfig = require('lspconfig')
-lspconfig.biome.setup {}
-lspconfig.lua_ls.setup {}
-lspconfig.rust_analyzer.setup {
-  -- Server-specific settings. See `:help lspconfig-setup`
-  settings = {
-    ['rust-analyzer'] = {},
-  },
-}
+-- replaced by mason-lspconfig handler
+-- lspconfig.biome.setup {}
+-- lspconfig.lua_ls.setup {}
+-- lspconfig.rust_analyzer.setup {
+--   -- Server-specific settings. See `:help lspconfig-setup`
+--   settings = {
+--     ['rust-analyzer'] = {},
+--   },
+-- }
 
 
 -- Global mappings.
@@ -75,6 +76,19 @@ require("mason").setup({
 require("mason-lspconfig").setup({
   ensure_installed = { "biome", "lua_ls", "rust_analyzer" },
 })
+require("mason-lspconfig").setup_handlers {
+    -- The first entry (without a key) will be the default handler
+    -- and will be called for each installed server that doesn't have
+    -- a dedicated handler.
+    function (server_name) -- default handler (optional)
+        require("lspconfig")[server_name].setup {}
+    end,
+    -- Next, you can provide a dedicated handler for specific servers.
+    -- For example, a handler override for the `rust_analyzer`:
+    -- ["rust_analyzer"] = function ()
+    --     require("rust-tools").setup {}
+    -- end
+}
 
 
 
