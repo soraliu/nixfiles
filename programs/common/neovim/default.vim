@@ -187,5 +187,8 @@ endif
 " 设置显示搜索总个数
 set shortmess-=S
 
+" Disable mouse
+set mouse=
+
 
 
