@@ -5,5 +5,7 @@
       type = "lua";
       config = builtins.readFile ./lsp.lua;
     }
+    mason-nvim
+    mason-lspconfig-nvim
   ];
 }
