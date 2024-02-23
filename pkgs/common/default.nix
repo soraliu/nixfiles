@@ -35,5 +35,12 @@
 
     # string
     sd                  # sed alternative
+
+    # coding
+    nodejs_20
   ];
+
+  home.sessionVariables = {
+    PATH = "$PATH:${pkgs.nodejs_20}/bin";
+  };
 }
