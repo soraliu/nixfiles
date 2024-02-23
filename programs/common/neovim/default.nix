@@ -1,13 +1,14 @@
 { config, pkgs, ... }: {
 
   imports = [
-    ./theme.nix
-    ./startify.nix
-    ./nerdtree.nix
-    ./airline.nix
-    ./ansiesc.nix
-    ./coc.nix
-    ./fzf.nix
+    ./theme.nix               # theme
+    ./startify.nix            # show welcome page
+    ./nerdtree.nix            # sidebar
+    ./airline.nix             # show tabs on the top
+    ./ansiesc.nix             # conceal Ansi escape sequences but will cause subsequent text to be colored
+    # ./coc.nix
+    ./lsp.nix                 # LSP
+    ./fzf.nix                 # search files, commands, buffers, etc
   ];
 
   home.packages = with pkgs; [

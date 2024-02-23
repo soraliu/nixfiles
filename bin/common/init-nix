@@ -1,0 +1,10 @@
+#!/usr/bin/env sh
+
+# 1. Enable nix-command and flakes
+mkdir -p ~/.config/nix
+echo "experimental-features = nix-command flakes" >> ~/.config/nix/nix.conf
+
+# 2. Specify the version of nixpkgs
+nix-channel --remove nixpkgs
+nix-channel --add https://nixos.org/channels/nixos-23.11 nixpkgs
+nix-channel --update

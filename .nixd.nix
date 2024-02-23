@@ -24,7 +24,7 @@
       # installable = "/flakeref#nixosConfigurations.<adrastea>.options";
 
       # home-manager configuration
-      installable = "/flakeref#homeConfigurations.root.options";
+      installable = ".#homeConfigurations.root.options";
     };
   };
 }

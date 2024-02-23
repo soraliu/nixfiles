@@ -27,6 +27,7 @@
         # the path to your home.nix.
         modules = [
           ./users/${user}
+          ./pkgs/common
           ./programs/common
         ];
 
