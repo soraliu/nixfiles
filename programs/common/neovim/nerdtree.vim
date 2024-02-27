@@ -1,3 +1,4 @@
+
 " ------------------------------------------------------------------------------------------------------------------------------
 " preservim/nerdtree
 " ------------------------------------------------------------------------------------------------------------------------------
@@ -102,23 +103,21 @@ nnoremap <C-_> <Plug>NERDCommenterToggle
 vnoremap <C-_> <Plug>NERDCommenterToggle
 inoremap  <C-_> <Esc><Plug>NERDCommenterToggle
 
-
-
-" ------------------------------------------------------------------------------------------------------------------------------
-" ryanoasis/vim-devicons
-" ------------------------------------------------------------------------------------------------------------------------------
-" let g:DevIconsDefaultFolderOpenSymbol = ''
-function! StartifyEntryFormat()
-    return 'WebDevIconsGetFileTypeSymbol(absolute_path) ." ". entry_path'
-endfunction
-
-let g:WebDevIconsUnicodeDecorateFolderNodes = 1
-let g:DevIconsEnableFoldersOpenClose = 1
-let g:DevIconsEnableFolderExtensionPatternMatching = 1
-
-" set rtp+=$HOME/.local/lib/python2.7/site-packages/powerline/bindings/vim/
-" Always show statusline
-" set laststatus=2
-
-
-
+"
+"
+" " ------------------------------------------------------------------------------------------------------------------------------
+" " ryanoasis/vim-devicons
+" " ------------------------------------------------------------------------------------------------------------------------------
+" " let g:DevIconsDefaultFolderOpenSymbol = ''
+" function! StartifyEntryFormat()
+"     return 'WebDevIconsGetFileTypeSymbol(absolute_path) ." ". entry_path'
+" endfunction
+"
+" let g:WebDevIconsUnicodeDecorateFolderNodes = 1
+" let g:DevIconsEnableFoldersOpenClose = 1
+" let g:DevIconsEnableFolderExtensionPatternMatching = 1
+"
+" " set rtp+=$HOME/.local/lib/python2.7/site-packages/powerline/bindings/vim/
+" " Always show statusline
+" " set laststatus=2
+"

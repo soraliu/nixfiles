@@ -1,18 +1,7 @@
 { config, pkgs, ... }: {
 
   imports = [
-    ./theme.nix               # theme
-    ./startify.nix            # show welcome page
-    ./nerdtree.nix            # sidebar
-    ./airline.nix             # show tabs on the top
-    ./ansiesc.nix             # conceal Ansi escape sequences but will cause subsequent text to be colored
     # ./coc.nix
-    ./lsp.nix                 # LSP
-    ./fzf.nix                 # search files, commands, buffers, etc
-  ];
-
-  home.packages = with pkgs; [
-    nixd
   ];
 
   programs.neovim = {
@@ -21,8 +10,26 @@
     vimAlias = true;
     defaultEditor = true;
 
+    extraLuaConfig = builtins.concatStringsSep "\n\n\n" [
+      (builtins.readFile ./lazy.lua)
+
+      (builtins.readFile ./theme.lua)
+      (builtins.readFile ./startify.lua)
+      (builtins.readFile ./nerdtree.lua)
+      (builtins.readFile ./airline.lua)
+      (builtins.readFile ./ansiesc.lua)
+      (builtins.readFile ./lsp.lua)
+      (builtins.readFile ./fzf.lua)
+
+      (builtins.readFile ./lazy-post.lua) # Execute lazy.nvim setup, this line must be at the end of all lazy.nvim plugins Lua config
+    ];
+
     extraConfig = builtins.concatStringsSep "\n\n\n" [
-      (builtins.readFile ./default.vim)
+      (builtins.readFile ./base.vim)
+      (builtins.readFile ./startify.vim)
+      (builtins.readFile ./nerdtree.vim)
+      (builtins.readFile ./airline.vim)
+      (builtins.readFile ./ansiesc.vim)
     ];
   };
 }
