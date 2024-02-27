@@ -37,7 +37,9 @@
     sd                  # sed alternative
 
     # coding
-    nodejs_20
+    nodejs_20           # nodejs, npm
+    rustc               # rust
+    cargo               # rust package maanger
   ];
 
   home.sessionVariables = {
