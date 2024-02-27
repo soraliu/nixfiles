@@ -31,7 +31,9 @@ table.insert(plugins, {
         api.config.mappings.default_on_attach(bufnr)
 
         -- custom mappings
-        vim.keymap.set('n', '?',     api.tree.toggle_help,                  opts('Help'))
+        vim.keymap.set('n', '?',    api.tree.toggle_help,           opts('Help'))
+        vim.keymap.set('n', 'p',    api.node.navigate.parent,       opts('Parent Directory'))
+        vim.keymap.set('n', 'P',    api.fs.paste,                   opts('Paste'))
       end
 
 
