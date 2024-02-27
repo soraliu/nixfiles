@@ -12,6 +12,18 @@ nnoremap <Leader>] :bn<CR>
 nnoremap <Leader><Left> :bp<CR>
 nnoremap <Leader><Right> :bn<CR>
 
+" windows management
+noremap <space>ww <C-w>w                                           " 切换窗口
+noremap <space>wh <C-w>h                                           " 向左切换窗口
+noremap <space>wj <C-w>j                                           " 向下切换窗口
+noremap <space>wk <C-w>k                                           " 向上切换窗口
+noremap <space>wl <C-w>l                                           " 向右切换窗口
+noremap <space>wr <C-w>r                                           " 移动窗口
+noremap <space>= <C-w>=                                            " 还原窗口
+map <space>+ :vertical resize +10<CR>
+map <space>- :vertical resize -10<CR>
+
+
 " file opt
 nmap <silent> <C-s> :w<CR>
 

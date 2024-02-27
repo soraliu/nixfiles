@@ -39,20 +39,9 @@ function! MaximizeToggle()
 endfunction
 
 
-noremap <space>ww <C-w>w                                           " 切换窗口
-noremap <space>wh <C-w>h                                           " 向左切换窗口
-noremap <space>wj <C-w>j                                           " 向下切换窗口
-noremap <space>wk <C-w>k                                           " 向上切换窗口
-noremap <space>wl <C-w>l                                           " 向右切换窗口
-noremap <space>wr <C-w>r                                           " 移动窗口
-noremap <space>= <C-w>=                                           " 还原窗口
-noremap <space>z <C-w>_                                           " 最大化窗口
 noremap <space>wo :call MaximizeToggle()<CR>                           " 最大化窗口
-noremap <space>wc :tabc<CR>                                        " 关闭tab窗口
 map     <space>we :NERDTreeToggle<CR>                              " F2 切换nerdtree
 map     <space>wa :NERDTreeFind<CR>                                " 定位到当前活动的文本
-map <space>+ :vertical resize +10<CR>
-map <space>- :vertical resize -10<CR>
 map <space>w+ :resize +10<CR>
 map <space>w- :resize -10<CR>
 map <space>ws :vertical resize 50<CR>
