@@ -16,10 +16,16 @@
       (builtins.readFile ./theme.lua)
       (builtins.readFile ./startify.lua)
       # (builtins.readFile ./nerdtree.lua)
-      (builtins.readFile ./nvim-tree.lua)
-      (builtins.readFile ./airline.lua)
-      (builtins.readFile ./ansiesc.lua)
-      (builtins.readFile ./syntax.lua)
+      (builtins.readFile ./nvim-tree.lua)       # Sidebar
+      (builtins.readFile ./telescope.lua)       # Fuzzy Search
+
+      (builtins.readFile ./ansiesc.lua)         # Show special chars
+      (builtins.readFile ./treesitter.lua)      # Syntax highlight
+
+      # (builtins.readFile ./airline.lua)
+      (builtins.readFile ./lualine.lua)         # Status line
+      (builtins.readFile ./bufferline.lua)      # Buffer line
+
       (builtins.readFile ./lsp.lua)
       (builtins.readFile ./fzf.lua)
 
