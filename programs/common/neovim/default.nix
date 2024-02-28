@@ -19,6 +19,7 @@
       (builtins.readFile ./nvim-tree.lua)
       (builtins.readFile ./airline.lua)
       (builtins.readFile ./ansiesc.lua)
+      (builtins.readFile ./syntax.lua)
       (builtins.readFile ./lsp.lua)
       (builtins.readFile ./fzf.lua)
 
@@ -27,7 +28,7 @@
 
     extraConfig = builtins.concatStringsSep "\n\n\n" [
       (builtins.readFile ./base.vim)
-      (builtins.readFile ./startify.vim)
+      # (builtins.readFile ./startify.vim)
       # (builtins.readFile ./nerdtree.vim)
       (builtins.readFile ./airline.vim)
       (builtins.readFile ./ansiesc.vim)

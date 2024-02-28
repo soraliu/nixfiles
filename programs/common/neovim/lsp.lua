@@ -89,5 +89,11 @@ table.insert(plugins, {
       }
     },
   },
+  {
+    "soraliu/vim-argwrap",
+    config = function()
+      vim.keymap.set('n', '<space>a', ":ArgWrap<CR>", { silent = true })
+    end
+  },
 })
 
