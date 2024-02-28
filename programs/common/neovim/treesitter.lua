@@ -3,7 +3,7 @@
 -- Syntax
 -- ------------------------------------------------------------------------------------------------------------------------------
 table.insert(plugins, {
-  "nvim-treesitter/nvim-treesitter",
+    "nvim-treesitter/nvim-treesitter",
     build = ":TSUpdate",
     config = function () 
       local configs = require("nvim-treesitter.configs")
@@ -37,14 +37,14 @@ table.insert(plugins, {
         },
         sync_install = false,
         highlight = { enable = true },
-        indent = { enable = true },  
+        indent = { enable = true },
         incremental_selection = {
           enable = true,
           keymaps = {
-            init_selection = "gnn", -- set to `false` to disable one of the mappings
-            node_incremental = "grn",
-            scope_incremental = "grc",
-            node_decremental = "grm",
+            init_selection = "]]", -- set to `false` to disable one of the mappings
+            node_incremental = "}",
+            scope_incremental = "]]",
+            node_decremental = "{",
           },
         },
       })
@@ -54,6 +54,6 @@ table.insert(plugins, {
         set foldexpr=nvim_treesitter#foldexpr()
         set nofoldenable                     " Disable folding at startup.
       ]])
-    end
+    end,
 })
 
