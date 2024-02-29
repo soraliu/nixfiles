@@ -21,6 +21,8 @@
       (builtins.readFile ./lsp.lua)             # LSP
       (builtins.readFile ./treesitter.lua)      # Syntax highlight
 
+      (builtins.readFile ./improvement.lua)     # Improvements of using neovim
+
       # (builtins.readFile ./airline.lua)
       (builtins.readFile ./lualine.lua)         # Status line
       (builtins.readFile ./bufferline.lua)      # Buffer line

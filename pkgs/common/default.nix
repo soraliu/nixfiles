@@ -38,6 +38,8 @@
 
     # coding
     nodejs_20           # nodejs, npm
+    python3             # python3
+    python311Packages.pip   # pip3
     rustc               # rust
     cargo               # rust package maanger
   ];
