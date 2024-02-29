@@ -15,7 +15,9 @@ table.insert(plugins, {
         vim.keymap.set('n', '<space>b', builtin.buffers)
         vim.keymap.set('n', '<space>s', ":Telescope egrepify<CR>")
         vim.keymap.set('n', '<space>w', builtin.grep_string)
+        vim.keymap.set('n', '<space>m', builtin.keymaps)
         vim.keymap.set('n', '<space>h', builtin.help_tags)
+        vim.keymap.set('n', '<space><Tab>', builtin.commands)
         vim.keymap.set('n', '<space>p', ":Telescope<CR>")
 
         require('telescope').setup{

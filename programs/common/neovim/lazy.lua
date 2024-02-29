@@ -23,7 +23,8 @@ vim.g.mapleader = " "
 local plugins = {}
 
 table.insert(plugins, {
-  "folke/which-key.nvim",
-  { "folke/neoconf.nvim", cmd = "Neoconf" },
-  "folke/neodev.nvim",
+  -- TODO: use these plugins
+  -- "folke/which-key.nvim",
+  -- { "folke/neoconf.nvim", cmd = "Neoconf" },
+  -- "folke/neodev.nvim",
 })
