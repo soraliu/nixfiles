@@ -32,6 +32,7 @@
 
     # system
     procs               # better ps
+    unixtools.whereis   # whereis
 
     # string
     sd                  # sed alternative
