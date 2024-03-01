@@ -26,6 +26,10 @@ table.insert(plugins, {
         -- DevOps
         "nix",
 
+        -- BE
+        "go",
+        "python",
+
         -- FE
         "html",
         "css",
@@ -33,6 +37,7 @@ table.insert(plugins, {
         "jsdoc",
         "javascript",
         "typescript",
+        "tsx",
         "vue",
       },
       sync_install = false,
@@ -40,8 +45,8 @@ table.insert(plugins, {
       indent = { enable = true },
       incremental_selection = {
         enable = true,
-        keymaps = {
-          init_selection = "]]", -- set to `false` to disable one of the mappings
+        keymaps = { -- set to `false` to disable one of the mappings
+          init_selection = "]]",
           node_incremental = "}",
           scope_incremental = "]]",
           node_decremental = "{",

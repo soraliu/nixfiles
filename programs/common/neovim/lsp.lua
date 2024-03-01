@@ -24,13 +24,17 @@ table.insert(plugins, {{
         -- Buffer local mappings.
         -- See `:help vim.lsp.*` for documentation on any of the below functions
         local opts = { buffer = ev.buf }
+        local telescopeBuiltin = require('telescope.builtin')
         vim.keymap.set('n', '<C-]>', vim.lsp.buf.definition, opts)
         vim.keymap.set('n', 'gy', vim.lsp.buf.type_definition, opts)
         vim.keymap.set('n', 'gd', vim.lsp.buf.declaration, opts)
-        vim.keymap.set('n', 'gr', vim.lsp.buf.references, opts)
-        vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, opts)
+        vim.keymap.set('n', 'gr', telescopeBuiltin.lsp_references, opts)
+        vim.keymap.set('n', 'gi', telescopeBuiltin.lsp_implementations, opts)
         vim.keymap.set('n', 'K', vim.lsp.buf.hover, opts)
-        vim.keymap.set('n', '<C-k>', vim.lsp.buf.signature_help, opts)
+
+        -- TODO: to support auto show function signature
+
+        -- vim.keymap.set('n', '<C-k>', vim.lsp.buf.signature_help, opts)
         -- vim.keymap.set('n', '<space>wa', vim.lsp.buf.add_workspace_folder, opts)
         -- vim.keymap.set('n', '<space>wr', vim.lsp.buf.remove_workspace_folder, opts)
         -- vim.keymap.set('n', '<space>wl', function()
@@ -104,17 +108,25 @@ table.insert(plugins, {{
           },
         })
         require("mason-lspconfig").setup_handlers {
-            -- The first entry (without a key) will be the default handler
-            -- and will be called for each installed server that doesn't have
-            -- a dedicated handler.
-            function (server_name) -- default handler (optional)
-                require("lspconfig")[server_name].setup {}
-            end,
-            -- Next, you can provide a dedicated handler for specific servers.
-            -- For example, a handler override for the `rust_analyzer`:
-            -- ["rust_analyzer"] = function ()
-            --     require("rust-tools").setup {}
-            -- end
+          -- The first entry (without a key) will be the default handler
+          -- and will be called for each installed server that doesn't have
+          -- a dedicated handler.
+          function (server_name) -- default handler (optional)
+              require("lspconfig")[server_name].setup {}
+          end,
+
+          -- To support coq_nvim
+          -- local coq = require "coq"
+          -- function (server_name) -- default handler (optional)
+          --     require("lspconfig")[server_name].setup(coq.lsp_ensure_capabilities {})
+          -- end,
+
+
+          -- Next, you can provide a dedicated handler for specific servers.
+          -- For example, a handler override for the `rust_analyzer`:
+          -- ["rust_analyzer"] = function ()
+          --     require("rust-tools").setup {}
+          -- end
         }
       end,
     },
@@ -141,7 +153,7 @@ table.insert(plugins, {{
           return
         end
 
-        -- autopairs
+        -- add `()` after the choosed function in lsp completion
         local cmp_autopairs = require('nvim-autopairs.completion.cmp')
         cmp.event:on(
           'confirm_done',
@@ -224,12 +236,24 @@ table.insert(plugins, {{
           })
         })
       end,
+    },
+    {
+      -- Note: To make it work with Nix, should update the env of nvim-python to fix the issue of `can't find coq module`
+      -- 1. run `:checkhealth provider`
+      -- 2. edit the file of the value of `g:python3_host_prog`, e.g. `vi /nix/store/wb8ql9px3dn5j63k0nhnxlv1zzy0bcj4-neovim-0.9.4/bin/nvim-python3`
+      -- 3. add `export PYTHONPATH="/root/.local/share/nvim/lazy/coq_nvim"` below the `unset PYTHONPATH`
+      -- 4. force save the change
+
+      -- uncomment the following codes to use `coq_nvim`
+      -- "ms-jpq/coq_nvim",
+      -- branch = "coq",
+      -- dependencies = {
+      --   "ms-jpq/coq.artifacts",
+      --   branch = "artifacts"
+      -- },
+      -- config = function()
+      -- end,
     }
   },
-}, {
-  "soraliu/vim-argwrap",
-  config = function()
-    vim.keymap.set('n', '<space>a', ":ArgWrap<CR>", { silent = true })
-  end
 }})
 
