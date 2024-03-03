@@ -11,15 +11,20 @@ table.insert(plugins, {
       tag = '0.1.5',
       config = function()
         local builtin = require('telescope.builtin')
-        vim.keymap.set('n', '<space>o', builtin.find_files)
-        vim.keymap.set('n', '<space>b', builtin.buffers)
-        vim.keymap.set('n', '<space>s', ":Telescope egrepify<CR>")
-        vim.keymap.set('n', '<space>w', builtin.grep_string)
-        vim.keymap.set('n', '<space><Tab>', builtin.keymaps)
-        vim.keymap.set('n', '<space>h', builtin.help_tags)
-        vim.keymap.set('n', '<space>m', builtin.commands)
-        vim.keymap.set('n', '<space>d', builtin.diagnostics)
-        vim.keymap.set('n', '<space>p', ":Telescope<CR>")
+        vim.keymap.set('n', '<space>fp', ":Telescope<CR>")
+        vim.keymap.set('n', '<space>fo', builtin.oldfiles)
+        vim.keymap.set('n', '<space>fl', builtin.find_files, { hidden = ture })
+        vim.keymap.set('n', '<space>fb', builtin.buffers)
+        vim.keymap.set('n', '<space>fw', builtin.grep_string)
+        vim.keymap.set('n', '<space>fk', builtin.keymaps)
+        vim.keymap.set('n', '<space>fh', builtin.help_tags)
+        vim.keymap.set('n', '<space>fm', builtin.commands)
+        vim.keymap.set('n', '<space>fs', ":Telescope egrepify<CR>")
+
+        -- LSP
+        vim.keymap.set('n', '<space>fd', builtin.diagnostics)
+        vim.keymap.set('n', '<space>fj', builtin.lsp_references)
+        vim.keymap.set('n', '<space>fi', builtin.lsp_implementations)
 
         require('telescope').setup{
           defaults = {
@@ -32,7 +37,7 @@ table.insert(plugins, {
                 -- e.g. git_{create, delete, ...}_branch for the git_branches picker
                 ["<c-j>"] = "move_selection_next",
                 ["<c-k>"] = "move_selection_previous",
-                ["kj"] = "close",
+                ["<esc>"] = "close",
              },
             },
           },

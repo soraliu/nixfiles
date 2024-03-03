@@ -8,7 +8,7 @@ table.insert(plugins, {{
   config = function()
     -- Global mappings.
     -- See `:help vim.diagnostic.*` for documentation on any of the below functions
-    vim.keymap.set('n', '<space>d', vim.diagnostic.open_float)
+    -- vim.keymap.set('n', '<space>d', vim.diagnostic.open_float)
     vim.keymap.set('n', '<C-k>', vim.diagnostic.goto_prev)
     vim.keymap.set('n', '<C-j>', vim.diagnostic.goto_next)
     -- vim.keymap.set('n', '<space>q', vim.diagnostic.setloclist)
@@ -24,12 +24,9 @@ table.insert(plugins, {{
         -- Buffer local mappings.
         -- See `:help vim.lsp.*` for documentation on any of the below functions
         local opts = { buffer = ev.buf }
-        local telescopeBuiltin = require('telescope.builtin')
         vim.keymap.set('n', '<C-]>', vim.lsp.buf.definition, opts)
         vim.keymap.set('n', 'gy', vim.lsp.buf.type_definition, opts)
         vim.keymap.set('n', 'gd', vim.lsp.buf.declaration, opts)
-        vim.keymap.set('n', 'gr', telescopeBuiltin.lsp_references, opts)
-        vim.keymap.set('n', 'gi', telescopeBuiltin.lsp_implementations, opts)
         vim.keymap.set('n', 'K', vim.lsp.buf.hover, opts)
 
         -- TODO: to support auto show function signature
@@ -41,7 +38,7 @@ table.insert(plugins, {{
         --   print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
         -- end, opts)
         vim.keymap.set('n', '<space>rn', vim.lsp.buf.rename, opts)
-        vim.keymap.set({ 'n', 'v' }, '<space>a', vim.lsp.buf.code_action, opts)
+        -- vim.keymap.set({ 'n', 'v' }, '<space>a', vim.lsp.buf.code_action, opts) -- replaced by aznhe21/actions-preview.nvim
         vim.keymap.set('n', '<space>f', function()
           vim.lsp.buf.format { async = true }
         end, opts)
@@ -190,8 +187,15 @@ table.insert(plugins, {{
           },
           mapping = cmp.mapping.preset.insert({
             ['<C-l>'] = cmp.mapping(function(fallback)
-              if luasnip.expandable() then
-                luasnip.expand()
+              if luasnip.expand_or_jumpable() then
+                luasnip.expand_or_jump()
+              else
+                fallback()
+              end
+            end, { "i", "s" }),
+            ['<C-h>'] = cmp.mapping(function(fallback)
+              if luasnip.jumpable(-1) then
+                luasnip.jump(-1)
               else
                 fallback()
               end
@@ -199,8 +203,8 @@ table.insert(plugins, {{
             ['<C-j>'] = cmp.mapping(function(fallback)
               if cmp.visible() then
                 cmp.select_next_item()
-              elseif luasnip.expand_or_jumpable() then
-                luasnip.expand_or_jump()
+              -- elseif luasnip.jumpable(1) then
+              --   luasnip.jump(1)
               else
                 cmp.complete()
               end
@@ -208,8 +212,8 @@ table.insert(plugins, {{
             ['<C-k>'] = cmp.mapping(function(fallback)
               if cmp.visible() then
                 cmp.select_prev_item()
-              elseif luasnip.jumpable(-1) then
-                luasnip.jump(-1)
+              -- elseif luasnip.jumpable(-1) then
+              --   luasnip.jump(-1)
               else
                 cmp.complete()
               end
@@ -217,8 +221,6 @@ table.insert(plugins, {{
             ["<Tab>"] = cmp.mapping(function(fallback)
               if cmp.visible() then
                 cmp.select_next_item()
-              elseif luasnip.expand_or_jumpable() then
-                luasnip.expand_or_jump()
               else
                 fallback()
               end
@@ -226,8 +228,6 @@ table.insert(plugins, {{
             ["<S-Tab>"] = cmp.mapping(function(fallback)
               if cmp.visible() then
                 cmp.select_prev_item()
-              elseif luasnip.jumpable(-1) then
-                luasnip.jump(-1)
               else
                 fallback()
               end
@@ -287,7 +287,29 @@ table.insert(plugins, {{
       -- },
       -- config = function()
       -- end,
-    }
+    },
+    {
+      "aznhe21/actions-preview.nvim",
+      config = function()
+        vim.keymap.set({ "v", "n" }, "<space>a", require("actions-preview").code_actions)
+
+        require("actions-preview").setup {
+          telescope = {
+            sorting_strategy = "ascending",
+            layout_strategy = "vertical",
+            layout_config = {
+              width = 0.8,
+              height = 0.9,
+              prompt_position = "top",
+              preview_cutoff = 20,
+              preview_height = function(_, _, max_lines)
+                return max_lines - 15
+              end,
+            },
+          },
+        }
+      end,
+    },
   },
 }})
 

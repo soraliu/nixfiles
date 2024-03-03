@@ -10,12 +10,14 @@ table.insert(plugins, {
 
     configs.setup({
       ensure_installed = {
-        "c",
-        "lua",
+        -- Doc
+        "markdown",
+        "markdown_inline",
 
         -- Editor
         "vim",
         "vimdoc",
+        "lua",
 
         -- Conf
         "json",
@@ -25,6 +27,8 @@ table.insert(plugins, {
 
         -- DevOps
         "nix",
+        "bash",
+        "c",
 
         -- BE
         "go",

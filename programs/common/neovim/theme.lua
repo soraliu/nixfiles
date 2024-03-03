@@ -3,9 +3,8 @@
 -- theme
 -- ------------------------------------------------------------------------------------------------------------------------------
 table.insert(plugins, {
-  "EdenEast/nightfox.nvim",
   {
-    "sainnhe/sonokai",
+    "EdenEast/nightfox.nvim",
     lazy = false,
     priority = 1000,
     config = function()
