@@ -243,14 +243,20 @@ table.insert(plugins, {{
           }),
           sources = cmp.config.sources({
             { name = 'nvim_lsp' },
-            { name = 'path' },
             { name = 'nvim_lua' },
+            { name = 'path' },
+            {
+              name = 'buffer',
+              option = {
+                get_bufnrs = function()
+                  return vim.api.nvim_list_bufs()
+                end
+              }
+            },
             -- { name = 'vsnip' }, -- For vsnip users.
             { name = 'luasnip' }, -- For luasnip users.
             -- { name = 'ultisnips' }, -- For ultisnips users.
             -- { name = 'snippy' }, -- For snippy users.
-          }, {
-            { name = 'buffer' },
           }),
           formatting = {
             format = lspkind.cmp_format({

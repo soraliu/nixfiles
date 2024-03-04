@@ -13,7 +13,7 @@
     extraLuaConfig = builtins.concatStringsSep "\n\n\n" [
       (builtins.readFile ./lazy.lua)
 
-      (builtins.readFile ./keymap.lua)          # Keymap preset
+      (builtins.readFile ./keymap.lua)          # Keymap preset(Using folke/which-key.nvim)
 
       (builtins.readFile ./theme.lua)           # Theme palette
       (builtins.readFile ./startify.lua)        # Welcome page
