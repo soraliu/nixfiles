@@ -12,12 +12,13 @@ table.insert(plugins, {
       config = function()
         require('telescope').setup{
           defaults = {
-            mappings = keysRegisterTelescope(),
+            mappings = keysPluginTelescope(),
             file_ignore_patterns = {'%.git/'},
           },
         }
-
         require "telescope".load_extension "egrepify"
+
+        keysRegisterSearch()
       end,
     },
   },

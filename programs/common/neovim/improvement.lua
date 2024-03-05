@@ -1,27 +1,44 @@
 
 -- ------------------------------------------------------------------------------------------------------------------------------
--- Auto pair brackets, quotes, etc
--- TODO: support auto pair xml tag, lua function end, etc
+-- Improvements
 -- ------------------------------------------------------------------------------------------------------------------------------
 table.insert(plugins, {
-  'windwp/nvim-autopairs',
-  event = "InsertEnter",
-  config = true,
-  opts = {
-    enable_check_bracket_line = false,
-    check_ts = true,
+  "soraliu/vim-argwrap", -- Split arguments into multiple lines
+  {
+    -- Auto pair brackets, quotes, etc
+    -- TODO: support auto pair xml tag, lua function end, etc
+    'windwp/nvim-autopairs',
+    event = "InsertEnter",
+    config = true,
+    opts = {
+      enable_check_bracket_line = false,
+      check_ts = true,
+    },
   },
-})
-
-
--- ------------------------------------------------------------------------------------------------------------------------------
--- Split arguments into multiple lines
--- ------------------------------------------------------------------------------------------------------------------------------
-table.insert(plugins, {
-  "soraliu/vim-argwrap",
-  config = function()
-    vim.keymap.set('n', 'ga', ":ArgWrap<CR>", { silent = true })
-  end
+  {
+    -- Show a welcome page
+    'goolord/alpha-nvim',
+    dependencies = { 'nvim-tree/nvim-web-devicons' },
+    config = function ()
+      require'alpha'.setup(require'alpha.themes.startify'.config)
+    end
+  },
+  {
+    -- support edit file separate on markdown codeblock
+    "AckslD/nvim-FeMaco.lua",
+    config = function()
+      require("femaco").setup()
+    end,
+  },
+  {
+    "powerman/vim-plugin-AnsiEsc", -- conceal Ansi escape sequences but will cause subsequent text to be colored
+    cnfig = function()
+      -- TODO: check usability
+      vim.cmd([[
+        autocmd BufNewFile,BufRead *.ansi.log call timer_start(100, { tid -> execute('AnsiEsc')})
+      ]])
+    end,
+  },
 })
 
 -- ------------------------------------------------------------------------------------------------------------------------------
@@ -39,27 +56,19 @@ table.insert(plugins, {
     end,
   },
   config = function()
-    vim.keymap.set('x', '<c-_>', '<Plug>(comment_toggle_linewise_visual)')
-    vim.keymap.set('x', '<c-\\>', '<Plug>(comment_toggle_blockwise_visual)')
+    local keymaps = keysPluginComment()
 
-    require('Comment').setup({
+    function mergeTables(t1, t2)
+        for k,v in pairs(t2) do
+            t1[k] = v
+        end
+        return t1
+    end
+
+    require('Comment').setup(mergeTables({
       ignore = '^$',
-      ---LHS of toggle mappings in NORMAL mode
-      toggler = {
-          ---Line-comment toggle keymap
-          line = '<c-_>',
-          ---Block-comment toggle keymap
-          block = '<c-\\>',
-      },
-      ---LHS of operator-pending mappings in NORMAL and VISUAL mode
-      opleader = {
-          ---Line-comment keymap
-          line = 'gc',
-          ---Block-comment keymap
-          block = 'gb',
-      },
       pre_hook = require('ts_context_commentstring.integrations.comment_nvim').create_pre_hook(),
-    })
+    }, keymaps))
   end,
 })
 
@@ -89,8 +98,6 @@ table.insert(plugins, {
         TEST = { icon = "⏲ ", color = "test", alt = { "TESTING", "PASSED", "FAILED" } },
       },
     })
-
-    vim.keymap.set('n', '<space>n', ":TodoTelescope<CR>")
   end,
   opts = {
     -- your configuration comes here
@@ -98,17 +105,3 @@ table.insert(plugins, {
     -- refer to the configuration section below
   }
 })
-
-
--- ------------------------------------------------------------------------------------------------------------------------------
--- support edit file separate on markdown codeblock
--- ------------------------------------------------------------------------------------------------------------------------------
-table.insert(plugins, {
-  "AckslD/nvim-FeMaco.lua",
-  config = function()
-    vim.keymap.set('n', '<space>ei', ":FeMaco<CR>")
-
-    require("femaco").setup()
-  end,
-})
-

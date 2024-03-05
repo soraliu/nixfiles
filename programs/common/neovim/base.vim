@@ -1,49 +1,5 @@
 
 " ------------------------------------------------------------------------------------------------------------------------------
-" vim maps
-" ------------------------------------------------------------------------------------------------------------------------------
-let mapleader=" "
-
-inoremap <special> jk <ESC>
-nnoremap <special> <C-t> <C-i>
-
-" buffer management
-nnoremap <C-w> :bp<bar>sp<bar>bn<bar>bd<CR>
-nnoremap <Leader>[ :bp<CR>
-nnoremap <Leader>] :bn<CR>
-nnoremap <Leader><Left> :bp<CR>
-nnoremap <Leader><Right> :bn<CR>
-
-" windows management
-noremap <space>wh <C-w>h
-noremap <space>wj <C-w>j
-noremap <space>wk <C-w>k
-noremap <space>wl <C-w>l
-noremap <space>= <C-w>=                                           " restore window size
-map <space>+ :vertical resize +10<CR>
-map <space>- :vertical resize -10<CR>
-
-" file management
-nmap <silent> <C-s> :w<CR>
-
-" run command
-autocmd FileType javascript nnoremap <F5> :!node %<CR>
-nnoremap <F4> :exec exists('syntax_on') ? 'syn off': 'syn on'<CR>
-
-" not to copy to clipboard
-vnoremap s "_d
-
-" movement
-nmap <silent> j gj
-nmap <silent> k gk
-vmap <silent> j gj
-vmap <silent> k gk
-
-" allow undo/redo in INSERT mode
-inoremap <c-u> <c-o>u
-inoremap <c-r> <c-o><c-r>
-
-" ------------------------------------------------------------------------------------------------------------------------------
 " vim configuration
 " ------------------------------------------------------------------------------------------------------------------------------
 " environment
