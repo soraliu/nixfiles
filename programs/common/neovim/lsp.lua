@@ -6,13 +6,6 @@ table.insert(plugins, {{
   "neovim/nvim-lspconfig",
   lazy = false,
   config = function()
-    -- Global mappings.
-    -- See `:help vim.diagnostic.*` for documentation on any of the below functions
-    -- vim.keymap.set('n', '<space>d', vim.diagnostic.open_float)
-    vim.keymap.set('n', '<C-k>', vim.diagnostic.goto_prev)
-    vim.keymap.set('n', '<C-j>', vim.diagnostic.goto_next)
-    -- vim.keymap.set('n', '<space>q', vim.diagnostic.setloclist)
-
     -- Use LspAttach autocommand to only map the following keys
     -- after the language server attaches to the current buffer
     vim.api.nvim_create_autocmd('LspAttach', {
@@ -21,27 +14,10 @@ table.insert(plugins, {{
         -- Enable completion triggered by <c-x><c-o>
         vim.bo[ev.buf].omnifunc = 'v:lua.vim.lsp.omnifunc'
 
-        -- Buffer local mappings.
-        -- See `:help vim.lsp.*` for documentation on any of the below functions
-        local opts = { buffer = ev.buf }
-        vim.keymap.set('n', '<C-]>', vim.lsp.buf.definition, opts)
-        vim.keymap.set('n', 'gy', vim.lsp.buf.type_definition, opts)
-        vim.keymap.set('n', 'gd', vim.lsp.buf.declaration, opts)
-        vim.keymap.set('n', 'K', vim.lsp.buf.hover, opts)
+        -- Register keymaps
+        keysRegisterLSP({ buffer = ev.buf })
 
         -- TODO: to support auto show function signature
-
-        -- vim.keymap.set('n', '<C-k>', vim.lsp.buf.signature_help, opts)
-        -- vim.keymap.set('n', '<space>wa', vim.lsp.buf.add_workspace_folder, opts)
-        -- vim.keymap.set('n', '<space>wr', vim.lsp.buf.remove_workspace_folder, opts)
-        -- vim.keymap.set('n', '<space>wl', function()
-        --   print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
-        -- end, opts)
-        vim.keymap.set('n', '<space>rn', vim.lsp.buf.rename, opts)
-        -- vim.keymap.set({ 'n', 'v' }, '<space>a', vim.lsp.buf.code_action, opts) -- replaced by aznhe21/actions-preview.nvim
-        vim.keymap.set('n', '<space>f', function()
-          vim.lsp.buf.format { async = true }
-        end, opts)
       end,
     })
 
@@ -67,8 +43,6 @@ table.insert(plugins, {{
                   "${3rd}/luv/library",
                   -- "${3rd}/busted/library",
                 }
-                -- or pull in all of 'runtimepath'. NOTE: this is a lot slower
-                -- library = vim.api.nvim_get_runtime_file("", true)
               },
             },
           })
@@ -96,12 +70,13 @@ table.insert(plugins, {{
       config = function()
         require("mason-lspconfig").setup({
           ensure_installed = {
+            "cmake",              -- Makefile, configure.ac
+            "bashls",             -- bash
+            "jsonls",             -- json
             "tsserver",           -- js, jsx, ts, tsx
             "lua_ls",             -- lua
             "rust_analyzer",      -- rust
-            "bashls",             -- bash
             "rnix",               -- nix
-            "cmake",              -- Makefile, configure.ac
           },
         })
         require("mason-lspconfig").setup_handlers {
@@ -168,7 +143,7 @@ table.insert(plugins, {{
         require("luasnip/loaders/from_vscode").lazy_load()
 
 
-        -- adds vscode-like pictograms to neovim built-in lsp
+        -- adds vscode-like pictograms(icons) to neovim built-in lsp
         local lspkind = require('lspkind')
 
         cmp.setup({
@@ -176,71 +151,16 @@ table.insert(plugins, {{
             -- REQUIRED - you must specify a snippet engine
             expand = function(args)
               -- vim.fn["vsnip#anonymous"](args.body) -- For `vsnip` users.
-              luasnip.lsp_expand(args.body) -- For `luasnip` users.
               -- require('snippy').expand_snippet(args.body) -- For `snippy` users.
               -- vim.fn["UltiSnips#Anon"](args.body) -- For `ultisnips` users.
+              luasnip.lsp_expand(args.body) -- For `luasnip` users.
             end,
           },
           window = {
             completion = cmp.config.window.bordered(),
             documentation = cmp.config.window.bordered(),
           },
-          mapping = cmp.mapping.preset.insert({
-            ['<C-l>'] = cmp.mapping(function(fallback)
-              if luasnip.expand_or_jumpable() then
-                luasnip.expand_or_jump()
-              else
-                fallback()
-              end
-            end, { "i", "s" }),
-            ['<C-h>'] = cmp.mapping(function(fallback)
-              if luasnip.jumpable(-1) then
-                luasnip.jump(-1)
-              else
-                fallback()
-              end
-            end, { "i", "s" }),
-            ['<C-j>'] = cmp.mapping(function(fallback)
-              if cmp.visible() then
-                cmp.select_next_item()
-              -- elseif luasnip.jumpable(1) then
-              --   luasnip.jump(1)
-              else
-                cmp.complete()
-              end
-            end, { "i", "s" }),
-            ['<C-k>'] = cmp.mapping(function(fallback)
-              if cmp.visible() then
-                cmp.select_prev_item()
-              -- elseif luasnip.jumpable(-1) then
-              --   luasnip.jump(-1)
-              else
-                cmp.complete()
-              end
-            end, { "i", "s" }),
-            ["<Tab>"] = cmp.mapping(function(fallback)
-              if cmp.visible() then
-                cmp.select_next_item()
-              else
-                fallback()
-              end
-            end, { "i", "s" }),
-            ["<S-Tab>"] = cmp.mapping(function(fallback)
-              if cmp.visible() then
-                cmp.select_prev_item()
-              else
-                fallback()
-              end
-            end, { "i", "s" }),
-            ['<C-u>'] = cmp.mapping.scroll_docs(-4),
-            ['<C-d>'] = cmp.mapping.scroll_docs(4),
-            ['<C-e>'] = cmp.mapping.abort(),
-            -- ['<CR>'] = cmp.mapping.confirm({ select = true }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
-            ["<CR>"] = cmp.mapping.confirm({
-              behavior = cmp.ConfirmBehavior.Replace,
-              select = true,
-            }),
-          }),
+          mapping = cmp.mapping.preset.insert(keysPluginCmp()),
           sources = cmp.config.sources({
             { name = 'nvim_lsp' },
             { name = 'nvim_lua' },
@@ -254,9 +174,9 @@ table.insert(plugins, {{
               }
             },
             -- { name = 'vsnip' }, -- For vsnip users.
-            { name = 'luasnip' }, -- For luasnip users.
             -- { name = 'ultisnips' }, -- For ultisnips users.
             -- { name = 'snippy' }, -- For snippy users.
+            { name = 'luasnip' }, -- For luasnip users.
           }),
           formatting = {
             format = lspkind.cmp_format({
@@ -297,8 +217,6 @@ table.insert(plugins, {{
     {
       "aznhe21/actions-preview.nvim",
       config = function()
-        vim.keymap.set({ "v", "n" }, "<space>a", require("actions-preview").code_actions)
-
         require("actions-preview").setup {
           telescope = {
             sorting_strategy = "ascending",

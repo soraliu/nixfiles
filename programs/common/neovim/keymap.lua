@@ -1,14 +1,79 @@
 
 -- ------------------------------------------------------------------------------------------------------------------------------
--- Show keymaps
+-- keymaps
 -- ------------------------------------------------------------------------------------------------------------------------------
+function keysRegisterBase()
+  local wk = require("which-key")
+
+  -- set <leader> to <space>
+  vim.g.mapleader = ' '
+  -- shortcut of <ESC>
+  vim.keymap.set('i', 'jk', "<ESC>", { nowait = true })
+  -- don't copy to clipboard
+  vim.keymap.set('v', 's', '"_d', { noremap = true })
+  -- movement when auto wrap
+  vim.keymap.set('n', 'j', 'gj', { silent = true })
+  vim.keymap.set('n', 'k', 'gk', { silent = true })
+  vim.keymap.set('v', 'j', 'gj', { silent = true })
+  vim.keymap.set('v', 'k', 'gk', { silent = true })
+  -- do/undo
+  vim.keymap.set('i', '<c-u>', '<c-o>u', { noremap = true })
+  vim.keymap.set('i', '<c-r>', '<c-o><c-r>', { noremap = true })
+
+  wk.register({
+    -- File Management
+    ['<c-s>'] = { "<cmd>w<cr>",                                             "Save File" },
+
+    -- Buffer Management
+    ['<c-w>'] = { "<cmd>bp<bar>sp<bar>bn<bar>bd<cr>",                       "Close Buffer" },
+    ['<leader>'] = {
+      name = "Buffer Management",
+      ['['] = { "<cmd>bp<cr>",                                              "Prev Buffer" },
+      [']'] = { "<cmd>bn<cr>",                                              "Next Buffer" },
+    },
+
+    -- Windows Management
+    ['<leader>w'] = {
+      name = "Windows Management",
+      h = { "<c-w>h",                                                       "Focus on Left" },
+      l = { "<c-w>l",                                                       "Focus on Right" },
+      j = { "<c-w>j",                                                       "Focus on Bottom" },
+      k = { "<c-w>k",                                                       "Focus on Above" },
+      r = { "<c-w>=",                                                       "Restore window size" },
+      ['['] = { "<cmd>vertical resize -10<cr>",                             "Window Size -10" },
+      [']'] = { "<cmd>vertical resize +10<cr>",                             "Window Size +10" },
+    },
+  }, { mode = "n" })
+
+end
+
+function keysRegisterImprovements()
+  local wk = require("which-key")
+
+  wk.register({
+    ['<leader>s'] = {
+      name = "Show Pages",
+      -- Repo: goolord/alpha-nvim
+      h = { "<cmd>Alpha<cr>",                                               "Show Home Page" },
+    },
+    ['<leader>e'] = {
+      name = "Code Edit",
+
+      -- Repo: soraliu/vim-argwrap
+      a = { "<cmd>ArgWrap<cr>",                                             "Args Wrap&Split" },
+      -- Repo: AckslD/nvim-FeMaco.lua
+      m = { "<cmd>FeMaco<cr>",                                              "Edit Markdown Codeblock" },
+    },
+  }, { mode = "n" })
+end
 
 function keysRegisterSearch()
   local wk = require("which-key")
-  local builtin = require('telescope.builtin')
+  local builtin = require('telescope.builtin') 
+  local ap = require("actions-preview")
 
   wk.register({
-    f = {
+    ["<leader>f"] = {
       name = "Fuzzy Search", -- optional group name
 
       -- Editor
@@ -23,14 +88,100 @@ function keysRegisterSearch()
       s = { "<cmd>Telescope egrepify<cr>",                                  "Grep String" },
 
       -- LSP
-      m = { builtin.diagnostics,                                            "LSP Diagnostics" },
-      m = { builtin.lsp_references,                                         "LSP References" },
+      d = { builtin.diagnostics,                                            "LSP Diagnostics" },
+      f = { builtin.lsp_references,                                         "LSP References" },
       i = { builtin.lsp_implementations,                                    "LSP Implementations" },
+      a = { ap.code_actions,                                                "LSP Actions" },
+
+      -- Todo
+      -- Repo: folke/todo-comments.nvim
+      n = { "<cmd>TodoTelescope<cr>",                                       "Find Todos" }
     },
-  }, { prefix = "<leader>" })
+  }, { mode = "n" })
+
+  wk.register({
+    -- :h actions-preview.nvim-configuration
+    ["<leader>fa"] = { ap.code_actions,                                     "LSP Actions" },
+  }, { mode = "v" })
 end
 
-function keysRegisterTelescope()
+function keysRegisterTree()
+  local wk = require("which-key")
+
+  -- mappings
+  wk.register({
+    ["<leader>w"] = {
+      name = "Windows Management",
+
+      a = { "<cmd>NvimTreeFindFile<cr>",                                    "Find File" },
+      e = { "<cmd>NvimTreeToggle<cr>",                                      "Toggle Nvim Tree" },
+    },
+  }, { mode = "n" })
+
+  local function on_attach(bufnr)
+    local api = require "nvim-tree.api"
+
+    local function opts(desc)
+      return { desc = "nvim-tree: " .. desc, buffer = bufnr, noremap = true, silent = true, nowait = true }
+    end
+    local function removeMap(lhs)
+      vim.keymap.del('n', lhs, { buffer = bufnr })
+    end
+
+    -- default mappings
+    api.config.mappings.default_on_attach(bufnr)
+
+    -- remove all bookmark shortcut
+    removeMap('m')
+    removeMap('M')
+    removeMap('bd')
+    removeMap('bt')
+    removeMap('bmv')
+
+    -- custom mappings
+    vim.keymap.set('n', '?',      api.tree.toggle_help,           opts('Help'))
+    vim.keymap.set('n', 'p',      api.node.navigate.parent,       opts('Parent Directory'))
+    vim.keymap.set('n', 'P',      api.fs.paste,                   opts('Paste'))
+    vim.keymap.set('n', 'm',      api.fs.rename_full,             opts('Rename: Full Path'))
+  end
+
+  return on_attach
+end
+
+function keysRegisterLSP(opts)
+  local wk = require("which-key")
+  local buffer = opts.buffer
+
+  wk.register({
+    -- See `:help vim.lsp.*` for documentation on any of the below functions
+    -- See `:help vim.diagnostic.*` for documentation on any of the below functions
+    ["K"] = { vim.lsp.buf.hover,                                            "Show Hover Doc" },
+    ["<c-]>"] = { vim.lsp.buf.definition,                                   "Go Definition" },
+
+    ["<leader>g"] = {
+      name = "Go Somewhere",
+      ["o"] = { vim.lsp.buf.type_definition,                                "Go Type Definition" },
+      ["d"] = { vim.lsp.buf.declaration,                                    "Go Declaration" },
+      ["k"] = { vim.diagnostic.goto_prev,                                   "Go Prev Diagnostic" },
+      ["j"] = { vim.diagnostic.goto_next,                                   "Go Next Diagnostic" },
+    },
+
+    ["<leader>a"] = {
+      name = "Action",
+      ["r"] = { vim.lsp.buf.rename,                                         "LSP Rename" },
+      ["f"] = { function() vim.lsp.buf.format({ async = true }) end,        "LSP Format" },
+    },
+  }, { mode = "n", buffer = buffer })
+
+  -- vim.keymap.set('n', '<C-k>', vim.lsp.buf.signature_help, opts)
+  -- vim.keymap.set('n', '<space>wa', vim.lsp.buf.add_workspace_folder, opts)
+  -- vim.keymap.set('n', '<space>wr', vim.lsp.buf.remove_workspace_folder, opts)
+  -- vim.keymap.set('n', '<space>wl', function()
+  --   print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
+  -- end, opts)
+end
+
+function keysPluginTelescope()
   -- :h telescope.mappings
   return {
     i = {
@@ -41,7 +192,95 @@ function keysRegisterTelescope()
   }
 end
 
+function keysPluginCmp()
+  local cmp = require("cmp")
+  local luasnip = require("luasnip")
+
+  return {
+    ['<C-l>'] = cmp.mapping(function(fallback)
+      if luasnip.expand_or_jumpable() then
+        luasnip.expand_or_jump()
+      else
+        fallback()
+      end
+    end, { "i", "s" }),
+    ['<C-h>'] = cmp.mapping(function(fallback)
+      if luasnip.jumpable(-1) then
+        luasnip.jump(-1)
+      else
+        fallback()
+      end
+    end, { "i", "s" }),
+    ['<C-j>'] = cmp.mapping(function(fallback)
+      if cmp.visible() then
+        cmp.select_next_item()
+      -- elseif luasnip.jumpable(1) then
+      --   luasnip.jump(1)
+      else
+        cmp.complete()
+      end
+    end, { "i", "s" }),
+    ['<C-k>'] = cmp.mapping(function(fallback)
+      if cmp.visible() then
+        cmp.select_prev_item()
+      -- elseif luasnip.jumpable(-1) then
+      --   luasnip.jump(-1)
+      else
+        cmp.complete()
+      end
+    end, { "i", "s" }),
+    ["<Tab>"] = cmp.mapping(function(fallback)
+      if cmp.visible() then
+        cmp.select_next_item()
+      else
+        fallback()
+      end
+    end, { "i", "s" }),
+    ["<S-Tab>"] = cmp.mapping(function(fallback)
+      if cmp.visible() then
+        cmp.select_prev_item()
+      else
+        fallback()
+      end
+    end, { "i", "s" }),
+    ['<C-u>'] = cmp.mapping.scroll_docs(-4),
+    ['<C-d>'] = cmp.mapping.scroll_docs(4),
+    ['<C-e>'] = cmp.mapping.abort(),
+    -- ['<CR>'] = cmp.mapping.confirm({ select = true }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
+    ["<CR>"] = cmp.mapping.confirm({
+      behavior = cmp.ConfirmBehavior.Replace,
+      select = true,
+    }),
+  }
+end
+
+function keysPluginComment()
+  vim.keymap.set('x', '<c-_>', '<Plug>(comment_toggle_linewise_visual)')
+  vim.keymap.set('x', '<c-\\>', '<Plug>(comment_toggle_blockwise_visual)')
+
+  return {
+    ---LHS of toggle mappings in NORMAL mode
+    toggler = {
+        ---Line-comment toggle keymap
+        line = '<c-_>',
+        ---Block-comment toggle keymap
+        block = '<c-\\>',
+    },
+    ---LHS of operator-pending mappings in NORMAL and VISUAL mode
+    opleader = {
+        ---Line-comment keymap
+        line = 'gc',
+        ---Block-comment keymap
+        block = 'gb',
+    },
+  }
+end
+
 function keysRegisterClearMem()
+  local wk = require("which-key")
+
+  wk.register({
+  })
 end
 
 table.insert(plugins, {
@@ -52,7 +291,8 @@ table.insert(plugins, {
       vim.o.timeout = true
       vim.o.timeoutlen = 300
 
-      keysRegisterSearch()
+      keysRegisterBase()
+      keysRegisterImprovements()
     end,
     opts = {
       -- your configuration comes here
