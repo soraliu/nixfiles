@@ -4,6 +4,8 @@
     enableCompletion = true;
 
     bashrcExtra = ''
+# [ -f ~/.fzf.bash ] && source ~/.fzf.bash
+# . "$HOME/.cargo/env"
     '';
   };
 }

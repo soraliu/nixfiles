@@ -22,10 +22,10 @@
     gitCredentialHelper.enable = true;
   };
 
-  programs.sops = {
-    decryptFiles = [{
-      from = "secrets/.git-credentials.enc";
-      to = ".git-credentials";
-    }];
-  };
+  # programs.sops = {
+  #   decryptFiles = [{
+  #     from = "secrets/.git-credentials.enc";
+  #     to = ".git-credentials";
+  #   }];
+  # };
 }
