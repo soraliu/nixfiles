@@ -29,8 +29,15 @@ table.insert(plugins, {
       },
       sections = {
         lualine_a = {'mode'},
-        lualine_b = {'branch', 'diff', 'diagnostics'},
-        lualine_c = {'filename', {
+        lualine_b = {
+          'branch',
+          'diff',
+          {
+            'diagnostics',
+            symbols = {error = 'E', warn = 'W', info = 'I', hint = 'H'},
+          },
+        },
+        lualine_c = {{ 'filename', path = 1,  }, {
           -- Insert mid section. You can make any number of sections in neovim :)
           -- for lualine it's any number greater then 2
           function()
