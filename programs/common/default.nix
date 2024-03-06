@@ -1,15 +1,17 @@
 { config, pkgs, ... }: {
   imports = [
-    ./home-manager.nix
+    # base pkgs
+    ./base.nix
 
-    # shell
-    ./bash.nix
+    # home-manager self
+    ./home-manager.nix
 
     # version control
     ./git.nix
 
     # encrypt & decrypt
-    ./sops.nix
+    ./gpg.nix
+    # ./sops.nix
 
     # search
     ./fzf.nix
