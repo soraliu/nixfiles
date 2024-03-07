@@ -3,10 +3,6 @@
     # makefile
     gcc9                # provide `make` command and c++ compiler
 
-    # # version control
-    # git-extras          # extra git alias
-    # bfg-repo-cleaner    # big file cleaner for git
-    #
     # # network
     # inetutils           # provide: `telnet`, `ftp`, `hostname`, `ifconfig`, `traceroute`, `ping`, etc
     # wget                # wget

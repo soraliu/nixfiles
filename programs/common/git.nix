@@ -1,5 +1,11 @@
-{ pkgs, ... }: {
-  programs.git = {
+{ pkgs, lib, config, ... }: {
+  config.home.packages = with pkgs; [
+    git-open
+    # git-extras          # extra git alias
+    # bfg-repo-cleaner    # big file cleaner for git
+  ];
+
+  config.programs.git = {
     enable = true;
     userName = "Sora Liu";
     userEmail = "soraliu.dev@gmail.com";
@@ -18,9 +24,14 @@
     };
   };
 
-  programs.gh = {
+  config.programs.gh = {
     gitCredentialHelper.enable = true;
   };
+
+
+  config.programs.zsh.oh-my-zsh.plugins = with lib; mkIf config.programs.zsh.oh-my-zsh.enable [
+    "git"
+  ];
 
   # programs.sops = {
   #   decryptFiles = [{

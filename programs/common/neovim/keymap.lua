@@ -8,6 +8,7 @@ function keysRegisterBase()
   -- set <leader> to <space>
   vim.g.mapleader = ' '
   -- shortcut of <ESC>
+  vim.keymap.set('n', '<ESC>', ":noh<cr><ESC>", { silent = true, noremap = true })
   vim.keymap.set('i', 'jk', "<ESC>", { nowait = true })
   -- don't copy to clipboard
   vim.keymap.set('v', 's', '"_d', { noremap = true })

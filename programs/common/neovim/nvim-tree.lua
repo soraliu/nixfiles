@@ -27,7 +27,7 @@ table.insert(plugins, {
           sorter = "case_sensitive",
         },
         view = {
-          width = 30,
+          width = 48,
           side = "right",
         },
         ui = {

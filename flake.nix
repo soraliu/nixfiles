@@ -67,7 +67,7 @@
         user = "root";
       };
 
-      homeConfigurations."c02fk4mjmd6m" = mkHome {
+      homeConfigurations."user" = mkHome {
         system = "x86_64-darwin";
         user = "user";
       };
