@@ -36,10 +36,10 @@ table.insert(plugins, {{
               workspace = {
                 checkThirdParty = false,
                 library = {
-                  vim.env.VIMRUNTIME,
+                  "vim.env.VIMRUNTIME",
                   -- Depending on the usage, you might want to add additional paths here.
                   -- E.g.: For using `vim.*` functions, add vim.env.VIMRUNTIME/lua.
-                  vim.env.VIMRUNTIME/lua,
+                  "vim.env.VIMRUNTIME/lua",
                   "${3rd}/luv/library",
                   -- "${3rd}/busted/library",
                 }
@@ -106,9 +106,11 @@ table.insert(plugins, {{
       'hrsh7th/nvim-cmp',
       dependencies = {
         'hrsh7th/cmp-nvim-lsp',
-        'hrsh7th/cmp-buffer',
-        'hrsh7th/cmp-path',
-        'hrsh7th/cmp-cmdline',
+        'hrsh7th/cmp-buffer', -- words from opened buffers
+        'lukas-reineke/cmp-rg', -- fuzzy search
+        'hrsh7th/cmp-path', -- paths
+        'hrsh7th/cmp-cmdline', -- cmdline
+        'dmitmel/cmp-cmdline-history', -- cmdline history
         'windwp/nvim-autopairs', -- insert `(` after select function or method item
         {
           "L3MON4D3/LuaSnip",
@@ -116,10 +118,10 @@ table.insert(plugins, {{
           -- install jsregexp (optional!).
           build = "make install_jsregexp",
         },
-        'saadparwaiz1/cmp_luasnip',
-
+        'saadparwaiz1/cmp_luasnip', -- cmp adapter of luasnip
         'rafamadriz/friendly-snippets', -- include common used snippets
         'onsails/lspkind-nvim', -- show icons
+        'octaltree/cmp-look', -- completing words in English
       },
       config = function()
         -- Set up nvim-cmp.
@@ -142,9 +144,34 @@ table.insert(plugins, {{
         end
         require("luasnip/loaders/from_vscode").lazy_load()
 
-
         -- adds vscode-like pictograms(icons) to neovim built-in lsp
         local lspkind = require('lspkind')
+        local cmp_format = lspkind.cmp_format({
+          mode = 'symbol_text', -- show only symbol annotations
+          maxwidth = 50, -- prevent the popup from showing more than provided characters (e.g 50 will not show more than 50 characters)
+          -- can also be a function to dynamically calculate max width such as 
+          -- maxwidth = function() return math.floor(0.45 * vim.o.columns) end,
+          ellipsis_char = '...', -- when popup menu exceed maxwidth, the truncated part would show ellipsis_char instead (must define maxwidth first)
+          show_labelDetails = true, -- show labelDetails in menu. Disabled by default
+
+          -- The function below will be called before any actual modifications from lspkind
+          -- so that you can provide more controls on popup customization. (See [#30](https://github.com/onsails/lspkind-nvim/pull/30))
+          menu = {
+            buffer = "[Buffer]",
+            rg = "[Ripgrep]",
+            nvim_lsp = "[LSP]",
+            nvim_lua = "[Lua]",
+            path = "[Path]",
+            luasnip = "[Luasnip]",
+            spell = "[Spell]",
+            look = "[Dict]",
+            cmdline = "[CMD]",
+            cmdline_history = "[CMD History]",
+          },
+          before = function (entry, vim_item)
+            return vim_item
+          end
+        })
 
         cmp.setup({
           snippet = {
@@ -161,6 +188,9 @@ table.insert(plugins, {{
             documentation = cmp.config.window.bordered(),
           },
           mapping = cmp.mapping.preset.insert(keysPluginCmp()),
+          formatting = {
+            format = cmp_format
+          },
           sources = cmp.config.sources({
             { name = 'nvim_lsp' },
             { name = 'nvim_lua' },
@@ -173,28 +203,64 @@ table.insert(plugins, {{
                 end
               }
             },
+            {
+              name = 'rg',
+              keyword_length = 2,
+            },
             -- { name = 'vsnip' }, -- For vsnip users.
             -- { name = 'ultisnips' }, -- For ultisnips users.
             -- { name = 'snippy' }, -- For snippy users.
             { name = 'luasnip' }, -- For luasnip users.
+            {
+              name = 'look',
+              keyword_length = 2,
+              option = {
+                convert_case = true,
+                loud = true
+                --dict = '/usr/share/dict/words'
+              }
+            },
+            {
+              name = 'spell',
+              option = {
+                keep_all_entries = false,
+                enable_in_context = function()
+                  return true
+                end,
+              },
+            },
           }),
-          formatting = {
-            format = lspkind.cmp_format({
-              mode = 'symbol_text', -- show only symbol annotations
-              maxwidth = 50, -- prevent the popup from showing more than provided characters (e.g 50 will not show more than 50 characters)
-                             -- can also be a function to dynamically calculate max width such as 
-                             -- maxwidth = function() return math.floor(0.45 * vim.o.columns) end,
-              ellipsis_char = '...', -- when popup menu exceed maxwidth, the truncated part would show ellipsis_char instead (must define maxwidth first)
-              show_labelDetails = true, -- show labelDetails in menu. Disabled by default
+        })
 
-              -- The function below will be called before any actual modifications from lspkind
-              -- so that you can provide more controls on popup customization. (See [#30](https://github.com/onsails/lspkind-nvim/pull/30))
-              before = function (entry, vim_item)
-                return vim_item
-              end
-            })
+        cmp.setup.cmdline('/', {
+          mapping = cmp.mapping.preset.cmdline(),
+          sources = {
+            { name = 'buffer' },
+            { name = 'cmdline_history' },
+          },
+          formatting = {
+            format = cmp_format
           }
         })
+
+
+        cmp.setup.cmdline(':', {
+          mapping = cmp.mapping.preset.cmdline(),
+          sources = cmp.config.sources({
+            { name = 'path' },
+            { name = 'cmdline_history' },
+            {
+              name = 'cmdline',
+              option = {
+                ignore_cmds = { 'Man', '!' }
+              }
+            },
+          }),
+          formatting = {
+            format = cmp_format
+          }
+        })
+
       end,
     },
     {
