@@ -1,7 +1,7 @@
 { pkgs, lib, config, ... }: {
   config.home.packages = with pkgs; [
     git-open
-    # git-extras          # extra git alias
+    git-extras          # extra git alias
     # bfg-repo-cleaner    # big file cleaner for git
   ];
 
@@ -28,9 +28,9 @@
     gitCredentialHelper.enable = true;
   };
 
-
   config.programs.zsh.oh-my-zsh.plugins = with lib; mkIf config.programs.zsh.oh-my-zsh.enable [
     "git"
+    "git-extras"
   ];
 
   # programs.sops = {
