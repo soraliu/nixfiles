@@ -19,5 +19,8 @@
 
     # editor
     ./neovim
+
+    # shell
+    ./zsh
   ];
 }

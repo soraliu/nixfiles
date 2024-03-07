@@ -2,7 +2,10 @@ s:
 	nix run .#homeConfigurations.root.activationPackage --show-trace
 
 switch-work-home:
-	nix run .#homeConfigurations.c02fk4mjmd6m.activationPackage --show-trace
+	nix run .#homeConfigurations.user.activationPackage --show-trace
+
+home-manager-switch-work-with-backup:
+	home-manager switch --flake . -b backup
 
 switch-work-host:
 	nix run nix-darwin -- switch --flake .
