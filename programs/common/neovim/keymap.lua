@@ -28,6 +28,7 @@ function keysRegisterBase()
   wk.register({
     -- File Management
     ['<c-s>'] = { "<cmd>w<cr>",                                             "Save File" },
+    ['<c-q>'] = { "<cmd>q<cr>",                                             "Quit" },
 
     -- Buffer Management
     ['<c-w>'] = { "<cmd>bp<bar>sp<bar>bn<bar>bd<cr>",                       "Close Buffer" },
@@ -56,6 +57,9 @@ function keysRegisterImprovements()
   local wk = require("which-key")
 
   wk.register({
+    -- ['Q'] = {
+    --   '<cmd>Bonly<cr>',                                                     'Delete buffers',
+    -- },
     ['<leader>s'] = {
       name = "Show Pages",
       -- Repo: goolord/alpha-nvim
@@ -90,6 +94,7 @@ function keysRegisterSearch()
       k = { builtin.keymaps,                                                "Find Keymaps" },
       h = { builtin.help_tags,                                              "Find Helps" },
       m = { builtin.commands,                                               "Find Commands" },
+      [","] = { builtin.resume,                                             "Resume Last Search" },
       s = { "<cmd>Telescope egrepify<cr>",                                  "Grep String" },
 
       -- LSP

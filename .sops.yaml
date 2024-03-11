@@ -1,5 +1,7 @@
 keys:
-  &pgp_sora "2B35 12F3 6DA1 F5A3 C648  66AE F76A 2273 46F4 102A"
 creation_rules:
   - path_regex: secrets/.*$
-    pgp: *pgp_sora
+    key_groups:
+      - age:
+        - age1gnuydcffmwalyeqr7pmgp26nnwg4smwum05atpunh3xnfz0a5cnsc6erzf
+        - age1efdgqxst6zk3vysvnmrexuh9csqwz9nwhtr9uyp77xn8epddvcuskq8y9v
