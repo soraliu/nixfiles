@@ -3,6 +3,9 @@ setopt nomonitor nonotify
 export LC_ALL=en_US.UTF-8
 export TERM="xterm-256color"
 
+# age
+export SOPS_AGE_KEY_FILE="$HOME/.age/keys.txt"
+
 # env
 # export DISPLAY=${DISPLAY:-:8}
 
