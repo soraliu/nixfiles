@@ -110,6 +110,20 @@ git changelog                           # create a History.md file
 git setup                               # init a repo and commit all current files as the first commit
 
 git stamp Issue FOO-456 \#close         # append a line to the current commit
+
+git standup -a "Sora Liu" -d 1          # find what someone else did in a given range of time
+
+git obliterate secrets.json             # Completely remove a file from the repository, including past commits and tags
+git missing                             # Print out which commits are on one branch or the other but not both
+git reset-file $filename $hash          # Reset one file to HEAD or certain commit
+
+git pr 226
+git pr 226 upstream
+git pr https://github.com/tj/git-extras/pull/453
+git pr clean
+
+git psykorebase master                  # Rebase a branch on top of another using a merge commit and only one conflict handling
+git psykorebase --continue              # continue
 ```
 
 ### git open

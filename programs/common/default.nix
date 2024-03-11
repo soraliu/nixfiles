@@ -10,8 +10,7 @@
     ./git.nix
 
     # encrypt & decrypt
-    ./gpg.nix
-    # ./sops.nix
+    ./sops
 
     # search
     ./fzf.nix

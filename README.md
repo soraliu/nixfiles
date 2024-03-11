@@ -7,12 +7,15 @@ Nix Configurations
 - https://nixos.org/download
 - https://nix.dev/install-nix
 
+```sh
+./bin/common/init-nix
+```
+
 # Architecture
 
 ```
 ├── bin             # reusable scripts
 ├── hosts           # configure host
-├── pkgs            # users packages deps
 ├── programs        # same as pkgs but those packages are configurable
 ├── secrets         # encrypted secrets
 ├── users           # configure user's home
@@ -37,11 +40,11 @@ programs
     └── ...
 ```
 
-If `home-manager` supports to configure them those packages, you have to create your own pkg and import them. E.g.: `./programs/common/sops.nix`.
+If `home-manager` does not support to configure those packages, you have to create your own pkg and import them. E.g.: `./programs/common/sops`.
 
 ## The Way to Declare Configurations That to Be Used by OS and Users
 
-Put those configurations in `./hosts/${os}/${hostName}/default.nix` or `./hosts/${os}/${user}.nix`
+Put those configurations in `./hosts/${os}/${hostName}/default.nix` or `./hosts/${os}/${user}/default.nix`
 
 ```
 hosts
@@ -55,3 +58,9 @@ users
     └── ...
 ```
 
+## Run `home-manager` or `nix-darwin` without install them.
+
+```sh
+nix run .#home-manager -- switch --impure --show-trace --flake .
+nix run .#nix-darwin -- switch --flake .
+```

@@ -4,6 +4,7 @@
 -- ------------------------------------------------------------------------------------------------------------------------------
 table.insert(plugins, {
   'soraliu/vim-argwrap', -- Split arguments into multiple lines
+  -- 'schickling/vim-bufonly', -- delete other buffers
   {
     'smoka7/hop.nvim',
     version = "*",
