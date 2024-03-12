@@ -1,4 +1,4 @@
-{ config, pkgs, lib, useSecret ? false, ... }: let
+{ pkgs, lib, config, useSecret ? false, ... }: let
   cfg = config.programs.sops;
   decryptFiles = cfg.decryptFiles;
   decryptedPath = pkgs.callPackage ./decrypt.nix { inherit pkgs; files = decryptFiles; };
