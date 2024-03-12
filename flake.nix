@@ -15,6 +15,11 @@
     # Specify the source of Home Manager and Nixpkgs.
     nixpkgs.url = "github:nixos/nixpkgs/nixos-23.11";
 
+    nix-index-database = {
+      url = "github:nix-community/nix-index-database/e76ff2df6bfd2abe06abd8e7b9f217df941c1b07";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     home-manager = {
       url = "github:nix-community/home-manager/release-23.11";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -36,14 +41,24 @@
     };
   };
 
-  outputs = inputs@{ nixpkgs, nix-darwin, home-manager, flake-utils, ... }:
+  outputs = inputs@{
+    nixpkgs,
+    nix-index-database,
+    nix-darwin,
+    home-manager,
+    flake-utils,
+    ...
+  }:
     let
       log = v : builtins.trace v v;
 
-      mkHome = { system, user, useSecret ? false }: home-manager.lib.homeManagerConfiguration {
+      mkHome = { system, user, useSecret ? false, useIndex ? false }: home-manager.lib.homeManagerConfiguration {
         pkgs = nixpkgs.legacyPackages.${system};
 
         modules = builtins.filter (el: el != "") [
+          # whether to use nix-index
+          (if useIndex then nix-index-database.hmModules.nix-index else "")
+
           ./programs/common
           (if builtins.pathExists ./programs/${system} then ./programs/${system} else "")
           ./users/${system}/${user}
@@ -79,6 +94,7 @@
         system = "x86_64-darwin";
         user = "user";
         useSecret = true;
+        useIndex = true;
       };
 
       darwinConfigurations."c02fk4mjmd6m" = mkDarwin {

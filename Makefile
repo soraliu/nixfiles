@@ -3,6 +3,10 @@ s:
 
 switch-work-home:
 	# `--impure` Allow to use ~/.age directory to decrypt secrets
+	nix run .#home-manager -- switch --show-trace --impure --flake .
+
+flake-switch-work-home:
+	# `--impure` Allow to use ~/.age directory to decrypt secrets
 	nix run .#homeConfigurations.user.activationPackage --show-trace --impure
 
 home-manager-switch-work-with-backup:
@@ -20,4 +24,3 @@ edit-git-credentials:
 install-nix-darwin:
 	nix-build https://github.com/LnL7/nix-darwin/archive/master.tar.gz -A installer
 	./result/bin/darwin-installer
-

@@ -4,22 +4,24 @@
     ./base.nix
 
     # home-manager self
-    ./home-manager.nix
+    ./home-manager
 
     # version control
-    ./git.nix
+    ./git
 
     # encrypt & decrypt
     ./sops
 
     # search
-    ./fzf.nix
-    ./ripgrep.nix
+    ./fzf
+    ./ripgrep
 
     # editor
     ./neovim
 
     # shell
     ./zsh
+    ./shell-gpt
+    ./pet
   ];
 }

@@ -29,7 +29,7 @@ pkgs.stdenv.mkDerivation {
       path_to_decrypted_file="$out/$2"
 
       # ensure that directory exists
-      mkdir -p "$(basename $path_to_decrypted_file)"
+      mkdir -p "$(dirname $path_to_decrypted_file)"
 
       echo "$encrypted_file -> $path_to_decrypted_file"
 
