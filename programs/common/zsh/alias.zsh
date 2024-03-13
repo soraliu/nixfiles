@@ -3,8 +3,7 @@
 # -------------------------------------------------------------------------------------------------------------------------------
 alias s='sgpt'
 alias sc='sgpt --repl temp --no-cache'
-alias ss='sgpt --repl temp --no-cache --shell'
-alias ssd='sgpt --repl temp --no-cache --describe-shell'
+alias ss='sgpt --repl temp --no-cache --describe-shell'
 
 # alias f='fasd -f'             # 文件
 # alias d='fasd -d'             # 目录

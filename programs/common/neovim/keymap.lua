@@ -18,8 +18,8 @@ function keysRegisterBase()
   vim.keymap.set('v', 'j', 'gj', { silent = true })
   vim.keymap.set('v', 'k', 'gk', { silent = true })
   -- do/undo
-  vim.keymap.set('i', '<c-u>', '<c-o>u', { noremap = true })
-  vim.keymap.set('i', '<c-r>', '<c-o><c-r>', { noremap = true })
+  -- vim.keymap.set('i', '<c-u>', '<c-o>u', { noremap = true })
+  -- vim.keymap.set('i', '<c-r>', '<c-o><c-r>', { noremap = true })
   -- command mode
   vim.api.nvim_set_keymap('c', '<C-j>', '<C-n>', {})
   vim.api.nvim_set_keymap('c', '<C-k>', '<C-p>', {})
