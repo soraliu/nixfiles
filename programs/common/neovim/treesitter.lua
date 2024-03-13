@@ -24,6 +24,7 @@ table.insert(plugins, {
         "jsonc",
         "yaml",
         "xml",
+        "kdl",
 
         -- DevOps
         "nix",

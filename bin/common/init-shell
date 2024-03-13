@@ -1,9 +1,25 @@
 #!/usr/bin/env sh
 
-set -e
-
 if [ ! "$(id -u)" -eq 0 ]; then
   echo "Pls run with sudo."
+  exit
 fi
 
-readlink -f ~/.nix-profile/zsh
+path_to_zsh="$(readlink -f ~/.nix-profile/bin/zsh 2>/dev/null)"
+path_to_config=/etc/shells
+
+if [ ! -f "$path_to_zsh" ]; then
+  echo "Pls install zsh by nix firstly."
+  exit
+fi
+
+if [ ! -f "$path_to_config" ] || ! grep -q "$path_to_zsh" $path_to_config; then
+  mkdir -p $(basename $path_to_config)
+  echo "$path_to_zsh" >> $path_to_config
+else
+  echo "Info: ${path_to_config} has already configured zsh! Skip."
+fi
+
+chsh -s "$path_to_zsh" 1>/dev/null 2>&1
+
+echo "Success: ${path_to_zsh} now is the default shell."

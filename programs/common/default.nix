@@ -1,7 +1,7 @@
 { config, pkgs, ... }: {
   imports = [
     # base pkgs
-    ./base.nix
+    ./base
 
     # home-manager self
     ./home-manager
@@ -23,5 +23,6 @@
     ./zsh
     ./shell-gpt
     ./pet
+    ./zellij
   ];
 }

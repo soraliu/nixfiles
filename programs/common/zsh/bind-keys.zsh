@@ -28,9 +28,11 @@ function bindkey_of_edit() {
   # vi movement
   bindkey -M viins '^J' vi-backward-blank-word
   bindkey -M viins '^K' vi-forward-blank-word
+  bindkey -M viins '^B' beginning-of-line
 
   # edit command line
   bindkey -M vicmd '^V' zvm_vi_edit_command_line
+
 }
 
 function bindkey_of_fzf() {

@@ -5,6 +5,8 @@ alias s='sgpt'
 alias sc='sgpt --repl temp --no-cache'
 alias ss='sgpt --repl temp --no-cache --describe-shell'
 
+alias z='zellij'
+
 # alias f='fasd -f'             # 文件
 # alias d='fasd -d'             # 目录
 # alias a='fasd -a'             # 任意
