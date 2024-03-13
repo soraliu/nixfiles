@@ -1,9 +1,9 @@
-
 -- ------------------------------------------------------------------------------------------------------------------------------
 -- Improvements
 -- ------------------------------------------------------------------------------------------------------------------------------
 table.insert(plugins, {
   'soraliu/vim-argwrap', -- Split arguments into multiple lines
+  'imsnif/kdl.vim', -- KDL language syntax & indent
   -- 'schickling/vim-bufonly', -- delete other buffers
   {
     'smoka7/hop.nvim',
@@ -51,6 +51,22 @@ table.insert(plugins, {
       vim.cmd([[
         autocmd BufNewFile,BufRead *.ansi.log call timer_start(100, { tid -> execute('AnsiEsc')})
       ]])
+    end,
+  },
+  {
+    "cappyzawa/trim.nvim",
+    config = function()
+      require("trim").setup({
+        ft_blocklist = {},
+        patterns = {},
+        trim_on_write = true,
+        trim_trailing = true,
+        trim_last_line = true,
+        trim_first_line = true,
+        highlight = false,
+        highlight_bg = '#ff0000', -- or 'red'
+        highlight_ctermbg = 'red',
+      })
     end,
   },
 })
