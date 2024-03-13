@@ -1,0 +1,9 @@
+#!/usr/bin/env sh
+
+set -e
+
+if [ ! "$(id -u)" -eq 0 ]; then
+  echo "Pls run with sudo."
+fi
+
+readlink -f ~/.nix-profile/zsh

@@ -1,13 +1,30 @@
 #!/usr/bin/env sh
 
 # Install nix
-curl -L https://releases.nixos.org/nix/nix-2.19.3/install | sh -s
+if [ ! -x "$(command -v nix)" ]; then
+  curl -L https://releases.nixos.org/nix/nix-2.19.3/install | sh -s
+else
+  echo "Info: nix has already installed! Skip."
+fi
 
 # Enable nix-command and flakes
-mkdir -p ~/.config/nix
-echo "experimental-features = nix-command flakes" >> ~/.config/nix/nix.conf
+config="experimental-features = nix-command flakes"
+path_to_nix_config=~/.config/nix/nix.conf
+if [ ! -f "$path_to_nix_config" ] || ! grep -q "$config" $path_to_nix_config; then
+  mkdir -p ~/.config/nix
+  echo "experimental-features = nix-command flakes" >> $path_to_nix_config
+else
+  echo "Info: ${path_to_nix_config} already support nix flake! Skip."
+fi
 
 # Specify the version of nixpkgs
-nix-channel --remove nixpkgs
-nix-channel --add https://nixos.org/channels/nixos-23.11 nixpkgs
-nix-channel --update
+nix_version_name=nixpkgs
+nix_version=https://nixos.org/channels/nixos-23.11
+if [[ "$(nix-channel --list | grep "$nix_version_name" | cut -d ' ' -f 2)" == "${nix_version}" ]]; then 
+  echo "Info: ${nix_version_name} ${nix_version} already exists! Skip."
+else
+  echo "Info: ${nix_version_name} ${nix_version} does not exist! Updating..."
+  nix-channel --remove "$nix_version_name"
+  nix-channel --add "$nix_version"
+  nix-channel --update
+fi

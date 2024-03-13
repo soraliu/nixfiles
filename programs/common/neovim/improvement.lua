@@ -30,17 +30,6 @@ table.insert(plugins, {
     end
   },
   {
-    -- Auto pair brackets, quotes, etc
-    -- TODO: support auto pair xml tag, lua function end, etc
-    'windwp/nvim-autopairs',
-    event = 'InsertEnter',
-    config = true,
-    opts = {
-      enable_check_bracket_line = false,
-      check_ts = true,
-    },
-  },
-  {
     -- Show a welcome page
     'goolord/alpha-nvim',
     dependencies = { 'nvim-tree/nvim-web-devicons' },
