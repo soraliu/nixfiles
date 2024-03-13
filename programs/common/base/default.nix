@@ -4,7 +4,7 @@
     tldr                                      # community-maintained help pages                                                # Github: https://github.com/tldr-pages/tldr
 
     # makefile
-    gcc9                                      # provide `make` command and c++ compiler
+    libclang                                  # better than gcc13, provide `make` command and c++ compiler
 
     # # network
     inetutils                                 # provide: `telnet`, `ftp`, `hostname`, `ifconfig`, `traceroute`, `ping`, etc
@@ -18,9 +18,10 @@
     comma                                     # run software without installing it (need nix-index)
                                                 # Github: https://github.com/nix-community/comma
 
-    # # files
+    # filesystem
     rsync                                     # fast incremental file transfer
                                                 # Github: https://github.com/WayneD/rsync
+    autojump
     joshuto                                   # ternimal file browser
     catdoc                                    # used by joshuto preview
     exiftool                                  # used by joshuto preview
@@ -46,15 +47,15 @@
 
     # coding
     nodejs_20                                 # nodejs, npm
-    # python3                                   # python3
-    # python311Packages.pip                     # pip3
-    # rustc                                     # rust
-    # cargo                                     # rust package maanger
+    python3                                   # python3
+    python311Packages.pip                     # pip3
+    rustc                                     # rust
+    cargo                                     # rust package maanger
   ];
 
   home.sessionVariables = {
     PATH = "${pkgs.nodejs_20}/bin:$PATH";
 
-    BAT_THEME = "Coldark-Dark";
+    BAT_THEME = "Coldark-Dark"; # used by `bat`
   };
 }

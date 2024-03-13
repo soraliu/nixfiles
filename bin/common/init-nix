@@ -11,10 +11,10 @@ fi
 config="experimental-features = nix-command flakes"
 path_to_nix_config=~/.config/nix/nix.conf
 if [ ! -f "$path_to_nix_config" ] || ! grep -q "$config" $path_to_nix_config; then
-  mkdir -p ~/.config/nix
-  echo "experimental-features = nix-command flakes" >> $path_to_nix_config
+  mkdir -p $(basename $path_to_nix_config)
+  echo "$config" >> $path_to_nix_config
 else
-  echo "Info: ${path_to_nix_config} already support nix flake! Skip."
+  echo "Info: ${path_to_nix_config} has already support nix flake! Skip."
 fi
 
 # Specify the version of nixpkgs

@@ -28,7 +28,7 @@ function keysRegisterBase()
   wk.register({
     -- File Management
     ['<c-s>'] = { "<cmd>w<cr>",                                             "Save File" },
-    ['<c-q>'] = { "<cmd>q<cr>",                                            "Quit" },
+    ['<c-q>'] = { "<cmd>q<cr>",                                             "Quit" },
 
     -- Buffer Management
     ['<c-w>'] = { "<cmd>bp<bar>sp<bar>bn<bar>bd<cr>",                       "Close Buffer" },

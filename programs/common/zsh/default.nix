@@ -36,7 +36,7 @@
     };
 
     sessionVariables = {
-      SHELL = pkgs.zsh;
+      SHELL = "${pkgs.zsh}/bin/zsh";
     };
 
     activation.initZsh = lib.hm.dag.entryAfter ["writeBoundary"] ''

@@ -2,4 +2,6 @@
   imports = [ ];
 
   home.packages = with pkgs; [ ];
+
+  home.sessionVariables = { };
 }

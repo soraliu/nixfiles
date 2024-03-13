@@ -3,6 +3,7 @@
     home.packages = with pkgs; [
       git-open
       git-extras          # extra git alias
+      diff-so-fancy       # good-looking diffs filter for git
       # bfg-repo-cleaner    # big file cleaner for git
     ];
 
