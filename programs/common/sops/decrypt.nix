@@ -6,7 +6,7 @@
 # e.g.: `/nix/store/xz45jvrijbicfqv8rvc3nqxgn5zakj20-sops-decrypted-files/.git-credentials`
 # files.[].from -> related to `root` path
 # files.[].to -> related to `home` path
-{ pkgs ? import <nixpkgs> { }, files ? [] }: let 
+{ pkgs, files ? [] }: let
   ageKeyFile = ~/.age/keys.txt;
 in
 pkgs.stdenv.mkDerivation {

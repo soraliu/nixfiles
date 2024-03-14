@@ -8,6 +8,7 @@ keybinds clear-defaults=true {
         bind "Ctrl q" { Quit; }
 
         // Panes
+        bind "n"          { NewPane; }
         bind "L"          { NewPane "Right"; }
         bind "J"          { NewPane "Down"; }
         bind "q"          { CloseFocus; }
