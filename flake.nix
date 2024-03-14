@@ -48,66 +48,63 @@
     home-manager,
     flake-utils,
     ...
-  }:
-    let
-      log = v : builtins.trace v v;
+  }: with flake-utils.lib; eachDefaultSystem (system: let
+    log = v : builtins.trace v v;
 
-      mkHome = { system, user, useSecret ? false, useIndex ? false }: home-manager.lib.homeManagerConfiguration {
-        pkgs = nixpkgs.legacyPackages.${system};
+    mkHome = { user, useSecret ? false, useIndex ? false }: home-manager.lib.homeManagerConfiguration {
+      pkgs = nixpkgs.legacyPackages."${system}";
 
-        modules = builtins.filter (el: el != "") [
-          # whether to use nix-index
-          (if useIndex then nix-index-database.hmModules.nix-index else "")
+      modules = builtins.filter (el: el != "") [
+        # whether to use nix-index
+        (if useIndex then nix-index-database.hmModules.nix-index else "")
 
-          ./programs/common
-          (if builtins.pathExists ./programs/${system} then ./programs/${system} else "")
-          ./users/${system}/${user}
-        ];
+        ./programs/common
+        (if builtins.pathExists ./programs/${system} then ./programs/${system} else "")
+        ./users/${system}/${user}
+      ];
 
-        # Nix has dynamic scope, extraSpecialArgs will be passed to evalModules as the scope of funcitons,
-        #   which means those functions can access `useSecret` directly instead of `specialArgs.useSecret`
-        #   TL;DR: https://github.com/nix-community/home-manager/blob/36f873dfc8e2b6b89936ff3e2b74803d50447e0a/modules/default.nix#L26
-        extraSpecialArgs = {
-          inherit useSecret;
-          useGlobalPkgs = true;
-          useUserPackages = true;
+      # Nix has dynamic scope, extraSpecialArgs will be passed to evalModules as the scope of funcitons,
+      #   which means those functions can access `useSecret` directly instead of `specialArgs.useSecret`
+      #   TL;DR: https://github.com/nix-community/home-manager/blob/36f873dfc8e2b6b89936ff3e2b74803d50447e0a/modules/default.nix#L26
+      extraSpecialArgs = {
+        inherit useSecret;
+        useGlobalPkgs = true;
+        useUserPackages = true;
+      };
+    };
+
+    mkDarwin = { system, host }: nix-darwin.lib.darwinSystem {
+      pkgs = nixpkgs.legacyPackages.${system};
+      system = system;
+
+      modules = [
+        ./hosts/${system}/${host}
+      ];
+
+      specialArgs = { inherit inputs; };
+    };
+  in {
+    packages = {
+      home-manager = home-manager.defaultPackage.${system};
+      nix-darwin = nix-darwin.packages.${system}.default;
+
+      homeConfigurations = {
+        "user" = mkHome {
+          user = "user";
+          useSecret = true;
+          useIndex = true;
+        };
+        "root" = mkHome {
+          user = "root";
         };
       };
 
-      mkDarwin = { system, host }: nix-darwin.lib.darwinSystem {
-        pkgs = nixpkgs.legacyPackages."${system}";
-        system = system;
-
-        modules = [
-          ./hosts/${system}/${host}
-        ];
-
-        specialArgs = { inherit inputs; };
-      };
-    in {
-      homeConfigurations."root" = mkHome {
-        system = "x86_64-linux";
-        user = "root";
-      };
-
-      homeConfigurations."user" = mkHome {
-        system = "x86_64-darwin";
-        user = "user";
-        useSecret = true;
-        useIndex = true;
-      };
-
-      darwinConfigurations."c02fk4mjmd6m" = mkDarwin {
-        system = "x86_64-darwin";
-        host = "c02fk4mjmd6m";
-      };
-
-    } // (with flake-utils.lib; (eachDefaultSystem (
-      system: {
-        packages = {
-          home-manager = home-manager.defaultPackage.${system};
-          nix-darwin = nix-darwin.packages.${system}.default;
+      darwinConfigurations = {
+        "c02fk4mjmd6m" = mkDarwin {
+          system = "x86_64-darwin";
+          host = "c02fk4mjmd6m";
         };
-      }
-    )));
+      };
+    };
+  });
 }
