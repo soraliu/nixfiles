@@ -1,5 +1,28 @@
 layout {
-    default_tab_template {
+    cwd "~"
+    tab name="Metrics" hide_floating_panes=true {
+        pane size="60%" split_direction="vertical" {
+            pane command="sudo" size="40%" {
+                args "bandwhich"
+                start_suspended true
+            }
+            pane command="joshuto" size="40%" {
+                start_suspended true
+            }
+            pane command="dua" size="20%" {
+                args "interactive" "."
+                start_suspended true
+            }
+        }
+        pane command="htop" size="40%" {}
+    }
+
+    tab name="Tab" hide_floating_panes=true {
+        pane
+        pane size=1 borderless=true { }
+    }
+
+    default_tab_template name="Tab" {
         children
 
         pane size=1 borderless=true {
