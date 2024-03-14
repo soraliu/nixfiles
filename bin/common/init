@@ -1,0 +1,12 @@
+#!/usr/bin/env sh
+
+set -e
+
+SCRIPT_DIR=$(dirname "$(realpath "$0")")
+
+$SCRIPT_DIR/init-age
+$SCRIPT_DIR/init-nix
+
+nix run .#home-manager -- switch --show-trace --impure --flake .
+
+sudo $SCRIPT_DIR/init-shell

@@ -2,7 +2,7 @@
 
 if [ ! "$(id -u)" -eq 0 ]; then
   echo "Pls run with sudo."
-  exit
+  exit 1
 fi
 
 path_to_zsh="$(readlink -f ~/.nix-profile/bin/zsh 2>/dev/null)"
@@ -10,7 +10,7 @@ path_to_config=/etc/shells
 
 if [ ! -f "$path_to_zsh" ]; then
   echo "Pls install zsh by nix firstly."
-  exit
+  exit 1
 fi
 
 if [ ! -f "$path_to_config" ] || ! grep -q "$path_to_zsh" $path_to_config; then

@@ -18,9 +18,9 @@ else
 fi
 
 # Specify the version of nixpkgs
-nix_version_name=nixpkgs
+nix_version_name=nixos-23.11
 nix_version=https://nixos.org/channels/nixos-23.11
-if [[ "$(nix-channel --list | grep "$nix_version_name" | cut -d ' ' -f 2)" == "${nix_version}" ]]; then 
+if [[ "$(nix-channel --list | grep "$nix_version_name" | cut -d ' ' -f 2)" == "${nix_version}" ]]; then
   echo "Info: ${nix_version_name} ${nix_version} already exists! Skip."
 else
   echo "Info: ${nix_version_name} ${nix_version} does not exist! Updating..."
