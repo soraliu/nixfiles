@@ -22,6 +22,8 @@ zinit lucid depth"1" for jeffreytse/zsh-vi-mode
 #   Github: https://github.com/zsh-users/zsh-syntax-highlighting
 zinit lucid wait for zsh-users/zsh-syntax-highlighting
 
+# OhMyZsh Plugins
+#   Github: https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins
 # OMZ plugins - workspace
 zinit lucid wait for OMZP::autojump OMZP::sudo
 # OMZ plugins - file
@@ -32,6 +34,8 @@ zinit lucid wait for OMZP::jsontools OMZP::colored-man-pages
 zinit lucid wait for OMZP::common-aliases OMZP::git
 # OMZ plugins - completion
 zinit lucid wait for OMZP::docker OMZP::docker-compose OMZP::kubectl
+# OMZ Lib - alias
+zinit lucid wait for OMZL::directories.zsh
 
 # autosuggestions
 #   Github: https://github.com/zsh-users/zsh-autosuggestions
