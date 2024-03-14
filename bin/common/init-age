@@ -2,17 +2,22 @@
 
 set -e
 
+age_dir=.age
+age_file=keys.txt
+path_to_age=~/${age_dir}
+path_to_age_file=${path_to_age}/${age_file}
+
+if [ -f "$path_to_age_file" ]; then
+  echo "Info: age key has already existed! Skip."
+  exit
+fi
+
 echo "Pls enter username: "
 read user
 echo "Pls enter pw: "
 read -s pw
 echo "Pls enter host: "
 read host
-
-age_dir=.age
-age_file=keys.txt
-path_to_age=~/${age_dir}
-path_to_age_file=${path_to_age}/${age_file}
 
 mkdir -p ${path_to_age}
 
