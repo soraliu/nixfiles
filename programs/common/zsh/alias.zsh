@@ -6,6 +6,9 @@ alias sc='sgpt --repl temp --no-cache'
 alias ss='sgpt --repl temp --no-cache --describe-shell'
 
 alias z='zellij'
+alias zl='zellij-layout-coding'
+alias zx='zellij action close-tab'
+alias zxp='z action go-to-previous-tab && zellij action close-tab'
 
 # alias f='fasd -f'             # 文件
 # alias d='fasd -d'             # 目录

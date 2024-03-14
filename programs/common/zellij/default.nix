@@ -8,8 +8,10 @@
 
   home = {
     file = {
-      ".config/zellij/config.kdl".source = ./config.kdl;
-      ".config/zellij/layouts/default.kdl".source = ./layouts/default.kdl;
+      ".config/zellij/config.kdl".source              = ./config.kdl;
+      ".config/zellij/layouts/default.kdl".source     = ./layouts/default.kdl;
+      ".config/zellij/layouts/metrics.kdl".source     = ./layouts/metrics.kdl;
+      ".config/zellij/layouts/coding.kdl".source      = ./layouts/coding.kdl;
     };
     sessionVariables = {
       ZELLIJ_CONFIG_DIR = "$HOME/.config/zellij";
