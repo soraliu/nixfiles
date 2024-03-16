@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
 if [ ! "$(id -u)" -eq 0 ]; then
   echo "Pls run with sudo."

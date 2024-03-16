@@ -1,6 +1,4 @@
-#!/usr/bin/env sh
-
-
+#!/usr/bin/env bash
 
 # Install nix
 if [ ! -x "$(command -v nix)" ]; then
