@@ -23,3 +23,9 @@ fi
 chsh -s "$path_to_zsh" 1>/dev/null 2>&1
 
 echo "Success: ${path_to_zsh} now is the default shell."
+
+
+if [ -x "$(command -v pet)" ]; then
+  pet sync
+  echo "Info: Pet has synced data."
+fi

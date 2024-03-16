@@ -12,10 +12,5 @@
         }];
       };
     };
-
-    home.activation.initPetSnippets = lib.hm.dag.entryAfter ["writeBoundary"] ''
-      ${pkgs.pet}/bin/pet sync
-    '';
   };
 }
-
