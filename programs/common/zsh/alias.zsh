@@ -9,6 +9,7 @@ alias z='zellij'
 alias zl='zellij-layout-coding'
 alias zx='zellij action close-tab'
 alias zxp='z action go-to-previous-tab && zellij action close-tab'
+alias zko='z list-sessions | grep -v EXI | grep -v current | awk "{print \$1}" | sed "s/\x1B\[[0-9;]*[JKmsu]//g" | xargs -I {} bash -c "zellij kill-session {}"'
 
 # alias f='fasd -f'             # 文件
 # alias d='fasd -d'             # 目录

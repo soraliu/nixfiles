@@ -8,7 +8,7 @@ keybinds clear-defaults=true {
         bind "Ctrl q" { Quit; }
 
         // Panes
-        bind "n"          { NewPane; }
+        // bind "n"          { NewPane; }
         bind "L"          { NewPane "Right"; }
         bind "J"          { NewPane "Down"; }
         bind "q"          { CloseFocus; }
@@ -45,6 +45,9 @@ keybinds clear-defaults=true {
 
         // Search
         bind "e"          { EditScrollback; SwitchToMode "normal"; }
+        bind "Ctrl u"     { HalfPageScrollUp; }
+        bind "Ctrl d"     { HalfPageScrollDown; }
+        bind "/"          { SwitchToMode "EnterSearch"; SearchInput 0; }
 
         // Sessions
         bind "d"          { Detach; }
@@ -76,6 +79,21 @@ keybinds clear-defaults=true {
         bind "k" "Up"     { MovePane "Up"; }
         bind "l" "Right"  { MovePane "Right"; }
     }
+    search {
+        bind "Ctrl c" { ScrollToBottom; SwitchToMode "Normal"; }
+        bind "j" "Down" { ScrollDown; }
+        bind "k" "Up" { ScrollUp; }
+        bind "Ctrl d" { HalfPageScrollDown; }
+        bind "Ctrl u" { HalfPageScrollUp; }
+        bind "n" { Search "down"; }
+        bind "N" { Search "up"; }
+        bind "c" { SearchToggleOption "CaseSensitivity"; }
+        bind "w" { SearchToggleOption "Wrap"; }
+        bind "o" { SearchToggleOption "WholeWord"; }
+    }
+    entersearch {
+        bind "Enter" { SwitchToMode "Search"; }
+    }
     renamepane {
         // bind "Esc"       { UndoRenamePane; SwitchToMode "pane"; }
     }
@@ -90,17 +108,18 @@ keybinds clear-defaults=true {
         bind "Alt k" "Alt Up"       { MoveFocus "Up"; }
         bind "Alt =" "Alt +"        { Resize "Increase"; }
         bind "Alt -"                { Resize "Decrease"; }
-        bind "Alt ["                { PreviousSwapLayout; }
-        bind "Alt ]"                { NextSwapLayout; }
+
+        bind "Alt ["                { GoToPreviousTab; }
+        bind "Alt ]"                { GoToNextTab; }
     }
-    shared_except "normal" {
-        bind "Ctrl c" "Enter"       { SwitchToMode "normal"; }
+    shared_except "normal" "entersearch" {
+        bind "Ctrl c" "Enter"       { ScrollToBottom; SwitchToMode "normal"; }
     }
     shared_except "normal" "renamepane" "renametab" {
-        bind "i"                    { SwitchToMode "normal"; }
+        bind "i"                    { ScrollToBottom; SwitchToMode "normal"; }
     }
     shared_except "pane" "normal" {
-        bind "Esc"                  { SwitchToMode "pane"; }
+        bind "Esc"                  { ScrollToBottom; SwitchToMode "pane"; }
     }
     shared_among "resize" "move" {
         bind "m"                    { SwitchToMode "move"; }
