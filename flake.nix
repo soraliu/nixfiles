@@ -51,7 +51,7 @@
   }: with flake-utils.lib; eachDefaultSystem (system: let
     log = v : builtins.trace v v;
 
-    mkHome = { user, useSecret ? false, useIndex ? false }: home-manager.lib.homeManagerConfiguration {
+    mkHome = { user, useSecret ? false, useIndex ? false, useProxy ? false}: home-manager.lib.homeManagerConfiguration {
       pkgs = nixpkgs.legacyPackages."${system}";
 
       modules = builtins.filter (el: el != "") [
@@ -67,7 +67,7 @@
       #   which means those functions can access `useSecret` directly instead of `specialArgs.useSecret`
       #   TL;DR: https://github.com/nix-community/home-manager/blob/36f873dfc8e2b6b89936ff3e2b74803d50447e0a/modules/default.nix#L26
       extraSpecialArgs = {
-        inherit useSecret;
+        inherit useSecret useProxy;
         useGlobalPkgs = true;
         useUserPackages = true;
       };
@@ -89,13 +89,21 @@
       nix-darwin = nix-darwin.packages.${system}.default;
 
       homeConfigurations = {
-        "user" = mkHome {
+        user = mkHome {
           user = "user";
           useSecret = true;
           useIndex = true;
         };
-        "root" = mkHome {
+        ide.root = mkHome {
           user = "root";
+          useSecret = true;
+          useIndex = true;
+          useProxy = true;
+        };
+        root = mkHome {
+          user = "root";
+          useSecret = true;
+          useIndex = true;
         };
       };
 

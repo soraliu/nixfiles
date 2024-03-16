@@ -1,4 +1,4 @@
-{ pkgs, lib, config, ... }: {
+{ pkgs, lib, config, useProxy, ... }: {
   programs = {
     zsh = {
       enable = true;
@@ -17,6 +17,10 @@
         ''
           source ${pkgs.nix-index}/etc/profile.d/command-not-found.sh
         ''
+
+        (if useProxy then ''
+          proxy_on 1>/dev/null
+        '' else "")
 
         (builtins.readFile ./zinit.zsh)
         (builtins.readFile ./alias.zsh)
