@@ -2,8 +2,8 @@ layout {
     cwd "~"
     tab name="Metrics" hide_floating_panes=true {
         pane size="60%" split_direction="vertical" {
-            pane command="sudo" size="40%" {
-                args "bandwhich"
+            pane command="bash" size="40%" {
+                args "-c" "(bandwhich 2>/dev/null) || sudo bandwhich"
                 start_suspended true
             }
             pane command="joshuto" size="40%" {
