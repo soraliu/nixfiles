@@ -19,7 +19,6 @@ layout {
 
     tab name="Tab" hide_floating_panes=true {
         pane
-        pane size=1 borderless=true { }
     }
 
     default_tab_template name="Tab" {
@@ -38,6 +37,8 @@ layout {
                 mode_pane               "#[fg=#ffffffe,bg=#af0000] Pane "
                 mode_move               "#[fg=#ffffffe,bg=#009688] Move "
                 mode_resize             "#[fg=#181825,bg=#CDDC39] Resize "
+                mode_search             "#[fg=#181825,bg=#FFEB3B] Search "
+                mode_enter_search       "#[fg=#181825,bg=#FFEB3B] Enter Search "
                 mode_rename_pane        "#[fg=#181825,bg=#FFEB3B] Rename Pane "
                 mode_rename_tab         "#[fg=#181825,bg=#FFEB3B] Rename Tab "
 
