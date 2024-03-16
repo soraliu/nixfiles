@@ -1,8 +1,19 @@
 #!/usr/bin/env sh
 
+
+
 # Install nix
 if [ ! -x "$(command -v nix)" ]; then
-  curl -L https://releases.nixos.org/nix/nix-2.19.3/install | sh -s
+  os_type=$(uname)
+
+  if [ $os_type == "Darwin" ]; then
+    curl -L https://releases.nixos.org/nix/nix-2.19.3/install | sh -s
+  elif [ $os_type == "Linux" ]; then
+    curl -L https://releases.nixos.org/nix/nix-2.19.3/install | sh -s -- --daemon
+  else
+      echo "Unsupported OS"
+      exit 1
+  fi
 else
   echo "Info: nix has already installed! Skip."
 fi
