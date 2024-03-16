@@ -115,7 +115,7 @@ keybinds clear-defaults=true {
     shared_except "normal" "entersearch" {
         bind "Ctrl c" "Enter"       { ScrollToBottom; SwitchToMode "normal"; }
     }
-    shared_except "normal" "renamepane" "renametab" {
+    shared_except "normal" "renamepane" "renametab" "entersearch" {
         bind "i"                    { ScrollToBottom; SwitchToMode "normal"; }
     }
     shared_except "pane" "normal" {
