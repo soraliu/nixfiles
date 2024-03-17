@@ -4,7 +4,9 @@
     tldr                                      # community-maintained help pages                                                # Github: https://github.com/tldr-pages/tldr
 
     # makefile
-    libclang                                  # better than gcc13, provide `make` command and c++ compiler
+    gnumake                                   # provide make
+    clang_16                                  # better than gcc13, provide c++ compiler
+    clang-tools_16                            # better than gcc13, provide c++ tools
 
     # # network
     inetutils                                 # provide: `telnet`, `ftp`, `hostname`, `ifconfig`, `traceroute`, `ping`, etc

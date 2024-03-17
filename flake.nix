@@ -60,7 +60,7 @@
 
         ./programs/common
         (if builtins.pathExists ./programs/${system} then ./programs/${system} else "")
-        ./users/${system}/${user}
+        (if builtins.pathExists ./users/${system}/${user} then ./users/${system}/${user} else ./users)
       ];
 
       # Nix has dynamic scope, extraSpecialArgs will be passed to evalModules as the scope of funcitons,
@@ -91,6 +91,11 @@
       homeConfigurations = {
         user = mkHome {
           user = "user";
+          useSecret = true;
+          useIndex = true;
+        };
+        sora = mkHome {
+          user = "sora";
           useSecret = true;
           useIndex = true;
         };

@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
 
+set -e
+
 # Install nix
-if [ ! -x "$(command -v nix)" ]; then
+if [ ! -d /nix ]; then
   os_type=$(uname)
 
   if [ $os_type == "Darwin" ]; then
@@ -29,11 +31,12 @@ fi
 # Specify the version of nixpkgs
 nix_version_name=nixos-23.11
 nix_version=https://nixos.org/channels/nixos-23.11
-if [[ "$(nix-channel --list | grep "$nix_version_name" | cut -d ' ' -f 2)" == "${nix_version}" ]]; then
+nix_bin=$([ -z "$(command -v nix-channel)" ] && echo "/nix/var/nix/profiles/default/bin/nix-channel" || echo "nix-channel")
+if [[ "$(${nix_bin} --list | grep "$nix_version_name" | cut -d ' ' -f 2)" == "${nix_version}" ]]; then
   echo "Info: ${nix_version_name} ${nix_version} already exists! Skip."
 else
   echo "Info: ${nix_version_name} ${nix_version} does not exist! Updating..."
-  nix-channel --remove "$nix_version_name"
-  nix-channel --add "$nix_version"
-  nix-channel --update
+  ${nix_bin} --remove "$nix_version_name"
+  ${nix_bin} --add "$nix_version"
+  ${nix_bin} --update
 fi
