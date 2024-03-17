@@ -1,7 +1,7 @@
 ide:
 	nix run .#homeConfigurations.ide.root.activationPackage --show-trace --impure
 
-switch-work-home:
+switch-home:
 	# `--impure` Allow to use ~/.age directory to decrypt secrets
 	nix run .#home-manager -- switch --show-trace --impure --flake .
 

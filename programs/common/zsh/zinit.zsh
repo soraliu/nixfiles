@@ -33,7 +33,7 @@ zinit lucid wait for OMZP::jsontools OMZP::colored-man-pages
 # OMZ plugins - alias
 zinit lucid wait for OMZP::common-aliases OMZP::git OMZP::git-extras
 # OMZ plugins - completion
-zinit lucid wait for OMZP::docker OMZP::docker-compose OMZP::kubectl
+zinit lucid wait for OMZP::docker-compose OMZP::kubectl https://raw.githubusercontent.com/docker/cli/master/contrib/completion/zsh/_docker
 # OMZ Lib - alias
 zinit lucid wait for OMZL::directories.zsh
 
