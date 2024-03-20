@@ -89,22 +89,30 @@
       nix-darwin = nix-darwin.packages.${system}.default;
 
       homeConfigurations = {
+        # c02fk4mjmd6m
         user = mkHome {
           user = "user";
           useSecret = true;
           useIndex = true;
         };
-        sora = mkHome {
-          user = "sora";
+        # C02CN4BGML7H
+        soraliu = mkHome {
           useSecret = true;
           useIndex = true;
         };
+        # wsl
+        sora = mkHome {
+          useSecret = true;
+          useIndex = true;
+        };
+        # linux with proxy
         ide.root = mkHome {
           user = "root";
           useSecret = true;
           useIndex = true;
           useProxy = true;
         };
+        # linux without proxy
         root = mkHome {
           user = "root";
           useSecret = true;
@@ -113,6 +121,7 @@
       };
 
       darwinConfigurations = {
+        # work darwin
         "c02fk4mjmd6m" = mkDarwin {
           system = "x86_64-darwin";
           host = "c02fk4mjmd6m";
