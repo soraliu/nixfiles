@@ -46,6 +46,7 @@
 
     # string
     sd                                        # sed alternative
+    jq                                        # jq format
 
     # coding
     nodejs_20                                 # nodejs, npm
