@@ -1,5 +1,7 @@
 { config, pkgs, ... }: {
-  imports = [ ];
+  imports = [
+    ./raycast
+  ];
 
   home.packages = with pkgs; [ ];
 

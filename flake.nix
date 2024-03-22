@@ -14,6 +14,7 @@
   inputs = {
     # Specify the source of Home Manager and Nixpkgs.
     nixpkgs.url = "github:nixos/nixpkgs/nixos-23.11";
+    nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
 
     nix-index-database = {
       url = "github:nix-community/nix-index-database/e76ff2df6bfd2abe06abd8e7b9f217df941c1b07";
@@ -43,6 +44,7 @@
 
   outputs = inputs@{
     nixpkgs,
+    nixpkgs-unstable,
     nix-index-database,
     nix-darwin,
     home-manager,
@@ -51,7 +53,7 @@
   }: with flake-utils.lib; eachDefaultSystem (system: let
     log = v : builtins.trace v v;
 
-    mkHome = { user, useSecret ? false, useIndex ? false, useProxy ? false}: home-manager.lib.homeManagerConfiguration {
+    mkHome = { user, useSecret ? true, useIndex ? true, useProxy ? false}: home-manager.lib.homeManagerConfiguration {
       pkgs = nixpkgs.legacyPackages."${system}";
 
       modules = builtins.filter (el: el != "") [
@@ -70,6 +72,7 @@
         inherit useSecret useProxy;
         useGlobalPkgs = true;
         useUserPackages = true;
+        unstablePkgs = nixpkgs-unstable.legacyPackages."${system}";
       };
     };
 
@@ -92,31 +95,19 @@
         # c02fk4mjmd6m
         user = mkHome {
           user = "user";
-          useSecret = true;
-          useIndex = true;
         };
         # C02CN4BGML7H
-        soraliu = mkHome {
-          useSecret = true;
-          useIndex = true;
-        };
+        soraliu = mkHome {};
         # wsl
-        sora = mkHome {
-          useSecret = true;
-          useIndex = true;
-        };
+        sora = mkHome {};
         # linux with proxy
         ide.root = mkHome {
           user = "root";
-          useSecret = true;
-          useIndex = true;
           useProxy = true;
         };
         # linux without proxy
         root = mkHome {
           user = "root";
-          useSecret = true;
-          useIndex = true;
         };
       };
 

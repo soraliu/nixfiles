@@ -24,5 +24,11 @@
     ./shell-gpt
     ./pet
     ./zellij
+
+    # file sync
+    ./rclone
+
+    # daemon management
+    ./pm2
   ];
 }
