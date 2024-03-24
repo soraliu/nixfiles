@@ -64,8 +64,9 @@
       pkgs = nixpkgs.legacyPackages."${system}";
 
       modules = builtins.filter (el: el != "") [
+        ./programs/common
+
         (if useIndex then nix-index-database.hmModules.nix-index else "")
-        (if useCommon then ./programs/common else "")
         (if builtins.pathExists ./programs/${system} then ./programs/${system} else "")
         (if builtins.pathExists ./users/${system}/${user} then ./users/${system}/${user} else ./users)
       ] ++ extraModules;
@@ -74,7 +75,7 @@
       #   which means those functions can access `useSecret` directly instead of `specialArgs.useSecret`
       #   TL;DR: https://github.com/nix-community/home-manager/blob/36f873dfc8e2b6b89936ff3e2b74803d50447e0a/modules/default.nix#L26
       extraSpecialArgs = {
-        inherit useSecret useProxy useIndex;
+        inherit useCommon useSecret useProxy useIndex;
         useGlobalPkgs = true;
         useUserPackages = true;
         unstablePkgs = nixpkgs-unstable.legacyPackages."${system}";
@@ -102,10 +103,6 @@
           useCommon = false;
           useSecret = false;
           useIndex = false;
-          extraModules = [
-            ./programs/common/fs
-            ./programs/common/ide
-          ];
         };
         # c02fk4mjmd6m
         user = mkHome {
