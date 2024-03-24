@@ -1,4 +1,4 @@
-{ lib, stdenvNoCC, fetchurl, undmg }:
+{ stdenvNoCC, fetchurl, undmg, ... }:
 stdenvNoCC.mkDerivation (finalAttrs: rec {
   pname = "raycast";
   version = "1.70.0";

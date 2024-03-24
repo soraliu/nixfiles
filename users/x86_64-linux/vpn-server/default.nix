@@ -2,5 +2,9 @@
   home.username = "root";
   home.homeDirectory = "/root";
 
-  home.packages = with pkgs; [];
+  imports = [
+    ./sing-box
+  ];
+
+  home.packages = with pkgs; [ ];
 }

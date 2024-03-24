@@ -1,5 +1,5 @@
-{ pkgs, lib, config, ... }: let
-  app = with pkgs; callPackage ./app.nix {  inherit lib stdenvNoCC fetchurl undmg; };
+{ pkgs, ... }: let
+  app = with pkgs; callPackage ./app.nix {  inherit stdenvNoCC fetchurl undmg; };
 in  {
   config = {
     home.packages = [ app ];

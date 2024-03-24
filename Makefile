@@ -1,3 +1,6 @@
+vpn-server:
+	nix run .#homeConfigurations.vpn-server.activationPackage --show-trace --impure
+
 ide:
 	nix run .#homeConfigurations.ide.root.activationPackage --show-trace --impure
 
