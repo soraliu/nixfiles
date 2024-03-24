@@ -6,25 +6,24 @@ path_to_zsh="$(readlink -f ~/.nix-profile/bin/zsh 2>/dev/null)"
 path_to_config=/etc/shells
 
 if [ ! -f "$path_to_zsh" ]; then
-  echo "Pls install zsh by nix firstly."
-  exit 1
-fi
-
-if [ ! -f "$path_to_config" ] || ! grep -q "$path_to_zsh" $path_to_config; then
-  mkdir -p $(basename $path_to_config)
-  sudo bash -c "echo '$path_to_zsh' >> $path_to_config"
+  echo "zsh has not been installed. Skip!"
 else
-  echo "Info: ${path_to_config} has already configured zsh! Skip."
+  if [ ! -f "$path_to_config" ] || ! grep -q "$path_to_zsh" $path_to_config; then
+    mkdir -p $(basename $path_to_config)
+    sudo bash -c "echo '$path_to_zsh' >> $path_to_config"
+  else
+    echo "Info: ${path_to_config} has already configured zsh! Skip."
+  fi
+
+  sudo chsh -s "$path_to_zsh"
+  echo "Success: ${path_to_zsh} now is the default shell."
 fi
-
-sudo chsh -s "$path_to_zsh"
-
-echo "Success: ${path_to_zsh} now is the default shell."
-
 
 if [ -x "$(command -v pet)" ]; then
   pet sync
   echo "Info: Pet has synced data."
 fi
 
-$path_to_zsh -c "$(pm2 startup | tail -n1)"
+if [ -x "$(command -v pm2)" ]; then
+  bash -c "$(pm2 startup | tail -n1)"
+fi

@@ -1,34 +1,12 @@
-{ config, pkgs, ... }: {
+{ ... }: {
   imports = [
-    # base pkgs
-    ./base
-
-    # home-manager self
-    ./home-manager
-
-    # version control
-    ./git
-
-    # encrypt & decrypt
-    ./sops
-
-    # search
-    ./fzf
-    ./ripgrep
-
-    # editor
-    ./neovim
-
-    # shell
-    ./zsh
-    ./shell-gpt
-    ./pet
-    ./zellij
-
-    # file sync
-    ./rclone
-
-    # daemon management
-    ./pm2
+    ./fs
+    ./ide
+    ./ai
+    ./lang
+    ./network
+    ./process
+    ./tools
+    ./pkg-manager
   ];
 }
