@@ -2,7 +2,7 @@ vpn-server:
 	nix run .#homeConfigurations.vpn-server.activationPackage --show-trace --impure
 
 ide:
-	nix run .#homeConfigurations.ide.root.activationPackage --show-trace --impure
+	nix run .#home-manager -- switch --show-trace --impure --flake .#ide-cn
 
 switch-home:
 	# `--impure` Allow to use ~/.age directory to decrypt secrets
