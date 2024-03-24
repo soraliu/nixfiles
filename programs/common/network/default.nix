@@ -1,6 +1,6 @@
 { pkgs, ... }: {
   imports = [
-    # ./clash
+    ./clash-meta
   ];
 
   home.packages = with pkgs; [
