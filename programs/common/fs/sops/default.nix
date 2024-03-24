@@ -3,7 +3,7 @@
   decryptFiles = cfg.decryptFiles;
   decryptedPath = pkgs.callPackage ./decrypt.nix {
     inherit pkgs;
-    ageKeyFile = "${config.home.homeDirectory}/.age/keys.txt";
+    ageKeyFile = "/tmp/.age/keys.txt";
     files = decryptFiles;
   };
 in {
@@ -28,7 +28,7 @@ in {
       sops
     ];
     sessionVariables = {
-      SOPS_AGE_KEY_FILE = "$HOME/.age/keys.txt";
+      SOPS_AGE_KEY_FILE = "/tmp/.age/keys.txt";
     };
     file = foldl' (acc: elem: acc // {"${elem.to}".source = "${decryptedPath}/${elem.to}";}) {} decryptFiles;
   };
