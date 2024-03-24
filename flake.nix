@@ -63,13 +63,13 @@
     }: home-manager.lib.homeManagerConfiguration {
       pkgs = builtins.trace system nixpkgs.legacyPackages."${system}";
 
-      modules = builtins.filter (el: el != "") [
+      modules = log (builtins.filter (el: el != "") [
         ./programs/common
 
         (if useIndex then nix-index-database.hmModules.nix-index else "")
         (if builtins.pathExists ./programs/${system} then ./programs/${system} else "")
         (if builtins.pathExists ./users/${system}/${user} then ./users/${system}/${user} else ./users)
-      ] ++ extraModules;
+      ] ++ extraModules);
 
       # Nix has dynamic scope, extraSpecialArgs will be passed to evalModules as the scope of funcitons,
       #   which means those functions can access `useSecret` directly instead of `specialArgs.useSecret`
