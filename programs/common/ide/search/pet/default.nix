@@ -1,4 +1,8 @@
 { pkgs, ... }: {
+  imports = [
+    ../../../fs/sops
+  ];
+
   config = {
     home.packages = with pkgs; [
       pet

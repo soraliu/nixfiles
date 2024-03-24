@@ -1,4 +1,11 @@
 { pkgs, lib, useProxy, ... }: {
+  imports = [
+    ../search/pet
+    ../search/fzf
+
+    ../../fs/sops
+  ];
+
   programs = {
     zsh = {
       enable = true;
@@ -36,6 +43,10 @@
   };
 
   home = {
+    packages = with pkgs; [
+      autojump                      # Exec `j` command
+    ];
+
     file = {
       ".p10k.zsh".source = ./.p10k.zsh;
     };

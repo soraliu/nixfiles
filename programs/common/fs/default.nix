@@ -9,7 +9,6 @@
   home.packages = with pkgs; [
     rsync                                     # fast incremental file transfer
                                                 # Github: https://github.com/WayneD/rsync
-    autojump
     joshuto                                   # ternimal file browser
     catdoc                                    # used by joshuto preview
     exiftool                                  # used by joshuto preview

@@ -2,6 +2,7 @@
 
   imports = [
     # ./coc.nix
+    ../search/ripgrep
   ];
 
   programs.neovim = {
