@@ -101,8 +101,10 @@
         vpn-server = mkHome {
           user = "vpn-server";
           useCommon = false;
-          useSecret = false;
           useIndex = false;
+          extraModules = [
+            ./programs/common/ide/git
+          ];
         };
         # c02fk4mjmd6m
         user = mkHome {
