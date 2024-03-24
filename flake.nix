@@ -61,7 +61,7 @@
       useIndex ? true,
       useProxy ? false,
     }: home-manager.lib.homeManagerConfiguration {
-      pkgs = nixpkgs.legacyPackages."${system}";
+      pkgs = builtins.trace system nixpkgs.legacyPackages."${system}";
 
       modules = builtins.filter (el: el != "") [
         ./programs/common
