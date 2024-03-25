@@ -11,8 +11,8 @@ in  {
     programs = {
       rclone = {
         syncPaths = [{
-          local = (builtins.getEnv "HOME") + "/Library/Application Support/com.raycast.macos";
-          remote = "gdrive:Sync/Config/Darwin/com.raycast.macos";
+          local = (builtins.getEnv "HOME") + "/Library/Application Support/app.hiddify.com";
+          remote = "gdrive:Sync/Config/Darwin/app.hiddify.com";
           filter = ./rclone-filters.txt;
         }];
       };
