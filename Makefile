@@ -13,12 +13,9 @@ switch-work-host:
 nixd:
 	nix eval --json --file .nixd.nix > .nixd.json
 
-edit-git-credentials:
-	sops ./secrets/.git-credentials.enc
+nix-hash:
+	@nix-hash --type sha256 --to-sri $$(nix-prefetch-url "$(url)" 2>/dev/null | tail -n1) 2>/dev/null
 
 install-nix-darwin:
 	nix-build https://github.com/LnL7/nix-darwin/archive/master.tar.gz -A installer
 	./result/bin/darwin-installer
-
-nix-hash:
-	@nix-hash --type sha256 --to-sri $$(nix-prefetch-url "$(url)" 2>/dev/null | tail -n1) 2>/dev/null
