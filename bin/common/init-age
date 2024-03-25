@@ -7,7 +7,7 @@ age_file=keys.txt
 path_to_age=/tmp/${age_dir}
 path_to_age_file=${path_to_age}/${age_file}
 
-if [ -f "$path_to_age_file" ]; then
+if [ -f "$path_to_age_file" ] && ( grep 'AGE-SECRET-KEY' ${path_to_age_file} 1</dev/null 2>&1 ); then
   echo "Info: age key has already existed! Skip."
   exit
 fi
@@ -21,6 +21,11 @@ read host
 
 mkdir -p ${path_to_age}
 
-curl -s -o ${path_to_age_file} -H "Authorization: Basic $(printf ${user}:${pw} | base64)" https://${host}/1:/Config/${age_dir}/${age_file}
+retry=1
+while (( retry < 5 )) && ( ! grep 'AGE-SECRET-KEY' ${path_to_age_file} 1</dev/null 2>&1 ); do
+  echo "[retry ${retry}] AGE-SECRET-KEY does not exist in ${path_to_age_file}, trying to access it..."
+  curl -o ${path_to_age_file} -H "Authorization: Basic $(printf ${user}:${pw} | base64)" https://${host}/1:/Config/${age_dir}/${age_file}
+  retry=$((retry + 1))
+done
 
 echo "Restore age keys successfully! The key is in ${path_to_age_file}."
