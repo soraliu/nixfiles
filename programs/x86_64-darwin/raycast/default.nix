@@ -1,6 +1,10 @@
 { pkgs, ... }: let
   app = with pkgs; callPackage ./app.nix {  inherit stdenvNoCC fetchurl undmg; };
 in  {
+  imports = [
+    ../../common/fs/rclone
+  ];
+
   config = {
     home.packages = [ app ];
 

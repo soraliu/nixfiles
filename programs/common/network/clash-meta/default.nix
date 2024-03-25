@@ -13,7 +13,7 @@
 
     installPhase = ''
       mkdir -p $out
-      cp -r ./* $out/
+      cp -r . $out/
     '';
   });
   metacubexd = pkgs.stdenvNoCC.mkDerivation (finalAttrs: {
@@ -29,7 +29,7 @@
 
     installPhase = ''
       mkdir -p $out
-      cp -r ./* $out/
+      cp -r . $out/
     '';
   });
 in {

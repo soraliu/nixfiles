@@ -1,0 +1,7 @@
+# Filter file for use with bisync
+# See https://rclone.org/filtering/ for filtering rules
+# NOTICE: If you make changes to this file you MUST do a --resync run.
+#         Run with --dry-run to see what changes will be made.
+
+- .DS_Store
+- *.log

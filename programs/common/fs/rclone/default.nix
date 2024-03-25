@@ -43,16 +43,21 @@ in
 
       activation.initRclone = hm.dag.entryAfter ["linkGeneration"] ''
         path_to_rclone_conf=$HOME/.config/rclone/rclone.conf
+        path_to_rclone_bin=${unstablePkgs.rclone}/bin/rclone
 
         cp "$path_to_rclone_conf".readonly "$path_to_rclone_conf"
         chmod +w "$path_to_rclone_conf"
 
         ${builtins.concatStringsSep "\n\n" (map ({remote, local, link, filter}: " \
-          ${unstablePkgs.rclone}/bin/rclone bisync '${local}' '${remote}' --filter-from '${filter}' --create-empty-src-dirs --slow-hash-sync-only --fix-case --resilient --resync; \
-          [ -L '${link}' ] && unlink '${link}' \
-          [ -e '${link}' ] && mv -f '${link}' '${link}.backup' \
+          [ -L '${link}' ] && unlink '${link}'; \
+          [ -e '${link}' ] && [ ! -e '${local}' ] && cp -r '${link}' '${local}'; \
+          [ -e '${link}' ] && mv -f '${link}' '${link}.backup'; \
           ln -s '${local}' '${link}'; \
+          [ -d '${local}' ] && $path_to_rclone_bin mkdir '${remote}' || echo '${remote} exists!' \
+          $path_to_rclone_bin bisync '${local}' '${remote}' --filter-from '${filter}' --create-empty-src-dirs --slow-hash-sync-only --fix-case --resilient --resync &; \
         ") paths)}
+
+        wait
       '';
     };
 
