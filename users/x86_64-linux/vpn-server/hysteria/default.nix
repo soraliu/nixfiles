@@ -1,4 +1,4 @@
-{ unstablePkgs, ... }: let
+{ unstablePkgs, config, ... }: let
 in {
   imports = [
     ../../../../programs/common/fs/sops
