@@ -1,11 +1,11 @@
 switch-vpn-server:
-	nix run .#home-manager -- switch --show-trace --impure --flake .#vpn-server
+	nix run .#home-manager -- switch --show-trace --impure --flake .#vpn-server -b backup
 
 switch-ide:
 	nix run .#home-manager -- switch --show-trace --impure --flake .#ide -b backup
 
 switch-ide-cn:
-	nix run .#home-manager -- switch --show-trace --impure --flake .#ide-cn
+	nix run .#home-manager -- switch --show-trace --impure --flake .#ide-cn -b backup
 
 switch-work-host:
 	nix run nix-darwin -- switch --flake . --show-trace

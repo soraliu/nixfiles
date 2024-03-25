@@ -1,31 +1,27 @@
 { pkgs, unstablePkgs, lib, config, useProxy, ... }: let
   cfg = config.programs.clash;
-  yacd = pkgs.stdenv.mkDerivation (finalAttrs: {
-    pname = "yacd";
-    version = "0.3.8";
+  dashboard = pkgs.stdenvNoCC.mkDerivation (finalAttrs: {
+    pname = "clash-dashboard";
+    version = "0.0.1";
 
-    src = pkgs.fetchFromGitHub {
-      owner = "haishanh";
-      repo = "yacd";
-      rev = "09eb9389a7109eafd35118cbf7c2ac0860190b01";
-      hash = "sha256-SaVsY2kGd+v6mmjwXAHSgRBDBYCxpWDYFysCUPDZjlE=";
-    };
+    srcs = [
+      (pkgs.fetchFromGitHub {
+        name = "yacd";
+        owner = "haishanh";
+        repo = "yacd";
+        rev = "09eb9389a7109eafd35118cbf7c2ac0860190b01";
+        hash = "sha256-SaVsY2kGd+v6mmjwXAHSgRBDBYCxpWDYFysCUPDZjlE=";
+      })
+      (pkgs.fetchFromGitHub {
+        name = "metacubexd";
+        owner = "MetaCubeX";
+        repo = "metacubexd";
+        rev = "630ffcc12a71e69edf647c1439dcceaaf18d2d7b";
+        hash = "sha256-v6aWhfegllqgDRdTxtMnXPzziNu1HL3XAyZOnhrInvk=";
+      })
+    ];
 
-    installPhase = ''
-      mkdir -p $out
-      cp -r . $out/
-    '';
-  });
-  metacubexd = pkgs.stdenvNoCC.mkDerivation (finalAttrs: {
-    pname = "metacubexd";
-    version = "1.136.0";
-
-    src = pkgs.fetchFromGitHub {
-      owner = "MetaCubeX";
-      repo = "metacubexd";
-      rev = "630ffcc12a71e69edf647c1439dcceaaf18d2d7b";
-      hash = "sha256-v6aWhfegllqgDRdTxtMnXPzziNu1HL3XAyZOnhrInvk=";
-    };
+    sourceRoot = ".";
 
     installPhase = ''
       mkdir -p $out
@@ -52,8 +48,7 @@ in {
         mihomo
       ];
       file = {
-        ".config/clash/ui/yacd".source = yacd;
-        ".config/clash/ui/metacubexd".source = metacubexd;
+        ".config/clash/ui".source = dashboard;
       };
     };
 
