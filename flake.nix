@@ -64,12 +64,12 @@
     log = v : builtins.trace v v;
 
     mkHome = {
-      user,
-      extraModules ? [],
-      useCommon ? true,
+      user ? "",
       useSecret ? true,
       useIndex ? true,
       useProxy ? false,
+      useCommon ? true,
+      extraModules ? [],
     }: home-manager.lib.homeManagerConfiguration {
       pkgs = builtins.trace system nixpkgs.legacyPackages."${system}";
 
@@ -78,7 +78,7 @@
 
         (if useIndex then nix-index-database.hmModules.nix-index else "")
         (if builtins.pathExists ./programs/${system} then ./programs/${system} else "")
-        (if builtins.pathExists ./users/${system}/${user} then ./users/${system}/${user} else ./users)
+        (if (user != "" && builtins.pathExists ./users/${system}/${user}) then ./users/${system}/${user} else if builtins.pathExists ./users/${system}/default.nix then ./users/${system}/default.nix else ./users)
       ] ++ extraModules);
 
       # Nix has dynamic scope, extraSpecialArgs will be passed to evalModules as the scope of funcitons,
@@ -110,33 +110,32 @@
       homeConfigurations = {
         vpn-server = mkHome {
           user = "vpn-server";
-          useCommon = false;
+          useSecret = true;
           useIndex = false;
+          useProxy = false;
+          useCommon = false;
           extraModules = [
             ./programs/common/ide/git
+            ./programs/common/network
           ];
         };
-        # c02fk4mjmd6m
-        user = mkHome {
-          user = "user";
-        };
-        # C02CN4BGML7H
-        soraliu = mkHome {};
-        # wsl
-        sora = mkHome {};
-        # linux with proxy
-        ide-cn = mkHome {
-          user = "root";
-          useProxy = true;
-        };
-        # linux without proxy
+        # c02fk4mjmd6m || wsl || ec2
         ide = mkHome {
-          user = "root";
+          useSecret = true;
+          useIndex = true;
+          useProxy = false;
+          useCommon = true;
+        };
+        # cn ec2
+        ide-cn = mkHome {
+          useSecret = true;
+          useIndex = true;
+          useProxy = true;
+          useCommon = true;
         };
       };
 
       darwinConfigurations = {
-        # work darwin
         "c02fk4mjmd6m" = mkDarwin {
           system = "x86_64-darwin";
           host = "c02fk4mjmd6m";
