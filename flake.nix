@@ -78,7 +78,7 @@
 
         (if useIndex then nix-index-database.hmModules.nix-index else "")
         (if builtins.pathExists ./programs/${system} then ./programs/${system} else "")
-        (if (user != "" && builtins.pathExists ./users/${system}/${user}) then ./users/${system}/${user} else if builtins.pathExists ./users/${system}/default.nix then ./users/${system}/default.nix else ./users)
+        (if (user != "" && builtins.pathExists ./users/${system}/${user}) then ./users/${system}/${user} else if builtins.pathExists ./users/${system} then ./users/${system} else ./users)
       ] ++ extraModules);
 
       # Nix has dynamic scope, extraSpecialArgs will be passed to evalModules as the scope of funcitons,
