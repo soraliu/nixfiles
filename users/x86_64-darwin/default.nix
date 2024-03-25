@@ -1,6 +1,7 @@
 { pkgs, ... }: {
-  home.username = "user";
-  home.homeDirectory = "/Users/user";
+  home.username = builtins.getEnv "USER";
+  home.homeDirectory = builtins.getEnv "HOME";
+
 
   home.packages = with pkgs; [];
 

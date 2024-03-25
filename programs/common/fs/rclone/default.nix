@@ -47,8 +47,8 @@ in
         cp "$path_to_rclone_conf".readonly "$path_to_rclone_conf"
         chmod +w "$path_to_rclone_conf"
 
-        ${builtins.concatStringsSep "\n\n" (map ({remote, local, link, filter}: "\
-          [ ! -e '${local}' ] && ${unstablePkgs.rclone}/bin/rclone bisync '${local}' '${remote}' --filter-from '${filter}' --create-empty-src-dirs --slow-hash-sync-only --fix-case --resilient --resync; \
+        ${builtins.concatStringsSep "\n\n" (map ({remote, local, link, filter}: " \
+          ${unstablePkgs.rclone}/bin/rclone bisync '${local}' '${remote}' --filter-from '${filter}' --create-empty-src-dirs --slow-hash-sync-only --fix-case --resilient --resync; \
           [ -L '${link}' ] && unlink '${link}' \
           [ -e '${link}' ] && mv -f '${link}' '${link}.backup' \
           ln -s '${local}' '${link}'; \

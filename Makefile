@@ -1,19 +1,11 @@
-vpn-server:
-	nix run .#homeConfigurations.vpn-server.activationPackage --show-trace --impure
+switch-vpn-server:
+	nix run .#home-manager -- switch --show-trace --impure --flake .#vpn-server
 
-ide:
+switch-ide:
+	nix run .#home-manager -- switch --show-trace --impure --flake .#ide -b backup
+
+switch-ide-cn:
 	nix run .#home-manager -- switch --show-trace --impure --flake .#ide-cn
-
-switch-home:
-	# `--impure` Allow to use ~/.age directory to decrypt secrets
-	nix run .#home-manager -- switch --show-trace --impure --flake .
-
-flake-switch-work-home:
-	# `--impure` Allow to use ~/.age directory to decrypt secrets
-	nix run .#homeConfigurations.user.activationPackage --show-trace --impure
-
-home-manager-switch-work-with-backup:
-	home-manager switch --flake . -b backup
 
 switch-work-host:
 	nix run nix-darwin -- switch --flake . --show-trace
