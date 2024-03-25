@@ -1,6 +1,5 @@
 { pkgs, unstablePkgs, lib, config, useProxy, ... }: let
   cfg = config.programs.clash;
-  # app = pkgs.callPackage ./app.nix { inherit pkgs; };
 in {
   imports = [
     ../../process/pm2
