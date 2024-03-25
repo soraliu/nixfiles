@@ -3,7 +3,7 @@
   home.homeDirectory = "/root";
 
   imports = [
-    ./sing-box
+    ./hysteria
   ];
 
   home.packages = with pkgs; [ ];
