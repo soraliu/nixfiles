@@ -33,6 +33,7 @@ in {
           name = "clash-meta";
           script = "${unstablePkgs.mihomo}/bin/mihomo";
           args = "-d ${config.home.homeDirectory}/.config/clash";
+          exp_backoff_restart_delay = 100;
         }];
       };
     };
