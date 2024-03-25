@@ -25,5 +25,5 @@ if [ -x "$(command -v pet)" ]; then
 fi
 
 if [ -x "$(command -v pm2)" ]; then
-  bash -c "$(pm2 startup | tail -n1)"
+  sudo pm2 startup
 fi
