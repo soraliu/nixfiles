@@ -71,7 +71,10 @@
       useCommon ? true,
       extraModules ? [],
     }: home-manager.lib.homeManagerConfiguration {
-      pkgs = builtins.trace system nixpkgs.legacyPackages."${system}";
+      pkgs = import nixpkgs {
+        inherit system;
+        config.allowUnfree = true;
+      };
 
       modules = log (builtins.filter (el: el != "") [
         ./programs/common
@@ -88,7 +91,10 @@
         inherit useCommon useSecret useProxy useIndex;
         useGlobalPkgs = true;
         useUserPackages = true;
-        unstablePkgs = nixpkgs-unstable.legacyPackages."${system}";
+        unstablePkgs = import nixpkgs-unstable {
+          inherit system;
+          config.allowUnfree = true;
+        };
       };
     };
 
