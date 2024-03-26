@@ -10,6 +10,8 @@
 
     rustc                                     # rust
     cargo                                     # rust package maanger
+
+    go                                        # go
   ];
 
   home.sessionVariables = {
