@@ -1,4 +1,4 @@
-{ pkgs, ... }: {
+{ pkgs, unstablePkgs, ... }: {
   imports = [
     # file sync
     ./rclone
@@ -6,7 +6,7 @@
     ./sops
   ];
 
-  home.packages = with pkgs; [
+  home.packages = (with pkgs; [
     rsync                                     # fast incremental file transfer
                                                 # Github: https://github.com/WayneD/rsync
     joshuto                                   # ternimal file browser
@@ -20,7 +20,8 @@
                                                 # Github: https://github.com/sharkdp/bat
     catimg                                    # prints images in terminal
                                                 # Github: https://github.com/posva/catimg
-  ];
+  ]) ++ (with unstablePkgs; [
+  ]);
 
   home.sessionVariables = {
     BAT_THEME = "Coldark-Dark"; # used by `bat`

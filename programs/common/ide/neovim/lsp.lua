@@ -1,4 +1,3 @@
-
 -- -------------------------------------------------------------------------------------------------------------------------------
 -- LSP
 -- -------------------------------------------------------------------------------------------------------------------------------
@@ -6,6 +5,8 @@ table.insert(plugins, {{
   "neovim/nvim-lspconfig",
   lazy = false,
   config = function()
+    local lspconfig = require("lspconfig")
+
     -- Use LspAttach autocommand to only map the following keys
     -- after the language server attaches to the current buffer
     vim.api.nvim_create_autocmd('LspAttach', {
@@ -21,7 +22,8 @@ table.insert(plugins, {{
       end,
     })
 
-    require'lspconfig'.lua_ls.setup {
+    -- Lua
+    lspconfig.lua_ls.setup {
       on_init = function(client)
         local path = client.workspace_folders[1].name
         if not vim.loop.fs_stat(path..'/.luarc.json') and not vim.loop.fs_stat(path..'/.luarc.jsonc') then
@@ -50,6 +52,42 @@ table.insert(plugins, {{
         return true
       end
     }
+
+    -- Golang
+    lspconfig.gopls.setup({
+      settings = {
+        gopls = {
+          analyses = {
+            unusedparams = true,
+          },
+          staticcheck = true,
+          gofumpt = true,
+        },
+      },
+    })
+    vim.api.nvim_create_autocmd("BufWritePre", {
+      pattern = "*.go",
+      callback = function()
+        local params = vim.lsp.util.make_range_params()
+        params.context = {only = {"source.organizeImports"}}
+        -- buf_request_sync defaults to a 1000ms timeout. Depending on your
+        -- machine and codebase, you may want longer. Add an additional
+        -- argument after params if you find that you have to write the file
+        -- twice for changes to be saved.
+        -- E.g., vim.lsp.buf_request_sync(0, "textDocument/codeAction", params, 3000)
+        local result = vim.lsp.buf_request_sync(0, "textDocument/codeAction", params)
+        for cid, res in pairs(result or {}) do
+          for _, r in pairs(res.result or {}) do
+            if r.edit then
+              local enc = (vim.lsp.get_client_by_id(cid) or {}).offset_encoding or "utf-16"
+              vim.lsp.util.apply_workspace_edit(r.edit, enc)
+            end
+          end
+        end
+        vim.lsp.buf.format({async = false})
+      end
+    })
+
   end,
   dependencies = {
     {
@@ -73,6 +111,7 @@ table.insert(plugins, {{
             "cmake",              -- Makefile, configure.ac
             "bashls",             -- bash
             "jsonls",             -- json
+            "gopls",              -- golang
             "tsserver",           -- js, jsx, ts, tsx
             "lua_ls",             -- lua
             "rust_analyzer",      -- rust
@@ -149,7 +188,7 @@ table.insert(plugins, {{
         local cmp_format = lspkind.cmp_format({
           mode = 'symbol_text', -- show only symbol annotations
           maxwidth = 50, -- prevent the popup from showing more than provided characters (e.g 50 will not show more than 50 characters)
-          -- can also be a function to dynamically calculate max width such as 
+          -- can also be a function to dynamically calculate max width such as
           -- maxwidth = function() return math.floor(0.45 * vim.o.columns) end,
           ellipsis_char = '...', -- when popup menu exceed maxwidth, the truncated part would show ellipsis_char instead (must define maxwidth first)
           show_labelDetails = true, -- show labelDetails in menu. Disabled by default
@@ -302,4 +341,3 @@ table.insert(plugins, {{
     },
   },
 }})
-

@@ -10,6 +10,10 @@ alias zl='zellij-layout-coding'
 alias zx='zellij action close-tab'
 alias zxp='z action go-to-previous-tab && zellij action close-tab'
 alias zko='z list-sessions | grep -v EXI | grep -v current | awk "{print \$1}" | sed "s/\x1B\[[0-9;]*[JKmsu]//g" | xargs -I {} bash -c "zellij kill-session {}"'
+
+alias cp='rsync --archive --human-readable --partial --info=progress2'
+alias rm='rm -f'
+alias mv='mv -f'
 # alias f='fasd -f'             # 文件
 # alias d='fasd -d'             # 目录
 # alias a='fasd -a'             # 任意
