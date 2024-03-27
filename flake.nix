@@ -89,8 +89,7 @@
       #   TL;DR: https://github.com/nix-community/home-manager/blob/36f873dfc8e2b6b89936ff3e2b74803d50447e0a/modules/default.nix#L26
       extraSpecialArgs = {
         inherit useCommon useSecret useProxy useIndex;
-        useGlobalPkgs = true;
-        useUserPackages = true;
+
         unstablePkgs = import nixpkgs-unstable {
           inherit system;
           config.allowUnfree = true;
@@ -98,9 +97,16 @@
       };
     };
 
-    mkDarwin = { system, host }: nix-darwin.lib.darwinSystem {
-      pkgs = nixpkgs.legacyPackages.${system};
-      system = system;
+    mkDarwin = {
+      system,
+      host,
+    }: nix-darwin.lib.darwinSystem {
+      inherit system;
+
+      pkgs = import nixpkgs {
+        inherit system;
+        config.allowUnfree = true;
+      };
 
       modules = [
         ./hosts/${system}/${host}
