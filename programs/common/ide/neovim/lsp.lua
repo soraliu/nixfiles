@@ -22,6 +22,13 @@ table.insert(plugins, {{
       end,
     })
 
+    local navbuddy = require("nvim-navbuddy")
+    local nav_actions = require("nvim-navbuddy.actions")
+
+    navbuddy.setup({
+      mappings = { ["?"] = nav_actions.help(), },
+    })
+
     -- Lua
     lspconfig.lua_ls.setup {
       on_init = function(client)
@@ -103,7 +110,8 @@ table.insert(plugins, {{
             }
         })
       end,
-    }, {
+    },
+    {
       "williamboman/mason-lspconfig.nvim",
       config = function()
         require("mason-lspconfig").setup({
@@ -116,6 +124,7 @@ table.insert(plugins, {{
             "lua_ls",             -- lua
             "rust_analyzer",      -- rust
             "rnix",               -- nix
+            "yamlls",             -- yaml
           },
         })
         require("mason-lspconfig").setup_handlers {
@@ -338,6 +347,14 @@ table.insert(plugins, {{
           },
         }
       end,
+    },
+    {
+      "SmiteshP/nvim-navbuddy",
+      dependencies = {
+        "SmiteshP/nvim-navic",
+        "MunifTanjim/nui.nvim"
+      },
+      opts = { lsp = { auto_attach = true } }
     },
   },
 }})

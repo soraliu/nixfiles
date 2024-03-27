@@ -1,11 +1,9 @@
-{ unstablePkgs, ... }: {
+{ pkgs, ... }: {
   imports = [
-    ./raycast
-    ./hiddify
+    ./apps
   ];
 
-  home.packages = with unstablePkgs; [
-    postman
+  home.packages = with pkgs; [
   ];
 
   home.sessionVariables = { };

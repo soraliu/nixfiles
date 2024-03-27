@@ -10,4 +10,3 @@ in pkgs.stdenv.mkDerivation (finalAttrs: {
   '';
   dontInstall = true;
 })
-

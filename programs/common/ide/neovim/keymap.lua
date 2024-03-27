@@ -1,4 +1,3 @@
-
 -- ------------------------------------------------------------------------------------------------------------------------------
 -- keymaps
 -- ------------------------------------------------------------------------------------------------------------------------------
@@ -30,14 +29,6 @@ function keysRegisterBase()
     ['<c-s>'] = { "<cmd>w<cr>",                                             "Save File" },
     ['<c-q>'] = { "<cmd>q<cr>",                                             "Quit" },
 
-    -- Buffer Management
-    ['<c-w>'] = { "<cmd>bp<bar>sp<bar>bn<bar>bd<cr>",                       "Close Buffer" },
-    ['<leader>'] = {
-      name = "Buffer Management",
-      ['['] = { "<cmd>bp<cr>",                                              "Prev Buffer" },
-      [']'] = { "<cmd>bn<cr>",                                              "Next Buffer" },
-    },
-
     -- Windows Management
     ['<leader>w'] = {
       name = "Windows Management",
@@ -64,6 +55,7 @@ function keysRegisterImprovements()
       name = "Show Pages",
       -- Repo: goolord/alpha-nvim
       h = { "<cmd>Alpha<cr>",                                               "Show Home Page" },
+      n = { "<cmd>Navbuddy<cr>",                                            "Show LSP Nav" },
     },
     ['<leader>e'] = {
       name = "Code Edit",
@@ -78,7 +70,7 @@ end
 
 function keysRegisterSearch()
   local wk = require("which-key")
-  local builtin = require('telescope.builtin') 
+  local builtin = require('telescope.builtin')
   local ap = require("actions-preview")
 
   wk.register({
@@ -170,16 +162,16 @@ function keysRegisterLSP(opts)
 
     ["<leader>g"] = {
       name = "Go Somewhere",
-      ["o"] = { vim.lsp.buf.type_definition,                                "Go Type Definition" },
-      ["d"] = { vim.lsp.buf.declaration,                                    "Go Declaration" },
-      ["k"] = { vim.diagnostic.goto_prev,                                   "Go Prev Diagnostic" },
-      ["j"] = { vim.diagnostic.goto_next,                                   "Go Next Diagnostic" },
+      o = { vim.lsp.buf.type_definition,                                "Go Type Definition" },
+      d = { vim.lsp.buf.declaration,                                    "Go Declaration" },
+      k = { vim.diagnostic.goto_prev,                                   "Go Prev Diagnostic" },
+      j = { vim.diagnostic.goto_next,                                   "Go Next Diagnostic" },
     },
 
     ["<leader>a"] = {
       name = "Action",
-      ["r"] = { vim.lsp.buf.rename,                                         "LSP Rename" },
-      ["f"] = { function() vim.lsp.buf.format({ async = true }) end,        "LSP Format" },
+      r = { vim.lsp.buf.rename,                                         "LSP Rename" },
+      f = { function() vim.lsp.buf.format({ async = true }) end,        "LSP Format" },
     },
   }, { mode = "n", buffer = buffer })
 
@@ -191,16 +183,52 @@ function keysRegisterLSP(opts)
   -- end, opts)
 end
 
+function keysRegisterBuffer()
+  local wk = require("which-key")
+
+  wk.register({
+    ['<c-w>'] = { "<cmd>bp<bar>sp<bar>bn<bar>bd<cr>",                       "Close Buffer" },
+
+    ["<leader>"] = {
+      ["1"] = { "<cmd>BufferLineGoToBuffer 1<cr>",                      "Go to Buffer 1" },
+      ["2"] = { "<cmd>BufferLineGoToBuffer 2<cr>",                      "Go to Buffer 2" },
+      ["3"] = { "<cmd>BufferLineGoToBuffer 3<cr>",                      "Go to Buffer 3" },
+      ["4"] = { "<cmd>BufferLineGoToBuffer 4<cr>",                      "Go to Buffer 4" },
+      ["5"] = { "<cmd>BufferLineGoToBuffer 5<cr>",                      "Go to Buffer 5" },
+      ["6"] = { "<cmd>BufferLineGoToBuffer 6<cr>",                      "Go to Buffer 6" },
+      ["7"] = { "<cmd>BufferLineGoToBuffer 7<cr>",                      "Go to Buffer 7" },
+      ["8"] = { "<cmd>BufferLineGoToBuffer 8<cr>",                      "Go to Buffer 8" },
+      ["9"] = { "<cmd>BufferLineGoToBuffer 9<cr>",                      "Go to Buffer 9" },
+      ["$"] = { "<cmd>BufferLineGoToBuffer -1<cr>",                     "Go to Buffer -1" },
+
+      ['['] = { "<cmd>BufferLineCyclePrev<cr>",                         "Prev Buffer" },
+      [']'] = { "<cmd>BufferLineCycleNext<cr>",                         "Next Buffer" },
+    },
+
+
+    ["<leader>b"] = {
+      name = "Buffer Management",
+
+      ["["] = { "<cmd>BufferLineMovePrev<cr>",                          "Move to Prev" },
+      ["]"] = { "<cmd>BufferLineMoveNext<cr>",                          "Move to Next" },
+      p = { "<cmd>BufferLinePick<cr>",                                  "Pick a Buffer" },
+      o = { "<cmd>BufferLineCloseOthers<cr>",                           "Close Other Buffers" },
+    },
+  }, { mode = "n" })
+end
+
 function keysRegisterEasyMotion()
   local hop = require('hop')
   local directions = require('hop.hint').HintDirection
 
+
+
   vim.keymap.set('', 'gw', function()
     hop.hint_words()
-  end, {})
+  end, { desc = 'Go to a Word' })
   vim.keymap.set('', 'ga', function()
     hop.hint_anywhere()
-  end, {})
+  end, { desc = 'Go to Anywhere' })
   vim.keymap.set('', 'f', function()
     hop.hint_char1({ direction = directions.AFTER_CURSOR, current_line_only = true })
   end, {remap=true})
