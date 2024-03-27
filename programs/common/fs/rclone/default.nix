@@ -7,11 +7,17 @@ let
     link = local;
     local = builtins.getEnv "HOME" + "/Drive/" + (builtins.elemAt (lib.strings.splitString ":" remote) 1);
   }) cfg.syncPaths;
+  commonFilter = pkgs.writeText "rclone-filters.txt" ''
+# NOTICE: If you make changes to this file you MUST do a --resync run.
+- .DS_Store
+- .git
+- node_modules
+  '';
   pathToScript = pkgs.writeText "rclone-pm2-script" ''
     #!/usr/bin/env zsh
 
     ${if builtins.length paths == 0 then "echo 'Nothing to sync!'" else ""}
-    ${builtins.concatStringsSep "\n\n" (map ({local, remote, filter, ...}: "${unstablePkgs.rclone}/bin/rclone bisync '${local}' '${remote}' --filter-from '${filter}' --create-empty-src-dirs --slow-hash-sync-only --fix-case --resilient -v &") paths)}
+    ${builtins.concatStringsSep "\n\n" (map ({local, remote, filter, ...}: "${unstablePkgs.rclone}/bin/rclone bisync '${remote}' '${local}' --filter-from '${commonFilter}' --filter-from '${filter}' --create-empty-src-dirs --slow-hash-sync-only --fix-case --resilient --conflict-resolve newer --no-slow-hash -v &") paths)}
 
     wait
   '';
@@ -54,7 +60,7 @@ in
           [ -e '${link}' ] && mv -f '${link}' '${link}.backup' \
           ln -s '${local}' '${link}' \
           [ -d '${local}' ] && $path_to_rclone_bin mkdir '${remote}' || echo '${remote} exists!' \
-          $path_to_rclone_bin bisync '${local}' '${remote}' --filter-from '${filter}' --create-empty-src-dirs --slow-hash-sync-only --fix-case --resilient --resync & \
+          $path_to_rclone_bin bisync '${remote}' '${local}' --filter-from '${commonFilter}' --filter-from '${filter}' --create-empty-src-dirs --slow-hash-sync-only --fix-case --resilient --resync --resync-mode newer -v & \
         ") paths)}
 
         wait
