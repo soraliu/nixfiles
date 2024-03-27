@@ -16,6 +16,8 @@
 - Updates/**
 - NodeJS/**
 - RaycastWrapped/**
+- extensions/**
+- raycast-activities-*
   '';
 in  {
   config = {
