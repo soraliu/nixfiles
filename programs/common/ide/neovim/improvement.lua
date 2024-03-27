@@ -3,6 +3,15 @@
 -- ------------------------------------------------------------------------------------------------------------------------------
 table.insert(plugins, {
   'soraliu/vim-argwrap', -- Split arguments into multiple lines
+  {
+    "m4xshen/smartcolumn.nvim", -- A Neovim plugin hiding your colorcolumn when unneeded
+    opts = {
+      colorcolumn = "360",
+      custom_colorcolumn = {
+        -- typescript = "180",
+      },
+    }
+  },
   'imsnif/kdl.vim', -- KDL language syntax & indent
   -- 'schickling/vim-bufonly', -- delete other buffers
   {

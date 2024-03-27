@@ -1,4 +1,3 @@
-
 " ------------------------------------------------------------------------------------------------------------------------------
 " vim configuration
 " ------------------------------------------------------------------------------------------------------------------------------
@@ -24,7 +23,7 @@ set ttyfast                                                 " Indicates a fast t
 set title                                                   " change the terminal's title
 set showcmd                                                 " 将输入的命令显示出来，便于查看当前输入的信息
 " set cmdheight=2                                           " cmd line height
-set updatetime=300
+set updatetime=250
 set cursorcolumn                                            " 列高亮显示
 set cursorline                                              " 行高亮显示
 
@@ -116,4 +115,3 @@ set shortmess-=S
 
 " Disable mouse
 set mouse=
-
