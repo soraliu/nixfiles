@@ -2,7 +2,7 @@
   app = import ../app.nix rec {
     inherit pkgs;
 
-    app = "Raycast";
+    pname = "raycast";
     version = "1.70.0";
 
     src = fetchurl {

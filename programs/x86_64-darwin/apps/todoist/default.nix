@@ -2,7 +2,7 @@
   app = import ../app.nix rec {
     inherit pkgs;
 
-    app = "Todoist";
+    pname = "todoist";
     version = "8.18.0";
 
     src = fetchurl {

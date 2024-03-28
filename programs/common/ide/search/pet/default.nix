@@ -1,12 +1,18 @@
-{ pkgs, ... }: {
+{ pkgs, lib, ... }: {
   imports = [
     ../../../fs/sops
   ];
 
   config = {
-    home.packages = with pkgs; [
-      pet
-    ];
+    home = {
+      packages = with pkgs; [
+        pet
+      ];
+
+      activation.initPet = lib.hm.dag.entryAfter ["linkGeneration"] ''
+        ${pkgs.pet}/bin/pet sync
+      '';
+    };
 
     programs = {
       sops = {

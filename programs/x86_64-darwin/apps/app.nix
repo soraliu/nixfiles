@@ -1,8 +1,5 @@
-{ pkgs, app, version, src, ... }: with pkgs; let
-  appName = "${app}.app";
-in stdenvNoCC.mkDerivation (finalAttrs: {
-  inherit version src;
-  pname = app;
+{ pkgs, pname, version, src, ... }: with pkgs; stdenvNoCC.mkDerivation (finalAttrs: {
+  inherit pname version src;
 
   dontPatch = true;
   dontConfigure = true;
@@ -11,13 +8,13 @@ in stdenvNoCC.mkDerivation (finalAttrs: {
 
   nativeBuildInputs = [ undmg ];
 
-  sourceRoot = appName;
+  sourceRoot = ".";
 
   installPhase = ''
     runHook preInstall
 
-    mkdir -p $out/Applications/${appName}
-    cp -R . $out/Applications/${appName}
+    mkdir -p $out/Applications/
+    cp -rf ./*.app $out/Applications/
 
     runHook postInstall
   '';

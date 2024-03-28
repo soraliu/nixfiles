@@ -2,7 +2,7 @@
   app = import ../app.nix rec {
     inherit pkgs;
 
-    app = "Hiddify";
+    pname = "hiddify";
     version = "1.0.0";
 
     src = fetchurl {
