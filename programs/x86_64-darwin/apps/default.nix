@@ -2,15 +2,30 @@
   imports = [
     ../../common/fs/rclone
 
+    ./todoist
     ./raycast
     ./hiddify
-    ./todoist
+    ./sublime
+    ./wireshark
+    ./karabiner
+    ./snipaste
   ];
 
-  home.packages = with unstablePkgs; [
-    postman
-    iterm2
-  ];
+  home = {
+    packages = with unstablePkgs; [
+      postman
+      iterm2
+      dbeaver
+      obsidian
+      caffeine
+    ];
+  };
 
-  home.sessionVariables = { };
+  programs = {
+    rclone = {
+      syncPaths = [{
+        remote = "gdrive:Sync/Config/Darwin/com.googlecode.iterm2";
+      }];
+    };
+  };
 }

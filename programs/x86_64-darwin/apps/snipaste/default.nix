@@ -2,17 +2,18 @@
   app = import ../app.nix rec {
     inherit pkgs;
 
-    pname = "hiddify";
-    version = "1.0.0";
+    pname = "snipaste";
+    version = "2.8.6";
 
     src = fetchurl {
-      url = "https://github.com/hiddify/hiddify-next/releases/download/v${version}/Hiddify-MacOS.dmg";
-      hash = "sha256-Nd+tm9Ik4Fguag0qDdcn+nnDgk+q1xY3HeY64Cv1zIc=";
+      url = "https://drive.soraliu.dev/0:/Software/Darwin/Snipaste/${version}/Snipaste.dmg";
+      hash = "sha256-tvamAg7/IyjO3510j7rmZ60baKR6tDX2S19LsFPlSZk=";
     };
   };
   filter = writeText "rclone-filters.txt" ''
 # NOTICE: If you make changes to this file you MUST do a --resync run.
-- *.log
++ config.ini
+- **
   '';
 in  {
   config = {
@@ -23,8 +24,8 @@ in  {
         syncPaths = [{
           inherit filter;
 
-          local = (builtins.getEnv "HOME") + "/Library/Application Support/app.hiddify.com";
-          remote = "gdrive:Sync/Config/Darwin/app.hiddify.com";
+          local = (builtins.getEnv "HOME") + "/.snipaste";
+          remote = "gdrive:Sync/Config/Darwin/.snipaste";
         }];
       };
     };

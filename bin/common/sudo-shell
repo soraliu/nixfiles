@@ -19,11 +19,6 @@ else
   echo "Success: ${path_to_zsh} now is the default shell."
 fi
 
-if [ -x "$(command -v pet)" ]; then
-  pet sync
-  echo "Info: Pet has synced data."
-fi
-
 if [ -x "$(command -v pm2)" ]; then
   sudo pm2 startup
 fi

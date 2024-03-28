@@ -2,10 +2,10 @@
 let
   cfg = config.programs.rclone;
   # [{ remote = "gdrive:path/to/dir"; local = "~/Drive/path/to/dir"; link = "/another_path/to/dir"; filter = "/path/to/filters.txt";  }]
-  paths = map ({local, remote, filter}: {
+  paths = map ({remote, local ? "", filter ? ""}: {
     inherit remote filter;
     link = local;
-    local = builtins.getEnv "HOME" + "/Drive/" + (builtins.elemAt (lib.strings.splitString ":" remote) 1);
+    local = builtins.getEnv "HOME" + "/Rclone/" + (builtins.elemAt (lib.strings.splitString ":" remote) 1);
   }) cfg.syncPaths;
   commonFilter = pkgs.writeText "rclone-filters.txt" ''
 # NOTICE: If you make changes to this file you MUST do a --resync run.
@@ -17,7 +17,8 @@ let
     #!/usr/bin/env zsh
 
     ${if builtins.length paths == 0 then "echo 'Nothing to sync!'" else ""}
-    ${builtins.concatStringsSep "\n\n" (map ({local, remote, filter, ...}: "${unstablePkgs.rclone}/bin/rclone bisync '${remote}' '${local}' --filter-from '${commonFilter}' --filter-from '${filter}' --create-empty-src-dirs --slow-hash-sync-only --fix-case --resilient --conflict-resolve newer --no-slow-hash -v &") paths)}
+
+    ${builtins.concatStringsSep "\n\n" (map ({local, remote, filter, ...}: "${unstablePkgs.rclone}/bin/rclone bisync '${remote}' '${local}' --filter-from '${commonFilter}' ${if filter != "" then "--filter-from '" + filter + "'" else ""} --remove-empty-dirs --fix-case --resilient --conflict-resolve newer -v &") paths)}
 
     wait
   '';
@@ -39,7 +40,7 @@ in
       type = lib.types.listOf lib.types.attrs;
       default = [ ];
       example = [{ local = "/path/to/dir"; remote = "gdrive:path/to/dir"; filter = "/path/to/filters.txt"; }];
-      description = lib.mdDoc "rclone bisync paths";
+      description = lib.mdDoc "rclone bisync paths. Notice: paths only support directories and can't be ended with /";
     };
   };
 
@@ -55,12 +56,20 @@ in
         chmod +w "$path_to_rclone_conf"
 
         ${builtins.concatStringsSep "\n\n" (map ({remote, local, link, filter}: " \
-          [ -L '${link}' ] && unlink '${link}' \
-          [ -e '${link}' ] && [ ! -e '${local}' ] && cp -r '${link}' '${local}' \
-          [ -e '${link}' ] && mv -f '${link}' '${link}.backup' \
-          ln -s '${local}' '${link}' \
+          if [ '${link}' != '' ]; then
+            [ -L '${link}' ] && unlink '${link}' \
+            [ -e '${link}' ] && [ ! -e '${local}' ] && cp -r '${link}' '${local}' \
+            [ -e '${link}' ] && mv -f '${link}' '${link}.backup' \
+            ln -s '${local}' '${link}' \
+          fi
+
           [ -d '${local}' ] && $path_to_rclone_bin mkdir '${remote}' || echo '${remote} exists!' \
-          $path_to_rclone_bin bisync '${remote}' '${local}' --filter-from '${commonFilter}' --filter-from '${filter}' --create-empty-src-dirs --slow-hash-sync-only --fix-case --resilient --resync --resync-mode newer -v & \
+
+          if [ ! -d '${local}' ]; then
+            mkdir -p '${local}'
+          fi
+
+          $path_to_rclone_bin bisync '${remote}' '${local}' --filter-from '${commonFilter}' ${if filter != "" then "--filter-from '" + filter + "'" else ""} --remove-empty-dirs --fix-case --resilient --resync --resync-mode newer -v & \
         ") paths)}
 
         wait
