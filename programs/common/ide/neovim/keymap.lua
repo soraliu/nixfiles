@@ -26,22 +26,21 @@ function keysRegisterBase()
 
   wk.register({
     -- File Management
-    ['<c-s>'] = { "<cmd>w<cr>",                                             "Save File" },
-    ['<c-q>'] = { "<cmd>q<cr>",                                             "Quit" },
+    ['<c-s>'] = { "<cmd>w<cr>", "Save File" },
+    ['<c-q>'] = { "<cmd>q<cr>", "Quit" },
 
     -- Windows Management
     ['<leader>w'] = {
       name = "Windows Management",
-      h = { "<c-w>h",                                                       "Focus on Left" },
-      l = { "<c-w>l",                                                       "Focus on Right" },
-      j = { "<c-w>j",                                                       "Focus on Bottom" },
-      k = { "<c-w>k",                                                       "Focus on Above" },
-      r = { "<c-w>=",                                                       "Restore window size" },
-      ['['] = { "<cmd>vertical resize -10<cr>",                             "Window Size -10" },
-      [']'] = { "<cmd>vertical resize +10<cr>",                             "Window Size +10" },
+      h = { "<c-w>h", "Focus on Left" },
+      l = { "<c-w>l", "Focus on Right" },
+      j = { "<c-w>j", "Focus on Bottom" },
+      k = { "<c-w>k", "Focus on Above" },
+      r = { "<c-w>=", "Restore window size" },
+      ['['] = { "<cmd>vertical resize -10<cr>", "Window Size -10" },
+      [']'] = { "<cmd>vertical resize +10<cr>", "Window Size +10" },
     },
   }, { mode = "n" })
-
 end
 
 function keysRegisterImprovements()
@@ -54,16 +53,16 @@ function keysRegisterImprovements()
     ['<leader>s'] = {
       name = "Show Pages",
       -- Repo: goolord/alpha-nvim
-      h = { "<cmd>Alpha<cr>",                                               "Show Home Page" },
-      n = { "<cmd>Navbuddy<cr>",                                            "Show LSP Nav" },
+      h = { "<cmd>Alpha<cr>", "Show Home Page" },
+      n = { "<cmd>Navbuddy<cr>", "Show LSP Nav" },
     },
     ['<leader>e'] = {
       name = "Code Edit",
 
       -- Repo: soraliu/vim-argwrap
-      a = { "<cmd>ArgWrap<cr>",                                             "Args Wrap&Split" },
+      a = { "<cmd>ArgWrap<cr>", "Args Wrap&Split" },
       -- Repo: AckslD/nvim-FeMaco.lua
-      m = { "<cmd>FeMaco<cr>",                                              "Edit Markdown Codeblock" },
+      m = { "<cmd>FeMaco<cr>", "Edit Markdown Codeblock" },
     },
   }, { mode = "n" })
 end
@@ -78,35 +77,45 @@ function keysRegisterSearch()
       name = "Fuzzy Search", -- optional group name
 
       -- Editor
-      p = { "<cmd>Telescope<cr>",                                           "Telescope Home" },
-      l = { function() builtin.git_files({ show_untracked = true }) end,    "Find Files" },
-      o = { function() builtin.oldfiles({ cwd_only = true }) end,           "Find Recent Files" },
-      b = { builtin.buffers,                                                "Find Opened Buffers" },
-      w = { builtin.grep_string,                                            "Grep Cursor Word" },
-      k = { builtin.keymaps,                                                "Find Keymaps" },
-      h = { builtin.help_tags,                                              "Find Helps" },
-      m = { builtin.commands,                                               "Find Commands" },
-      [","] = { builtin.resume,                                             "Resume Last Search" },
-      s = { "<cmd>Telescope egrepify<cr>",                                  "Grep String" },
+      p = { "<cmd>Telescope<cr>", "Telescope Home" },
+      l = { function() builtin.git_files({ show_untracked = true }) end, "Find Files" },
+      o = { function() builtin.oldfiles({ cwd_only = true }) end, "Find Recent Files" },
+      b = { builtin.buffers, "Find Opened Buffers" },
+      w = { builtin.grep_string, "Grep Cursor Word" },
+      k = { builtin.keymaps, "Find Keymaps" },
+      h = { builtin.help_tags, "Find Helps" },
+      m = { builtin.commands, "Find Commands" },
+      [","] = { builtin.resume, "Resume Last Search" },
+      s = { "<cmd>Telescope egrepify<cr>", "Grep String" },
 
       -- LSP
-      d = { builtin.diagnostics,                                            "LSP Diagnostics" },
-      r = { builtin.lsp_references,                                         "LSP References" },
-      i = { builtin.lsp_implementations,                                    "LSP Implementations" },
-      a = { ap.code_actions,                                                "LSP Actions" },
+      d = { builtin.diagnostics, "LSP Diagnostics" },
+      r = { builtin.lsp_references, "LSP References" },
+      i = { builtin.lsp_implementations, "LSP Implementations" },
+      a = { ap.code_actions, "LSP Actions" },
 
       -- Git
-      v = { builtin.git_status,                                             "Git Status" },
+      v = { builtin.git_status, "Git Status" },
 
       -- Todo
       -- Repo: folke/todo-comments.nvim
-      n = { "<cmd>TodoTelescope<cr>",                                       "Find Todos" }
+      n = { "<cmd>TodoTelescope<cr>", "Find Todos" },
+
+      -- Undo
+      u = { "<cmd>Telescope undo<cr>", "Undo History" },
+
+      -- Yank
+      y = { "<cmd>Telescope neoclip<cr>", "Yank History" },
+
+      e = { "<cmd>Telescope emoji<cr>", "Emoji" },
+
+      f = { "<cmd>Telescope glyph<cr>", "Font Emoji" },
     },
   }, { mode = "n" })
 
   wk.register({
     -- :h actions-preview.nvim-configuration
-    ["<leader>fa"] = { ap.code_actions,                                     "LSP Actions" },
+    ["<leader>fa"] = { ap.code_actions, "LSP Actions" },
   }, { mode = "v" })
 end
 
@@ -118,8 +127,8 @@ function keysRegisterTree()
     ["<leader>w"] = {
       name = "Windows Management",
 
-      a = { "<cmd>NvimTreeFindFile<cr>",                                    "Find File" },
-      e = { "<cmd>NvimTreeToggle<cr>",                                      "Toggle Nvim Tree" },
+      a = { "<cmd>NvimTreeFindFile<cr>", "Find File" },
+      e = { "<cmd>NvimTreeToggle<cr>", "Toggle Nvim Tree" },
     },
   }, { mode = "n" })
 
@@ -144,10 +153,10 @@ function keysRegisterTree()
     removeMap('bmv')
 
     -- custom mappings
-    vim.keymap.set('n', '?',      api.tree.toggle_help,           opts('Help'))
-    vim.keymap.set('n', 'p',      api.node.navigate.parent,       opts('Parent Directory'))
-    vim.keymap.set('n', 'P',      api.fs.paste,                   opts('Paste'))
-    vim.keymap.set('n', 'm',      api.fs.rename_full,             opts('Rename: Full Path'))
+    vim.keymap.set('n', '?', api.tree.toggle_help, opts('Help'))
+    vim.keymap.set('n', 'p', api.node.navigate.parent, opts('Parent Directory'))
+    vim.keymap.set('n', 'P', api.fs.paste, opts('Paste'))
+    vim.keymap.set('n', 'm', api.fs.rename_full, opts('Rename: Full Path'))
   end
 
   return on_attach
@@ -160,21 +169,21 @@ function keysRegisterLSP(opts)
   wk.register({
     -- See `:help vim.lsp.*` for documentation on any of the below functions
     -- See `:help vim.diagnostic.*` for documentation on any of the below functions
-    ["K"] = { vim.lsp.buf.hover,                                            "Show Hover Doc" },
-    ["<c-]>"] = { vim.lsp.buf.definition,                                   "Go Definition" },
+    ["K"] = { vim.lsp.buf.hover, "Show Hover Doc" },
+    ["<c-]>"] = { vim.lsp.buf.definition, "Go Definition" },
 
     ["<leader>g"] = {
       name = "Go Somewhere",
-      o = { vim.lsp.buf.type_definition,                                "Go Type Definition" },
-      d = { vim.lsp.buf.declaration,                                    "Go Declaration" },
-      k = { vim.diagnostic.goto_prev,                                   "Go Prev Diagnostic" },
-      j = { vim.diagnostic.goto_next,                                   "Go Next Diagnostic" },
+      o = { vim.lsp.buf.type_definition, "Go Type Definition" },
+      d = { vim.lsp.buf.declaration, "Go Declaration" },
+      k = { vim.diagnostic.goto_prev, "Go Prev Diagnostic" },
+      j = { vim.diagnostic.goto_next, "Go Next Diagnostic" },
     },
 
     ["<leader>a"] = {
       name = "Action",
-      r = { vim.lsp.buf.rename,                                         "LSP Rename" },
-      f = { function() vim.lsp.buf.format({ async = true }) end,        "LSP Format" },
+      r = { vim.lsp.buf.rename, "LSP Rename" },
+      f = { function() vim.lsp.buf.format({ async = true }) end, "LSP Format" },
     },
   }, { mode = "n", buffer = buffer })
 
@@ -190,32 +199,32 @@ function keysRegisterBuffer()
   local wk = require("which-key")
 
   wk.register({
-    ['<c-w>'] = { "<cmd>bp<bar>sp<bar>bn<bar>bd<cr>",                       "Close Buffer" },
+    ['<c-w>'] = { "<cmd>bp<bar>sp<bar>bn<bar>bd<cr>", "Close Buffer" },
 
     ["<leader>"] = {
-      ["1"] = { "<cmd>BufferLineGoToBuffer 1<cr>",                      "Go to Buffer 1" },
-      ["2"] = { "<cmd>BufferLineGoToBuffer 2<cr>",                      "Go to Buffer 2" },
-      ["3"] = { "<cmd>BufferLineGoToBuffer 3<cr>",                      "Go to Buffer 3" },
-      ["4"] = { "<cmd>BufferLineGoToBuffer 4<cr>",                      "Go to Buffer 4" },
-      ["5"] = { "<cmd>BufferLineGoToBuffer 5<cr>",                      "Go to Buffer 5" },
-      ["6"] = { "<cmd>BufferLineGoToBuffer 6<cr>",                      "Go to Buffer 6" },
-      ["7"] = { "<cmd>BufferLineGoToBuffer 7<cr>",                      "Go to Buffer 7" },
-      ["8"] = { "<cmd>BufferLineGoToBuffer 8<cr>",                      "Go to Buffer 8" },
-      ["9"] = { "<cmd>BufferLineGoToBuffer 9<cr>",                      "Go to Buffer 9" },
-      ["$"] = { "<cmd>BufferLineGoToBuffer -1<cr>",                     "Go to Buffer -1" },
+      ["1"] = { "<cmd>BufferLineGoToBuffer 1<cr>", "Go to Buffer 1" },
+      ["2"] = { "<cmd>BufferLineGoToBuffer 2<cr>", "Go to Buffer 2" },
+      ["3"] = { "<cmd>BufferLineGoToBuffer 3<cr>", "Go to Buffer 3" },
+      ["4"] = { "<cmd>BufferLineGoToBuffer 4<cr>", "Go to Buffer 4" },
+      ["5"] = { "<cmd>BufferLineGoToBuffer 5<cr>", "Go to Buffer 5" },
+      ["6"] = { "<cmd>BufferLineGoToBuffer 6<cr>", "Go to Buffer 6" },
+      ["7"] = { "<cmd>BufferLineGoToBuffer 7<cr>", "Go to Buffer 7" },
+      ["8"] = { "<cmd>BufferLineGoToBuffer 8<cr>", "Go to Buffer 8" },
+      ["9"] = { "<cmd>BufferLineGoToBuffer 9<cr>", "Go to Buffer 9" },
+      ["$"] = { "<cmd>BufferLineGoToBuffer -1<cr>", "Go to Buffer -1" },
 
-      ['['] = { "<cmd>BufferLineCyclePrev<cr>",                         "Prev Buffer" },
-      [']'] = { "<cmd>BufferLineCycleNext<cr>",                         "Next Buffer" },
+      ['['] = { "<cmd>BufferLineCyclePrev<cr>", "Prev Buffer" },
+      [']'] = { "<cmd>BufferLineCycleNext<cr>", "Next Buffer" },
     },
 
 
     ["<leader>b"] = {
       name = "Buffer Management",
 
-      ["["] = { "<cmd>BufferLineMovePrev<cr>",                          "Move to Prev" },
-      ["]"] = { "<cmd>BufferLineMoveNext<cr>",                          "Move to Next" },
-      p = { "<cmd>BufferLinePick<cr>",                                  "Pick a Buffer" },
-      o = { "<cmd>BufferLineCloseOthers<cr>",                           "Close Other Buffers" },
+      ["["] = { "<cmd>BufferLineMovePrev<cr>", "Move to Prev" },
+      ["]"] = { "<cmd>BufferLineMoveNext<cr>", "Move to Next" },
+      p = { "<cmd>BufferLinePick<cr>", "Pick a Buffer" },
+      o = { "<cmd>BufferLineCloseOthers<cr>", "Close Other Buffers" },
     },
   }, { mode = "n" })
 end
@@ -232,21 +241,57 @@ function keysRegisterEasyMotion()
   end, { desc = 'Go to Anywhere' })
   vim.keymap.set('', 'f', function()
     hop.hint_char1({ direction = directions.AFTER_CURSOR, current_line_only = true })
-  end, {remap=true})
+  end, { remap = true })
   vim.keymap.set('', 'F', function()
     hop.hint_char1({ direction = directions.BEFORE_CURSOR, current_line_only = true })
-  end, {remap=true})
+  end, { remap = true })
   vim.keymap.set('', 't', function()
     hop.hint_char1({ direction = directions.AFTER_CURSOR, current_line_only = true, hint_offset = -1 })
-  end, {remap=true})
+  end, { remap = true })
   vim.keymap.set('', 'T', function()
     hop.hint_char1({ direction = directions.BEFORE_CURSOR, current_line_only = true, hint_offset = 1 })
-  end, {remap=true})
+  end, { remap = true })
 end
 
 function keysRegisterEasyAlign()
   vim.keymap.set('n', 'ga', '<Plug>(EasyAlign)', { desc = 'Easy Align' })
   vim.keymap.set('v', 'ga', '<Plug>(EasyAlign)', { desc = 'Easy Align' })
+end
+
+function keysRegisterGomove()
+  local wk = require('which-key')
+
+  wk.register({
+    ['<leader>d'] = {
+      name = 'Duplicate',
+
+      h = { '<Plug>GoNSDLeft', 'Duplicate Left' },
+      j = { '<Plug>GoNSDDown', 'Duplicate Down' },
+      k = { '<Plug>GoNSDUp', 'Duplicate Up' },
+      l = { '<Plug>GoNSDRight', 'Duplicate Right' },
+    },
+
+    ['<C-h>'] = { '<Plug>GoNSMLeft', 'Move Left' },
+    ['<C-j>'] = { '<Plug>GoNSMDown', 'Move Down' },
+    ['<C-k>'] = { '<Plug>GoNSMUp', 'Move Up' },
+    ['<C-l>'] = { '<Plug>GoNSMRight', 'Move Right' },
+  }, { mode = 'n' })
+
+  wk.register({
+    ['<leader>d'] = {
+      name = 'Duplicate',
+
+      h = { '<Plug>GoVSDLeft', 'Duplicate Left' },
+      j = { '<Plug>GoVSDDown', 'Duplicate Down' },
+      k = { '<Plug>GoVSDUp', 'Duplicate Up' },
+      l = { '<Plug>GoVSDRight', 'Duplicate Right' },
+    },
+
+    ['<C-h>'] = { '<Plug>GoVSMLeft', 'Move Left' },
+    ['<C-j>'] = { '<Plug>GoVSMDown', 'Move Down' },
+    ['<C-k>'] = { '<Plug>GoVSMUp', 'Move Up' },
+    ['<C-l>'] = { '<Plug>GoVSMRight', 'Move Right' },
+  }, { mode = 'x' })
 end
 
 function keysRegisterGit(bufnr, gs)
@@ -312,17 +357,6 @@ function keysRegisterGit(bufnr, gs)
   }, { mode = "v", buffer = bufnr })
 end
 
-function keysPluginTelescope()
-  -- :h telescope.mappings
-  return {
-    i = {
-      ["<c-j>"] = "move_selection_next",
-      ["<c-k>"] = "move_selection_previous",
-      ["<esc>"] = "close",
-   },
-  }
-end
-
 function keysPluginCmp()
   local cmp = require("cmp")
   local luasnip = require("luasnip")
@@ -345,8 +379,8 @@ function keysPluginCmp()
     ['<C-j>'] = cmp.mapping(function(fallback)
       if cmp.visible() then
         cmp.select_next_item()
-      -- elseif luasnip.jumpable(1) then
-      --   luasnip.jump(1)
+        -- elseif luasnip.jumpable(1) then
+        --   luasnip.jump(1)
       else
         cmp.complete()
       end
@@ -354,8 +388,8 @@ function keysPluginCmp()
     ['<C-k>'] = cmp.mapping(function(fallback)
       if cmp.visible() then
         cmp.select_prev_item()
-      -- elseif luasnip.jumpable(-1) then
-      --   luasnip.jump(-1)
+        -- elseif luasnip.jumpable(-1) then
+        --   luasnip.jump(-1)
       else
         cmp.complete()
       end
@@ -392,17 +426,17 @@ function keysPluginComment()
   return {
     ---LHS of toggle mappings in NORMAL mode
     toggler = {
-        ---Line-comment toggle keymap
-        line = '<c-_>',
-        ---Block-comment toggle keymap
-        block = '<c-\\>',
+      ---Line-comment toggle keymap
+      line = '<c-_>',
+      ---Block-comment toggle keymap
+      block = '<c-\\>',
     },
     ---LHS of operator-pending mappings in NORMAL and VISUAL mode
     opleader = {
-        ---Line-comment keymap
-        line = 'gc',
-        ---Block-comment keymap
-        block = 'gb',
+      ---Line-comment keymap
+      line = 'gc',
+      ---Block-comment keymap
+      block = 'gb',
     },
   }
 end
