@@ -3,31 +3,9 @@
 -- ------------------------------------------------------------------------------------------------------------------------------
 table.insert(plugins, {
   'soraliu/vim-argwrap', -- Split arguments into multiple lines
-  {
-    "m4xshen/smartcolumn.nvim", -- A Neovim plugin hiding your colorcolumn when unneeded
-    opts = {
-      colorcolumn = "360",
-      custom_colorcolumn = {
-        -- typescript = "180",
-      },
-    }
-  },
   'imsnif/kdl.vim', -- KDL language syntax & indent
-  -- 'schickling/vim-bufonly', -- delete other buffers
-  {
-    'smoka7/hop.nvim',
-    version = "*",
-    opts = {},
-    config = function()
-      require('hop').setup({})
-
-      keysRegisterEasyMotion()
-    end,
-  },
-  {
-    'mg979/vim-visual-multi',
-    branch = 'master',
-  },
+  'mg979/vim-visual-multi', -- Multiple cursors plugin
+  'wellle/targets.vim', -- Expands on the idea of simple commands like di'
   {
     'kylechui/nvim-surround',
     version = '*', -- Use for stability; omit to use `main` branch for the latest features
@@ -39,16 +17,53 @@ table.insert(plugins, {
     end
   },
   {
-    -- Show a welcome page
-    'goolord/alpha-nvim',
+    'Yggdroot/indentLine', -- display the indention levels with thin vertical lines
+    config = function()
+      vim.cmd([[
+        let g:indentLine_char = '|'
+      ]])
+    end,
+  },
+  {
+    'NvChad/nvim-colorizer.lua', -- show colors
+    config = function()
+      require('colorizer').setup()
+    end,
+  },
+  {
+    'junegunn/vim-easy-align', -- A simple, easy-to-use Vim alignment plugin.
+    config = function()
+      keysRegisterEasyAlign()
+    end,
+  },
+  {
+    "m4xshen/smartcolumn.nvim", -- A Neovim plugin hiding your colorcolumn when unneeded
+    opts = {
+      colorcolumn = "360",
+      -- custom_colorcolumn = {
+      --   typescript = "180",
+      -- },
+    }
+  },
+  {
+    'smoka7/hop.nvim',
+    version = "*",
+    opts = {},
+    config = function()
+      require('hop').setup({})
+
+      keysRegisterEasyMotion()
+    end,
+  },
+  {
+    'goolord/alpha-nvim', -- Show a welcome page
     dependencies = { 'nvim-tree/nvim-web-devicons' },
     config = function ()
       require'alpha'.setup(require'alpha.themes.startify'.config)
     end
   },
   {
-    -- support edit file separate on markdown codeblock
-    'AckslD/nvim-FeMaco.lua',
+    'AckslD/nvim-FeMaco.lua', -- support edit file separate on markdown codeblock
     config = function()
       require('femaco').setup()
     end,

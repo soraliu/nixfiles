@@ -23,6 +23,7 @@
       (builtins.readFile ./lualine.lua)         # Status line
       (builtins.readFile ./bufferline.lua)      # Buffer line
       (builtins.readFile ./nvim-autopairs.lua)  # Auto pair symbols
+      (builtins.readFile ./git.lua)             # Git Related
       (builtins.readFile ./improvement.lua)     # Improvements of using neovim
 
       (builtins.readFile ./lazy-post.lua)       # Execute lazy.nvim setup, this line must be at the end of all lazy.nvim plugins Lua config
