@@ -95,6 +95,9 @@ function keysRegisterSearch()
       i = { builtin.lsp_implementations,                                    "LSP Implementations" },
       a = { ap.code_actions,                                                "LSP Actions" },
 
+      -- Git
+      v = { builtin.git_status,                                             "Git Status" },
+
       -- Todo
       -- Repo: folke/todo-comments.nvim
       n = { "<cmd>TodoTelescope<cr>",                                       "Find Todos" }
@@ -221,12 +224,10 @@ function keysRegisterEasyMotion()
   local hop = require('hop')
   local directions = require('hop.hint').HintDirection
 
-
-
   vim.keymap.set('', 'gw', function()
     hop.hint_words()
   end, { desc = 'Go to a Word' })
-  vim.keymap.set('', 'ga', function()
+  vim.keymap.set('', 'go', function()
     hop.hint_anywhere()
   end, { desc = 'Go to Anywhere' })
   vim.keymap.set('', 'f', function()
@@ -241,6 +242,74 @@ function keysRegisterEasyMotion()
   vim.keymap.set('', 'T', function()
     hop.hint_char1({ direction = directions.BEFORE_CURSOR, current_line_only = true, hint_offset = 1 })
   end, {remap=true})
+end
+
+function keysRegisterEasyAlign()
+  vim.keymap.set('n', 'ga', '<Plug>(EasyAlign)', { desc = 'Easy Align' })
+  vim.keymap.set('v', 'ga', '<Plug>(EasyAlign)', { desc = 'Easy Align' })
+end
+
+function keysRegisterGit(bufnr, gs)
+  local wk = require('which-key')
+  local gitlinker = require('gitlinker')
+
+  -- Navigation
+  vim.keymap.set('n', '[v', function()
+    if vim.wo.diff then return '[v' end
+
+    vim.schedule(function() gs.prev_hunk() end)
+    return '<Ignore>'
+  end, { buffer = bufnr, expr = true, desc = 'Prev Hunk' })
+  vim.keymap.set('n', ']v', function()
+    if vim.wo.diff then return ']v' end
+
+    vim.schedule(function() gs.next_hunk() end)
+    return '<Ignore>'
+  end, { buffer = bufnr, expr = true, desc = 'Next Hunk' })
+
+  wk.register({
+    ['<leader>v'] = {
+      name = 'Git',
+      s = { gs.stage_hunk, 'Stage Hunk' },
+      S = { gs.stage_buffer, 'Stage Buffer' },
+      r = { gs.reset_hunk, 'Reset Hunk' },
+      R = { gs.reset_buffer, 'Reset Buffer' },
+      u = { gs.undo_stage_hunk, 'Undo Stage Hunk' },
+      p = { gs.preview_hunk, 'Preview Hunk' },
+      B = { function() gs.blame_line { full = true } end, 'Show Blame Line' },
+
+      -- Github: https://github.com/tpope/vim-fugitive
+      d = { '<cmd>Gdiffsplit<cr>', 'Show Diff' },
+      b = { '<cmd>Git blame<cr>', 'Show Blame' },
+
+      -- Github: https://github.com/ruifm/gitlinker.nvim
+      o = { function() gitlinker.get_buf_range_url("n", { action_callback = gitlinker.actions.open_in_browser }) end, 'Open Line in Browser' },
+      O = { function() gitlinker.get_repo_url({ action_callback = gitlinker.actions.open_in_browser }) end, 'Open Home in Browser' },
+    },
+    ['<leader>y'] = {
+      name = 'Yank',
+      v = { function() gitlinker.get_buf_range_url("n") end, 'Copy Github Line Link' },
+      V = { gitlinker.get_repo_url, 'Copy Github Home Link' },
+    },
+    ['<leader>t'] = {
+      name = "Toggle",
+      ['b'] = { gs.toggle_current_line_blame, 'Toggle Line Blame' },
+      ['d'] = { gs.toggle_deleted, 'Toggle Deleted' },
+    },
+  }, { mode = "n", buffer = bufnr })
+
+  wk.register({
+    ['<leader>y'] = {
+      name = 'Yank',
+      v = { function() gitlinker.get_buf_range_url("v") end, 'Copy Github Line Link' },
+    },
+    ['<leader>v'] = {
+      name = 'Git',
+      r = { function() gs.reset_hunk { vim.fn.line('.'), vim.fn.line('v') } end, 'Reset Hunk' },
+      s = { function() gs.stage_hunk { vim.fn.line('.'), vim.fn.line('v') } end, 'Stage Hunk' },
+      o = { function() gitlinker.get_buf_range_url("v", { action_callback = gitlinker.actions.open_in_browser }) end, 'Open Line in Browser' },
+    },
+  }, { mode = "v", buffer = bufnr })
 end
 
 function keysPluginTelescope()
