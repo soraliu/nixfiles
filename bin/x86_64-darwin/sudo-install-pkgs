@@ -66,6 +66,7 @@ function install_dmg {
 }
 
 install_dmg -n 'Google Drive.app' -u 'https://dl.google.com/drive-file-stream/GoogleDrive.dmg' &
+install_dmg -n 'Raycast' -u 'https://releases.raycast.com/download' &
 install_dmg -n 'Docker.app' -u 'https://desktop.docker.com/mac/main/amd64/Docker.dmg' &
 install_dmg -n 'Synergy.app' -u 'https://drive.soraliu.dev/0:/Software/Darwin/Synergy/3.0.79.1/Synergy.dmg' &
 install_dmg -n 'Proxyman.app' -u 'https://github.com/ProxymanApp/Proxyman/releases/download/5.1.1/Proxyman_5.1.1.dmg' &
