@@ -11,7 +11,11 @@
   sourceRoot = ".";
 
   installPhase = ''
+    set -x
+
     runHook preInstall
+
+    ls -al
 
     mkdir -p $out/Applications/
     cp -rf ./*.app $out/Applications/

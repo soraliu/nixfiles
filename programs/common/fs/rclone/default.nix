@@ -1,7 +1,7 @@
 { pkgs, unstablePkgs, lib, config, ... }:
 let
   cfg = config.programs.rclone;
-  # [{ remote = "gdrive:path/to/dir"; local = "~/Drive/path/to/dir"; link = "/another_path/to/dir"; filter = "/path/to/filters.txt";  }]
+  # [{ remote = "gdrive:path/to/dir"; local = "$HOME/Drive/path/to/dir"; link = "/another_path/to/dir"; filter = "/path/to/filters.txt";  }]
   paths = map ({remote, local ? "", filter ? ""}: {
     inherit remote filter;
     link = local;

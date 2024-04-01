@@ -13,4 +13,4 @@ export USER=${USER:-$USERNAME}
 ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=6'
 
 # keys
-[ -f ~/.keys.zsh ] && source ~/.keys.zsh
+[ -f $HOME/.keys.zsh ] && source $HOME/.keys.zsh

@@ -20,10 +20,21 @@
 - raycast-activities-*
   '';
 in  {
+  imports = [
+    ../../../common/fs/sops
+  ];
+
   config = {
     home.packages = [ app ];
 
     programs = {
+      sops = {
+        decryptFiles = [{
+          from = "secrets/.config/raycast/database_key.enc";
+          to = ".config/raycast/database_key";
+        }];
+      };
+
       rclone = {
         syncPaths = [{
           inherit filter;
