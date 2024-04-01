@@ -1,32 +1,23 @@
-{ unstablePkgs, ... }: {
+{ unstablePkgs, useProxy, ... }: {
   imports = [
+    ./clashx
+  ] ++ (if useProxy then [
     ../../common/fs/rclone
-
     ./todoist
     ./raycast
-    # ./hiddify
-    ./clashx
+    ./iterm2
     ./sublime
     ./wireshark
     ./karabiner
     ./snipaste
-  ];
+  ] else []);
 
   home = {
     packages = with unstablePkgs; [
       postman
-      iterm2
       dbeaver
       obsidian
       caffeine
     ];
-  };
-
-  programs = {
-    rclone = {
-      syncPaths = [{
-        remote = "gdrive:Sync/Config/Darwin/com.googlecode.iterm2";
-      }];
-    };
   };
 }
