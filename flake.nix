@@ -99,7 +99,7 @@
 
     mkDarwin = {
       system,
-      host,
+      host ? "",
     }: nix-darwin.lib.darwinSystem {
       inherit system;
 
@@ -109,7 +109,8 @@
       };
 
       modules = [
-        ./hosts/${system}/${host}
+        ./hosts/${system}
+        (if builtins.pathExists ./hosts/${system}/${host} then ./hosts/${system}/${host} else "")
       ];
 
       specialArgs = { inherit inputs; };
@@ -148,9 +149,8 @@
       };
 
       darwinConfigurations = {
-        "c02fk4mjmd6m" = mkDarwin {
+        "darwin" = mkDarwin {
           system = "x86_64-darwin";
-          host = "c02fk4mjmd6m";
         };
       };
     };

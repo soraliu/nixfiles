@@ -7,8 +7,8 @@ switch-ide:
 switch-ide-cn:
 	nix run .#home-manager -- switch --show-trace --impure --flake .#ide-cn -b backup
 
-switch-work-host:
-	nix run nix-darwin -- switch --show-trace --flake .
+switch-darwin:
+	nix run nix-darwin -- switch --show-trace --flake .#darwin
 
 nixd:
 	nix eval --json --file .nixd.nix > .nixd.json
