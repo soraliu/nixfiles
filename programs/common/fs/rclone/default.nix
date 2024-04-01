@@ -26,6 +26,15 @@ let
     ") paths)}
 
     wait
+
+    echo "countdown started for 30 seconds..."
+    for ((i=30; i>=0; i--))
+    do
+        echo "Time left: $i seconds"
+        sleep 1
+    done
+    echo "Countdown completed."
+
   '';
 in
 {
@@ -60,7 +69,11 @@ in
         cp "$path_to_rclone_conf".readonly "$path_to_rclone_conf"
         chmod +w "$path_to_rclone_conf"
 
-        ${builtins.concatStringsSep "\n\n" (map ({remote, local, link, filter}: " \
+        ${builtins.concatStringsSep "\n\n" (map ({remote, local, link, filter}: "( \
+          # check if the dir of local exists
+          mkdir -p $(dirname '${local}')
+
+          # backup link dir, and relink
           if [ '${link}' != '' ]; then
             [ -L '${link}' ] && unlink '${link}' \
             [ -e '${link}' ] && [ ! -e '${local}' ] && cp -r '${link}' '${local}' \
@@ -68,14 +81,14 @@ in
             ln -s '${local}' '${link}' \
           fi
 
+          # check if remote exists
           [ -d '${local}' ] && $path_to_rclone_bin mkdir '${remote}' || echo '${remote} exists!' \
 
+          # check if local dir exists
           if [ ! -d '${local}' ]; then
             mkdir -p '${local}'
           fi
-
-          # $path_to_rclone_bin bisync '${remote}' '${local}' --filter-from '${commonFilter}' ${if filter != "" then "--filter-from '" + filter + "'" else ""} --remove-empty-dirs --fix-case --resilient --resync --resync-mode newer -v & \
-        ") paths)}
+        ) &") paths)}
 
         wait
       '';
@@ -93,8 +106,6 @@ in
           name = "rclone";
           script = pathToScript;
           interpreter = "${pkgs.zsh}/bin/zsh";
-          autorestart = false;
-          cron_restart = "*/1 * * * *";
         }];
       };
     };
