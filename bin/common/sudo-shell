@@ -20,5 +20,6 @@ else
 fi
 
 if [ -x "$(command -v pm2)" ]; then
+  mkdir -p $HOME/Library/LaunchAgents
   sudo pm2 startup
 fi

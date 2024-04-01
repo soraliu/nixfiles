@@ -1,7 +1,7 @@
 { unstablePkgs, useProxy, ... }: {
   imports = [
     ./clashx
-  ] ++ (if useProxy then [
+  ] ++ (if !useProxy then [
     ../../common/fs/rclone
     ./todoist
     ./raycast

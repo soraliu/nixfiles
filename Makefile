@@ -21,6 +21,6 @@ install-nix-darwin:
 	./result/bin/darwin-installer
 
 gcmsg-sgpt:
-	git commit -m "$$(git diff --cached | sgpt 'Based on the changes, help me generate git commit messages. The first line is the summary in git conventional commit format( \
+	git commit -m "$$(git diff --cached | sgpt 'Based on the changes, help me generate git commit messages. Only the first line is the summary in git conventional commit format( \
 		The format typically looks like type(scope?): description, where type is a keyword like feat (new feature) or fix (bug fix), scope is an optional identifier for the part of the codebase affected, and description succinctly explains the change. \
 	). Then leave an empty line and the rest lines are the details of all changes that will start with -' --no-cache)"

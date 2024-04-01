@@ -12,6 +12,8 @@
     cargo                                     # rust package maanger
 
     go                                        # go
+
+    sqlite                                    # db
   ];
 
   home.sessionVariables = {
