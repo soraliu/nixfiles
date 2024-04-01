@@ -4,7 +4,8 @@
 
     ./todoist
     ./raycast
-    ./hiddify
+    # ./hiddify
+    ./clashx
     ./sublime
     ./wireshark
     ./karabiner
