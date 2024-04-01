@@ -1,4 +1,4 @@
-{ ... }: {
+{ pkgs, ... }: {
 
   imports = [
     # ./coc.nix
@@ -17,7 +17,16 @@
 
       (builtins.readFile ./theme.lua)           # Theme palette
       (builtins.readFile ./nvim-tree.lua)       # Sidebar
+
+
       (builtins.readFile ./telescope.lua)       # Fuzzy Search
+      ''
+      vim.cmd([[
+        let g:sqlite_clib_path = '${pkgs.sqlite.out}/lib/${if pkgs.stdenv.isDarwin then "libsqlite3.dylib" else "libsqlite3.so"}'
+      ]])
+      ''
+
+
       (builtins.readFile ./lsp.lua)             # LSP
       (builtins.readFile ./treesitter.lua)      # Syntax highlight
       (builtins.readFile ./lualine.lua)         # Status line
