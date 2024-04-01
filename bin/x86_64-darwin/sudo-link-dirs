@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+set -e
+
+path_to_nix_app=$(nix profile list --json | jq -r '.elements.["home-manager-path"].storePaths[0]')
+path_to_hm_link='/Applications/Home Manager Apps'
+if [ -d "$path_to_nix_app" ]; then
+  [ -L "$path_to_hm_link" ] && unlink "$path_to_hm_link"
+  ln -s "$path_to_nix_app/Applications" "$path_to_hm_link"
+
+  echo 'Info: Successfully link home-manager apps.'
+else
+  echo "Error: home-manager app($path_to_nix_app) does not exist."
+fi

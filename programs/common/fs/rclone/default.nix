@@ -18,7 +18,12 @@ let
 
     ${if builtins.length paths == 0 then "echo 'Nothing to sync!'" else ""}
 
-    ${builtins.concatStringsSep "\n\n" (map ({local, remote, filter, ...}: "${unstablePkgs.rclone}/bin/rclone bisync '${remote}' '${local}' --filter-from '${commonFilter}' ${if filter != "" then "--filter-from '" + filter + "'" else ""} --remove-empty-dirs --fix-case --resilient --conflict-resolve newer -v &") paths)}
+    ${builtins.concatStringsSep "\n\n" (map ({local, remote, filter, ...}: " \
+      ( \
+        ${unstablePkgs.rclone}/bin/rclone bisync '${remote}' '${local}' --filter-from '${commonFilter}' ${if filter != "" then "--filter-from '" + filter + "'" else ""} --remove-empty-dirs --fix-case --resilient --conflict-resolve newer -v || \
+        ${unstablePkgs.rclone}/bin/rclone bisync '${remote}' '${local}' --filter-from '${commonFilter}' ${if filter != "" then "--filter-from '" + filter + "'" else ""} --remove-empty-dirs --fix-case --resilient --conflict-resolve newer --resync --resync-mode newer -v \
+      ) & \
+    ") paths)}
 
     wait
   '';
@@ -69,7 +74,7 @@ in
             mkdir -p '${local}'
           fi
 
-          $path_to_rclone_bin bisync '${remote}' '${local}' --filter-from '${commonFilter}' ${if filter != "" then "--filter-from '" + filter + "'" else ""} --remove-empty-dirs --fix-case --resilient --resync --resync-mode newer -v & \
+          # $path_to_rclone_bin bisync '${remote}' '${local}' --filter-from '${commonFilter}' ${if filter != "" then "--filter-from '" + filter + "'" else ""} --remove-empty-dirs --fix-case --resilient --resync --resync-mode newer -v & \
         ") paths)}
 
         wait
