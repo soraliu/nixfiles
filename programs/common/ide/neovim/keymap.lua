@@ -23,7 +23,7 @@ function keysRegisterBase()
   vim.api.nvim_set_keymap('c', '<C-j>', '<C-n>', {})
   vim.api.nvim_set_keymap('c', '<C-k>', '<C-p>', {})
   -- open url
-  vim.keymap.set('n', 'gx', '!open <c-r><c-a><cr>', { silent = true, noremap = false })
+  vim.keymap.set('n', 'gx', ':sil !open <c-r><c-a><cr>', { silent = true, noremap = false, desc = 'Open Url' })
 
 
   wk.register({
