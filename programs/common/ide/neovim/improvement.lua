@@ -7,6 +7,29 @@ table.insert(plugins, {
   'mg979/vim-visual-multi', -- Multiple cursors plugin
   'wellle/targets.vim', -- Expands on the idea of simple commands like di'
   {
+    'axieax/urlview.nvim',
+    config = function()
+      require("urlview").setup({
+        -- Prompt title (`<context> <default_title>`, e.g. `Buffer Links:`)
+        default_title = "Links:",
+        -- Default picker to display links with
+        -- Options: "native" (vim.ui.select) or "telescope"
+        default_picker = "native",
+        -- Set the default protocol for us to prefix URLs with if they don't start with http/https
+        default_prefix = "https://",
+        -- Command or method to open links with
+        -- Options: "netrw", "system" (default OS browser), "clipboard"; or "firefox", "chromium" etc.
+        -- By default, this is "netrw", or "system" if netrw is disabled
+        default_action = "system",
+        -- Keymaps for jumping to previous / next URL in buffer
+        jump = {
+          prev = "[u",
+          next = "]u",
+        },
+      })
+    end,
+  },
+  {
     'kylechui/nvim-surround',
     version = '*', -- Use for stability; omit to use `main` branch for the latest features
     event = 'VeryLazy',
@@ -17,7 +40,7 @@ table.insert(plugins, {
     end
   },
   {
-    'booperlv/nvim-gomove',
+    'booperlv/nvim-gomove', -- move/duplicate lines
     config = function()
       require("gomove").setup {
         -- whether or not to map default key bindings, (true/false)
@@ -63,7 +86,7 @@ table.insert(plugins, {
     }
   },
   {
-    'smoka7/hop.nvim',
+    'smoka7/hop.nvim', -- easy motion alternative
     version = "*",
     opts = {},
     config = function()

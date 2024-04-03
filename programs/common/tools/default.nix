@@ -1,5 +1,5 @@
-{ pkgs, ... }: {
-  home.packages = with pkgs; [
+{ pkgs, unstablePkgs, ... }: {
+  home.packages = (with pkgs; [
     # doc
     tldr                                      # community-maintained help pages
                                                 # Github: https://github.com/tldr-pages/tldr
@@ -15,5 +15,7 @@
     # string
     sd                                        # sed alternative
     jq                                        # jq format
-  ];
+  ]) ++ (with unstablePkgs; [
+    bitwarden-cli                             # secret management
+  ]);
 }

@@ -202,6 +202,11 @@ table.insert(plugins, {{
           ellipsis_char = '...', -- when popup menu exceed maxwidth, the truncated part would show ellipsis_char instead (must define maxwidth first)
           show_labelDetails = true, -- show labelDetails in menu. Disabled by default
 
+          -- symbol map
+          symbol_map = {
+            Copilot = "",
+          },
+
           -- The function below will be called before any actual modifications from lspkind
           -- so that you can provide more controls on popup customization. (See [#30](https://github.com/onsails/lspkind-nvim/pull/30))
           menu = {
@@ -215,6 +220,7 @@ table.insert(plugins, {{
             look = "[Dict]",
             cmdline = "[CMD]",
             cmdline_history = "[CMD History]",
+            copilot = "[Copilot]"
           },
           before = function (entry, vim_item)
             return vim_item
@@ -240,6 +246,7 @@ table.insert(plugins, {{
             format = cmp_format
           },
           sources = cmp.config.sources({
+            { name = 'copilot' },
             { name = 'nvim_lsp' },
             { name = 'nvim_lua' },
             { name = 'path' },
