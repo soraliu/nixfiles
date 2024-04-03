@@ -47,6 +47,7 @@ table.insert(plugins, {{
     'nvim-telescope/telescope-ui-select.nvim',
     'tsakirist/telescope-lazy.nvim',
     'nvim-telescope/telescope-file-browser.nvim',
+    'benfowler/telescope-luasnip.nvim',
     {
       'nvim-telescope/telescope-fzf-native.nvim',
       build = 'make'
@@ -187,6 +188,7 @@ table.insert(plugins, {{
     require('telescope').load_extension('ui-select')
     require('telescope').load_extension('lazy')
     require('telescope').load_extension('file_browser')
+    require('telescope').load_extension('luasnip')
 
     keysRegisterSearch()
   end,

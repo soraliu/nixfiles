@@ -55,10 +55,13 @@ function keysRegisterImprovements()
     --   '<cmd>Bonly<cr>',                                                     'Delete buffers',
     -- },
     ['<leader>s'] = {
-      name = 'Show Pages',
+      name = 'Show Pages/Search',
       -- Repo: goolord/alpha-nvim
       h = { '<cmd>Alpha<cr>', 'Show Home Page' },
       n = { '<cmd>Navbuddy<cr>', 'Show LSP Nav' },
+
+      -- telescope luasnip
+      s = { '<cmd>Telescope luasnip<cr>', 'Search luasnip' },
     },
     ['<leader>e'] = {
       name = 'Code Edit',
@@ -88,7 +91,8 @@ function keysRegisterSearch()
       g = { builtin.grep_string, 'Grep Cursor Word' },
       k = { builtin.keymaps, 'Find Keymaps' },
       h = { builtin.help_tags, 'Find Helps' },
-      m = { builtin.commands, 'Find Commands' },
+      x = { builtin.commands, 'Find Commands' },
+      m = { '<cmd>Telescope grapple tags<cr>', 'Find Grapple Tags' },
       [','] = { builtin.resume, 'Resume Last Search' },
       s = { '<cmd>Telescope egrepify<cr>', 'Grep String' },
 
@@ -125,7 +129,8 @@ function keysRegisterSearch()
 
       -- file-browser
       w = { function() require 'telescope'.extensions.file_browser.file_browser({ hidden = true, depth = 2 }) end, 'File Browser' },
-      ['.'] = { function() require 'telescope'.extensions.file_browser.file_browser({ hidden = true, depth = 2, path = '%:p:h', select_buffer = true }) end, 'File Browser' },
+      ['.'] = { function() require 'telescope'.extensions.file_browser.file_browser({ hidden = true, depth = 2, path =
+        '%:p:h', select_buffer = true }) end, 'File Browser' },
     },
   }, { mode = 'n' })
 
@@ -133,6 +138,29 @@ function keysRegisterSearch()
     -- :h actions-preview.nvim-configuration
     ['<leader>fa'] = { ap.code_actions, 'LSP Actions' },
   }, { mode = 'v' })
+end
+
+function keysRegisterMarks()
+  local wk = require('which-key')
+
+  wk.register({
+    ['m'] = {
+      name = 'Mark',
+      a = { "<cmd>Grapple toggle<cr>", "Grapple toggle tag" },
+      l = { "<cmd>Grapple toggle_tags<cr>", "Grapple open tags window" },
+      ['1'] = { "<cmd>Grapple select index=1<cr>", "Select first tag" },
+      ['2'] = { "<cmd>Grapple select index=2<cr>", "Select second tag" },
+      ['3'] = { "<cmd>Grapple select index=3<cr>", "Select third tag" },
+      ['4'] = { "<cmd>Grapple select index=4<cr>", "Select fourth tag" },
+      ['5'] = { "<cmd>Grapple select index=5<cr>", "Select fifth tag" },
+      ['6'] = { "<cmd>Grapple select index=6<cr>", "Select sixth tag" },
+      ['7'] = { "<cmd>Grapple select index=7<cr>", "Select seventh tag" },
+      ['8'] = { "<cmd>Grapple select index=8<cr>", "Select eighth tag" },
+      ['9'] = { "<cmd>Grapple select index=9<cr>", "Select ninth tag" },
+    },
+    ["]m"] = { "<cmd>Grapple cycle_tags next<cr>", "Grapple cycle next tag" },
+    ["[m"] = { "<cmd>Grapple cycle_tags prev<cr>", "Grapple cycle previous tag" },
+  }, { mode = { 'n' } })
 end
 
 function keysRegisterChatGPT()
