@@ -2,13 +2,13 @@
 -- keymaps
 -- ------------------------------------------------------------------------------------------------------------------------------
 function keysRegisterBase()
-  local wk = require("which-key")
+  local wk = require('which-key')
 
   -- set <leader> to <space>
   vim.g.mapleader = ' '
   -- shortcut of <ESC>
-  vim.keymap.set('n', '<ESC>', ":noh<cr><ESC>", { silent = true, noremap = true })
-  vim.keymap.set('i', 'jk', "<ESC>", { nowait = true })
+  vim.keymap.set('n', '<ESC>', ':noh<cr><ESC>', { silent = true, noremap = true })
+  vim.keymap.set('i', 'jk', '<ESC>', { nowait = true })
   -- don't copy to clipboard
   vim.keymap.set('v', 's', '"_d', { noremap = true })
   -- movement when auto wrap
@@ -22,121 +22,160 @@ function keysRegisterBase()
   -- command mode
   vim.api.nvim_set_keymap('c', '<C-j>', '<C-n>', {})
   vim.api.nvim_set_keymap('c', '<C-k>', '<C-p>', {})
+  -- open url
+  vim.keymap.set('n', 'gx', '!open <c-r><c-a><cr>', { silent = true, noremap = false })
 
 
   wk.register({
     -- File Management
-    ['<c-s>'] = { "<cmd>w<cr>", "Save File" },
-    ['<c-q>'] = { "<cmd>q<cr>", "Quit" },
+    ['<c-s>'] = { '<cmd>w<cr>', 'Save File' },
+    ['<c-q>'] = { '<cmd>q<cr>', 'Quit' },
 
     -- Windows Management
     ['<leader>w'] = {
-      name = "Windows Management",
-      h = { "<c-w>h", "Focus on Left" },
-      l = { "<c-w>l", "Focus on Right" },
-      j = { "<c-w>j", "Focus on Bottom" },
-      k = { "<c-w>k", "Focus on Above" },
-      r = { "<c-w>=", "Restore window size" },
-      ['['] = { "<cmd>vertical resize -10<cr>", "Window Size -10" },
-      [']'] = { "<cmd>vertical resize +10<cr>", "Window Size +10" },
+      name = 'Windows Management',
+      h = { '<c-w>h', 'Focus on Left' },
+      l = { '<c-w>l', 'Focus on Right' },
+      j = { '<c-w>j', 'Focus on Bottom' },
+      k = { '<c-w>k', 'Focus on Above' },
+      r = { '<c-w>=', 'Restore window size' },
+      ['['] = { '<cmd>vertical resize -10<cr>', 'Vertical Size -10' },
+      [']'] = { '<cmd>vertical resize +10<cr>', 'Vertical Size +10' },
+      ['-'] = { '<cmd>resize -10<cr>', 'Window Size -10' },
+      ['+'] = { '<cmd>resize +10<cr>', 'Window Size +10' },
     },
-  }, { mode = "n" })
+  }, { mode = 'n' })
 end
 
 function keysRegisterImprovements()
-  local wk = require("which-key")
+  local wk = require('which-key')
 
   wk.register({
     -- ['Q'] = {
     --   '<cmd>Bonly<cr>',                                                     'Delete buffers',
     -- },
     ['<leader>s'] = {
-      name = "Show Pages",
+      name = 'Show Pages',
       -- Repo: goolord/alpha-nvim
-      h = { "<cmd>Alpha<cr>", "Show Home Page" },
-      n = { "<cmd>Navbuddy<cr>", "Show LSP Nav" },
+      h = { '<cmd>Alpha<cr>', 'Show Home Page' },
+      n = { '<cmd>Navbuddy<cr>', 'Show LSP Nav' },
     },
     ['<leader>e'] = {
-      name = "Code Edit",
+      name = 'Code Edit',
 
       -- Repo: soraliu/vim-argwrap
-      a = { "<cmd>ArgWrap<cr>", "Args Wrap&Split" },
+      a = { '<cmd>ArgWrap<cr>', 'Args Wrap&Split' },
       -- Repo: AckslD/nvim-FeMaco.lua
-      m = { "<cmd>FeMaco<cr>", "Edit Markdown Codeblock" },
+      m = { '<cmd>FeMaco<cr>', 'Edit Markdown Codeblock' },
     },
-  }, { mode = "n" })
+  }, { mode = 'n' })
 end
 
 function keysRegisterSearch()
-  local wk = require("which-key")
+  local wk = require('which-key')
   local builtin = require('telescope.builtin')
-  local ap = require("actions-preview")
+  local ap = require('actions-preview')
 
   wk.register({
-    ["<leader>f"] = {
-      name = "Fuzzy Search", -- optional group name
+    ['<leader>f'] = {
+      name = 'Fuzzy Search', -- optional group name
 
       -- Editor
-      p = { "<cmd>Telescope<cr>", "Telescope Home" },
-      l = { function() builtin.git_files({ show_untracked = true }) end, "Find Files" },
-      o = { function() builtin.oldfiles({ cwd_only = true }) end, "Find Recent Files" },
-      b = { builtin.buffers, "Find Opened Buffers" },
-      w = { builtin.grep_string, "Grep Cursor Word" },
-      k = { builtin.keymaps, "Find Keymaps" },
-      h = { builtin.help_tags, "Find Helps" },
-      m = { builtin.commands, "Find Commands" },
-      [","] = { builtin.resume, "Resume Last Search" },
-      s = { "<cmd>Telescope egrepify<cr>", "Grep String" },
+      p = { '<cmd>Telescope<cr>', 'Telescope Home' },
+      l = { function() builtin.git_files({ show_untracked = true }) end, 'Find Files' },
+      o = { function() builtin.oldfiles({ cwd_only = true }) end, 'Find Recent Files' },
+      b = { builtin.buffers, 'Find Opened Buffers' },
+      g = { builtin.grep_string, 'Grep Cursor Word' },
+      k = { builtin.keymaps, 'Find Keymaps' },
+      h = { builtin.help_tags, 'Find Helps' },
+      m = { builtin.commands, 'Find Commands' },
+      [','] = { builtin.resume, 'Resume Last Search' },
+      s = { '<cmd>Telescope egrepify<cr>', 'Grep String' },
 
       -- LSP
-      d = { builtin.diagnostics, "LSP Diagnostics" },
-      r = { builtin.lsp_references, "LSP References" },
-      i = { builtin.lsp_implementations, "LSP Implementations" },
-      a = { ap.code_actions, "LSP Actions" },
+      d = { builtin.diagnostics, 'LSP Diagnostics' },
+      r = { builtin.lsp_references, 'LSP References' },
+      i = { builtin.lsp_implementations, 'LSP Implementations' },
+      a = { ap.code_actions, 'LSP Actions' },
 
       -- Git
-      v = { builtin.git_status, "Git Status" },
+      v = { builtin.git_status, 'Git Status' },
 
       -- Todo
       -- Repo: folke/todo-comments.nvim
-      n = { "<cmd>TodoTelescope<cr>", "Find Todos" },
+      n = { '<cmd>TodoTelescope<cr>', 'Find Todos' },
 
       -- Undo
-      u = { "<cmd>Telescope undo<cr>", "Undo History" },
+      u = { '<cmd>Telescope undo<cr>', 'Undo History' },
 
       -- Yank
-      y = { "<cmd>Telescope neoclip<cr>", "Yank History" },
+      y = { '<cmd>Telescope neoclip<cr>', 'Yank History' },
 
-      e = { "<cmd>Telescope emoji<cr>", "Emoji" },
+      -- Emoji
+      e = { builtin.symbols, 'Emoji' },
 
-      f = { "<cmd>Telescope glyph<cr>", "Font Emoji" },
+      -- Font Emoji
+      f = { '<cmd>Telescope glyph<cr>', 'Font Emoji' },
+
+      -- URL
+      j = { '<cmd>UrlView<cr>', 'Jump to a Url' },
+
+      -- Lazy
+      z = { '<cmd>Telescope lazy<cr>', 'lazy.nvim' },
+
+      -- file-browser
+      w = { function() require 'telescope'.extensions.file_browser.file_browser({ hidden = true, depth = 2 }) end, 'File Browser' },
+      ['.'] = { function() require 'telescope'.extensions.file_browser.file_browser({ hidden = true, depth = 2, path = '%:p:h', select_buffer = true }) end, 'File Browser' },
     },
-  }, { mode = "n" })
+  }, { mode = 'n' })
 
   wk.register({
     -- :h actions-preview.nvim-configuration
-    ["<leader>fa"] = { ap.code_actions, "LSP Actions" },
-  }, { mode = "v" })
+    ['<leader>fa'] = { ap.code_actions, 'LSP Actions' },
+  }, { mode = 'v' })
+end
+
+function keysRegisterChatGPT()
+  local wk = require('which-key')
+
+  wk.register({
+    ['<leader>c'] = {
+      name = 'ChatGPT',
+      c = { '<cmd>ChatGPT<CR>', 'ChatGPT' },
+      e = { '<cmd>ChatGPTEditWithInstruction<CR>', 'Edit with instruction' },
+      g = { '<cmd>ChatGPTRun grammar_correction<CR>', 'Grammar Correction' },
+      t = { '<cmd>ChatGPTRun translate<CR>', 'Translate' },
+      k = { '<cmd>ChatGPTRun keywords<CR>', 'Keywords' },
+      d = { '<cmd>ChatGPTRun docstring<CR>', 'Docstring' },
+      a = { '<cmd>ChatGPTRun add_tests<CR>', 'Add Tests' },
+      o = { '<cmd>ChatGPTRun optimize_code<CR>', 'Optimize Code' },
+      s = { '<cmd>ChatGPTRun summarize<CR>', 'Summarize' },
+      f = { '<cmd>ChatGPTRun fix_bugs<CR>', 'Fix Bugs' },
+      x = { '<cmd>ChatGPTRun explain_code<CR>', 'Explain Code' },
+      r = { '<cmd>ChatGPTRun roxygen_edit<CR>', 'Roxygen Edit' },
+      l = { '<cmd>ChatGPTRun code_readability_analysis<CR>', 'Code Readability Analysis' },
+    },
+  }, { mode = { 'n', 'v' } })
 end
 
 function keysRegisterTree()
-  local wk = require("which-key")
+  local wk = require('which-key')
 
   -- mappings
   wk.register({
-    ["<leader>w"] = {
-      name = "Windows Management",
+    ['<leader>w'] = {
+      name = 'Windows Management',
 
-      a = { "<cmd>NvimTreeFindFile<cr>", "Find File" },
-      e = { "<cmd>NvimTreeToggle<cr>", "Toggle Nvim Tree" },
+      a = { '<cmd>NvimTreeFindFile<cr>', 'Find File' },
+      e = { '<cmd>NvimTreeToggle<cr>', 'Toggle Nvim Tree' },
     },
-  }, { mode = "n" })
+  }, { mode = 'n' })
 
   local function on_attach(bufnr)
-    local api = require "nvim-tree.api"
+    local api = require 'nvim-tree.api'
 
     local function opts(desc)
-      return { desc = "nvim-tree: " .. desc, buffer = bufnr, noremap = true, silent = true, nowait = true }
+      return { desc = 'nvim-tree: ' .. desc, buffer = bufnr, noremap = true, silent = true, nowait = true }
     end
     local function removeMap(lhs)
       vim.keymap.del('n', lhs, { buffer = bufnr })
@@ -163,29 +202,30 @@ function keysRegisterTree()
 end
 
 function keysRegisterLSP(opts)
-  local wk = require("which-key")
+  local wk = require('which-key')
   local buffer = opts.buffer
 
   wk.register({
     -- See `:help vim.lsp.*` for documentation on any of the below functions
     -- See `:help vim.diagnostic.*` for documentation on any of the below functions
-    ["K"] = { vim.lsp.buf.hover, "Show Hover Doc" },
-    ["<c-]>"] = { vim.lsp.buf.definition, "Go Definition" },
+    ['K'] = { vim.lsp.buf.hover, 'Show Hover Doc' },
+    ['<c-]>'] = { vim.lsp.buf.definition, 'Go Definition' },
 
-    ["<leader>g"] = {
-      name = "Go Somewhere",
-      o = { vim.lsp.buf.type_definition, "Go Type Definition" },
-      d = { vim.lsp.buf.declaration, "Go Declaration" },
-      k = { vim.diagnostic.goto_prev, "Go Prev Diagnostic" },
-      j = { vim.diagnostic.goto_next, "Go Next Diagnostic" },
+    ['<leader>g'] = {
+      name = 'Go Somewhere',
+      o = { vim.lsp.buf.type_definition, 'Go Type Definition' },
+      d = { vim.lsp.buf.declaration, 'Go Declaration' },
     },
 
-    ["<leader>a"] = {
-      name = "Action",
-      r = { vim.lsp.buf.rename, "LSP Rename" },
-      f = { function() vim.lsp.buf.format({ async = true }) end, "LSP Format" },
+    ['[d'] = { vim.diagnostic.goto_prev, 'Go Prev Diagnostic' },
+    [']d'] = { vim.diagnostic.goto_next, 'Go Next Diagnostic' },
+
+    ['<leader>a'] = {
+      name = 'Action',
+      r = { vim.lsp.buf.rename, 'LSP Rename' },
+      f = { function() vim.lsp.buf.format({ async = true }) end, 'LSP Format' },
     },
-  }, { mode = "n", buffer = buffer })
+  }, { mode = 'n', buffer = buffer })
 
   -- vim.keymap.set('n', '<C-k>', vim.lsp.buf.signature_help, opts)
   -- vim.keymap.set('n', '<space>wa', vim.lsp.buf.add_workspace_folder, opts)
@@ -196,37 +236,37 @@ function keysRegisterLSP(opts)
 end
 
 function keysRegisterBuffer()
-  local wk = require("which-key")
+  local wk = require('which-key')
 
   wk.register({
-    ['<c-w>'] = { "<cmd>bp<bar>sp<bar>bn<bar>bd<cr>", "Close Buffer" },
+    ['<c-w>'] = { '<cmd>bp<bar>sp<bar>bn<bar>bd<cr>', 'Close Buffer' },
 
-    ["<leader>"] = {
-      ["1"] = { "<cmd>BufferLineGoToBuffer 1<cr>", "Go to Buffer 1" },
-      ["2"] = { "<cmd>BufferLineGoToBuffer 2<cr>", "Go to Buffer 2" },
-      ["3"] = { "<cmd>BufferLineGoToBuffer 3<cr>", "Go to Buffer 3" },
-      ["4"] = { "<cmd>BufferLineGoToBuffer 4<cr>", "Go to Buffer 4" },
-      ["5"] = { "<cmd>BufferLineGoToBuffer 5<cr>", "Go to Buffer 5" },
-      ["6"] = { "<cmd>BufferLineGoToBuffer 6<cr>", "Go to Buffer 6" },
-      ["7"] = { "<cmd>BufferLineGoToBuffer 7<cr>", "Go to Buffer 7" },
-      ["8"] = { "<cmd>BufferLineGoToBuffer 8<cr>", "Go to Buffer 8" },
-      ["9"] = { "<cmd>BufferLineGoToBuffer 9<cr>", "Go to Buffer 9" },
-      ["$"] = { "<cmd>BufferLineGoToBuffer -1<cr>", "Go to Buffer -1" },
+    ['<leader>'] = {
+      ['1'] = { '<cmd>BufferLineGoToBuffer 1<cr>', 'Go to Buffer 1' },
+      ['2'] = { '<cmd>BufferLineGoToBuffer 2<cr>', 'Go to Buffer 2' },
+      ['3'] = { '<cmd>BufferLineGoToBuffer 3<cr>', 'Go to Buffer 3' },
+      ['4'] = { '<cmd>BufferLineGoToBuffer 4<cr>', 'Go to Buffer 4' },
+      ['5'] = { '<cmd>BufferLineGoToBuffer 5<cr>', 'Go to Buffer 5' },
+      ['6'] = { '<cmd>BufferLineGoToBuffer 6<cr>', 'Go to Buffer 6' },
+      ['7'] = { '<cmd>BufferLineGoToBuffer 7<cr>', 'Go to Buffer 7' },
+      ['8'] = { '<cmd>BufferLineGoToBuffer 8<cr>', 'Go to Buffer 8' },
+      ['9'] = { '<cmd>BufferLineGoToBuffer 9<cr>', 'Go to Buffer 9' },
+      ['$'] = { '<cmd>BufferLineGoToBuffer -1<cr>', 'Go to Buffer -1' },
 
-      ['['] = { "<cmd>BufferLineCyclePrev<cr>", "Prev Buffer" },
-      [']'] = { "<cmd>BufferLineCycleNext<cr>", "Next Buffer" },
+      ['['] = { '<cmd>BufferLineCyclePrev<cr>', 'Prev Buffer' },
+      [']'] = { '<cmd>BufferLineCycleNext<cr>', 'Next Buffer' },
     },
 
 
-    ["<leader>b"] = {
-      name = "Buffer Management",
+    ['<leader>b'] = {
+      name = 'Buffer Management',
 
-      ["["] = { "<cmd>BufferLineMovePrev<cr>", "Move to Prev" },
-      ["]"] = { "<cmd>BufferLineMoveNext<cr>", "Move to Next" },
-      p = { "<cmd>BufferLinePick<cr>", "Pick a Buffer" },
-      o = { "<cmd>BufferLineCloseOthers<cr>", "Close Other Buffers" },
+      ['['] = { '<cmd>BufferLineMovePrev<cr>', 'Move to Prev' },
+      [']'] = { '<cmd>BufferLineMoveNext<cr>', 'Move to Next' },
+      p = { '<cmd>BufferLinePick<cr>', 'Pick a Buffer' },
+      o = { '<cmd>BufferLineCloseOthers<cr>', 'Close Other Buffers' },
     },
-  }, { mode = "n" })
+  }, { mode = 'n' })
 end
 
 function keysRegisterEasyMotion()
@@ -328,38 +368,38 @@ function keysRegisterGit(bufnr, gs)
       b = { '<cmd>Git blame<cr>', 'Show Blame' },
 
       -- Github: https://github.com/ruifm/gitlinker.nvim
-      o = { function() gitlinker.get_buf_range_url("n", { action_callback = gitlinker.actions.open_in_browser }) end, 'Open Line in Browser' },
+      o = { function() gitlinker.get_buf_range_url('n', { action_callback = gitlinker.actions.open_in_browser }) end, 'Open Line in Browser' },
       O = { function() gitlinker.get_repo_url({ action_callback = gitlinker.actions.open_in_browser }) end, 'Open Home in Browser' },
     },
     ['<leader>y'] = {
       name = 'Yank',
-      v = { function() gitlinker.get_buf_range_url("n") end, 'Copy Github Line Link' },
+      v = { function() gitlinker.get_buf_range_url('n') end, 'Copy Github Line Link' },
       V = { gitlinker.get_repo_url, 'Copy Github Home Link' },
     },
     ['<leader>t'] = {
-      name = "Toggle",
+      name = 'Toggle',
       ['b'] = { gs.toggle_current_line_blame, 'Toggle Line Blame' },
       ['d'] = { gs.toggle_deleted, 'Toggle Deleted' },
     },
-  }, { mode = "n", buffer = bufnr })
+  }, { mode = 'n', buffer = bufnr })
 
   wk.register({
     ['<leader>y'] = {
       name = 'Yank',
-      v = { function() gitlinker.get_buf_range_url("v") end, 'Copy Github Line Link' },
+      v = { function() gitlinker.get_buf_range_url('v') end, 'Copy Github Line Link' },
     },
     ['<leader>v'] = {
       name = 'Git',
       r = { function() gs.reset_hunk { vim.fn.line('.'), vim.fn.line('v') } end, 'Reset Hunk' },
       s = { function() gs.stage_hunk { vim.fn.line('.'), vim.fn.line('v') } end, 'Stage Hunk' },
-      o = { function() gitlinker.get_buf_range_url("v", { action_callback = gitlinker.actions.open_in_browser }) end, 'Open Line in Browser' },
+      o = { function() gitlinker.get_buf_range_url('v', { action_callback = gitlinker.actions.open_in_browser }) end, 'Open Line in Browser' },
     },
-  }, { mode = "v", buffer = bufnr })
+  }, { mode = 'v', buffer = bufnr })
 end
 
 function keysPluginCmp()
-  local cmp = require("cmp")
-  local luasnip = require("luasnip")
+  local cmp = require('cmp')
+  local luasnip = require('luasnip')
 
   return {
     ['<C-l>'] = cmp.mapping(function(fallback)
@@ -368,14 +408,14 @@ function keysPluginCmp()
       else
         fallback()
       end
-    end, { "i", "s" }),
+    end, { 'i', 's' }),
     ['<C-h>'] = cmp.mapping(function(fallback)
       if luasnip.jumpable(-1) then
         luasnip.jump(-1)
       else
         fallback()
       end
-    end, { "i", "s" }),
+    end, { 'i', 's' }),
     ['<C-j>'] = cmp.mapping(function(fallback)
       if cmp.visible() then
         cmp.select_next_item()
@@ -384,7 +424,7 @@ function keysPluginCmp()
       else
         cmp.complete()
       end
-    end, { "i", "s" }),
+    end, { 'i', 's' }),
     ['<C-k>'] = cmp.mapping(function(fallback)
       if cmp.visible() then
         cmp.select_prev_item()
@@ -393,26 +433,33 @@ function keysPluginCmp()
       else
         cmp.complete()
       end
-    end, { "i", "s" }),
-    ["<Tab>"] = cmp.mapping(function(fallback)
+    end, { 'i', 's' }),
+    -- Reset <c-p> & <c-n>
+    ['<C-n>'] = cmp.mapping(function(fallback)
+      fallback()
+    end, { 'i', 's' }),
+    ['<C-p>'] = cmp.mapping(function(fallback)
+      fallback()
+    end, { 'i', 's' }),
+    ['<Tab>'] = cmp.mapping(function(fallback)
       if cmp.visible() then
         cmp.select_next_item()
       else
         fallback()
       end
-    end, { "i", "s" }),
-    ["<S-Tab>"] = cmp.mapping(function(fallback)
+    end, { 'i', 's' }),
+    ['<S-Tab>'] = cmp.mapping(function(fallback)
       if cmp.visible() then
         cmp.select_prev_item()
       else
         fallback()
       end
-    end, { "i", "s" }),
+    end, { 'i', 's' }),
     ['<C-u>'] = cmp.mapping.scroll_docs(-4),
     ['<C-d>'] = cmp.mapping.scroll_docs(4),
     ['<C-e>'] = cmp.mapping.abort(),
     -- ['<CR>'] = cmp.mapping.confirm({ select = true }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
-    ["<CR>"] = cmp.mapping.confirm({
+    ['<CR>'] = cmp.mapping.confirm({
       behavior = cmp.ConfirmBehavior.Replace,
       select = true,
     }),
@@ -442,7 +489,7 @@ function keysPluginComment()
 end
 
 function keysRegisterClearMem()
-  local wk = require("which-key")
+  local wk = require('which-key')
 
   wk.register({
   })
@@ -450,8 +497,8 @@ end
 
 table.insert(plugins, {
   {
-    "folke/which-key.nvim",
-    event = "VeryLazy",
+    'folke/which-key.nvim',
+    event = 'VeryLazy',
     init = function()
       vim.o.timeout = true
       vim.o.timeoutlen = 300

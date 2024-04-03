@@ -49,7 +49,7 @@ table.insert(plugins, {
       highlight = { enable = true },
       indent = { enable = true },
       incremental_selection = {
-        enable = true,
+        enable = false,
         keymaps = { -- set to `false` to disable one of the mappings
           init_selection = "]]",
           node_incremental = "}",

@@ -1,4 +1,3 @@
-
 -- ------------------------------------------------------------------------------------------------------------------------------
 -- Configure Neovim statusline
 -- ------------------------------------------------------------------------------------------------------------------------------
@@ -44,6 +43,31 @@ table.insert(plugins, {
             return '%='
           end,
         }, {
+          'copilot',
+          -- Default values
+          symbols = {
+              status = {
+                  icons = {
+                      enabled = " ",
+                      sleep = " ",   -- auto-trigger disabled
+                      disabled = " ",
+                      warning = " ",
+                      unknown = " "
+                  },
+                  hl = {
+                      enabled = "#50FA7B",
+                      sleep = "#AEB7D0",
+                      disabled = "#6272A4",
+                      warning = "#FFB86C",
+                      unknown = "#FF5555"
+                  }
+              },
+              spinners = require("copilot-lualine.spinners").dots,
+              spinner_color = "#50FA7B"
+          },
+          show_colors = true,
+          show_loading = true,
+        }, {
           -- Lsp server name .
           function()
             local msg = 'No Active Lsp'
@@ -85,4 +109,3 @@ table.insert(plugins, {
     })
   end,
 })
-
