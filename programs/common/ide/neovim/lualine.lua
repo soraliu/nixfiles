@@ -11,8 +11,8 @@ table.insert(plugins, {
         theme = 'auto',
         -- component_separators = { left = '', right = ''},
         -- section_separators = { left = '', right = ''},
-        component_separators = { left = '', right = ''},
-        section_separators = { left = '', right = ''},
+        component_separators = { left = '', right = '' },
+        section_separators = { left = '', right = '' },
         disabled_filetypes = {
           statusline = {},
           winbar = {},
@@ -27,16 +27,25 @@ table.insert(plugins, {
         }
       },
       sections = {
-        lualine_a = {'mode'},
+        lualine_a = { 'mode' },
         lualine_b = {
           'branch',
           'diff',
           {
             'diagnostics',
-            symbols = {error = 'E', warn = 'W', info = 'I', hint = 'H'},
+            symbols = { error = 'E', warn = 'W', info = 'I', hint = 'H' },
+          },
+          {
+            function()
+              return require('grapple').name_or_index()
+            end,
+            icon = '󰛢 ',
+            cond = function()
+              return package.loaded['grapple'] and require('grapple').exists()
+            end
           },
         },
-        lualine_c = {{ 'filename', path = 1,  }, {
+        lualine_c = { { 'filename', path = 1, }, {
           -- Insert mid section. You can make any number of sections in neovim :)
           -- for lualine it's any number greater then 2
           function()
@@ -46,24 +55,24 @@ table.insert(plugins, {
           'copilot',
           -- Default values
           symbols = {
-              status = {
-                  icons = {
-                      enabled = " ",
-                      sleep = " ",   -- auto-trigger disabled
-                      disabled = " ",
-                      warning = " ",
-                      unknown = " "
-                  },
-                  hl = {
-                      enabled = "#50FA7B",
-                      sleep = "#AEB7D0",
-                      disabled = "#6272A4",
-                      warning = "#FFB86C",
-                      unknown = "#FF5555"
-                  }
+            status = {
+              icons = {
+                enabled = " ",
+                sleep = " ", -- auto-trigger disabled
+                disabled = " ",
+                warning = " ",
+                unknown = " "
               },
-              spinners = require("copilot-lualine.spinners").dots,
-              spinner_color = "#50FA7B"
+              hl = {
+                enabled = "#50FA7B",
+                sleep = "#AEB7D0",
+                disabled = "#6272A4",
+                warning = "#FFB86C",
+                unknown = "#FF5555"
+              }
+            },
+            spinners = require("copilot-lualine.spinners").dots,
+            spinner_color = "#50FA7B"
           },
           show_colors = true,
           show_loading = true,
@@ -89,16 +98,16 @@ table.insert(plugins, {
             fg = '#fc5d7c',
             -- gui = 'bold'
           },
-        }},
-        lualine_x = {'encoding', 'fileformat', 'filetype'},
-        lualine_y = {'progress'},
-        lualine_z = {'location'}
+        } },
+        lualine_x = { 'encoding', 'fileformat', 'filetype' },
+        lualine_y = { 'progress' },
+        lualine_z = { 'location' }
       },
       inactive_sections = {
         lualine_a = {},
         lualine_b = {},
-        lualine_c = {'filename'},
-        lualine_x = {'location'},
+        lualine_c = { 'filename' },
+        lualine_x = { 'location' },
         lualine_y = {},
         lualine_z = {}
       },

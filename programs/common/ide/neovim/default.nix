@@ -28,6 +28,7 @@
 
 
       (builtins.readFile ./lsp.lua)             # LSP
+      (builtins.readFile ./marks.lua)           # Marks
       (builtins.readFile ./ai.lua)              # Copilot & ChatGPT
       (builtins.readFile ./treesitter.lua)      # Syntax highlight
       (builtins.readFile ./lualine.lua)         # Status line

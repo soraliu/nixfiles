@@ -49,11 +49,14 @@ table.insert(plugins, {
       highlight = { enable = true },
       indent = { enable = true },
       incremental_selection = {
-        enable = false,
+        enable = true,
         keymaps = { -- set to `false` to disable one of the mappings
-          init_selection = "]]",
+          -- init_selection = "]]",
+          -- scope_incremental = "]]",
+          -- because of the conflict with chatgpt, I have to change the keymaps
+          init_selection = false,
+          scope_incremental = false,
           node_incremental = "}",
-          scope_incremental = "]]",
           node_decremental = "{",
         },
       },
