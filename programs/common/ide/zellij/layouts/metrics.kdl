@@ -40,7 +40,7 @@ layout {
               tab_active_sync         "#[fg=#181825,bg=#ffffff,bold] {index}  {name} [S] "
 
               datetime          "#[fg=#181825,bg=#b1bbfa,italic] {format} "
-              datetime_format   "%A, %Y-%m-%d"
+              datetime_format   "%A, %m-%d %H:%M:%S"
               datetime_timezone "Asia/Shanghai"
           }
       }
