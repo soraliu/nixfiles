@@ -48,7 +48,12 @@
 
     flake-utils = {
       url = "github:numtide/flake-utils/b1d9ab70662946ef0850d488da1c9019f3a9752a";
+    };
+
+    nix-on-droid = {
+      url = "github:nix-community/nix-on-droid/release-23.11";
       inputs.nixpkgs.follows = "nixpkgs";
+      inputs.home-manager.follows = "home-manager";
     };
   };
 
@@ -59,6 +64,7 @@
     nix-darwin,
     home-manager,
     flake-utils,
+    nix-on-droid,
     ...
   }: with flake-utils.lib; eachDefaultSystem (system: let
     log = v : builtins.trace v v;
@@ -84,8 +90,8 @@
         (if (user != "" && builtins.pathExists ./users/${system}/${user}) then ./users/${system}/${user} else if builtins.pathExists ./users/${system} then ./users/${system} else ./users)
       ] ++ extraModules);
 
-      # Nix has dynamic scope, extraSpecialArgs will be passed to evalModules as the scope of funcitons,
       #   which means those functions can access `useSecret` directly instead of `specialArgs.useSecret`
+# Nix has dynamic scope, extraSpecialArgs will be passed to evalModules as the scope of funcitons,
       #   TL;DR: https://github.com/nix-community/home-manager/blob/36f873dfc8e2b6b89936ff3e2b74803d50447e0a/modules/default.nix#L26
       extraSpecialArgs = {
         inherit useCommon useSecret useProxy useIndex;
@@ -151,6 +157,39 @@
       darwinConfigurations = {
         "darwin" = mkDarwin {
           system = "x86_64-darwin";
+        };
+      };
+
+      nixOnDroidConfigurations = {
+        "default" = nix-on-droid.lib.nixOnDroidConfiguration {
+          modules = [
+            { pkgs, ... }: {
+              environment.packages = with pkgs; [];
+              # Backup etc files instead of failing to activate generation if a file already exists in /etc
+              environment.etcBackupExtension = ".bak";
+              # Read the changelog before changing this value
+              system.stateVersion = "23.11";
+              # Set up nix for flakes
+              nix.extraOptions = ''
+                experimental-features = nix-command flakes
+              '';
+              # Set your time zone
+              #time.timeZone = "Europe/Berlin";
+              # Configure home-manager
+              home-manager = {
+                backupFileExtension = "hm-bak";
+                useGlobalPkgs = true;
+                config = { ... }: {
+                  imports = mkHome {
+                    useSecret = true;
+                    useIndex = true;
+                    useProxy = false;
+                    useCommon = true;
+                  };
+                };
+              };
+            }
+          ];
         };
       };
     };
