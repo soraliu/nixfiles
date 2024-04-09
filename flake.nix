@@ -77,10 +77,10 @@
       useCommon ? true,
       extraModules ? [],
     }: home-manager.lib.homeManagerConfiguration {
-      pkgs = import nixpkgs {
+      pkgs = builtins.trace system (import nixpkgs {
         inherit system;
         config.allowUnfree = true;
-      };
+      });
 
       modules = log (builtins.filter (el: el != "") [
         ./programs/common
@@ -104,7 +104,6 @@
     };
 
     mkDarwin = {
-      system,
       host ? "",
     }: nix-darwin.lib.darwinSystem {
       inherit system;
@@ -121,10 +120,27 @@
 
       specialArgs = { inherit inputs; };
     };
+
+    mkAndroid = {
+      host ? "",
+    }: nix-on-droid.lib.nixOnDroidConfiguration {
+      inherit system;
+
+      pkgs = import nixpkgs {
+        inherit system;
+        config.allowUnfree = true;
+      };
+
+      modules = [
+        ./hosts/${system}
+        (if builtins.pathExists ./hosts/${system}/${host} then ./hosts/${system}/${host} else "")
+      ];
+    };
   in {
     packages = {
       home-manager = home-manager.defaultPackage.${system};
       nix-darwin = nix-darwin.packages.${system}.default;
+      nix-on-droid = nix-on-droid.packages.${system};
 
       homeConfigurations = {
         vpn-server = mkHome {
@@ -155,42 +171,11 @@
       };
 
       darwinConfigurations = {
-        "darwin" = mkDarwin {
-          system = "x86_64-darwin";
-        };
+        "darwin" = mkDarwin {};
       };
 
       nixOnDroidConfigurations = {
-        "default" = nix-on-droid.lib.nixOnDroidConfiguration {
-          modules = [
-            { pkgs, ... }: {
-              environment.packages = with pkgs; [];
-              # Backup etc files instead of failing to activate generation if a file already exists in /etc
-              environment.etcBackupExtension = ".bak";
-              # Read the changelog before changing this value
-              system.stateVersion = "23.11";
-              # Set up nix for flakes
-              nix.extraOptions = ''
-                experimental-features = nix-command flakes
-              '';
-              # Set your time zone
-              #time.timeZone = "Europe/Berlin";
-              # Configure home-manager
-              home-manager = {
-                backupFileExtension = "hm-bak";
-                useGlobalPkgs = true;
-                config = { ... }: {
-                  imports = mkHome {
-                    useSecret = true;
-                    useIndex = true;
-                    useProxy = false;
-                    useCommon = true;
-                  };
-                };
-              };
-            }
-          ];
-        };
+        "default" = mkAndroid {};
       };
     };
   });

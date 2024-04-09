@@ -8,7 +8,10 @@ switch-ide-cn:
 	nix run .#home-manager -- switch --show-trace --impure --flake .#ide-cn -b backup
 
 switch-darwin:
-	nix run nix-darwin -- switch --show-trace --flake .#darwin
+	nix run .#nix-darwin -- switch --show-trace --flake .#darwin
+
+switch-android:
+	nix-on-droid switch --show-trace --flake .#default
 
 nixd:
 	nix eval --json --file .nixd.nix > .nixd.json
