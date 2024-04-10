@@ -1,4 +1,6 @@
-{ config, lib, pkgs, ... }:
+{ config, lib, pkgs, ... }: let
+  font = with pkgs; import ../common/font.nix { inherit fetchurl; };
+in
 
 {
   # Simply install just the packages
@@ -16,5 +18,7 @@
   '';
 
   # Set your time zone
-  #time.timeZone = "Europe/Berlin";
+  #time.timeZone = "Europe/Cerlin";
+
+  terminal.font = font.medium;
 }

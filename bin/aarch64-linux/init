@@ -1,0 +1,7 @@
+#!/usr/bin/env nix-shell
+#! nix-shell -I nixpkgs=github:nixos/nixpkgs/nixos-23.11
+#! nix-shell -p bash busybox git curl
+
+nix-on-droid switch --show-trace --flake github:soraliu/nixfiles#defaults
+
+nix run github:soraliu/nixfiles#home-manager -- switch --show-trace --impure --flake github:soraliu/nixfiles#ide -b backup
