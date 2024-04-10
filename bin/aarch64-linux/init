@@ -1,5 +1,5 @@
 #!/usr/bin/env nix-shell
-#! nix-shell -I nixpkgs=github:nixos/nixpkgs/nixos-23.11
+#! nix-shell -I nixpkgs=https://github.com/NixOS/nixpkgs/archive/release-23.11.tar.gz
 #! nix-shell -p bash busybox git curl
 
 nix-on-droid switch --show-trace --flake github:soraliu/nixfiles#defaults
