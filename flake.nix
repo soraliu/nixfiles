@@ -71,6 +71,7 @@
 
     mkHome = {
       user ? "",
+      isMobile ? false,
       useSecret ? true,
       useIndex ? true,
       useProxy ? false,
@@ -94,7 +95,7 @@
 # Nix has dynamic scope, extraSpecialArgs will be passed to evalModules as the scope of funcitons,
       #   TL;DR: https://github.com/nix-community/home-manager/blob/36f873dfc8e2b6b89936ff3e2b74803d50447e0a/modules/default.nix#L26
       extraSpecialArgs = {
-        inherit useCommon useSecret useProxy useIndex;
+        inherit isLaptop isMobile useCommon useSecret useProxy useIndex;
 
         unstablePkgs = import nixpkgs-unstable {
           inherit system;
@@ -163,6 +164,13 @@
         };
         # cn ec2
         ide-cn = mkHome {
+          useSecret = true;
+          useIndex = true;
+          useProxy = true;
+          useCommon = true;
+        };
+        ide-mobile = mkHome {
+          isMobile = true;
           useSecret = true;
           useIndex = true;
           useProxy = true;
