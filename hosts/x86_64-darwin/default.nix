@@ -1,13 +1,8 @@
 { config, pkgs, ... }: let
+  font = with pkgs; import ../common/font.nix { inherit fetchurl; };
   fonts = with pkgs; [
-    (fetchurl {
-      url = "https://drive.soraliu.dev/0:/Fonts/SauceCodeProNerdFontMono-MediumItalic.ttf";
-      hash = "sha256-N9L57FiiwlO2vzEMP6eLWLUW9omvfx812AEWgg2cd2c=";
-    })
-    (fetchurl {
-      url = "https://drive.soraliu.dev/0:/Fonts/SauceCodeProNerdFontMono-Medium.ttf";
-      hash = "sha256-wE9zp+h6hiO8qq5DXYsfEt6NGXdigCxUQbjzNGWFjhY=";
-    })
+    font.medium
+    font.mediumItalic
   ];
 in {
   # List packages installed in system profile. To search by name, run:
