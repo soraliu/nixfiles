@@ -1,4 +1,4 @@
-{ pkgs, ... }: {
+{ pkgs, isMobile, ... }: {
 
   imports = [
     # ./coc.nix
@@ -31,7 +31,11 @@
       (builtins.readFile ./marks.lua)           # Marks
       (builtins.readFile ./ai.lua)              # Copilot & ChatGPT
       (builtins.readFile ./treesitter.lua)      # Syntax highlight
-      (builtins.readFile ./lualine.lua)         # Status line
+      (builtins.readFile (pkgs.substituteAll {
+        src = ./lualine.lua;
+        branch = if isMobile then "" else "'branch',";
+        lualine_x = if isMobile then "'filetype'" else "'encoding', 'fileformat', 'filetype'";
+      })) # Status linelunixdefault
       (builtins.readFile ./bufferline.lua)      # Buffer line
       (builtins.readFile ./nvim-autopairs.lua)  # Auto pair symbols
       (builtins.readFile ./git.lua)             # Git Related

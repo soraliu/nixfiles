@@ -46,7 +46,7 @@ function bindkey_of_fzf() {
   bindkey           '^R' fzf-history-widget
   bindkey -M vicmd  '^R' fzf-history-widget
   bindkey           '^T' fzf-file-widget
-  bindkey -M vicmd  '^O' fzf-file-widget
+  bindkey -M vicmd  '^T' fzf-file-widget
   bindkey           '^]' fzf-cd-widget
   bindkey -M vicmd  '^]' fzf-cd-widget
   bindkey           "^O" fzf-pet-widget

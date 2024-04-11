@@ -174,7 +174,7 @@
           isMobile = true;
           useSecret = true;
           useIndex = true;
-          useProxy = true;
+          useProxy = false;
           useCommon = true;
         };
       };

@@ -121,8 +121,6 @@ table.insert(plugins, {{
             "jsonls",             -- json
             "gopls",              -- golang
             "tsserver",           -- js, jsx, ts, tsx
-            "lua_ls",             -- lua
-            "rust_analyzer",      -- rust
             "rnix",               -- nix
             "yamlls",             -- yaml
           },

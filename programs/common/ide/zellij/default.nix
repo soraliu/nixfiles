@@ -1,4 +1,4 @@
-{ pkgs, lib, isMobile, ... }: let
+{ pkgs, lib, config, isMobile, ... }: let
   pluginTpl = ''
     pane size=1 borderless=true {
       plugin location="file:~/.config/zellij/plugins/zjstatus.wasm" {
@@ -14,7 +14,7 @@
 
         format_space "#[bg=#181825]"
 
-        hide_frame_for_single_pane "true"
+        hide_frame_for_single_pane "false"
 
         mode_normal             "#[fg=#181825,bg=#AFFA00] Normal "
         mode_pane               "#[fg=#ffffffe,bg=#af0000] Pane "
@@ -40,15 +40,17 @@
   '';
   metricsTpl = ''
     pane size="60%" split_direction="vertical" {
-      pane command="bash" size="40%" {
-        args "-c" "(bandwhich 2>/dev/null) || sudo bandwhich"
+      ${if isMobile then "" else ''
+        pane command="bash" size="40%" {
+          args "-c" "(bandwhich 2>/dev/null) || sudo bandwhich"
+          start_suspended true
+        }
+      ''}
+      pane command="joshuto" size="${if isMobile then "50%" else "40%"}" {
         start_suspended true
       }
-      pane command="joshuto" size="40%" {
-        start_suspended true
-      }
-      pane command="dua" size="20%" {
-        args "interactive" "."
+      pane command="dua" size="${if isMobile then "50%" else "20%"}" {
+        args "interactive" "${config.home.homeDirectory}"
         start_suspended true
       }
     }

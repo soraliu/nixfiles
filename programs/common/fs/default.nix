@@ -7,6 +7,7 @@
   ];
 
   home.packages = (with pkgs; [
+    findutils                                 # find, xargs
     gnugrep                                   # GNU grep
     rsync                                     # fast incremental file transfer
                                                 # Github: https://github.com/WayneD/rsync
