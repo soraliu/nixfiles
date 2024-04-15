@@ -6,10 +6,11 @@ alias sc='sgpt --repl temp --no-cache'
 alias ss='sgpt --repl temp --no-cache --describe-shell'
 
 alias z='zellij'
-alias zl='zellij-layout-coding'
 alias zx='zellij action close-tab'
 alias zxp='z action go-to-previous-tab && zellij action close-tab'
 alias zko='z list-sessions | grep -v EXI | grep -v current | awk "{print \$1}" | sed "s/\x1B\[[0-9;]*[JKmsu]//g" | xargs -I {} bash -c "zellij kill-session {}"'
+alias zl='zellij-layout-coding'
+alias zlx='zl; zxp'
 
 alias cp='rsync --archive --human-readable --partial --info=progress2'
 alias rm='rm -f'
