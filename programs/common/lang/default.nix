@@ -17,6 +17,7 @@
   ];
 
   home.sessionVariables = {
-    PATH = "${pkgs.nodejs_20}/bin:$PATH";
+    GOPATH = "$HOME/go";
+    PATH = "${pkgs.nodejs_20}/bin:$GOPATH/bin:$PATH";
   };
 }
