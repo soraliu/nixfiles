@@ -7,6 +7,29 @@ table.insert(plugins, {
   'mg979/vim-visual-multi', -- Multiple cursors plugin
   'wellle/targets.vim', -- Expands on the idea of simple commands like di'
   {
+    'nvim-pack/nvim-spectre',
+    config = function()
+      require('spectre').setup({
+        mapping = keysPluginSpectre(),
+        default = {
+          find = {
+            cmd = 'rg',
+            options = { 'ignore-case' },
+          },
+          replace = {
+            cmd = 'sd',
+          },
+        },
+      })
+    end,
+  },
+  {
+    'rcarriga/nvim-notify', -- better UI of vim.notify
+    config = function()
+      vim.notify = require('notify')
+    end,
+  },
+  {
     'axieax/urlview.nvim',
     config = function()
       require('urlview').setup({

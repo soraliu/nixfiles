@@ -85,12 +85,18 @@ table.insert(plugins, {
             if next(clients) == nil then
               return msg
             end
+
+            local names = {}
             for _, client in ipairs(clients) do
               local filetypes = client.config.filetypes
               if filetypes and vim.fn.index(filetypes, buf_ft) ~= -1 then
-                return client.name
+                table.insert(names, client.name)
               end
             end
+            if #names > 0 then
+              return table.concat(names, ",")
+            end
+
             return msg
           end,
           icon = ' LSP:',
