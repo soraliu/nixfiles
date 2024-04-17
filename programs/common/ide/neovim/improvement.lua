@@ -23,8 +23,8 @@ table.insert(plugins, {
         default_action = 'system',
         -- Keymaps for jumping to previous / next URL in buffer
         jump = {
-          prev = '[u',
-          next = ']u',
+          prev = '',
+          next = '',
         },
       })
     end,

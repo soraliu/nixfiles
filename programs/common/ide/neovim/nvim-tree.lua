@@ -17,7 +17,7 @@ table.insert(plugins, {
       vim.opt.termguicolors = true
 
       -- register keymaps
-      local on_attach = keysRegisterTree()
+      local on_attach = keysRegisterFileTree()
 
       -- OR setup with some options
       require('nvim-tree').setup({
