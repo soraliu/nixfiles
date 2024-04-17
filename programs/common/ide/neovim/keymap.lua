@@ -113,7 +113,7 @@ function keysRegisterSearch()
         'Find Recent Files',
       },
       b = { builtin.buffers, 'Find Opened Buffers' },
-      g = { builtin.grep_string, 'Grep Cursor Word' },
+      w = { builtin.grep_string, 'Grep Cursor Word' },
       k = { builtin.keymaps, 'Find Keymaps' },
       h = { builtin.help_tags, 'Find Helps' },
       x = { builtin.commands, 'Find Commands' },
@@ -153,7 +153,7 @@ function keysRegisterSearch()
       z = { '<cmd>Telescope lazy<cr>', 'lazy.nvim' },
 
       -- file-browser
-      w = {
+      g = {
         function()
           require('telescope').extensions.file_browser.file_browser({ hidden = true, depth = 2 })
         end,

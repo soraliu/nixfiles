@@ -27,8 +27,9 @@
           push.default = "current";
           pull.rebase = "true";
           hub.protocol = "https";
+        } // (if pkgs.stdenv.isDarwin then {} else {
           credential.helper = "store";
-        };
+        });
       };
 
       gh = {
