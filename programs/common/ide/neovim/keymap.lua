@@ -181,8 +181,6 @@ function keysRegisterMarks()
       ['8'] = { '<cmd>Grapple select index=8<cr>', 'Select eighth tag' },
       ['9'] = { '<cmd>Grapple select index=9<cr>', 'Select ninth tag' },
     },
-    [']m'] = { '<cmd>Grapple cycle_tags next<cr>', 'Grapple cycle next tag' },
-    ['[m'] = { '<cmd>Grapple cycle_tags prev<cr>', 'Grapple cycle previous tag' },
   }, { mode = { 'n' } })
 end
 
@@ -209,7 +207,7 @@ function keysRegisterChatGPT()
   }, { mode = { 'n', 'v' } })
 end
 
-function keysRegisterTree()
+function keysRegisterFileTree()
   local wk = require('which-key')
 
   -- mappings
@@ -267,9 +265,6 @@ function keysRegisterLSP(opts)
       o = { vim.lsp.buf.type_definition, 'Go Type Definition' },
       d = { vim.lsp.buf.declaration, 'Go Declaration' },
     },
-
-    ['[d'] = { vim.diagnostic.goto_prev, 'Go Prev Diagnostic' },
-    [']d'] = { vim.diagnostic.goto_next, 'Go Next Diagnostic' },
 
     ['<leader>a'] = {
       name = 'Action',
@@ -393,28 +388,6 @@ function keysRegisterGit(bufnr, gs)
   local wk = require('which-key')
   local gitlinker = require('gitlinker')
 
-  -- Navigation
-  vim.keymap.set('n', '[v', function()
-    if vim.wo.diff then
-      return '[v'
-    end
-
-    vim.schedule(function()
-      gs.prev_hunk()
-    end)
-    return '<Ignore>'
-  end, { buffer = bufnr, expr = true, desc = 'Prev Hunk' })
-  vim.keymap.set('n', ']v', function()
-    if vim.wo.diff then
-      return ']v'
-    end
-
-    vim.schedule(function()
-      gs.next_hunk()
-    end)
-    return '<Ignore>'
-  end, { buffer = bufnr, expr = true, desc = 'Next Hunk' })
-
   wk.register({
     ['<leader>v'] = {
       name = 'Git',
@@ -498,6 +471,41 @@ function keysRegisterGit(bufnr, gs)
       },
     },
   }, { mode = 'v', buffer = bufnr })
+end
+
+function keysRegisterTSMove()
+  local wk = require('which-key')
+  local ts_repeat_move = require('nvim-treesitter.textobjects.repeatable_move')
+  local gs = require('gitsigns')
+  local url = require('urlview.jump')
+  local grapple = require('grapple')
+
+  local next_hunk_repeat, prev_hunk_repeat = ts_repeat_move.make_repeatable_move_pair(gs.next_hunk, gs.prev_hunk)
+  local next_url_repeat, prev_url_repeat = ts_repeat_move.make_repeatable_move_pair(url.next_url, url.prev_url)
+  local next_diagnostic_repeat, prev_diagnostic_repeat =
+    ts_repeat_move.make_repeatable_move_pair(vim.diagnostic.goto_next, vim.diagnostic.goto_prev)
+  local next_mark_repeat, prev_mark_repeat =
+    ts_repeat_move.make_repeatable_move_pair(grapple.cycle_forward, grapple.cycle_backward)
+
+  wk.register({
+    [';'] = { ts_repeat_move.repeat_last_move_next, 'Repeat Last Move Next' },
+    [','] = { ts_repeat_move.repeat_last_move_previous, 'Repeat Last Move Previous' },
+
+    ['['] = {
+      name = 'Move Prev',
+      ['v'] = { prev_hunk_repeat, 'Goto prev hunk' },
+      ['u'] = { prev_url_repeat, 'Goto prev URL' },
+      ['d'] = { prev_diagnostic_repeat, 'Goto prev Diagnostic' },
+      ['m'] = { prev_mark_repeat, 'Goto prev Mark' },
+    },
+    [']'] = {
+      name = 'Move Next',
+      ['v'] = { next_hunk_repeat, 'Goto next hunk' },
+      ['u'] = { next_url_repeat, 'Goto next URL' },
+      ['d'] = { next_diagnostic_repeat, 'Goto next Diagnostic' },
+      ['m'] = { next_mark_repeat, 'Goto next Mark' },
+    },
+  }, { mode = { 'n', 'x', 'o' } })
 end
 
 function keysPluginCmp()
@@ -589,12 +597,6 @@ function keysPluginComment()
       block = 'gb',
     },
   }
-end
-
-function keysRegisterClearMem()
-  local wk = require('which-key')
-
-  wk.register({})
 end
 
 table.insert(plugins, {
