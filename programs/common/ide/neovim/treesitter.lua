@@ -2,48 +2,48 @@
 -- Syntax
 -- ------------------------------------------------------------------------------------------------------------------------------
 table.insert(plugins, {
-  "nvim-treesitter/nvim-treesitter",
-  build = ":TSUpdate",
-  config = function ()
-    local configs = require("nvim-treesitter.configs")
+  'nvim-treesitter/nvim-treesitter',
+  build = ':TSUpdate',
+  config = function()
+    local configs = require('nvim-treesitter.configs')
 
     configs.setup({
       ensure_installed = {
         -- Doc
-        "markdown",
-        "markdown_inline",
+        'markdown',
+        'markdown_inline',
 
         -- Editor
-        "vim",
-        "vimdoc",
-        "lua",
+        'vim',
+        'vimdoc',
+        'lua',
 
         -- Conf
-        "json",
-        "jsonc",
-        "yaml",
-        "xml",
-        "kdl",
+        'json',
+        'jsonc',
+        'yaml',
+        'xml',
+        'kdl',
 
         -- DevOps
-        "nix",
-        "bash",
-        "c",
+        'nix',
+        'bash',
+        'c',
 
         -- BE
-        "go",
-        "gomod",
-        "python",
+        'go',
+        'gomod',
+        'python',
 
         -- FE
-        "html",
-        "css",
-        "scss",
-        "jsdoc",
-        "javascript",
-        "typescript",
-        "tsx",
-        "vue",
+        'html',
+        'css',
+        'scss',
+        'jsdoc',
+        'javascript',
+        'typescript',
+        'tsx',
+        'vue',
       },
       sync_install = false,
       highlight = { enable = true },
@@ -56,8 +56,8 @@ table.insert(plugins, {
           -- because of the conflict with chatgpt, I have to change the keymaps
           init_selection = false,
           scope_incremental = false,
-          node_incremental = "}",
-          node_decremental = "{",
+          node_incremental = '}',
+          node_decremental = '{',
         },
       },
     })

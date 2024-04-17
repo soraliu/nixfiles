@@ -338,6 +338,7 @@ table.insert(plugins, {
 
 -- -------------------------------------------------------------------------------------------------------------------------------
 -- LSP for none-ls and specific languages
+-- builtin sources: https://github.com/nvimtools/none-ls.nvim/blob/main/doc/BUILTINS.md
 -- -------------------------------------------------------------------------------------------------------------------------------
 table.insert(plugins, {
   {
