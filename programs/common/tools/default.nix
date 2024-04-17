@@ -15,6 +15,9 @@
     # string
     sd                                        # sed alternative
     jq                                        # jq format
+
+    # container
+    docker                                    # docker cli
   ]) ++ (with unstablePkgs; [
     bitwarden-cli                             # secret management
   ]);
