@@ -1,13 +1,12 @@
-
 -- ------------------------------------------------------------------------------------------------------------------------------
 -- Sidebar
 -- TODO :h nvim-tree-opts-diagnostics
 -- ------------------------------------------------------------------------------------------------------------------------------
 table.insert(plugins, {
   {
-    "nvim-tree/nvim-tree.lua",
+    'nvim-tree/nvim-tree.lua',
     dependencies = {
-      "nvim-tree/nvim-web-devicons",
+      'nvim-tree/nvim-web-devicons',
     },
     config = function()
       -- disable netrw at the very start of your init.lua
@@ -21,14 +20,14 @@ table.insert(plugins, {
       local on_attach = keysRegisterTree()
 
       -- OR setup with some options
-      require("nvim-tree").setup({
+      require('nvim-tree').setup({
         on_attach = on_attach,
         sort = {
-          sorter = "case_sensitive",
+          sorter = 'case_sensitive',
         },
         view = {
           width = 48,
-          side = "right",
+          side = 'right',
         },
         ui = {
           confirm = {
@@ -42,7 +41,6 @@ table.insert(plugins, {
           dotfiles = false,
         },
       })
-    end
+    end,
   },
 })
-

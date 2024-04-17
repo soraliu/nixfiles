@@ -25,7 +25,6 @@ function keysRegisterBase()
   -- open url
   vim.keymap.set('n', 'gx', ':sil !open <c-r><c-a><cr>', { silent = true, noremap = false, desc = 'Open Url' })
 
-
   wk.register({
     -- File Management
     ['<c-s>'] = { '<cmd>w<cr>', 'Save File' },
@@ -85,8 +84,18 @@ function keysRegisterSearch()
 
       -- Editor
       p = { '<cmd>Telescope<cr>', 'Telescope Home' },
-      l = { function() builtin.git_files({ show_untracked = true }) end, 'Find Files' },
-      o = { function() builtin.oldfiles({ cwd_only = true }) end, 'Find Recent Files' },
+      l = {
+        function()
+          builtin.git_files({ show_untracked = true })
+        end,
+        'Find Files',
+      },
+      o = {
+        function()
+          builtin.oldfiles({ cwd_only = true })
+        end,
+        'Find Recent Files',
+      },
       b = { builtin.buffers, 'Find Opened Buffers' },
       g = { builtin.grep_string, 'Grep Cursor Word' },
       k = { builtin.keymaps, 'Find Keymaps' },
@@ -128,9 +137,23 @@ function keysRegisterSearch()
       z = { '<cmd>Telescope lazy<cr>', 'lazy.nvim' },
 
       -- file-browser
-      w = { function() require 'telescope'.extensions.file_browser.file_browser({ hidden = true, depth = 2 }) end, 'File Browser' },
-      ['.'] = { function() require 'telescope'.extensions.file_browser.file_browser({ hidden = true, depth = 2, path =
-        '%:p:h', select_buffer = true }) end, 'File Browser' },
+      w = {
+        function()
+          require('telescope').extensions.file_browser.file_browser({ hidden = true, depth = 2 })
+        end,
+        'File Browser',
+      },
+      ['.'] = {
+        function()
+          require('telescope').extensions.file_browser.file_browser({
+            hidden = true,
+            depth = 2,
+            path = '%:p:h',
+            select_buffer = true,
+          })
+        end,
+        'File Browser',
+      },
     },
   }, { mode = 'n' })
 
@@ -146,20 +169,20 @@ function keysRegisterMarks()
   wk.register({
     ['m'] = {
       name = 'Mark',
-      a = { "<cmd>Grapple toggle<cr>", "Grapple toggle tag" },
-      l = { "<cmd>Grapple toggle_tags<cr>", "Grapple open tags window" },
-      ['1'] = { "<cmd>Grapple select index=1<cr>", "Select first tag" },
-      ['2'] = { "<cmd>Grapple select index=2<cr>", "Select second tag" },
-      ['3'] = { "<cmd>Grapple select index=3<cr>", "Select third tag" },
-      ['4'] = { "<cmd>Grapple select index=4<cr>", "Select fourth tag" },
-      ['5'] = { "<cmd>Grapple select index=5<cr>", "Select fifth tag" },
-      ['6'] = { "<cmd>Grapple select index=6<cr>", "Select sixth tag" },
-      ['7'] = { "<cmd>Grapple select index=7<cr>", "Select seventh tag" },
-      ['8'] = { "<cmd>Grapple select index=8<cr>", "Select eighth tag" },
-      ['9'] = { "<cmd>Grapple select index=9<cr>", "Select ninth tag" },
+      a = { '<cmd>Grapple toggle<cr>', 'Grapple toggle tag' },
+      l = { '<cmd>Grapple toggle_tags<cr>', 'Grapple open tags window' },
+      ['1'] = { '<cmd>Grapple select index=1<cr>', 'Select first tag' },
+      ['2'] = { '<cmd>Grapple select index=2<cr>', 'Select second tag' },
+      ['3'] = { '<cmd>Grapple select index=3<cr>', 'Select third tag' },
+      ['4'] = { '<cmd>Grapple select index=4<cr>', 'Select fourth tag' },
+      ['5'] = { '<cmd>Grapple select index=5<cr>', 'Select fifth tag' },
+      ['6'] = { '<cmd>Grapple select index=6<cr>', 'Select sixth tag' },
+      ['7'] = { '<cmd>Grapple select index=7<cr>', 'Select seventh tag' },
+      ['8'] = { '<cmd>Grapple select index=8<cr>', 'Select eighth tag' },
+      ['9'] = { '<cmd>Grapple select index=9<cr>', 'Select ninth tag' },
     },
-    ["]m"] = { "<cmd>Grapple cycle_tags next<cr>", "Grapple cycle next tag" },
-    ["[m"] = { "<cmd>Grapple cycle_tags prev<cr>", "Grapple cycle previous tag" },
+    [']m'] = { '<cmd>Grapple cycle_tags next<cr>', 'Grapple cycle next tag' },
+    ['[m'] = { '<cmd>Grapple cycle_tags prev<cr>', 'Grapple cycle previous tag' },
   }, { mode = { 'n' } })
 end
 
@@ -200,7 +223,7 @@ function keysRegisterTree()
   }, { mode = 'n' })
 
   local function on_attach(bufnr)
-    local api = require 'nvim-tree.api'
+    local api = require('nvim-tree.api')
 
     local function opts(desc)
       return { desc = 'nvim-tree: ' .. desc, buffer = bufnr, noremap = true, silent = true, nowait = true }
@@ -251,7 +274,12 @@ function keysRegisterLSP(opts)
     ['<leader>a'] = {
       name = 'Action',
       r = { vim.lsp.buf.rename, 'LSP Rename' },
-      f = { function() vim.lsp.buf.format({ async = true }) end, 'LSP Format' },
+      f = {
+        function()
+          vim.lsp.buf.format({ async = true })
+        end,
+        'LSP Format',
+      },
     },
   }, { mode = 'n', buffer = buffer })
 
@@ -284,7 +312,6 @@ function keysRegisterBuffer()
       ['['] = { '<cmd>BufferLineCyclePrev<cr>', 'Prev Buffer' },
       [']'] = { '<cmd>BufferLineCycleNext<cr>', 'Next Buffer' },
     },
-
 
     ['<leader>b'] = {
       name = 'Buffer Management',
@@ -368,15 +395,23 @@ function keysRegisterGit(bufnr, gs)
 
   -- Navigation
   vim.keymap.set('n', '[v', function()
-    if vim.wo.diff then return '[v' end
+    if vim.wo.diff then
+      return '[v'
+    end
 
-    vim.schedule(function() gs.prev_hunk() end)
+    vim.schedule(function()
+      gs.prev_hunk()
+    end)
     return '<Ignore>'
   end, { buffer = bufnr, expr = true, desc = 'Prev Hunk' })
   vim.keymap.set('n', ']v', function()
-    if vim.wo.diff then return ']v' end
+    if vim.wo.diff then
+      return ']v'
+    end
 
-    vim.schedule(function() gs.next_hunk() end)
+    vim.schedule(function()
+      gs.next_hunk()
+    end)
     return '<Ignore>'
   end, { buffer = bufnr, expr = true, desc = 'Next Hunk' })
 
@@ -389,19 +424,39 @@ function keysRegisterGit(bufnr, gs)
       R = { gs.reset_buffer, 'Reset Buffer' },
       u = { gs.undo_stage_hunk, 'Undo Stage Hunk' },
       p = { gs.preview_hunk, 'Preview Hunk' },
-      B = { function() gs.blame_line { full = true } end, 'Show Blame Line' },
+      B = {
+        function()
+          gs.blame_line({ full = true })
+        end,
+        'Show Blame Line',
+      },
 
       -- Github: https://github.com/tpope/vim-fugitive
       d = { '<cmd>Gdiffsplit<cr>', 'Show Diff' },
       b = { '<cmd>Git blame<cr>', 'Show Blame' },
 
       -- Github: https://github.com/ruifm/gitlinker.nvim
-      o = { function() gitlinker.get_buf_range_url('n', { action_callback = gitlinker.actions.open_in_browser }) end, 'Open Line in Browser' },
-      O = { function() gitlinker.get_repo_url({ action_callback = gitlinker.actions.open_in_browser }) end, 'Open Home in Browser' },
+      o = {
+        function()
+          gitlinker.get_buf_range_url('n', { action_callback = gitlinker.actions.open_in_browser })
+        end,
+        'Open Line in Browser',
+      },
+      O = {
+        function()
+          gitlinker.get_repo_url({ action_callback = gitlinker.actions.open_in_browser })
+        end,
+        'Open Home in Browser',
+      },
     },
     ['<leader>y'] = {
       name = 'Yank',
-      v = { function() gitlinker.get_buf_range_url('n') end, 'Copy Github Line Link' },
+      v = {
+        function()
+          gitlinker.get_buf_range_url('n')
+        end,
+        'Copy Github Line Link',
+      },
       V = { gitlinker.get_repo_url, 'Copy Github Home Link' },
     },
     ['<leader>t'] = {
@@ -414,13 +469,33 @@ function keysRegisterGit(bufnr, gs)
   wk.register({
     ['<leader>y'] = {
       name = 'Yank',
-      v = { function() gitlinker.get_buf_range_url('v') end, 'Copy Github Line Link' },
+      v = {
+        function()
+          gitlinker.get_buf_range_url('v')
+        end,
+        'Copy Github Line Link',
+      },
     },
     ['<leader>v'] = {
       name = 'Git',
-      r = { function() gs.reset_hunk { vim.fn.line('.'), vim.fn.line('v') } end, 'Reset Hunk' },
-      s = { function() gs.stage_hunk { vim.fn.line('.'), vim.fn.line('v') } end, 'Stage Hunk' },
-      o = { function() gitlinker.get_buf_range_url('v', { action_callback = gitlinker.actions.open_in_browser }) end, 'Open Line in Browser' },
+      r = {
+        function()
+          gs.reset_hunk({ vim.fn.line('.'), vim.fn.line('v') })
+        end,
+        'Reset Hunk',
+      },
+      s = {
+        function()
+          gs.stage_hunk({ vim.fn.line('.'), vim.fn.line('v') })
+        end,
+        'Stage Hunk',
+      },
+      o = {
+        function()
+          gitlinker.get_buf_range_url('v', { action_callback = gitlinker.actions.open_in_browser })
+        end,
+        'Open Line in Browser',
+      },
     },
   }, { mode = 'v', buffer = bufnr })
 end
@@ -519,8 +594,7 @@ end
 function keysRegisterClearMem()
   local wk = require('which-key')
 
-  wk.register({
-  })
+  wk.register({})
 end
 
 table.insert(plugins, {
@@ -538,6 +612,6 @@ table.insert(plugins, {
       -- your configuration comes here
       -- or leave it empty to use the default settings
       -- refer to the configuration section below
-    }
+    },
   },
 })

@@ -1,30 +1,30 @@
-local Shade = require("nightfox.lib.shade")
-require("nightfox").setup({
+local Shade = require('nightfox.lib.shade')
+require('nightfox').setup({
   options = {
     styles = {
       -- comments = "italic",
       -- keywords = "bold",
       -- types = "italic,bold",
-    }
+    },
   },
   palettes = {
     -- Custom duskfox with black background
     terafox = {
       -- black   = Shade.new("#2F3239", "#4e5157", "#282a30"),
-      red     = "#fc5d7c",
-      green   = "#9ed072",
-      yellow  = "#e7c664",
-      blue    = "#76cce0",
-      magenta = "#fc5d7c",
-      cyan    = "#a7df78",
+      red = '#fc5d7c',
+      green = '#9ed072',
+      yellow = '#e7c664',
+      blue = '#76cce0',
+      magenta = '#fc5d7c',
+      cyan = '#a7df78',
       -- white   = Shade.new("#ebebeb", "#eeeeee", "#c8c8c8"),
-      orange  = "#f39660",
+      orange = '#f39660',
       -- pink    = Shade.new("#cb7985", "#d38d97", "#ad6771"),
 
-      comment = "#7f8490",
+      comment = '#7f8490',
 
       -- bg0     = "#0f1c1e", -- Dark bg (status line and float)
-      bg1     = "#000000", -- Black background
+      bg1 = '#000000', -- Black background
       -- bg2     = "#1d3337", -- Lighter bg (colorcolm folds)
       -- bg3     = "#254147", -- Lighter bg (cursor line)
       -- bg4     = "#2d4f56", -- Conceal, border fg
