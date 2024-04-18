@@ -24,12 +24,12 @@ table.insert(plugins, {
           statusline = 1000,
           tabline = 1000,
           winbar = 1000,
-        }
+        },
       },
       sections = {
         lualine_a = { 'mode' },
         lualine_b = {
-          @branch@
+          '@branch@',
           'diff',
           {
             'diagnostics',
@@ -42,72 +42,85 @@ table.insert(plugins, {
             icon = '󰛢 ',
             cond = function()
               return package.loaded['grapple'] and require('grapple').exists()
-            end
+            end,
           },
         },
-        lualine_c = { { 'filename', path = 1, }, {
-          -- Insert mid section. You can make any number of sections in neovim :)
-          -- for lualine it's any number greater then 2
-          function()
-            return '%='
-          end,
-        }, {
-          'copilot',
-          -- Default values
-          symbols = {
-            status = {
-              icons = {
-                enabled = " ",
-                sleep = " ", -- auto-trigger disabled
-                disabled = " ",
-                warning = " ",
-                unknown = " "
+        lualine_c = {
+          { 'filename', path = 1 },
+          {
+            -- Insert mid section. You can make any number of sections in neovim :)
+            -- for lualine it's any number greater then 2
+            function()
+              return '%='
+            end,
+          },
+          {
+            'copilot',
+            -- Default values
+            symbols = {
+              status = {
+                icons = {
+                  enabled = ' Copilot: enalbed',
+                  sleep = ' Copilot: sleep', -- auto-trigger disabled
+                  disabled = ' Copilot: disabled',
+                  warning = ' Copilot: warning',
+                  unknown = ' Copilot: unknown',
+                },
+                hl = {
+                  enabled = '#FF5555',
+                  sleep = '#50FA7B',
+                  disabled = '#6272A4',
+                  warning = '#FFB86C',
+                  unknown = '#AEB7D0',
+                },
               },
-              hl = {
-                enabled = "#50FA7B",
-                sleep = "#AEB7D0",
-                disabled = "#6272A4",
-                warning = "#FFB86C",
-                unknown = "#FF5555"
-              }
+              spinners = require('copilot-lualine.spinners').dots,
+              spinner_color = '#50FA7B',
             },
-            spinners = require("copilot-lualine.spinners").dots,
-            spinner_color = "#50FA7B"
+            show_colors = true,
+            show_loading = true,
           },
-          show_colors = true,
-          show_loading = true,
-        }, {
-          -- Lsp server name .
-          function()
-            local msg = 'None'
-            local buf_ft = vim.api.nvim_buf_get_option(0, 'filetype')
-            local clients = vim.lsp.get_active_clients()
-            if next(clients) == nil then
-              return msg
-            end
-
-            local names = {}
-            for _, client in ipairs(clients) do
-              local filetypes = client.config.filetypes
-              if filetypes and vim.fn.index(filetypes, buf_ft) ~= -1 then
-                table.insert(names, client.name)
+          {
+            function()
+              return '│'
+            end,
+            color = {
+              fg = '#F8FDFD',
+            },
+          },
+          {
+            -- Lsp server name .
+            function()
+              local msg = 'None'
+              local buf_ft = vim.api.nvim_buf_get_option(0, 'filetype')
+              local clients = vim.lsp.get_active_clients()
+              if next(clients) == nil then
+                return msg
               end
-            end
-            if #names > 0 then
-              return table.concat(names, ",")
-            end
 
-            return msg
-          end,
-          icon = ' LSP:',
-          color = {
-            fg = '#fc5d7c',
-            -- gui = 'bold'
+              local names = {}
+              for _, client in ipairs(clients) do
+                local filetypes = client.config.filetypes
+                if filetypes and vim.fn.index(filetypes, buf_ft) ~= -1 then
+                  table.insert(names, client.name)
+                end
+              end
+              if #names > 0 then
+                return table.concat(names, ', ')
+              end
+
+              return msg
+            end,
+            icon = ' LSP:',
+            color = {
+              fg = '#fc5d7c',
+              -- gui = 'bold'
+            },
           },
-        } },
-        lualine_x = { @lualine_x@ },
+        },
+        lualine_x = { '@encoding@', '@fileformat@', 'filetype' },
         lualine_y = { 'progress' },
-        lualine_z = { 'location' }
+        lualine_z = { 'location' },
       },
       inactive_sections = {
         lualine_a = {},
@@ -115,12 +128,12 @@ table.insert(plugins, {
         lualine_c = { 'filename' },
         lualine_x = { 'location' },
         lualine_y = {},
-        lualine_z = {}
+        lualine_z = {},
       },
       tabline = {},
       winbar = {},
       inactive_winbar = {},
-      extensions = {}
+      extensions = {},
     })
   end,
 })

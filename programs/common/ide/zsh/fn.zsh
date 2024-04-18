@@ -25,3 +25,8 @@ proxy_off(){
   unset NO_PROXY
   echo -e "\033[31m[×] Proxy Off\033[0m"
 }
+
+function prev() {
+  PREV=$(fc -lrn | head -n 1)
+  sh -c "pet new `printf %q "$PREV"`"
+}

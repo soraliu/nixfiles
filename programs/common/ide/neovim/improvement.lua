@@ -119,6 +119,14 @@ table.insert(plugins, {
     end,
   },
   {
+    'soraliu/colortils.nvim',
+    config = function()
+      require('colortils').setup({
+        mappings = keysPluginColortils(),
+      })
+    end,
+  },
+  {
     'junegunn/vim-easy-align', -- A simple, easy-to-use Vim alignment plugin.
     config = function()
       keysRegisterEasyAlign()

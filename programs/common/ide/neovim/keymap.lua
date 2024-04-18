@@ -61,6 +61,9 @@ function keysRegisterImprovements()
 
       -- telescope notify
       m = { '<cmd>Telescope notify<cr>', 'Search msg & notification' },
+
+      -- Repo: soraliu/colortils.nvim
+      c = { '<cmd>Colortils css list<cr>', 'Show Css Colors' },
     },
     ['<leader>e'] = {
       name = 'Code Edit',
@@ -69,6 +72,8 @@ function keysRegisterImprovements()
       a = { '<cmd>ArgWrap<cr>', 'Args Wrap&Split' },
       -- Repo: AckslD/nvim-FeMaco.lua
       m = { '<cmd>FeMaco<cr>', 'Edit Markdown Codeblock' },
+      -- Repo: soraliu/colortils.nvim
+      c = { '<cmd>Colortils picker<cr>', 'Edit Color' },
     },
     ['<leader>r'] = {
       name = 'Replacement',
@@ -697,6 +702,39 @@ function keysPluginSpectre()
       cmd = "<cmd>lua require('spectre').resume_last_search()<CR>",
       desc = 'repeat last search',
     },
+  }
+end
+
+function keysPluginColortils()
+  return {
+    -- increment values
+    increment = 'l',
+    -- decrement values
+    decrement = 'h',
+    -- increment values with bigger steps
+    increment_big = 'L',
+    -- decrement values with bigger steps
+    decrement_big = 'H',
+    -- set values to the minimum
+    min_value = '^',
+    -- set values to the maximum
+    max_value = '$',
+    -- save the current color in the register specified above with the format specified above
+    set_register_default_format = '<cr>',
+    -- save the current color in the register specified above with a format you can choose
+    set_register_cjoose_format = 'g<cr>',
+    -- replace the color under the cursor with the current color in the format specified above
+    replace_default_format = '<m-cr>',
+    -- replace the color under the cursor with the current color in a format you can choose
+    replace_choose_format = 'g<m-cr>',
+    -- export the current color to a different tool
+    export = 'E',
+    -- set the value to a certain number (done by just entering numbers)
+    set_value = 'c',
+    -- toggle transparency
+    transparency = 'T',
+    -- choose the background (for transparent colors)
+    choose_background = 'B',
   }
 end
 
