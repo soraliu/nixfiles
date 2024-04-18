@@ -80,4 +80,82 @@ table.insert(plugins, {
       ]])
     end,
   },
+  {
+    'NvChad/nvim-colorizer.lua', -- show colors
+    config = function()
+      require('colorizer').setup()
+    end,
+  },
+  {
+    'soraliu/colortils.nvim',
+    config = function()
+      require('colortils').setup({
+        mappings = keysPluginColortils(),
+      })
+    end,
+  },
+  {
+    'levouh/tint.nvim', -- Dim inactive windows
+    config = function()
+      require('tint').setup({
+        tint = -60, -- Darken colors, use a positive value to brighten
+        saturation = 0.318, -- Saturation to preserve
+      })
+    end,
+  },
+  {
+    'rasulomaroff/reactive.nvim', -- Change colors based on mode
+    config = function()
+      require('reactive').add_preset({
+        name = 'cursorline',
+        init = function()
+          vim.opt.cursorline = true
+        end,
+        modes = {
+          n = {
+            winhl = {
+              CursorLine = { bg = '#254046' },
+              CursorLineNr = { fg = '#4F656A' },
+            },
+          },
+          i = {
+            winhl = {
+              CursorLine = { bg = '#3A4C2A' },
+              CursorLineNr = { fg = '#9ed072' },
+            },
+          },
+          c = {
+            winhl = {
+              CursorLine = { bg = '#3A4C2A' },
+              CursorLineNr = { fg = '#9ed072' },
+            },
+          },
+          -- visual
+          [{ 'v', 'V', '\x16' }] = {
+            winhl = {
+              CursorLine = { bg = '#8A3344' },
+              CursorLineNr = { fg = '#fc5d7c' },
+              Visual = { bg = '#8A3344' },
+            },
+          },
+          -- select
+          [{ 's', 'S', '\x13' }] = {
+            winhl = {
+              CursorLine = { bg = '#BE764B' },
+              CursorLineNr = { fg = '#f39660' },
+              Visual = { bg = '#BE764B' },
+            },
+          },
+          -- replace
+          R = {
+            winhl = {
+              CursorLine = { bg = '#BE764B' },
+              CursorLineNr = { fg = '#f39660' },
+              Visual = { bg = '#BE764B' },
+            },
+          },
+        },
+      })
+    end,
+  },
 })

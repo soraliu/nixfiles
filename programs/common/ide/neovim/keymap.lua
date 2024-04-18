@@ -38,6 +38,7 @@ function keysRegisterBase()
       j = { '<c-w>j', 'Focus on Bottom' },
       k = { '<c-w>k', 'Focus on Above' },
       r = { '<c-w>=', 'Restore window size' },
+      z = { '<cmd>ZenMode<cr>', 'Toggle ZenMode' },
       ['['] = { '<cmd>vertical resize -10<cr>', 'Vertical Size -10' },
       [']'] = { '<cmd>vertical resize +10<cr>', 'Vertical Size +10' },
       ['-'] = { '<cmd>resize -10<cr>', 'Window Size -10' },
@@ -82,6 +83,15 @@ function keysRegisterImprovements()
       ['o'] = { '<cmd>lua require("spectre").toggle()<CR>', 'Open spectre replacement' },
       ['w'] = { '<cmd>lua require("spectre").open_file_search({select_word=true})<CR>', 'Replace word on current file' },
       ['s'] = { '<cmd>lua require("spectre").open_visual({select_word=true})<CR>', 'Replace current word' },
+    },
+    ['<leader>t'] = {
+      name = 'Toggle',
+
+      -- Repo: levouh/tint.nvim
+      ['i'] = { '<cmd>lua require("tint").toggle()<cr>', 'Toggle dim inactive windown' },
+
+      -- Repo: hedyhli/outline.nvim
+      ['o'] = { '<cmd>Outline<CR>', 'Toggle outline' },
     },
   }, { mode = 'n' })
 
@@ -426,8 +436,8 @@ function keysRegisterGit(bufnr, gs)
       },
 
       -- Github: https://github.com/tpope/vim-fugitive
-      d = { '<cmd>Gdiffsplit<cr>', 'Show Diff' },
-      b = { '<cmd>Git blame<cr>', 'Show Blame' },
+      d = { '<cmd>Gdiffsplit<cr>', 'Show diff' },
+      b = { '<cmd>Git blame<cr>', 'Show blame' },
 
       -- Github: https://github.com/ruifm/gitlinker.nvim
       o = {
@@ -451,12 +461,12 @@ function keysRegisterGit(bufnr, gs)
         end,
         'Copy Github Line Link',
       },
-      V = { gitlinker.get_repo_url, 'Copy Github Home Link' },
+      V = { gitlinker.get_repo_url, 'Copy github home link' },
     },
     ['<leader>t'] = {
       name = 'Toggle',
-      ['b'] = { gs.toggle_current_line_blame, 'Toggle Line Blame' },
-      ['d'] = { gs.toggle_deleted, 'Toggle Deleted' },
+      ['b'] = { gs.toggle_current_line_blame, 'Toggle line blame' },
+      ['d'] = { gs.toggle_deleted, 'Toggle deleted' },
     },
   }, { mode = 'n', buffer = bufnr })
 
@@ -648,7 +658,7 @@ function keysPluginSpectre()
       desc = 'send all items to quickfix',
     },
     ['replace_cmd'] = {
-      map = '<leader>rc',
+      map = '<leader>ri',
       cmd = "<cmd>lua require('spectre.actions').replace_cmd()<CR>",
       desc = 'input replace command',
     },
