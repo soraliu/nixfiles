@@ -7,6 +7,53 @@ table.insert(plugins, {
   'mg979/vim-visual-multi', -- Multiple cursors plugin
   'wellle/targets.vim', -- Expands on the idea of simple commands like di'
   {
+
+    'hedyhli/outline.nvim',
+    lazy = true,
+    cmd = { 'Outline', 'OutlineOpen' },
+    keys = {
+      { '<leader>to', '<cmd>Outline<CR>', desc = 'Toggle outline' },
+    },
+    opts = {
+      -- Your setup opts here
+      outline_window = {
+        position = 'right',
+        width = 20,
+      },
+    },
+  },
+  {
+    'folke/zen-mode.nvim',
+    opts = {
+      window = {
+        backdrop = 1, -- shade the backdrop of the Zen window. Set to 1 to keep the same as Normal
+        width = 128, -- width of the Zen window
+        height = 1, -- height of the Zen window
+        options = {
+          -- signcolumn = "no", -- disable signcolumn
+          -- number = false, -- disable number column
+          -- relativenumber = false, -- disable relative numbers
+          -- cursorline = false, -- disable cursorline
+          -- cursorcolumn = false, -- disable cursor column
+          -- foldcolumn = "0", -- disable fold column
+          -- list = false, -- disable whitespace characters
+        },
+      },
+      plugins = {
+        options = {
+          enabled = true,
+          ruler = false, -- disables the ruler text in the cmd line area
+          showcmd = false, -- disables the command in the last line of the screen
+          -- you may turn on/off statusline in zen mode by setting 'laststatus'
+          -- statusline will be shown only if 'laststatus' == 3
+          laststatus = 0, -- turn off the statusline in zen mode
+        },
+        gitsigns = { enabled = false }, -- disables git signs
+        diagnostics = { enabled = false }, -- disables diagnostics
+      },
+    },
+  },
+  {
     'kevinhwang91/nvim-hlslens',
     config = function()
       require('hlslens').setup()
@@ -110,20 +157,6 @@ table.insert(plugins, {
       vim.cmd([[
         let g:indentLine_char = '|'
       ]])
-    end,
-  },
-  {
-    'NvChad/nvim-colorizer.lua', -- show colors
-    config = function()
-      require('colorizer').setup()
-    end,
-  },
-  {
-    'soraliu/colortils.nvim',
-    config = function()
-      require('colortils').setup({
-        mappings = keysPluginColortils(),
-      })
     end,
   },
   {
