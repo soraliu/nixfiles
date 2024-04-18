@@ -33,8 +33,9 @@
       (builtins.readFile ./treesitter.lua)      # Syntax highlight
       (builtins.readFile (pkgs.substituteAll {
         src = ./lualine.lua;
-        branch = if isMobile then "" else "'branch',";
-        lualine_x = if isMobile then "'filetype'" else "'encoding', 'fileformat', 'filetype'";
+        branch = if isMobile then "" else "branch";
+        encoding = if isMobile then "" else "encoding";
+        fileformat = if isMobile then "" else "fileformat";
       })) # Status linelunixdefault
       (builtins.readFile ./bufferline.lua)      # Buffer line
       (builtins.readFile ./nvim-autopairs.lua)  # Auto pair symbols

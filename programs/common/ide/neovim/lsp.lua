@@ -371,9 +371,7 @@ table.insert(plugins, {
         }),
         null_ls.builtins.formatting.stylua.with({
           extra_args = {
-            '--quote-style=AutoPreferSingle',
             '--indent-type=Spaces',
-            '--indent-width=2',
           },
         }),
       }
