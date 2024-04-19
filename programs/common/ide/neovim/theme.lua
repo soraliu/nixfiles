@@ -103,59 +103,93 @@ table.insert(plugins, {
       })
     end,
   },
+
   {
-    'rasulomaroff/reactive.nvim', -- Change colors based on mode
+    'mvllow/modes.nvim',
+    tag = 'v0.2.0',
     config = function()
-      require('reactive').add_preset({
-        name = 'cursorline',
-        init = function()
-          vim.opt.cursorline = true
-        end,
-        modes = {
-          n = {
-            winhl = {
-              CursorLine = { bg = '#254046' },
-              CursorLineNr = { fg = '#4F656A' },
-            },
-          },
-          i = {
-            winhl = {
-              CursorLine = { bg = '#3A4C2A' },
-              CursorLineNr = { fg = '#9ed072' },
-            },
-          },
-          c = {
-            winhl = {
-              CursorLine = { bg = '#3A4C2A' },
-              CursorLineNr = { fg = '#9ed072' },
-            },
-          },
-          -- visual
-          [{ 'v', 'V', '\x16' }] = {
-            winhl = {
-              CursorLine = { bg = '#8A3344' },
-              CursorLineNr = { fg = '#fc5d7c' },
-              Visual = { bg = '#8A3344' },
-            },
-          },
-          -- select
-          [{ 's', 'S', '\x13' }] = {
-            winhl = {
-              CursorLine = { bg = '#BE764B' },
-              CursorLineNr = { fg = '#f39660' },
-              Visual = { bg = '#BE764B' },
-            },
-          },
-          -- replace
-          R = {
-            winhl = {
-              CursorLine = { bg = '#BE764B' },
-              CursorLineNr = { fg = '#f39660' },
-              Visual = { bg = '#BE764B' },
-            },
-          },
+      require('modes').setup({
+        colors = {
+          copy = '#f5c359',
+          delete = '#c75c6a',
+          insert = '#3A4C2A',
+          visual = '#8A3344',
         },
+
+        -- Set opacity for cursorline and number background
+        line_opacity = 0.618,
+
+        -- Enable cursor highlights
+        set_cursor = true,
+
+        -- Enable cursorline initially, and disable cursorline for inactive windows
+        -- or ignored filetypes
+        set_cursorline = true,
+
+        -- Enable line number highlights to match cursorline
+        set_number = true,
+
+        -- Disable modes highlights in specified filetypes
+        -- Please PR commonly ignored filetypes
+        ignore_filetypes = { 'NvimTree', 'TelescopePrompt' },
       })
     end,
   },
+  -- Disable reactive.nvim because it's not working properly with telescope, need to upgrade nvim
+  -- TL;DR: https://github.com/rasulomaroff/reactive.nvim/issues/5
+  -- {
+  --   'rasulomaroff/reactive.nvim', -- Change colors based on mode
+  --   config = function()
+  --     require('reactive').add_preset({
+  --       name = 'cursorline',
+  --       init = function()
+  --         vim.opt.cursorline = true
+  --       end,
+  --       modes = {
+  --         n = {
+  --           winhl = {
+  --             CursorLine = { bg = '#254046' },
+  --             CursorLineNr = { fg = '#4F656A' },
+  --           },
+  --         },
+  --         i = {
+  --           winhl = {
+  --             CursorLine = { bg = '#3A4C2A' },
+  --             CursorLineNr = { fg = '#9ed072' },
+  --           },
+  --         },
+  --         c = {
+  --           winhl = {
+  --             CursorLine = { bg = '#3A4C2A' },
+  --             CursorLineNr = { fg = '#9ed072' },
+  --           },
+  --         },
+  --         -- visual
+  --         [{ 'v', 'V', '\x16' }] = {
+  --           winhl = {
+  --             CursorLine = { bg = '#8A3344' },
+  --             CursorLineNr = { fg = '#fc5d7c' },
+  --             Visual = { bg = '#8A3344' },
+  --           },
+  --         },
+  --         -- select
+  --         [{ 's', 'S', '\x13' }] = {
+  --           winhl = {
+  --             CursorLine = { bg = '#BE764B' },
+  --             CursorLineNr = { fg = '#f39660' },
+  --             Visual = { bg = '#BE764B' },
+  --           },
+  --         },
+  --         -- replace
+  --         R = {
+  --           winhl = {
+  --             CursorLine = { bg = '#BE764B' },
+  --             CursorLineNr = { fg = '#f39660' },
+  --             Visual = { bg = '#BE764B' },
+  --           },
+  --         },
+  --       },
+  --     })
+  --   end,
+  -- },
 })
