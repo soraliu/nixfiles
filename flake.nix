@@ -55,6 +55,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.home-manager.follows = "home-manager";
     };
+
+    # neovim-nightly-overlay = {
+    #   url = "github:nix-community/neovim-nightly-overlay";
+    #   inputs.nixpkgs.follows = "nixpkgs";
+    # };
   };
 
   outputs = inputs@{
@@ -68,7 +73,9 @@
     ...
   }: with flake-utils.lib; eachDefaultSystem (system: let
     log = v : builtins.trace v v;
-
+    overlays = [
+      # inputs.neovim-nightly-overlay.overlay
+    ];
     mkHome = {
       user ? "",
       isMobile ? false,
@@ -81,6 +88,7 @@
       pkgs = builtins.trace system (import nixpkgs {
         inherit system;
         config.allowUnfree = true;
+        # overlays = overlays;
       });
 
       modules = log (builtins.filter (el: el != "") [

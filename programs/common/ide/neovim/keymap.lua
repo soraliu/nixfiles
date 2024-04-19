@@ -462,6 +462,8 @@ function keysRegisterGit(bufnr, gs)
         'Copy Github Line Link',
       },
       V = { gitlinker.get_repo_url, 'Copy github home link' },
+      p = { "<cmd>let @+ = expand('%:~:.')<cr>", 'Copy relative path' },
+      P = { "<cmd>let @+ = expand('%:p')<cr>", 'Copy abs path' },
     },
     ['<leader>t'] = {
       name = 'Toggle',
@@ -763,6 +765,9 @@ table.insert(plugins, {
       -- your configuration comes here
       -- or leave it empty to use the default settings
       -- refer to the configuration section below
+      triggers_blacklist = {
+        n = { 'j', 'k' },
+      },
     },
   },
 })

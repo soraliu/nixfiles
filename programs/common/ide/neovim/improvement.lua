@@ -54,7 +54,7 @@ table.insert(plugins, {
     },
   },
   {
-    'kevinhwang91/nvim-hlslens',
+    'kevinhwang91/nvim-hlslens', -- Highlight the lens of the search result
     config = function()
       require('hlslens').setup()
 
