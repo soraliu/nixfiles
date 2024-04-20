@@ -106,7 +106,7 @@ table.insert(plugins, {
 
   {
     'mvllow/modes.nvim',
-    tag = 'v0.2.0',
+    branch = 'main',
     config = function()
       require('modes').setup({
         colors = {
@@ -127,7 +127,7 @@ table.insert(plugins, {
         set_cursorline = true,
 
         -- Enable line number highlights to match cursorline
-        set_number = true,
+        set_number = false,
 
         -- Disable modes highlights in specified filetypes
         -- Please PR commonly ignored filetypes
