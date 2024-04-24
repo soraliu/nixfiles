@@ -14,8 +14,6 @@ function keysRegisterBase()
   -- movement when auto wrap
   vim.keymap.set('n', 'j', 'gj', { silent = true })
   vim.keymap.set('n', 'k', 'gk', { silent = true })
-  vim.keymap.set('v', 'j', 'gj', { silent = true })
-  vim.keymap.set('v', 'k', 'gk', { silent = true })
   -- do/undo
   -- vim.keymap.set('i', '<c-u>', '<c-o>u', { noremap = true })
   -- vim.keymap.set('i', '<c-r>', '<c-o><c-r>', { noremap = true })
