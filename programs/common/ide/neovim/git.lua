@@ -43,12 +43,12 @@ table.insert(plugins, {
         current_line_blame_formatter = '<author>, <author_time:%Y-%m-%d> - <summary>',
 
         on_attach = function(bufnr)
-          keysRegisterGit(bufnr, package.loaded.gitsigns)
-
           vim.cmd([[
             highlight gitsignscurrentlineblame guifg=#7f8490
           ]])
         end,
+
+        keysRegisterGit(package.loaded.gitsigns),
       })
     end,
   },

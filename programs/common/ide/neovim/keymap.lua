@@ -413,7 +413,7 @@ function keysRegisterGomove()
   }, { mode = 'x' })
 end
 
-function keysRegisterGit(bufnr, gs)
+function keysRegisterGit(gs)
   local wk = require('which-key')
   local gitlinker = require('gitlinker')
 
@@ -468,7 +468,7 @@ function keysRegisterGit(bufnr, gs)
       ['b'] = { gs.toggle_current_line_blame, 'Toggle line blame' },
       ['d'] = { gs.toggle_deleted, 'Toggle deleted' },
     },
-  }, { mode = 'n', buffer = bufnr })
+  }, { mode = 'n' })
 
   wk.register({
     ['<leader>y'] = {
@@ -501,7 +501,7 @@ function keysRegisterGit(bufnr, gs)
         'Open Line in Browser',
       },
     },
-  }, { mode = 'v', buffer = bufnr })
+  }, { mode = 'v' })
 end
 
 function keysRegisterTSMove()

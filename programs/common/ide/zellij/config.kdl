@@ -113,6 +113,8 @@ keybinds clear-defaults=true {
 
         bind "Alt ["                { GoToPreviousTab; }
         bind "Alt ]"                { GoToNextTab; }
+
+        bind "Alt z"                { ToggleFocusFullscreen; }
     }
     shared_except "normal" "entersearch" {
         bind "Ctrl c" "Enter"       { ScrollToBottom; SwitchToMode "normal"; }
