@@ -115,6 +115,3 @@ set shortmess-=S
 
 " Disable mouse
 set mouse=
-
-" Disable conceal
-set conceallevel=0

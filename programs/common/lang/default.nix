@@ -6,6 +6,7 @@
     clang-tools_16                            # better than gcc13, provide c++ tools
 
     nodejs_20                                 # nodejs, npm
+    yarn-berry                                # yarn berry
 
     python3                                   # python3
     python311Packages.pip                     # pip3
