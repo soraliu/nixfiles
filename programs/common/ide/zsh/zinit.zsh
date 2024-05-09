@@ -35,6 +35,7 @@ zinit lucid wait for OMZP::docker-compose OMZP::kubectl https://raw.githubuserco
 # OMZ - alias, don't lazy load to make sure the correct loading of `./alias.zsh`
 zinit snippet OMZL::directories.zsh
 zinit snippet OMZP::common-aliases
+zinit snippet OMZL::git.zsh
 zinit snippet OMZP::git
 zinit snippet OMZP::git-extras
 

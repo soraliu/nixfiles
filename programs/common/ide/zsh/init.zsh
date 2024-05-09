@@ -14,3 +14,8 @@ ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=6'
 
 # keys
 [ -f $HOME/.keys.zsh ] && source $HOME/.keys.zsh
+
+# set path
+export PATH=$HOME/.nix-profile/bin:/run/current-system/sw/bin:/nix/var/nix/profiles/default/bin:$PATH
+# use commands that installed by mint, like `xcodegen`
+[ -d $HOME/.mint/bin ] && export PATH=$HOME/.mint/bin:$PATH
