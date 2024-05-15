@@ -68,7 +68,7 @@ keybinds clear-defaults=true {
         bind "J"          { Resize "Decrease Down"; }
         bind "K"          { Resize "Decrease Up"; }
         bind "L"          { Resize "Decrease Right"; }
-        bind "=" "+"      { Resize "Increase"; }
+        bind "+"          { Resize "Increase"; }
         bind "-"          { Resize "Decrease"; }
     }
     move {
@@ -102,11 +102,15 @@ keybinds clear-defaults=true {
     }
     shared {
         bind "Alt n"                { NewPane; }
-        bind "Alt h" "Alt Left"     { MoveFocusOrTab "Left"; }
-        bind "Alt l" "Alt Right"    { MoveFocusOrTab "Right"; }
-        bind "Alt j" "Alt Down"     { MoveFocus "Down"; }
-        bind "Alt k" "Alt Up"       { MoveFocus "Up"; }
-        bind "Alt =" "Alt +"        { Resize "Increase"; }
+        bind "Alt h"                { MoveFocusOrTab "Left"; }
+        bind "Alt l"                { MoveFocusOrTab "Right"; }
+        bind "Alt j"                { MoveFocus "Down"; }
+        bind "Alt k"                { MoveFocus "Up"; }
+
+        bind "Alt Right"            { NewPane "Right"; }
+        bind "Alt Down"             { NewPane "Down"; }
+
+        bind "Alt +"                { Resize "Increase"; }
         bind "Alt -"                { Resize "Decrease"; }
         bind "Alt q"                { CloseFocus; }
         bind "Alt x"                { CloseTab; }
@@ -114,7 +118,17 @@ keybinds clear-defaults=true {
         bind "Alt ["                { GoToPreviousTab; }
         bind "Alt ]"                { GoToNextTab; }
 
-        bind "Alt z"                { ToggleFocusFullscreen; }
+        bind "Alt m"                { ToggleFocusFullscreen; }
+
+        bind "Alt 1"                { GoToTab 1; }
+        bind "Alt 2"                { GoToTab 2; }
+        bind "Alt 3"                { GoToTab 3; }
+        bind "Alt 4"                { GoToTab 4; }
+        bind "Alt 5"                { GoToTab 5; }
+        bind "Alt 6"                { GoToTab 6; }
+        bind "Alt 7"                { GoToTab 7; }
+        bind "Alt 8"                { GoToTab 8; }
+        bind "Alt 9"                { GoToTab 9; }
     }
     shared_except "normal" "entersearch" {
         bind "Ctrl c" "Enter"       { ScrollToBottom; SwitchToMode "normal"; }
