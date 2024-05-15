@@ -6,6 +6,7 @@
   config = {
     home.packages = with pkgs; [
       git-open
+      hub                 # Command-line wrapper for git that makes you better at GitHub
       git-extras          # extra git alias
       diff-so-fancy       # good-looking diffs filter for git
       # bfg-repo-cleaner    # big file cleaner for git
@@ -40,6 +41,9 @@
         decryptFiles = [{
           from = "secrets/.git-credentials.enc";
           to = ".git-credentials";
+        } {
+          from = "secrets/.config/hub";
+          to = ".config/hub";
         }];
       };
     };
