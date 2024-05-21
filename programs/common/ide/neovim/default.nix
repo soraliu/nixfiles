@@ -43,6 +43,8 @@
       (builtins.readFile ./improvement.lua)     # Improvements of using neovim
 
       (builtins.readFile ./lazy-post.lua)       # Execute lazy.nvim setup, this line must be at the end of all lazy.nvim plugins Lua config
+
+      (builtins.readFile ./fixup.lua)           # Fix some weird config
     ];
 
     extraConfig = builtins.concatStringsSep "\n\n\n" [
