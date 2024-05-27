@@ -60,6 +60,16 @@ table.insert(plugins, {
         end,
       })
 
+      -- swift
+      require('lspconfig').sourcekit.setup({
+        -- cmd = { "sourcekit-lsp" },
+        -- root_dir = lspconfig.util.root_pattern(".git", "Package.swift", "compile_commands.json"),
+        cmd = { 'xcrun', 'sourcekit-lsp' },
+        filetypes = { 'swift', 'objective-c', 'objective-cpp' },
+        root_dir = require('lspconfig').util.root_pattern('*.xcodeproj', '*.xcworkspace', '.git'),
+        settings = {},
+      })
+
       -- Golang
       lspconfig.gopls.setup({
         settings = {

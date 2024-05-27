@@ -23,6 +23,7 @@
 
   home.sessionVariables = {
     GOPATH = "$HOME/go";
-    PATH = "${pkgs.nodejs_20}/bin:$GOPATH/bin:$PATH";
+    ANDROID_HOME = "$HOME/Library/Android/sdk";
+    PATH = "${pkgs.nodejs_20}/bin:$GOPATH/bin:$ANDROID_HOME/emulator:$ANDROID_HOME/platform-tools:$PATH";
   };
 }
