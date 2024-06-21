@@ -51,6 +51,7 @@ table.insert(plugins, {
           'typescript',
           'tsx',
           'vue',
+          'kotlin',
         },
         sync_install = false,
         highlight = { enable = true },
