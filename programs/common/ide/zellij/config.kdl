@@ -119,6 +119,7 @@ keybinds clear-defaults=true {
         bind "Alt ]"                { GoToNextTab; }
 
         bind "Alt m"                { ToggleFocusFullscreen; }
+        bind "Alt w"                { ToggleFloatingPanes; }
 
         bind "Alt 1"                { GoToTab 1; }
         bind "Alt 2"                { GoToTab 2; }
