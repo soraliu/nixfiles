@@ -149,9 +149,22 @@ table.insert(plugins, {
             version = 'v2.*', -- Replace <CurrentMajor> by the latest released major (first number of latest release)
             -- install jsregexp (optional!).
             build = 'make install_jsregexp',
+            dependencies = {
+              'soraliu/friendly-snippets', -- include common used snippets,
+              branch = 'main',
+            },
+            config = function(_, opts)
+              if opts then
+                require('luasnip').config.setup(opts)
+              end
+              vim.tbl_map(function(type)
+                require('luasnip.loaders.from_' .. type).lazy_load()
+              end, { 'vscode', 'snipmate', 'lua' })
+              -- friendly-snippets - enable standardized comments snippets
+              -- require('luasnip').filetype_extend('typescript', { 'javascript' })
+            end,
           },
           'saadparwaiz1/cmp_luasnip', -- cmp adapter of luasnip
-          'rafamadriz/friendly-snippets', -- include common used snippets
           'onsails/lspkind-nvim', -- show icons
           'octaltree/cmp-look', -- completing words in English
         },
