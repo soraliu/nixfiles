@@ -1,5 +1,7 @@
 { pkgs, unstablePkgs, ... }: {
   imports = [
+    # link files
+    ./linker
     # file sync
     ./rclone
     # encrypt & decrypt
