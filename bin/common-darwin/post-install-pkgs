@@ -79,5 +79,4 @@ install_dmg -n 'Discord.app' -u 'https://discord.com/api/download?platform=osx' 
 install_dmg -n '网易有道翻译.app' -u 'https://codown.youdao.com/cidian/download/MacDict.dmg' &
 install_dmg -n 'KeyClu.app' -u 'https://github.com/Anze/KeyCluCask/releases/download/v0.25/KeyClu_v0.25.dmg' &
 
-
 wait
