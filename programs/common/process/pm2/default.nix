@@ -33,7 +33,7 @@ in {
       pm2
     ];
 
-    activation.initPm2 = hm.dag.entryAfter ["initRclone"] ''
+    activation.initPm2 = hm.dag.entryAfter ["linkGeneration"] ''
       pm2_bin=${pkgs.pm2}/bin/pm2
 
       set +e

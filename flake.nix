@@ -99,8 +99,8 @@
         (if (user != "" && builtins.pathExists ./users/${system}/${user}) then ./users/${system}/${user} else if builtins.pathExists ./users/${system} then ./users/${system} else ./users)
       ] ++ extraModules);
 
+      # Nix has dynamic scope, extraSpecialArgs will be passed to evalModules as the scope of funcitons,
       #   which means those functions can access `useSecret` directly instead of `specialArgs.useSecret`
-# Nix has dynamic scope, extraSpecialArgs will be passed to evalModules as the scope of funcitons,
       #   TL;DR: https://github.com/nix-community/home-manager/blob/36f873dfc8e2b6b89936ff3e2b74803d50447e0a/modules/default.nix#L26
       extraSpecialArgs = {
         inherit isMobile useCommon useSecret useProxy useIndex;
