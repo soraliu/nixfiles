@@ -13,10 +13,5 @@
 in  {
   config = {
     home.packages = [ app ];
-
-    programs.linker.links = [{
-      source = "gdrive:Sync/Config/Darwin/.snipaste";
-      link = (builtins.getEnv "HOME") + "/.snipaste";
-    }];
   };
 }
