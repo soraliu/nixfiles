@@ -2,7 +2,7 @@
 
 set -e
 
-path_to_database_key=~/.config/raycast/database_key
+path_to_database_key=~/.config/raycast_database_key
 
 mkdir -p $(dirname $path_to_database_key)
 

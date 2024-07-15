@@ -18,12 +18,3 @@ else
   sudo chsh -s "$path_to_zsh"
   echo "Success: ${path_to_zsh} now is the default shell."
 fi
-
-if [ -x "$(command -v pm2)" ]; then
-  # check if is running on macOS
-  if [ "$(uname)" == "Darwin" ]; then
-    mkdir -p $HOME/Library/LaunchAgents
-  fi
-
-  bash -c "sudo $(which pm2) startup"
-fi

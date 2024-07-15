@@ -7,7 +7,7 @@
     programs = {
       sops.decryptFiles = [{
         from = "secrets/.config/raycast/database_key.enc";
-        to = ".config/raycast/database_key";
+        to = ".config/raycast_database_key";
       }];
 
       linker.links = [
