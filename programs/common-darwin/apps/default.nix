@@ -1,7 +1,6 @@
 { unstablePkgs, ... }: {
   imports = [
     ./iterm2
-    ./karabiner
     ./raycast
     ./snipaste
   ];
@@ -11,7 +10,6 @@
       postman
       dbeaver
       obsidian
-      caffeine
     ];
   };
 }
