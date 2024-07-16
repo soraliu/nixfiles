@@ -81,9 +81,13 @@ install_dmg -n 'KeyClu.app' -u 'https://github.com/Anze/KeyCluCask/releases/down
 if $(uname -m | grep -q 'arm'); then
   install_dmg -n 'Docker.app' -u 'https://desktop.docker.com/mac/main/arm64/Docker.dmg?utm_source=docker&utm_medium=webreferral&utm_campaign=docs-driven-download-mac-arm64' &
   install_dmg -n 'Synergy.app' -u 'https://symless.com/synergy/synergy/api/download/synergy-macOS_arm64-v3.0.80.1-rc3.dmg' &
+  install_dmg -n 'Todoist.app' -u 'https://todoist.com/mac_app?arch=arm' &
+  install_dmg -n 'Wireshark.app' -u 'https://2.na.dl.wireshark.org/osx/Wireshark%204.2.6%20Arm%2064.dmg' &
 elif $(uname -m | grep -q 'x86'); then
   install_dmg -n 'Docker.app' -u 'https://desktop.docker.com/mac/main/amd64/Docker.dmg?utm_source=docker&utm_medium=webreferral&utm_campaign=docs-driven-download-mac-amd64' &
   install_dmg -n 'Synergy.app' -u 'https://symless.com/synergy/synergy/api/download/synergy-macOS_x64-v3.0.80.1-rc3.dmg' &
+  install_dmg -n 'Todoist.app' -u 'https://todoist.com/mac_app?arch=x64' &
+  install_dmg -n 'Wireshark.app' -u 'https://2.na.dl.wireshark.org/osx/Wireshark%204.2.6%20Intel%2064.dmg' &
 else
   echo "Error: Unknown arch $(uname -m)"
 fi

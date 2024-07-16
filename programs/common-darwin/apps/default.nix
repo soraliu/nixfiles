@@ -1,8 +1,10 @@
 { unstablePkgs, ... }: {
   imports = [
+    ./clashx
     ./iterm2
     ./raycast
     ./snipaste
+    ./sublime
   ];
 
   home = {
