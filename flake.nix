@@ -127,10 +127,12 @@
         config.allowUnfree = true;
       };
 
-      modules = [
-        ./hosts/${system}
+      modules = log (builtins.filter (el: el != "") [
+        (if builtins.elem system (builtins.attrNames systemMaps) then ./hosts/${systemMaps.${system}} else "")
+
+        (if builtins.pathExists ./hosts/${system} then ./hosts/${system} else "")
         (if builtins.pathExists ./hosts/${system}/${host} then ./hosts/${system}/${host} else "")
-      ];
+      ]);
 
       specialArgs = { inherit inputs; };
     };

@@ -41,7 +41,7 @@ switch-android:
 # -------------------- all-in-one init --------------------
 init-vpn-server: pre-init-nix pre-init-age switch-vpn-server post-init-pm2
 init-ide: pre-init-nix pre-init-age switch-ide post-init-pm2 post-init-zsh
-init-ide-on-darwin: init-ide darwin-post-install-pkgs darwin-post-link-dirs darwin-post-restore-raycast
+init-ide-on-darwin: init-ide switch-darwin darwin-post-install-pkgs darwin-post-link-dirs darwin-post-restore-raycast
 init-ide-on-mobile: mobile-pre-init-nix-on-doird switch-ide-mobile
 
 
