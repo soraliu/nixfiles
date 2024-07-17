@@ -250,91 +250,95 @@ function keysRegisterGit(gs)
   local wk = require('which-key')
   local gitlinker = require('gitlinker')
 
-  wk.register({
-    ['<leader>v'] = {
-      name = 'Git',
-      s = { gs.stage_hunk, 'Stage Hunk' },
-      S = { gs.stage_buffer, 'Stage Buffer' },
-      r = { gs.reset_hunk, 'Reset Hunk' },
-      R = { gs.reset_buffer, 'Reset Buffer' },
-      u = { gs.undo_stage_hunk, 'Undo Stage Hunk' },
-      p = { gs.preview_hunk, 'Preview Hunk' },
-      B = {
-        function()
-          gs.blame_line({ full = true })
-        end,
-        'Show Blame Line',
-      },
+  wk.add({
+    mode = 'n',
 
-      -- Github: https://github.com/tpope/vim-fugitive
-      d = { '<cmd>Gdiffsplit<cr>', 'Show diff' },
-      b = { '<cmd>Git blame<cr>', 'Show blame' },
+    { '<space>v',  group = 'Git' },
+    { '<space>vs', gs.stage_hunk,      desc = 'Stage Hunk' },
+    { '<space>vS', gs.stage_buffer,    desc = 'Stage Buffer' },
+    { '<space>vr', gs.reset_hunk,      desc = 'Reset Hunk' },
+    { '<space>vR', gs.reset_buffer,    desc = 'Reset Buffer' },
+    { '<space>vu', gs.undo_stage_hunk, desc = 'Undo Stage Hunk' },
+    { '<space>vp', gs.preview_hunk,    desc = 'Preview Hunk' },
+    {
+      '<space>vB',
+      function()
+        gs.blame_line({ full = true })
+      end,
+      desc = 'Show Blame Line',
+    },
+    -- Github: https://github.com/tpope/vim-fugitive
+    { '<space>vd', '<cmd>Gdiffsplit<cr>', desc = 'Show diff' },
+    { '<space>vb', '<cmd>Git blame<cr>',  desc = 'Show blame' },
+    -- Github: https://github.com/ruifm/gitlinker.nvim
+    {
+      '<space>vo',
+      function()
+        gitlinker.get_buf_range_url('n', { action_callback = gitlinker.actions.open_in_browser })
+      end,
+      desc = 'Open Line in Browser',
+    },
+    {
+      '<space>vO',
+      function()
+        gitlinker.get_repo_url({ action_callback = gitlinker.actions.open_in_browser })
+      end,
+      desc = 'Open Home in Browser',
+    },
 
-      -- Github: https://github.com/ruifm/gitlinker.nvim
-      o = {
-        function()
-          gitlinker.get_buf_range_url('n', { action_callback = gitlinker.actions.open_in_browser })
-        end,
-        'Open Line in Browser',
-      },
-      O = {
-        function()
-          gitlinker.get_repo_url({ action_callback = gitlinker.actions.open_in_browser })
-        end,
-        'Open Home in Browser',
-      },
+    -- Yank
+    { '<space>y',  group = 'Yank' },
+    {
+      '<space>yv',
+      function()
+        gitlinker.get_buf_range_url('n')
+      end,
+      desc = 'Copy Github Line Link',
     },
-    ['<leader>y'] = {
-      name = 'Yank',
-      v = {
-        function()
-          gitlinker.get_buf_range_url('n')
-        end,
-        'Copy Github Line Link',
-      },
-      V = { gitlinker.get_repo_url, 'Copy github home link' },
-      p = { "<cmd>let @+ = expand('%:~:.')<cr>", 'Copy relative path' },
-      P = { "<cmd>let @+ = expand('%:p')<cr>", 'Copy abs path' },
-    },
-    ['<leader>t'] = {
-      name = 'Toggle',
-      ['b'] = { gs.toggle_current_line_blame, 'Toggle line blame' },
-      ['d'] = { gs.toggle_deleted, 'Toggle deleted' },
-    },
-  }, { mode = 'n' })
+    { '<space>yV', gitlinker.get_repo_url,              desc = 'Copy github home link' },
+    { '<space>yp', "<cmd>let @+ = expand('%:~:.')<cr>", desc = 'Copy relative path' },
+    { '<space>yP', "<cmd>let @+ = expand('%:p')<cr>",   desc = 'Copy abs path' },
 
-  wk.register({
-    ['<leader>y'] = {
-      name = 'Yank',
-      v = {
-        function()
-          gitlinker.get_buf_range_url('v')
-        end,
-        'Copy Github Line Link',
-      },
+    -- Toggle
+    { '<space>t',  group = 'Toggle' },
+    { '<space>tb', gs.toggle_current_line_blame,        desc = 'Toggle line blame' },
+    { '<space>td', gs.toggle_deleted,                   desc = 'Toggle deleted' },
+  })
+
+  wk.add({
+    mode = 'v',
+    { '<space>y', group = 'Yank' },
+    {
+      '<space>yv',
+      function()
+        gitlinker.get_buf_range_url('v')
+      end,
+      desc = 'Copy Github Line Link',
     },
-    ['<leader>v'] = {
-      name = 'Git',
-      r = {
-        function()
-          gs.reset_hunk({ vim.fn.line('.'), vim.fn.line('v') })
-        end,
-        'Reset Hunk',
-      },
-      s = {
-        function()
-          gs.stage_hunk({ vim.fn.line('.'), vim.fn.line('v') })
-        end,
-        'Stage Hunk',
-      },
-      o = {
-        function()
-          gitlinker.get_buf_range_url('v', { action_callback = gitlinker.actions.open_in_browser })
-        end,
-        'Open Line in Browser',
-      },
+
+    { '<space>v', group = 'Git' },
+    {
+      '<space>vr',
+      function()
+        gs.reset_hunk({ vim.fn.line('.'), vim.fn.line('v') })
+      end,
+      desc = 'Reset Hunk',
     },
-  }, { mode = 'v' })
+    {
+      '<space>vs',
+      function()
+        gs.stage_hunk({ vim.fn.line('.'), vim.fn.line('v') })
+      end,
+      desc = 'Stage Hunk',
+    },
+    {
+      '<space>vo',
+      function()
+        gitlinker.get_buf_range_url('v', { action_callback = gitlinker.actions.open_in_browser })
+      end,
+      desc = 'Open Line in Browser',
+    },
+  })
 end
 
 function keysRegisterTSMove()
@@ -351,47 +355,24 @@ function keysRegisterTSMove()
   local next_mark_repeat, prev_mark_repeat =
       ts_repeat_move.make_repeatable_move_pair(grapple.cycle_forward, grapple.cycle_backward)
 
-  wk.register({
-    [';'] = { ts_repeat_move.repeat_last_move_next, 'Repeat Last Move Next' },
-    [','] = { ts_repeat_move.repeat_last_move_previous, 'Repeat Last Move Previous' },
+  wk.add({
+    mode = { 'n', 'x', 'o' },
 
-    ['['] = {
-      name = 'Move Prev',
-      ['v'] = { prev_hunk_repeat, 'Goto prev hunk' },
-      ['u'] = { prev_url_repeat, 'Goto prev URL' },
-      ['d'] = { prev_diagnostic_repeat, 'Goto prev Diagnostic' },
-      ['m'] = { prev_mark_repeat, 'Goto prev Mark' },
-    },
-    [']'] = {
-      name = 'Move Next',
-      ['v'] = { next_hunk_repeat, 'Goto next hunk' },
-      ['u'] = { next_url_repeat, 'Goto next URL' },
-      ['d'] = { next_diagnostic_repeat, 'Goto next Diagnostic' },
-      ['m'] = { next_mark_repeat, 'Goto next Mark' },
-    },
-  }, { mode = { 'n', 'x', 'o' } })
-end
+    { ';',  ts_repeat_move.repeat_last_move_next,     desc = 'Repeat Last Move Next' },
+    { ',',  ts_repeat_move.repeat_last_move_previous, desc = 'Repeat Last Move Previous' },
 
-function keysPluginComment()
-  vim.keymap.set('x', '<c-_>', '<Plug>(comment_toggle_linewise_visual)')
-  vim.keymap.set('x', '<c-\\>', '<Plug>(comment_toggle_blockwise_visual)')
+    { '[',  group = 'Move Prev' },
+    { '[v', prev_hunk_repeat,                         desc = 'Goto prev hunk' },
+    { '[u', prev_url_repeat,                          desc = 'Goto prev URL' },
+    { '[d', prev_diagnostic_repeat,                   desc = 'Goto prev Diagnostic' },
+    { '[m', prev_mark_repeat,                         desc = 'Goto prev Mark' },
 
-  return {
-    ---LHS of toggle mappings in NORMAL mode
-    toggler = {
-      ---Line-comment toggle keymap
-      line = '<c-_>',
-      ---Block-comment toggle keymap
-      block = '<c-\\>',
-    },
-    ---LHS of operator-pending mappings in NORMAL and VISUAL mode
-    opleader = {
-      ---Line-comment keymap
-      line = 'gc',
-      ---Block-comment keymap
-      block = 'gb',
-    },
-  }
+    { ']',  group = 'Move Next' },
+    { ']v', next_hunk_repeat,                         desc = 'Goto next hunk' },
+    { ']u', next_url_repeat,                          desc = 'Goto next URL' },
+    { ']d', next_diagnostic_repeat,                   desc = 'Goto next Diagnostic' },
+    { ']m', next_mark_repeat,                         desc = 'Goto next Mark' },
+  })
 end
 
 function keysPluginSpectre()
@@ -417,32 +398,32 @@ function keysPluginSpectre()
       desc = 'open file',
     },
     ['send_to_qf'] = {
-      map = '<leader>rq',
+      map = '<space>rq',
       cmd = "<cmd>lua require('spectre.actions').send_to_qf()<CR>",
       desc = 'send all items to quickfix',
     },
     ['replace_cmd'] = {
-      map = '<leader>ri',
+      map = '<space>ri',
       cmd = "<cmd>lua require('spectre.actions').replace_cmd()<CR>",
       desc = 'input replace command',
     },
     ['show_option_menu'] = {
-      map = '<leader>rm',
+      map = '<space>rm',
       cmd = "<cmd>lua require('spectre').show_options()<CR>",
       desc = 'show options',
     },
     ['run_current_replace'] = {
-      map = '<leader>rc',
+      map = '<space>rc',
       cmd = "<cmd>lua require('spectre.actions').run_current_replace()<CR>",
       desc = 'replace current line',
     },
     ['run_replace'] = {
-      map = '<leader>ra',
+      map = '<space>ra',
       cmd = "<cmd>lua require('spectre.actions').run_replace()<CR>",
       desc = 'replace all',
     },
     ['change_view_mode'] = {
-      map = '<leader>rv',
+      map = '<space>rv',
       cmd = "<cmd>lua require('spectre').change_view()<CR>",
       desc = 'change result view mode',
     },
@@ -472,7 +453,7 @@ function keysPluginSpectre()
       desc = 'toggle search hidden',
     },
     ['resume_last_search'] = {
-      map = '<leader>rl',
+      map = '<space>rl',
       cmd = "<cmd>lua require('spectre').resume_last_search()<CR>",
       desc = 'repeat last search',
     },
@@ -527,9 +508,9 @@ table.insert(plugins, {
       -- your configuration comes here
       -- or leave it empty to use the default settings
       -- refer to the configuration section below
-      triggers_blacklist = {
-        n = { 'j', 'k' },
-      },
+      -- triggers_blacklist = {
+      --   n = { 'j', 'k' },
+      -- },
     },
   },
 })
