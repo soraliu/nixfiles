@@ -2,10 +2,10 @@
 -- Improvements
 -- ------------------------------------------------------------------------------------------------------------------------------
 table.insert(plugins, {
-  'soraliu/vim-argwrap', -- Split arguments into multiple lines
-  'imsnif/kdl.vim', -- KDL language syntax & indent
+  'soraliu/vim-argwrap',    -- Split arguments into multiple lines
+  'imsnif/kdl.vim',         -- KDL language syntax & indent
   'mg979/vim-visual-multi', -- Multiple cursors plugin
-  'wellle/targets.vim', -- Expands on the idea of simple commands like di'
+  'wellle/targets.vim',     -- Expands on the idea of simple commands like di'
   {
 
     'hedyhli/outline.nvim',
@@ -27,8 +27,8 @@ table.insert(plugins, {
     opts = {
       window = {
         backdrop = 1, -- shade the backdrop of the Zen window. Set to 1 to keep the same as Normal
-        width = 128, -- width of the Zen window
-        height = 1, -- height of the Zen window
+        width = 128,  -- width of the Zen window
+        height = 1,   -- height of the Zen window
         options = {
           -- signcolumn = "no", -- disable signcolumn
           -- number = false, -- disable number column
@@ -42,13 +42,13 @@ table.insert(plugins, {
       plugins = {
         options = {
           enabled = true,
-          ruler = false, -- disables the ruler text in the cmd line area
+          ruler = false,   -- disables the ruler text in the cmd line area
           showcmd = false, -- disables the command in the last line of the screen
           -- you may turn on/off statusline in zen mode by setting 'laststatus'
           -- statusline will be shown only if 'laststatus' == 3
-          laststatus = 0, -- turn off the statusline in zen mode
+          laststatus = 0,                  -- turn off the statusline in zen mode
         },
-        gitsigns = { enabled = false }, -- disables git signs
+        gitsigns = { enabled = false },    -- disables git signs
         diagnostics = { enabled = false }, -- disables diagnostics
       },
     },
@@ -136,20 +136,35 @@ table.insert(plugins, {
   },
   {
     'booperlv/nvim-gomove', -- move/duplicate lines
-    config = function()
-      require('gomove').setup({
-        -- whether or not to map default key bindings, (true/false)
-        map_defaults = false,
-        -- whether or not to reindent lines moved vertically (true/false)
-        reindent = true,
-        -- whether or not to undojoin same direction moves (true/false)
-        undojoin = true,
-        -- whether to not to move past end column when moving blocks horizontally, (true/false)
-        move_past_end_col = false,
-      })
+    opts = {
+      -- whether or not to map default key bindings, (true/false)
+      map_defaults = false,
+      -- whether or not to reindent lines moved vertically (true/false)
+      reindent = true,
+      -- whether or not to undojoin same direction moves (true/false)
+      undojoin = true,
+      -- whether to not to move past end column when moving blocks horizontally, (true/false)
+      move_past_end_col = false,
+    },
+    keys = {
+      { '<space>dh', '<Plug>GoNSDLeft',  mode = 'n', desc = 'Duplicate Left' },
+      { '<space>dj', '<Plug>GoNSDDown',  mode = 'n', desc = 'Duplicate Down' },
+      { '<space>dk', '<Plug>GoNSDUp',    mode = 'n', desc = 'Duplicate Up' },
+      { '<space>dl', '<Plug>GoNSDRight', mode = 'n', desc = 'Duplicate Right' },
+      { '<C-h>',     '<Plug>GoNSMLeft',  mode = 'n', desc = 'Move Left' },
+      { '<C-j>',     '<Plug>GoNSMDown',  mode = 'n', desc = 'Move Down' },
+      { '<C-k>',     '<Plug>GoNSMUp',    mode = 'n', desc = 'Move Up' },
+      { '<C-l>',     '<Plug>GoNSMRight', mode = 'n', desc = 'Move Right' },
 
-      keysRegisterGomove()
-    end,
+      { '<space>dh', '<Plug>GoVSDLeft',  mode = 'x', desc = 'Duplicate Left' },
+      { '<space>dj', '<Plug>GoVSDDown',  mode = 'x', desc = 'Duplicate Down' },
+      { '<space>dk', '<Plug>GoVSDUp',    mode = 'x', desc = 'Duplicate Up' },
+      { '<space>dl', '<Plug>GoVSDRight', mode = 'x', desc = 'Duplicate Right' },
+      { '<C-h>',     '<Plug>GoVSMLeft',  mode = 'x', desc = 'Move Left' },
+      { '<C-j>',     '<Plug>GoVSMDown',  mode = 'x', desc = 'Move Down' },
+      { '<C-k>',     '<Plug>GoVSMUp',    mode = 'x', desc = 'Move Up' },
+      { '<C-l>',     '<Plug>GoVSMRight', mode = 'x', desc = 'Move Right' },
+    },
   },
   {
     'Yggdroot/indentLine', -- display the indention levels with thin vertical lines

@@ -1,7 +1,6 @@
 { pkgs, isMobile, ... }: {
 
   imports = [
-    # ./coc.nix
     ../search/ripgrep
   ];
 
@@ -27,6 +26,7 @@
       ''
 
 
+      (builtins.readFile ./snippet.lua)         # Snippet
       (builtins.readFile ./lsp.lua)             # LSP
       (builtins.readFile ./marks.lua)           # Marks
       (builtins.readFile ./ai.lua)              # Copilot & ChatGPT
