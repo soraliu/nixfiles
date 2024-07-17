@@ -21,6 +21,9 @@ in {
   system.defaults.dock.orientation = "left";
   system.defaults.NSGlobalDomain._HIHideMenuBar = true;
 
+  system.defaults.NSGlobalDomain.InitialKeyRepeat = 12;
+  system.defaults.NSGlobalDomain.KeyRepeat = 2;
+
   fonts.fontDir.enable = true;
   fonts.fonts = fonts;
 }
