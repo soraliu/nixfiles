@@ -22,6 +22,7 @@ table.insert(plugins, {
         -- Opt to list sources here, when available in mason.
         'prettierd',
         'eslint_d',
+        'revive',
       },
       automatic_installation = false,
       handlers = {},

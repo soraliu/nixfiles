@@ -243,31 +243,54 @@ table.insert(plugins, {
 -- comment
 -- ------------------------------------------------------------------------------------------------------------------------------
 table.insert(plugins, {
-  'numToStr/Comment.nvim',
-  lazy = false,
-  dependencies = {
-    'JoosepAlviste/nvim-ts-context-commentstring',
+  {
+    'numToStr/Comment.nvim',
+    lazy = true,
+    keys = {
+      { '<c-_>',  '<Plug>(comment_toggle_linewise)',         mode = 'n' },
+      { '<c-\\>', '<Plug>(comment_toggle_blockwise)',        mode = 'n' },
+      { '<c-_>',  '<Plug>(comment_toggle_linewise_visual)',  mode = 'x' },
+      { '<c-\\>', '<Plug>(comment_toggle_blockwise_visual)', mode = 'x' },
+    },
     config = function()
-      require('ts_context_commentstring').setup({
-        enable_autocmd = false,
-      })
+      local keymaps = {
+        ---LHS of toggle mappings in NORMAL mode
+        toggler = {
+          ---Line-comment toggle keymap
+          line = '<c-_>',
+          ---Block-comment toggle keymap
+          block = '<c-\\>',
+        },
+        ---LHS of operator-pending mappings in NORMAL and VISUAL mode
+        opleader = {
+          ---Line-comment keymap
+          line = 'gc',
+          ---Block-comment keymap
+          block = 'gb',
+        },
+      }
+
+      function mergeTables(t1, t2)
+        for k, v in pairs(t2) do
+          t1[k] = v
+        end
+        return t1
+      end
+
+      require('Comment').setup(mergeTables({
+        ignore = '^$',
+        pre_hook = require('ts_context_commentstring.integrations.comment_nvim').create_pre_hook(),
+      }, keymaps))
     end,
   },
-  config = function()
-    local keymaps = keysPluginComment()
+  {
+    'JoosepAlviste/nvim-ts-context-commentstring',
+    lazy = true,
+    opts = {
 
-    function mergeTables(t1, t2)
-      for k, v in pairs(t2) do
-        t1[k] = v
-      end
-      return t1
-    end
-
-    require('Comment').setup(mergeTables({
-      ignore = '^$',
-      pre_hook = require('ts_context_commentstring.integrations.comment_nvim').create_pre_hook(),
-    }, keymaps))
-  end,
+      enable_autocmd = false,
+    },
+  },
 })
 
 -- ------------------------------------------------------------------------------------------------------------------------------
