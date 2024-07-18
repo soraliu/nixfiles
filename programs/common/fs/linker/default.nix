@@ -39,14 +39,8 @@ in
           mkdir -p $(dirname '${link}')
 
           path_to_source=${pathToHome}/$(echo '${source}' | ${pkgs.gnused}/bin/sed 's/gdrive:/Google Drive\\/My Drive\\//')
-
-          if [ -e \"$path_to_source\" ]; then
-            ln -s \"$path_to_source\" '${link}'
-
-            echo \"$path_to_source -> ${link}\"
-          else
-            echo \"Error: $path_to_source does not exist\"
-          fi
+          ln -s \"$path_to_source\" '${link}'
+          echo \"${link} => $path_to_source\"
 
         ") links)}
       '';

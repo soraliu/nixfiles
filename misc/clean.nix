@@ -25,11 +25,19 @@ with lib; {
 
     home.activation.clean =
       lib.hm.dag.entryAfter [ "linkGeneration" ] ''
+        set +e
+
+        pm2_bin=${pkgs.pm2}/bin/pm2
+        $pm2_bin delete all 2>/dev/null
+        $pm2_bin save --force
+
         # Remove rclone files
         echo "rm -rf ${home}/Rclone"
         rm -rf ${home}/Rclone
         echo "rm -rf ${home}/.config/rclone"
         rm -rf ${home}/.config/rclone
+
+        set -e
       '';
   };
 }
