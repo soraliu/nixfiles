@@ -5,5 +5,7 @@
     ./neovim
     ./zellij
     ./search
+
+    ./copilot.nix
   ];
 }
