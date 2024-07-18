@@ -1,11 +1,13 @@
 { pkgs, unstablePkgs, lib, config, ... }:
 let
+  pathToRcloneRoot = "${builtins.getEnv "HOME"}/Rclone/";
+
   cfg = config.programs.rclone;
   # [{ remote = "gdrive:path/to/dir"; local = "$HOME/Drive/path/to/dir"; link = "/another_path/to/dir"; filter = "/path/to/filters.txt";  }]
-  paths = map ({remote, local ? "", filter ? ""}: {
-    inherit remote filter;
+  syncPaths = map ({remote, local ? "", filter ? "", command ? "bisync"}: {
+    inherit remote filter command;
     link = local;
-    local = builtins.getEnv "HOME" + "/Rclone/" + (builtins.elemAt (lib.strings.splitString ":" remote) 1);
+    local = pathToRcloneRoot + (builtins.elemAt (lib.strings.splitString ":" remote) 1);
   }) cfg.syncPaths;
   commonFilter = pkgs.writeText "rclone-filters.txt" ''
 # NOTICE: If you make changes to this file you MUST do a --resync run.
@@ -16,14 +18,22 @@ let
   pathToScript = pkgs.writeText "rclone-pm2-script" ''
     #!/usr/bin/env zsh
 
-    ${if builtins.length paths == 0 then "echo 'Nothing to sync!'" else ""}
+    ${if builtins.length syncPaths == 0 then "echo 'Nothing to sync!'" else ""}
 
-    ${builtins.concatStringsSep "\n\n" (map ({local, remote, filter, ...}: " \
-      ( \
-        ${unstablePkgs.rclone}/bin/rclone bisync '${remote}' '${local}' --filter-from '${commonFilter}' ${if filter != "" then "--filter-from '" + filter + "'" else ""} --remove-empty-dirs --fix-case --resilient --conflict-resolve newer -v || \
-        ${unstablePkgs.rclone}/bin/rclone bisync '${remote}' '${local}' --filter-from '${commonFilter}' ${if filter != "" then "--filter-from '" + filter + "'" else ""} --remove-empty-dirs --fix-case --resilient --conflict-resolve newer --resync --resync-mode newer -v \
-      ) & \
-    ") paths)}
+    ${builtins.concatStringsSep "\n\n" (map ({local, remote, filter, command, ...}: "
+      (
+        if [ ${command} == 'copy' ]; then
+          echo 'copying ${remote} to ${local}...'
+          ${unstablePkgs.rclone}/bin/rclone copy '${remote}' '${local}' --filter-from '${commonFilter}' ${if filter != "" then "--filter-from '" + filter + "'" else ""} --remove-empty-dirs --resilient --conflict-resolve newer -v
+        elif [ ${command} == 'sync' ]; then
+          echo 'bisyncing ${remote} to ${local}...'
+          ${unstablePkgs.rclone}/bin/rclone bisync '${remote}' '${local}' --filter-from '${commonFilter}' ${if filter != "" then "--filter-from '" + filter + "'" else ""} --remove-empty-dirs --fix-case --resilient --conflict-resolve newer -v || \
+          ${unstablePkgs.rclone}/bin/rclone bisync '${remote}' '${local}' --filter-from '${commonFilter}' ${if filter != "" then "--filter-from '" + filter + "'" else ""} --remove-empty-dirs --fix-case --resilient --conflict-resolve newer --resync --resync-mode newer -v
+        else
+          echo 'invalid command ${command}!'
+        fi
+      ) &
+    ") syncPaths)}
 
     wait
 
@@ -46,15 +56,15 @@ in
   options.programs.rclone = {
     enable = lib.mkOption {
       type = lib.types.bool;
-      default = false;
+      default = true;
       example = false;
       description = lib.mdDoc "Whether to enable rclone.";
     };
     syncPaths = lib.mkOption {
       type = lib.types.listOf lib.types.attrs;
       default = [ ];
-      example = [{ local = "/path/to/dir"; remote = "gdrive:path/to/dir"; filter = "/path/to/filters.txt"; }];
-      description = lib.mdDoc "rclone bisync paths. Notice: paths only support directories and can't be ended with /";
+      example = [{ local = "/path/to/dir"; remote = "gdrive:path/to/dir"; filter = "/path/to/filters.txt"; command = "copy"; }];
+      description = lib.mdDoc "rclone [command] paths. Notice: paths only support directories and can't be ended with /";
     };
   };
 
@@ -69,26 +79,27 @@ in
         cp "$path_to_rclone_conf".readonly "$path_to_rclone_conf"
         chmod +w "$path_to_rclone_conf"
 
-        ${builtins.concatStringsSep "\n\n" (map ({remote, local, link, filter}: "( \
+        ${builtins.concatStringsSep "\n\n" (map ({remote, local, link, filter}: "(
           # check if the dir of local exists
           mkdir -p $(dirname '${local}')
 
           # backup link dir, and relink
+          # if link exists but local doesn't, copy link to local
           if [ '${link}' != '' ]; then
-            [ -L '${link}' ] && unlink '${link}' \
-            [ -e '${link}' ] && [ ! -e '${local}' ] && cp -r '${link}' '${local}' \
-            [ -e '${link}' ] && mv -f '${link}' '${link}.backup' \
-            ln -s '${local}' '${link}' \
+            [ -L '${link}' ] && unlink '${link}'
+            [ -e '${link}' ] && [ ! -e '${local}' ] && cp -r '${link}' '${local}'
+            [ -e '${link}' ] && mv -f '${link}' '${link}.backup'
+            ln -s '${local}' '${link}'
           fi
 
           # check if remote exists
-          [ -d '${local}' ] && $path_to_rclone_bin mkdir '${remote}' || echo '${remote} exists!' \
+          [ -d '${local}' ] && $path_to_rclone_bin mkdir '${remote}' || echo '${remote} exists!'
 
           # check if local dir exists
           if [ ! -d '${local}' ]; then
             mkdir -p '${local}'
           fi
-        ) &") paths)}
+        ) &") syncPaths)}
 
         wait
       '';
@@ -101,7 +112,7 @@ in
           to = ".config/rclone/rclone.conf.readonly";
         }];
       };
-      pm2 = {
+      pm2 = lib.mkIf (builtins.length syncPaths > 0) {
         services = [{
           name = "rclone";
           script = pathToScript;

@@ -23,6 +23,8 @@ switch-vpn-server:
 	nix run .#home-manager -- switch --show-trace --impure --flake .#vpn-server -b backup
 switch-ide:
 	nix run .#home-manager -- switch --show-trace --impure --flake .#ide -b backup
+switch-ide-mirror:
+	nix run .#home-manager -- switch --show-trace --impure --flake .#ide-mirror -b backup
 switch-ide-cn:
 	nix run .#home-manager -- switch --show-trace --impure --flake .#ide-cn -b backup
 switch-ide-mobile:
