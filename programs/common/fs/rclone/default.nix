@@ -22,10 +22,10 @@ let
 
     ${builtins.concatStringsSep "\n\n" (map ({local, remote, filter, command, ...}: "
       (
-        if [ ${command} == 'copy' ]; then
+        if [ '${command}' = 'copy' ]; then
           echo 'copying ${remote} to ${local}...'
-          ${unstablePkgs.rclone}/bin/rclone copy '${remote}' '${local}' --filter-from '${commonFilter}' ${if filter != "" then "--filter-from '" + filter + "'" else ""} --remove-empty-dirs --resilient --conflict-resolve newer -v
-        elif [ ${command} == 'sync' ]; then
+          ${unstablePkgs.rclone}/bin/rclone copy '${remote}' '${local}' --filter-from '${commonFilter}' ${if filter != "" then "--filter-from '" + filter + "'" else ""} -v
+        elif [ '${command}' = 'sync' ]; then
           echo 'bisyncing ${remote} to ${local}...'
           ${unstablePkgs.rclone}/bin/rclone bisync '${remote}' '${local}' --filter-from '${commonFilter}' ${if filter != "" then "--filter-from '" + filter + "'" else ""} --remove-empty-dirs --fix-case --resilient --conflict-resolve newer -v || \
           ${unstablePkgs.rclone}/bin/rclone bisync '${remote}' '${local}' --filter-from '${commonFilter}' ${if filter != "" then "--filter-from '" + filter + "'" else ""} --remove-empty-dirs --fix-case --resilient --conflict-resolve newer --resync --resync-mode newer -v
@@ -79,7 +79,7 @@ in
         cp "$path_to_rclone_conf".readonly "$path_to_rclone_conf"
         chmod +w "$path_to_rclone_conf"
 
-        ${builtins.concatStringsSep "\n\n" (map ({remote, local, link, filter}: "(
+        ${builtins.concatStringsSep "\n\n" (map ({remote, local, link, filter, ...}: "(
           # check if the dir of local exists
           mkdir -p $(dirname '${local}')
 
