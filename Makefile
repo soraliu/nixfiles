@@ -29,6 +29,8 @@ switch-ide-cn:
 	nix run .#home-manager -- switch --show-trace --impure --flake .#ide-cn -b backup
 switch-ide-mobile:
 	nix run .#home-manager -- switch --show-trace --impure --flake .#ide-mobile -b backup
+switch-clean:
+	nix run .#home-manager -- switch --show-trace --impure --flake .#clean
 
 
 
