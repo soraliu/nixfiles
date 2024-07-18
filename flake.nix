@@ -87,6 +87,8 @@
       useIndex ? true,
       useProxy ? false,
       useCommon ? true,
+      # useMirrorDrive is a boolean to config if copy remote config from google drive by rclone instead of Google drive stream
+      useMirrorDrive ? false,
       extraModules ? [],
     }: home-manager.lib.homeManagerConfiguration {
       pkgs = builtins.trace system (import nixpkgs {
@@ -108,7 +110,7 @@
       #   which means those functions can access `useSecret` directly instead of `specialArgs.useSecret`
       #   TL;DR: https://github.com/nix-community/home-manager/blob/36f873dfc8e2b6b89936ff3e2b74803d50447e0a/modules/default.nix#L26
       extraSpecialArgs = {
-        inherit isMobile useCommon useSecret useProxy useIndex;
+        inherit isMobile useCommon useSecret useProxy useIndex useMirrorDrive;
 
         unstablePkgs = import nixpkgs-unstable {
           inherit system;
@@ -165,17 +167,27 @@
           useIndex = false;
           useProxy = false;
           useCommon = false;
+          useMirrorDrive = false;
           extraModules = [
             ./programs/common/ide/git
             ./programs/common/network
           ];
         };
-        # c02fk4mjmd6m || wsl || ec2
+        # m3 || wsl || ec2
         ide = mkHome {
           useSecret = true;
           useIndex = true;
           useProxy = false;
           useCommon = true;
+          useMirrorDrive = false;
+        };
+        # c02fk4mjmd6m
+        ide-mirror = mkHome {
+          useSecret = true;
+          useIndex = true;
+          useProxy = false;
+          useCommon = true;
+          useMirrorDrive = true;
         };
         # cn ec2
         ide-cn = mkHome {
@@ -183,6 +195,7 @@
           useIndex = true;
           useProxy = true;
           useCommon = true;
+          useMirrorDrive = false;
         };
         # mobile
         ide-mobile = mkHome {
@@ -191,6 +204,7 @@
           useIndex = true;
           useProxy = false;
           useCommon = true;
+          useMirrorDrive = false;
         };
       };
 
