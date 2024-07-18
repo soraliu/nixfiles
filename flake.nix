@@ -221,8 +221,6 @@
             modules = [
               ./misc/clean.nix
             ];
-
-            config.clean = true;
           };
         };
 
