@@ -27,6 +27,7 @@ with lib; {
       lib.hm.dag.entryAfter [ "linkGeneration" ] ''
         set +e
 
+        # delete all pm2 services
         pm2_bin=${pkgs.pm2}/bin/pm2
         $pm2_bin delete all 2>/dev/null
         $pm2_bin save --force
@@ -36,6 +37,14 @@ with lib; {
         rm -rf ${home}/Rclone
         echo "rm -rf ${home}/.config/rclone"
         rm -rf ${home}/.config/rclone
+
+        # Delete pet files
+        echo "rm -rf ${home}/.config/pet"
+        rm -rf ${home}/.config/pet
+
+        # Delete shell_gpt files
+        echo "rm -rf ${home}/.config/shell_gpt"
+        rm -rf ${home}/.config/shell_gpt
 
         set -e
       '';
