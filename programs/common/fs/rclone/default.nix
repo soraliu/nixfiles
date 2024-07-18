@@ -64,7 +64,7 @@ in
       type = lib.types.listOf lib.types.attrs;
       default = [ ];
       example = [{ local = "/path/to/dir"; remote = "gdrive:path/to/dir"; filter = "/path/to/filters.txt"; command = "copy"; }];
-      description = lib.mdDoc "rclone [command] paths. Notice: paths only support directories and can't be ended with /";
+      description = lib.mdDoc "rclone [command] paths. Notice: paths only support directories and can't be ended with / if the command is 'bisync'";
     };
   };
 
@@ -80,8 +80,9 @@ in
         chmod +w "$path_to_rclone_conf"
 
         ${builtins.concatStringsSep "\n\n" (map ({remote, local, link, filter, ...}: "(
-          # check if the dir of local exists
+          # check if the dir of local/link exists
           mkdir -p $(dirname '${local}')
+          mkdir -p $(dirname '${link}')
 
           # backup link dir, and relink
           # if link exists but local doesn't, copy link to local

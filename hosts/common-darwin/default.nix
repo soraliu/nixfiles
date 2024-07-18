@@ -4,6 +4,7 @@
     font.medium
     font.mediumItalic
   ];
+  pathToIterm2Config = "~/.config/iterm2/com.googlecode.iterm2";
 in {
   # List packages installed in system profile. To search by name, run:
   # $ nix-env -qaP | grep wget
@@ -23,6 +24,12 @@ in {
 
   system.defaults.NSGlobalDomain.InitialKeyRepeat = 12;
   system.defaults.NSGlobalDomain.KeyRepeat = 2;
+
+  system.activationScripts = {
+    postUserActivation.text = ''
+      defaults write com.googlecode.iterm2 PrefsCustomFolder -string '${pathToIterm2Config}'
+    '';
+  };
 
   fonts.fontDir.enable = true;
   fonts.fonts = fonts;
