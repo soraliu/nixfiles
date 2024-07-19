@@ -7,8 +7,10 @@ post-init-pm2:
 	./bin/common/post-init-pm2
 post-init-zsh:
 	./bin/common/post-init-zsh
-darwin-post-install-pkgs:
-	./bin/common-darwin/post-install-pkgs
+darwin-post-install-pkgs-work:
+	./bin/common-darwin/post-install-pkgs-work
+darwin-post-install-pkgs-personal:
+	./bin/common-darwin/post-install-pkgs-personal
 darwin-post-link-dirs:
 	./bin/common-darwin/post-link-dirs
 darwin-post-restore-raycast:
@@ -45,7 +47,8 @@ switch-android:
 # -------------------- all-in-one init --------------------
 init-vpn-server: pre-init-nix pre-init-age switch-vpn-server post-init-pm2
 init-ide: pre-init-nix pre-init-age switch-ide post-init-pm2 post-init-zsh
-init-ide-on-darwin: init-ide switch-darwin darwin-post-install-pkgs darwin-post-link-dirs darwin-post-restore-raycast
+init-ide-on-darwin-work: init-ide switch-darwin darwin-post-install-pkgs-work darwin-post-link-dirs darwin-post-restore-raycast
+init-ide-on-darwin-personal: init-ide-on-darwin-work darwin-post-install-pkgs-personal
 init-ide-on-mobile: mobile-pre-init-nix-on-doird switch-ide-mobile
 
 
