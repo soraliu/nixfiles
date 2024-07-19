@@ -15,6 +15,8 @@ darwin-post-link-dirs:
 	./bin/common-darwin/post-link-dirs
 darwin-post-restore-raycast:
 	./bin/common-darwin/post-restore-raycast
+darwin-uninstall-pkgs:
+	sudo ./bin/common-darwin/uninstall-pkgs
 mobile-pre-init-nix-on-doird:
 	./bin/aarch64-linux/pre-init-nix-on-droid
 
@@ -50,6 +52,7 @@ init-ide: pre-init-nix pre-init-age switch-ide post-init-pm2 post-init-zsh
 init-ide-on-darwin-work: init-ide switch-darwin darwin-post-install-pkgs-work darwin-post-link-dirs darwin-post-restore-raycast
 init-ide-on-darwin-personal: init-ide-on-darwin-work darwin-post-install-pkgs-personal
 init-ide-on-mobile: mobile-pre-init-nix-on-doird switch-ide-mobile
+clean-darwin: switch-clean darwin-uninstall-pkgs
 
 
 
