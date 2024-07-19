@@ -2,72 +2,10 @@
 
 set -e
 
-function install_dmg {
-  usage() {
-    echo "usage:
-      [--password|-p]
-      [--url|-u]
-      [--name|-n]
-      [-h]"
-  }
+path_to_utils=$(dirname $(dirname $0))/utils
+source $path_to_utils/darwin-install-dmg
 
-  while [ "$1" != "" ]; do
-    case $1 in
-      -n | --name ) shift
-        name=$1
-        ;;
-      -p | --password ) shift
-        password=$1
-        ;;
-      -u | --uri ) shift
-        url=$1
-        ;;
-      -h | --help )
-        usage
-        exit
-        ;;
-      * )
-        usage
-        exit 0
-    esac
-    shift
-  done
-
-  if [ "$name" == "" ]; then
-    echo "Pls pass --name or -n to the app which is downloaded from: $url"
-
-    exit 1
-  fi
-
-  if [ -e "/Applications/${name}" ]; then
-    echo "/Applications/${name} has already existed. Skip Installing!"
-
-    return
-  fi
-
-  tempd=$(mktemp -d)
-
-  wget $url -O $tempd/pkg.dmg
-  if [[ $password != "" ]]; then
-    listing=$(printf $password | hdiutil attach $tempd/pkg.dmg -stdinpass | grep Volumes)
-  else
-    listing=$(yes | hdiutil attach $tempd/pkg.dmg | grep Volumes)
-  fi
-  volume=$(echo "$listing" | cut -f 3)
-  if [ -e "$volume"/*.app ]; then
-    sudo cp -R "$volume"/*.app /Applications
-  elif [ -e "$volume"/*.pkg ]; then
-    package=$(ls -1 "$volume" | grep .pkg | head -1)
-    sudo installer -pkg "$volume"/"$package" -target /Applications
-  fi
-
-  hdiutil detach "${volume}"
-  rm -rf $tempd
-}
-
-# Pass sudo pw to the rest installation
 install_dmg -n 'Google Drive.app' -u 'https://dl.google.com/drive-file-stream/GoogleDrive.dmg'
-
 install_dmg -n 'Karabiner-Elements.app' -u 'https://github.com/pqrs-org/Karabiner-Elements/releases/download/v14.13.0/Karabiner-Elements-14.13.0.dmg' &
 install_dmg -n 'Raycast.app' -u 'https://releases.raycast.com/download' &
 install_dmg -n 'Caffeine.app' -u 'https://drive.soraliu.dev/0:/Software/Darwin/Caffeine/1.1.3/Caffeine.dmg' &

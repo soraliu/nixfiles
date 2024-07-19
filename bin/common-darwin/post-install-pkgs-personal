@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+path_to_utils=$(dirname $(dirname $0))/utils
+source $path_to_utils/darwin-install-dmg
+
+install_dmg -n 'Wechat.app' -u 'https://dldir1.qq.com/weixin/mac/WeChatMac.dmg' &
+
+if $(uname -m | grep -q 'arm'); then
+  install_dmg -n 'BaiduNetdisk_mac.app' -u 'https://pkg-ant.baidu.com/issue/netdisk/MACguanjia/4.36.2/BaiduNetdisk_mac_4.36.2_x64.dmg' &
+elif $(uname -m | grep -q 'x86'); then
+  install_dmg -n 'BaiduNetdisk_mac.app' -u 'https://pkg-ant.baidu.com/issue/netdisk/MACguanjia/4.36.2/BaiduNetdisk_mac_4.36.2_arm64.dmg' &
+else
+  echo "Error: Unknown arch $(uname -m)"
+fi
+
+wait
