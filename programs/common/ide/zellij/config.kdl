@@ -101,6 +101,7 @@ keybinds clear-defaults=true {
         // bind "Esc"       { UndoRenameTab; SwitchToMode "pane"; }
     }
     shared {
+        bind "Alt t"                { NewTab; }
         bind "Alt n"                { NewPane; }
         bind "Alt h"                { MoveFocusOrTab "Left"; }
         bind "Alt l"                { MoveFocusOrTab "Right"; }
