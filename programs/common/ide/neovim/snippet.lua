@@ -5,7 +5,6 @@ table.insert(plugins, {
   {
     'soraliu/friendly-snippets', -- include common used snippets,
     branch = 'main',
-    lazy = true,
   },
   {
     'L3MON4D3/LuaSnip',
