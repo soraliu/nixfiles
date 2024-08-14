@@ -28,7 +28,8 @@ function bindkey_of_edit() {
   # vi movement
   bindkey -M viins '^J' vi-backward-blank-word
   bindkey -M viins '^K' vi-forward-blank-word
-  bindkey -M viins '^W' vi-backward-kill-word
+  # Issue: https://stackoverflow.com/questions/31486534/bindkey-vi-cmd-mode-causes-other-bindings-to-be-unrecognized-after-exiting-comma
+  # bindkey -M viins '^W' vi-backward-kill-word
   bindkey -M viins '^B' beginning-of-line
 
   # edit command line
