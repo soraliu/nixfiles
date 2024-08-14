@@ -36,8 +36,6 @@ set listchars=tab:>-,trail:-,extends:#,nbsp:~,precedes:<    " 显示tab，空格
 
 set number                                                  " 显示绝对行号
 set relativenumber                                          " 显示相对行号
-autocmd InsertEnter * :set norelativenumber                 " no relativenumber in insert mode
-autocmd InsertLeave * :set relativenumber                   " show relativenumber when leave insert mode
 
 " syntax highlight
 set synmaxcol=200                                           " 代码语法高亮的列数，超过200列不再语法高亮
@@ -57,9 +55,6 @@ set showmatch                                               " 插入右括号时
 " set nowrap                                                " disable wrap
 set autoindent                                              " 设置自动对齐
 set smartindent                                             " 依据上面的对齐格式，智能的选择对齐方式，对于类似C语言编写上有用
-" set cindent                                               " 自动缩进，适合js
-autocmd FileType * setlocal formatoptions-=c
-  \formatoptions-=r formatoptions-=o                         " 取消自动注释
 
 " File encode:encode for varied filetype
 set helplang=zh
@@ -99,8 +94,6 @@ if !executable('xclip')
   nmap <Leader>cd :let @+=expand('%:p:h')<CR>
 endif
 
-" 修复iterm2光标问题
-autocmd VimLeave * let &t_me="\<Esc>]50;CursorShape=1\x7"
 " Use a blinking upright bar cursor in Insert mode, a blinking block in normal
 if exists('$TMUX')
   let &t_SI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=1\x7\<Esc>\\"
@@ -115,3 +108,12 @@ set shortmess-=S
 
 " Disable mouse
 set mouse=
+
+
+" ------------------------------------- autocmd -------------------------------------
+autocmd InsertEnter * :set norelativenumber                                             " no relativenumber in insert mode
+autocmd InsertLeave * :set relativenumber                                               " show relativenumber when leave insert mode
+autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o          " Disable auto comment
+" Auto close quick fix window after select item
+autocmd FileType qf nnoremap <buffer> <CR> <CR>:cclose<CR>
+autocmd VimLeave * let &t_me="\<Esc>]50;CursorShape=1\x7"                               " Fix iterm2 cursor
