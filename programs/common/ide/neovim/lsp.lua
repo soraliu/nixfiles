@@ -41,6 +41,7 @@ table.insert(plugins, {
         'yamlls',                -- yaml
         'lua_ls',                -- lua
         'emmet_language_server', -- css emmet
+        'html',                  -- html
       },
     },
     init = function()
@@ -281,14 +282,14 @@ table.insert(plugins, {
       })
     end,
   },
-  { 'hrsh7th/cmp-nvim-lsp',     lazy = true }, -- nvim lsp
-  { 'hrsh7th/cmp-buffer',       lazy = true }, -- words from opened buffers
-  { 'lukas-reineke/cmp-rg',     lazy = true }, -- fuzzy search
-  { 'hrsh7th/cmp-path',         lazy = true }, -- paths
-  { 'windwp/nvim-autopairs',    lazy = true }, -- insert `(` after select function or method item
-  { 'onsails/lspkind-nvim',     lazy = true }, -- show icons
-  { 'octaltree/cmp-look',       lazy = true }, -- completing words in English
-  { 'saadparwaiz1/cmp_luasnip', lazy = true }, -- cmp adapter of luasnip
+  { 'hrsh7th/cmp-nvim-lsp' },     -- nvim lsp
+  { 'hrsh7th/cmp-buffer' },       -- words from opened buffers
+  { 'lukas-reineke/cmp-rg' },     -- fuzzy search
+  { 'hrsh7th/cmp-path' },         -- paths
+  { 'windwp/nvim-autopairs' },    -- insert `(` after select function or method item
+  { 'onsails/lspkind-nvim' },     -- show icons
+  { 'octaltree/cmp-look' },       -- completing words in English
+  { 'saadparwaiz1/cmp_luasnip' }, -- cmp adapter of luasnip
 })
 
 -- -------------------------------------------------------------------------------------------------------------------------------
@@ -508,7 +509,7 @@ table.insert(plugins, {
 
         -- diagnostics
         --  TS, JS
-        require('none-ls.diagnostics.eslint'),
+        require('none-ls.diagnostics.eslint_d'),
         --  golang
         null_ls.builtins.diagnostics.revive,
         go_null_ls.gotest(),        -- LSP diagnostic source for null-ls
