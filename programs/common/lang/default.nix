@@ -6,7 +6,7 @@
       else "")
       clang-tools_16                            # better than gcc13, provide c++ tools
 
-      nodejs_20                                 # nodejs, npm
+      nodejs_18                                 # nodejs, npm
       yarn-berry                                # yarn berry
 
       python3                                   # python3
