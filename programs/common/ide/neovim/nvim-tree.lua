@@ -16,7 +16,7 @@ table.insert(plugins, {
     end,
     keys = {
       { '<space>wa', '<cmd>NvimTreeFindFile<cr>', mode = { 'n' }, desc = 'Find File' },
-      { '<space>we', '<cmd>NvimTreeToggle<cr>',   mode = { 'n' }, desc = 'Toggle Nvim Tree' },
+      { '<space>we', '<cmd>NvimTreeToggle<cr>', mode = { 'n' }, desc = 'Toggle Nvim Tree' },
     },
     config = function()
       local function on_attach(bufnr)
@@ -37,6 +37,7 @@ table.insert(plugins, {
         removeMap('M')
         removeMap('bd')
         removeMap('bt')
+        removeMap('<C-e>')
         removeMap('bmv')
 
         -- custom mappings
