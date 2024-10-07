@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+# set default shell to zsh
+
 set -e
 
 path_to_zsh="$(readlink -f ~/.nix-profile/bin/zsh 2>/dev/null)"

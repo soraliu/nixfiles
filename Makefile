@@ -60,6 +60,6 @@ clean-darwin: switch-clean darwin-uninstall-pkgs
 nixd:
 	nix eval --json --file .nixd.nix > .nixd.json
 
-# make nix-hash url=https://github.com/soraliu/clash_singbox-tools/raw/main/ClashPremium-release/clashpremium-linux-amd64
+# e.g. $ make nix-hash url=https://github.com/soraliu/clash_singbox-tools/raw/main/ClashPremium-release/clashpremium-linux-amd64
 nix-hash:
 	@nix-hash --type sha256 --to-sri $$(nix-prefetch-url "$(url)" 2>/dev/null | tail -n1) 2>/dev/null
