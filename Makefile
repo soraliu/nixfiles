@@ -1,3 +1,5 @@
+PATH_TO_NIX = ~/.nix-profile/bin/nix
+
 # -------------------- pre & post scripts --------------------
 pre-init-nix:
 	./bin/common/pre-init-nix
@@ -24,23 +26,23 @@ mobile-pre-init-nix-on-doird:
 
 # -------------------- home-manager --------------------
 switch-vpn-server:
-	nix run .#home-manager -- switch --show-trace --impure --flake .#vpn-server -b backup
+	$(PATH_TO_NIX) run .#home-manager -- switch --show-trace --impure --flake .#vpn-server -b backup
 switch-ide:
-	nix run .#home-manager -- switch --show-trace --impure --flake .#ide -b backup
+	$(PATH_TO_NIX) run .#home-manager -- switch --show-trace --impure --flake .#ide -b backup
 switch-ide-mirror:
-	nix run .#home-manager -- switch --show-trace --impure --flake .#ide-mirror -b backup
+	$(PATH_TO_NIX) run .#home-manager -- switch --show-trace --impure --flake .#ide-mirror -b backup
 switch-ide-cn:
-	nix run .#home-manager -- switch --show-trace --impure --flake .#ide-cn -b backup
+	$(PATH_TO_NIX) run .#home-manager -- switch --show-trace --impure --flake .#ide-cn -b backup
 switch-ide-mobile:
-	nix run .#home-manager -- switch --show-trace --impure --flake .#ide-mobile -b backup
+	$(PATH_TO_NIX) run .#home-manager -- switch --show-trace --impure --flake .#ide-mobile -b backup
 switch-clean:
-	nix run .#home-manager -- switch --show-trace --impure --flake .#clean
+	$(PATH_TO_NIX) run .#home-manager -- switch --show-trace --impure --flake .#clean
 
 
 
 # -------------------- nixos --------------------
 switch-darwin:
-	nix run .#nix-darwin -- switch --show-trace --flake .#darwin
+	$(PATH_TO_NIX) run .#nix-darwin -- switch --show-trace --flake .#darwin
 switch-android:
 	nix-on-droid switch --show-trace --flake .#default
 
@@ -58,7 +60,7 @@ clean-darwin: switch-clean darwin-uninstall-pkgs
 
 # -------------------- utils --------------------
 nixd:
-	nix eval --json --file .nixd.nix > .nixd.json
+	$(PATH_TO_NIX) eval --json --file .nixd.nix > .nixd.json
 
 # e.g. $ make nix-hash url=https://github.com/soraliu/clash_singbox-tools/raw/main/ClashPremium-release/clashpremium-linux-amd64
 nix-hash:
