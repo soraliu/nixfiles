@@ -1,4 +1,4 @@
-PATH_TO_NIX = ~/.nix-profile/bin/nix
+PATH_TO_DARWIN_NIX=nix
 
 # -------------------- pre & post scripts --------------------
 pre-init-nix:

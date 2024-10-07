@@ -25,6 +25,7 @@ in {
           script = "${unstablePkgs.hysteria}/bin/hysteria";
           args = "server -c ${config.home.homeDirectory}/.config/hysteria/config.yaml";
           exp_backoff_restart_delay = 100;
+          max_restarts = 3;
         }];
       };
     };
