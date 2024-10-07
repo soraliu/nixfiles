@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+# set starting pm2 on boot
+
 set -e
 
 if [ -x "$(command -v pm2)" ]; then
