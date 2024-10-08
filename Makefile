@@ -1,4 +1,5 @@
-PATH_TO_NIX=nix
+SHELL := /bin/bash
+PATH_TO_NIX := nix
 
 # -------------------- pre & post scripts --------------------
 pre-init-nix:
