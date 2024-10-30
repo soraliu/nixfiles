@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 const nodes = [
   {
     text: "Silicon Valley",
@@ -1206,6 +1208,7 @@ const main = async () => {
       );
       // use regexp to extract ip
       const ip = originalIp.match(/(\d{1,3}\.){3}\d{1,3}/)[0];
+      console.log("ip:", ip);
       return ip;
     }),
   );
