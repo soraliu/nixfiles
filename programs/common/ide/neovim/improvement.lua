@@ -96,12 +96,6 @@ table.insert(plugins, {
     end,
   },
   {
-    'rcarriga/nvim-notify', -- better UI of vim.notify
-    config = function()
-      vim.notify = require('notify')
-    end,
-  },
-  {
     'axieax/urlview.nvim',
     config = function()
       require('urlview').setup({
