@@ -1,6 +1,0 @@
-{ ... }: {
-  imports = [
-    # shell
-    ./bash.nix
-  ];
-}
