@@ -82,8 +82,7 @@
         # inputs.neovim-nightly-overlay.overlay
       ];
       mkHome =
-        { user ? ""
-        , isMobile ? false
+        { isMobile ? false
         , useSecret ? true
         , useIndex ? true
         , useProxy ? false
@@ -100,11 +99,11 @@
 
           modules = log (builtins.filter (el: el != "") [
             ./programs/common
+            ./users
 
             (if useIndex then nix-index-database.hmModules.nix-index else "")
             (if builtins.elem system (builtins.attrNames systemMaps) then ./programs/${systemMaps.${system}} else "")
             (if builtins.pathExists ./programs/${system} then ./programs/${system} else "")
-            (if (user != "" && builtins.pathExists ./users/${system}/${user}) then ./users/${system}/${user} else if builtins.pathExists ./users/${system} then ./users/${system} else ./users)
           ] ++ extraModules);
 
           # Nix has dynamic scope, extraSpecialArgs will be passed to evalModules as the scope of funcitons,
@@ -166,7 +165,6 @@
 
         homeConfigurations = {
           vpn-server = mkHome {
-            user = "vpn-server";
             useSecret = true;
             useIndex = false;
             useProxy = false;
