@@ -81,7 +81,31 @@
       overlays = [
         # inputs.neovim-nightly-overlay.overlay
       ];
-      mkHome =
+
+      mkHome = { modules, extraSpecialArgs }: home-manager.lib.homeManagerConfiguration {
+        pkgs = builtins.trace system (import nixpkgs {
+          inherit system;
+          config.allowUnfree = true;
+          # overlays = overlays;
+        });
+
+        modules = log (builtins.filter (el: el != "") modules ++ [
+          ./programs/common/pkg-manager/home-manager
+        ]);
+
+        # Nix has dynamic scope, extraSpecialArgs will be passed to evalModules as the scope of funcitons,
+        #   which means those functions can access `useSecret` directly instead of `specialArgs.useSecret`
+        #   TL;DR: https://github.com/nix-community/home-manager/blob/36f873dfc8e2b6b89936ff3e2b74803d50447e0a/modules/default.nix#L26
+        extraSpecialArgs = {
+          unstablePkgs = import nixpkgs-unstable {
+            inherit system;
+            config.allowUnfree = true;
+          };
+        } // extraSpecialArgs;
+      };
+
+
+      mkIDE =
         { isMobile ? false
         , useSecret ? true
         , useIndex ? true
@@ -90,32 +114,18 @@
           useMirrorDrive ? false
         , extraModules ? [ ]
         ,
-        }: home-manager.lib.homeManagerConfiguration {
-          pkgs = builtins.trace system (import nixpkgs {
-            inherit system;
-            config.allowUnfree = true;
-            # overlays = overlays;
-          });
-
-          modules = log (builtins.filter (el: el != "") [
+        }: mkHome {
+          modules = [
             ./programs/common
             ./users
 
             (if useIndex then nix-index-database.hmModules.nix-index else "")
             (if builtins.elem system (builtins.attrNames systemMaps) then ./programs/${systemMaps.${system}} else "")
             (if builtins.pathExists ./programs/${system} then ./programs/${system} else "")
-          ] ++ extraModules);
+          ] ++ extraModules;
 
-          # Nix has dynamic scope, extraSpecialArgs will be passed to evalModules as the scope of funcitons,
-          #   which means those functions can access `useSecret` directly instead of `specialArgs.useSecret`
-          #   TL;DR: https://github.com/nix-community/home-manager/blob/36f873dfc8e2b6b89936ff3e2b74803d50447e0a/modules/default.nix#L26
           extraSpecialArgs = {
             inherit isMobile useSecret useProxy useIndex useMirrorDrive;
-
-            unstablePkgs = import nixpkgs-unstable {
-              inherit system;
-              config.allowUnfree = true;
-            };
           };
         };
 
@@ -165,38 +175,33 @@
 
         homeConfigurations = {
           vpn-server = mkHome {
-            useSecret = true;
-            useIndex = false;
-            useProxy = false;
-            useMirrorDrive = false;
-            extraModules = [
-              ./programs/common/ide/git
-              ./programs/common/network
+            modules = [
+              ./users/vpn-server
             ];
           };
           # m3 || wsl || ec2
-          ide = mkHome {
+          ide = mkIDE {
             useSecret = true;
             useIndex = true;
             useProxy = false;
             useMirrorDrive = false;
           };
           # c02fk4mjmd6m
-          ide-mirror = mkHome {
+          ide-mirror = mkIDE {
             useSecret = true;
             useIndex = true;
             useProxy = false;
             useMirrorDrive = true;
           };
           # cn ec2
-          ide-cn = mkHome {
+          ide-cn = mkIDE {
             useSecret = true;
             useIndex = true;
             useProxy = true;
             useMirrorDrive = false;
           };
           # mobile
-          ide-mobile = mkHome {
+          ide-mobile = mkIDE {
             isMobile = true;
             useSecret = true;
             useIndex = true;
