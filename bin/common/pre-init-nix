@@ -41,3 +41,16 @@ else
   ${nix_bin} --add "$nix_version"
   ${nix_bin} --update
 fi
+
+# Link nix to /usr/local/bin
+if [ -f $HOME/.nix-profile/bin/nix ]; then
+  # linux
+  path_to_nix_bin=$HOME/.nix-profile/bin/nix
+else if [ -f /run/current-system/sw/bin/nix ]; then
+  # macos
+  path_to_nix_bin=/run/current-system/sw/bin/nix
+else
+  echo "Error: nix binary not found!"
+  exit 1
+fi
+ln -sf ${path_to_nix_bin} /usr/local/bin/nix
