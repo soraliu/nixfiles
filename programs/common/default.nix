@@ -2,7 +2,7 @@
   imports = [
     # required
     ./pkg-manager
-  ] ++ (if useCommon then [
+  ] ++ [
     ./fs
     ./ide
     ./ai
@@ -10,5 +10,5 @@
     ./network
     ./process
     ./tools
-  ] else []);
+  ];
 }

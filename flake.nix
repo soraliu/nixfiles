@@ -87,7 +87,6 @@
         , useSecret ? true
         , useIndex ? true
         , useProxy ? false
-        , useCommon ? true
         , # useMirrorDrive is a boolean to config if copy remote config from google drive by rclone instead of Google drive stream
           useMirrorDrive ? false
         , extraModules ? [ ]
@@ -112,7 +111,7 @@
           #   which means those functions can access `useSecret` directly instead of `specialArgs.useSecret`
           #   TL;DR: https://github.com/nix-community/home-manager/blob/36f873dfc8e2b6b89936ff3e2b74803d50447e0a/modules/default.nix#L26
           extraSpecialArgs = {
-            inherit isMobile useCommon useSecret useProxy useIndex useMirrorDrive;
+            inherit isMobile useSecret useProxy useIndex useMirrorDrive;
 
             unstablePkgs = import nixpkgs-unstable {
               inherit system;
@@ -171,7 +170,6 @@
             useSecret = true;
             useIndex = false;
             useProxy = false;
-            useCommon = false;
             useMirrorDrive = false;
             extraModules = [
               ./programs/common/ide/git
@@ -183,7 +181,6 @@
             useSecret = true;
             useIndex = true;
             useProxy = false;
-            useCommon = true;
             useMirrorDrive = false;
           };
           # c02fk4mjmd6m
@@ -191,7 +188,6 @@
             useSecret = true;
             useIndex = true;
             useProxy = false;
-            useCommon = true;
             useMirrorDrive = true;
           };
           # cn ec2
@@ -199,7 +195,6 @@
             useSecret = true;
             useIndex = true;
             useProxy = true;
-            useCommon = true;
             useMirrorDrive = false;
           };
           # mobile
@@ -208,7 +203,6 @@
             useSecret = true;
             useIndex = true;
             useProxy = false;
-            useCommon = true;
             useMirrorDrive = false;
           };
 
