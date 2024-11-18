@@ -82,7 +82,7 @@
         # inputs.neovim-nightly-overlay.overlay
       ];
 
-      mkHome = { modules, extraSpecialArgs }: home-manager.lib.homeManagerConfiguration {
+      mkHome = { modules, extraSpecialArgs ? [ ] }: home-manager.lib.homeManagerConfiguration {
         pkgs = builtins.trace system (import nixpkgs {
           inherit system;
           config.allowUnfree = true;
