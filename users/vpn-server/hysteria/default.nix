@@ -17,6 +17,12 @@ in {
         decryptFiles = [{
           from = "secrets/.config/hysteria/config.enc.yaml";
           to = ".config/hysteria/config.yaml";
+        } {
+          from = "secrets/.config/hysteria/bing.com.enc.crt";
+          to = ".config/hysteria/bing.com.crt";
+        } {
+          from = "secrets/.config/hysteria/bing.com.enc.key";
+          to = ".config/hysteria/bing.com.key";
         }];
       };
       pm2 = {
