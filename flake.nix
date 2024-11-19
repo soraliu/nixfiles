@@ -178,6 +178,9 @@
             modules = [
               ./users/vpn-server
             ];
+            extraSpecialArgs = {
+              useSecret = true;
+            };
           };
           # m3 || wsl || ec2
           ide = mkIDE {
