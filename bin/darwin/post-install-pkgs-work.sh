@@ -2,8 +2,7 @@
 
 set -e
 
-path_to_utils=$(dirname $(dirname $0))/utils
-source $path_to_utils/darwin-install-dmg
+source ./install-dmg.util.sh
 
 install_dmg -n 'Google Drive.app' -u 'https://dl.google.com/drive-file-stream/GoogleDrive.dmg'
 install_dmg -n 'Karabiner-Elements.app' -u 'https://github.com/pqrs-org/Karabiner-Elements/releases/download/v14.13.0/Karabiner-Elements-14.13.0.dmg' &
