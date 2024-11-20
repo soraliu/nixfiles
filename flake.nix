@@ -82,89 +82,33 @@
         # inputs.neovim-nightly-overlay.overlay
       ];
 
-      mkHome = { modules, extraSpecialArgs ? { } }: home-manager.lib.homeManagerConfiguration {
-        pkgs = builtins.trace system (import nixpkgs {
-          inherit system;
-          config.allowUnfree = true;
-          # overlays = overlays;
-        });
-
-        modules = log (builtins.filter (el: el != "") modules ++ [
-          ./programs/common/pkg-manager/home-manager
-        ]);
-
-        # Nix has dynamic scope, extraSpecialArgs will be passed to evalModules as the scope of funcitons,
-        #   which means those functions can access `useSecret` directly instead of `specialArgs.useSecret`
-        #   TL;DR: https://github.com/nix-community/home-manager/blob/36f873dfc8e2b6b89936ff3e2b74803d50447e0a/modules/default.nix#L26
-        extraSpecialArgs = {
-          unstablePkgs = import nixpkgs-unstable {
-            inherit system;
-            config.allowUnfree = true;
-          };
-        } // extraSpecialArgs;
-      };
-
-
-      mkIDE =
-        { isMobile ? false
+      mkHome =
+        { modules
         , useSecret ? true
-        , useIndex ? true
         , useProxy ? false
-        , # useMirrorDrive is a boolean to config if copy remote config from google drive by rclone instead of Google drive stream
-          useMirrorDrive ? false
-        , extraModules ? [ ]
-        ,
-        }: mkHome {
-          modules = [
-            ./programs/common
-            ./users
+        , useMirrorDrive ? false # useMirrorDrive is a boolean to config if copy remote config from google drive by rclone instead of Google drive stream
+        , isMobile ? false
+        , extraSpecialArgs ? { }
+        }: home-manager.lib.homeManagerConfiguration {
+          pkgs = builtins.trace system (import nixpkgs {
+            inherit system;
+            config.allowUnfree = true;
+            # overlays = overlays;
+          });
 
-            (if useIndex then nix-index-database.hmModules.nix-index else "")
-            (if builtins.elem system (builtins.attrNames systemMaps) then ./programs/${systemMaps.${system}} else "")
-            (if builtins.pathExists ./programs/${system} then ./programs/${system} else "")
-          ] ++ extraModules;
+          modules = log (builtins.filter (el: el != "") modules);
 
+          # Nix has dynamic scope, extraSpecialArgs will be passed to evalModules as the scope of funcitons,
+          #   which means those functions can access `useSecret` directly instead of `specialArgs.useSecret`
+          #   TL;DR: https://github.com/nix-community/home-manager/blob/36f873dfc8e2b6b89936ff3e2b74803d50447e0a/modules/default.nix#L26
           extraSpecialArgs = {
-            inherit isMobile useSecret useProxy useIndex useMirrorDrive;
-          };
-        };
+            inherit system useSecret useProxy useMirrorDrive isMobile;
 
-      mkDarwin =
-        { host ? ""
-        ,
-        }: nix-darwin.lib.darwinSystem {
-          inherit system;
-
-          pkgs = import nixpkgs {
-            inherit system;
-            config.allowUnfree = true;
-          };
-
-          modules = log (builtins.filter (el: el != "") [
-            (if builtins.elem system (builtins.attrNames systemMaps) then ./hosts/${systemMaps.${system}} else "")
-
-            (if builtins.pathExists ./hosts/${system} then ./hosts/${system} else "")
-            (if builtins.pathExists ./hosts/${system}/${host} then ./hosts/${system}/${host} else "")
-          ]);
-
-          specialArgs = { inherit inputs; };
-        };
-
-      mkAndroid =
-        { host ? ""
-        ,
-        }: nix-on-droid.lib.nixOnDroidConfiguration {
-          inherit system;
-
-          pkgs = import nixpkgs {
-            inherit system;
-            config.allowUnfree = true;
-          };
-
-          modules = [
-            ./hosts/${system}
-            (if builtins.pathExists ./hosts/${system}/${host} then ./hosts/${system}/${host} else "")
-          ];
+            unstablePkgs = import nixpkgs-unstable {
+              inherit system;
+              config.allowUnfree = true;
+            };
+          } // extraSpecialArgs;
         };
     in
     {
@@ -178,58 +122,74 @@
             modules = [
               ./users/vpn-server
             ];
-            extraSpecialArgs = {
-              useSecret = true;
-            };
           };
           # m3 || wsl || ec2
-          ide = mkIDE {
-            useSecret = true;
-            useIndex = true;
-            useProxy = false;
-            useMirrorDrive = false;
+          ide = mkHome {
+            modules = [
+              ./home/ide.nix
+            ];
           };
           # c02fk4mjmd6m
-          ide-mirror = mkIDE {
-            useSecret = true;
-            useIndex = true;
-            useProxy = false;
+          ide-mirror = mkHome {
             useMirrorDrive = true;
+            modules = [
+              ./home/ide.nix
+            ];
           };
           # cn ec2
-          ide-cn = mkIDE {
-            useSecret = true;
-            useIndex = true;
+          ide-cn = mkHome {
             useProxy = true;
-            useMirrorDrive = false;
+            modules = [
+              ./home/ide.nix
+            ];
           };
           # mobile
-          ide-mobile = mkIDE {
+          ide-mobile = mkHome {
             isMobile = true;
-            useSecret = true;
-            useIndex = true;
-            useProxy = false;
-            useMirrorDrive = false;
+            useMirrorDrive = true;
+            modules = [
+              ./home/ide.nix
+            ];
           };
 
           # clean all packages & generated files
-          clean = home-manager.lib.homeManagerConfiguration {
-            pkgs = import nixpkgs {
-              inherit system;
-            };
-
+          clean = mkHome {
             modules = [
-              ./misc/clean.nix
+              ./home/clean.nix
             ];
           };
         };
 
         darwinConfigurations = {
-          "darwin" = mkDarwin { };
+          "darwin" = nix-darwin.lib.darwinSystem {
+            inherit system;
+
+            pkgs = import nixpkgs {
+              inherit system;
+              config.allowUnfree = true;
+            };
+
+            modules = log [
+              ./systems/darwin.nix
+            ];
+
+            specialArgs = { inherit inputs; };
+          };
         };
 
         nixOnDroidConfigurations = {
-          "default" = mkAndroid { };
+          "default" = nix-on-droid.lib.nixOnDroidConfiguration {
+            inherit system;
+
+            pkgs = import nixpkgs {
+              inherit system;
+              config.allowUnfree = true;
+            };
+
+            modules = [
+              ./systems/aarch64-linux.nix
+            ];
+          };
         };
       };
     });
