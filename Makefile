@@ -3,25 +3,25 @@ PATH_TO_NIX := nix
 
 # -------------------- pre & post scripts --------------------
 pre-init-nix:
-	./bin/common/pre-init-nix
+	./bin/common/pre-init-nix.sh
 pre-init-age:
-	./bin/common/pre-init-age
+	./bin/common/pre-init-age.sh
 post-init-pm2:
-	./bin/common/post-init-pm2
+	./bin/common/post-init-pm2.sh
 post-init-zsh:
-	./bin/common/post-init-zsh
+	./bin/common/post-init-zsh.sh
 darwin-post-install-pkgs-work:
-	./bin/common-darwin/post-install-pkgs-work
+	./bin/darwin/post-install-pkgs-work.sh
 darwin-post-install-pkgs-personal:
-	./bin/common-darwin/post-install-pkgs-personal
+	./bin/darwin/post-install-pkgs-personal.sh
 darwin-post-link-dirs:
-	./bin/common-darwin/post-link-dirs
+	./bin/darwin/post-link-dirs.sh
 darwin-post-restore-raycast:
-	./bin/common-darwin/post-restore-raycast
+	./bin/darwin/post-restore-raycast.sh
 darwin-uninstall-pkgs:
-	sudo ./bin/common-darwin/uninstall-pkgs
+	sudo ./bin/darwin/uninstall-pkgs.sh
 mobile-pre-init-nix-on-doird:
-	./bin/aarch64-linux/pre-init-nix-on-droid
+	./bin/android/pre-init-nix-on-droid.sh
 
 
 

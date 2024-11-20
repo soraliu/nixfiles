@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 
-path_to_utils=$(dirname $(dirname $0))/utils
-source $path_to_utils/darwin-install-dmg
+source ./install-dmg.util.sh
 
 install_dmg -n 'Wechat.app' -u 'https://dldir1.qq.com/weixin/mac/WeChatMac.dmg' &
 install_dmg -n 'WhatsApp.app' -u 'https://web.whatsapp.com/desktop/mac_native/release/?configuration=Release' &
