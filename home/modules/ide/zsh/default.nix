@@ -1,11 +1,4 @@
 { pkgs, lib, useProxy, ... }: {
-  imports = [
-    ../search/pet
-    ../search/fzf
-
-    ../../fs/sops
-  ];
-
   programs = {
     zsh = {
       enable = true;

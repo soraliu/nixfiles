@@ -1,10 +1,5 @@
 { unstablePkgs, config, ... }: let
 in {
-  imports = [
-    ../../../programs/common/fs/sops
-    ../../../programs/common/process/pm2
-  ];
-
   config = {
     home = {
       packages = with unstablePkgs; [

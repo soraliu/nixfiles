@@ -1,8 +1,4 @@
 { pkgs, unstablePkgs, ... }: {
-  imports = [
-    ../../fs/sops
-  ];
-
   config = {
     home.packages = (with pkgs; [
       git-open

@@ -29,10 +29,6 @@
     '';
   });
 in {
-  imports = [
-    ../../process/pm2
-  ];
-
   options.programs.clash = {
     enable = lib.mkOption {
       type = lib.types.bool;

@@ -50,11 +50,6 @@ let
   '';
 in
 {
-  imports = [
-    ../sops
-    ../../process/pm2
-  ];
-
   options.programs.rclone = {
     enable = lib.mkOption {
       type = lib.types.bool;
