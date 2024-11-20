@@ -1,4 +1,4 @@
-{ pkgs, lib, system, ... }:
+{ lib, pkgs, unstablePkgs, system, ... }:
 let
   isDarwin = system == "x86_64-darwin" || system == "aarch64-darwin";
 in
