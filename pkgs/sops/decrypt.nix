@@ -11,7 +11,7 @@
   version = "0.0.1";
   system = builtins.currentSystem;
 
-  src = ../../../..;
+  src = ../..;
 
   buildInputs = with pkgs; [ age sops ];
 

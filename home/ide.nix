@@ -3,7 +3,7 @@ let
   isDarwin = system == "x86_64-darwin" || system == "aarch64-darwin";
 in
 {
-  imports = [
+  imports = builtins.filter (el: el != "") [
     ./base.nix
 
     ./modules/ai/shell-gpt
@@ -20,7 +20,7 @@ in
 
     ./modules/network/clash-meta
 
-    (lib.mkIf isDarwin ./modules/darwin)
+    (if isDarwin then ./modules/darwin else "")
   ];
 
   home.packages = (with pkgs; [
