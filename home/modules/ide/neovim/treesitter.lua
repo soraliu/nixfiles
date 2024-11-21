@@ -3,6 +3,10 @@
 -- ------------------------------------------------------------------------------------------------------------------------------
 table.insert(plugins, {
   {
+    'NoahTheDuke/vim-just',
+    ft = { 'just' },
+  },
+  {
     'nvim-treesitter/nvim-treesitter-textobjects',
     dependencies = {
       'nvim-treesitter/nvim-treesitter',
@@ -26,6 +30,7 @@ table.insert(plugins, {
           'lua',
 
           -- Conf
+          'just',
           'json',
           'jsonc',
           'yaml',
