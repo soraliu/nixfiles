@@ -69,7 +69,7 @@ function keysRegisterImprovements()
 
     { '<space>e',  group = 'Code Edit' },
     -- Repo: soraliu/vim-argwrap
-    { '<space>ea', '<cmd>ArgWrap<cr>',                         desc = 'Args Wrap&Split' },
+    { '<space>ew', '<cmd>ArgWrap<cr>',                         desc = 'Args Wrap&Split' },
     -- Repo: AckslD/nvim-FeMaco.lua
     { '<space>em', '<cmd>FeMaco<cr>',                          desc = 'Edit Markdown Codeblock' },
     -- Repo: soraliu/colortils.nvim
@@ -242,8 +242,8 @@ function keysRegisterEasyMotion()
 end
 
 function keysRegisterEasyAlign()
-  vim.keymap.set('n', 'ga', '<Plug>(EasyAlign)', { desc = 'Easy Align' })
-  vim.keymap.set('v', 'ga', '<Plug>(EasyAlign)', { desc = 'Easy Align' })
+  vim.keymap.set('n', '<space>ea', '<Plug>(EasyAlign)', { desc = 'Easy Align' })
+  vim.keymap.set('v', '<space>ea', '<Plug>(EasyAlign)', { desc = 'Easy Align' })
 end
 
 function keysRegisterGit(gs)
