@@ -1,4 +1,4 @@
-{ pkgs, unstablePkgs, ... }: {
+{ lib, config, pkgs, unstablePkgs, ... }: {
   imports = [
     ../pkgs/sops
     ../pkgs/pm2
@@ -26,9 +26,15 @@
 
     # makefile
     gnumake   # provide make
+    just      # Justfile
 
     # string
     sd        # sed alternative
   ]) ++ (with unstablePkgs; [
   ]);
+
+  home.activation.initJust = lib.hm.dag.entryAfter [ "linkGeneration" ] ''
+    ${pkgs.just}/bin/just --completions zsh > ${config.programs.zsh.completionsDir}/_just
+  '';
+
 }

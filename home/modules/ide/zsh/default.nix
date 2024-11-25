@@ -1,5 +1,11 @@
 { pkgs, lib, useProxy, ... }: {
-  programs = {
+  options.programs.zsh.completionsDir = lib.mkOption {
+    type = lib.types.str;
+    default = "~/.local/share/zinit/completions";
+    example = "~/.local/share/zinit/completions";
+    description = lib.mdDoc "Whether to put zsh completions.";
+  };
+  config.programs = {
     zsh = {
       enable = true;
       history = {
@@ -35,9 +41,9 @@
     };
   };
 
-  home = {
+  config.home = {
     packages = with pkgs; [
-      autojump                      # Exec `j` command
+      autojump # Exec `j` command
     ];
 
     file = {
@@ -48,7 +54,7 @@
       SHELL = "${pkgs.zsh}/bin/zsh";
     };
 
-    activation.initZsh = lib.hm.dag.entryAfter ["writeBoundary"] ''
+    activation.initZsh = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
       mkdir -p $HOME/.cache/zinit/completions
     '';
   };
