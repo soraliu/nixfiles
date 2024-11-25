@@ -43,3 +43,7 @@ zinit snippet OMZP::git-extras
 #   Github: https://github.com/zsh-users/zsh-autosuggestions
 ZSH_AUTOSUGGEST_STRATEGY=(history completion)
 zinit lucid wait atload"!_zsh_autosuggest_start" for zsh-users/zsh-autosuggestions
+
+# Initialize completion
+autoload -Uz compinit
+compinit
