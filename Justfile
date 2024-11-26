@@ -1,4 +1,4 @@
-export PATH := `echo "$PATH:$(dirname $(readlink $(which nix)))"`
+export PATH := `echo "$PATH:$HOME/.nix-profile/bin:/run/current-system/sw/bin"`
 
 [private]
 default:
