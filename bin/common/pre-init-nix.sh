@@ -29,6 +29,16 @@ else
   echo "Info: ${path_to_nix_config} has already support nix flake! Skip."
 fi
 
+# trusted substituters
+trusted_settings='{"extra-trusted-public-keys":{"nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs=":true},"substituters":{"https://cache.nixos.org https://nix-community.cachix.org":true}}'
+path_to_trusted_settings=$HOME/.local/share/nix/trusted-settings.json
+if [ ! -f "$path_to_trusted_settings" ]; then
+  mkdir -p $(dirname $path_to_trusted_settings)
+  echo "$trusted_settings" >> $path_to_trusted_settings
+else
+  echo "Info: ${path_to_trusted_settings} has already existed! Skip."
+fi
+
 # Specify the version of nixpkgs
 nix_version_name=nixos-23.11
 nix_version=https://nixos.org/channels/nixos-23.11
