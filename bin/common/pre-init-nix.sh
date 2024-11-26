@@ -19,7 +19,6 @@ else
 fi
 
 # Enable nix-command and flakes
-# TODO: add trusted users and substituters
 config="experimental-features = nix-command flakes"
 path_to_nix_config=$HOME/.config/nix/nix.conf
 if [ ! -f "$path_to_nix_config" ] || ! grep -q "$config" $path_to_nix_config; then
