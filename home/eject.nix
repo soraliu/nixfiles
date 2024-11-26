@@ -3,7 +3,7 @@ let
   home = builtins.getEnv "HOME";
 in
 with lib; {
-  options.clean = mkOption {
+  options.eject = mkOption {
     type = types.bool;
     default = true;
     description = ''
@@ -12,7 +12,7 @@ with lib; {
     '';
   };
 
-  config = mkIf config.clean {
+  config = mkIf config.eject {
     home.username = builtins.getEnv "USER";
     home.homeDirectory = home;
 
@@ -23,7 +23,7 @@ with lib; {
     manual.manpages.enable = lib.mkForce false;
     news.display = lib.mkForce "silent";
 
-    home.activation.clean =
+    home.activation.eject =
       lib.hm.dag.entryAfter [ "linkGeneration" ] ''
         set +e
 

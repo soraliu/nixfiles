@@ -1,3 +1,4 @@
+[private]
 default:
   just --list
 
@@ -37,7 +38,7 @@ mobile-pre-init-nix-on-doird:
 
 
 # -------------------- home-manager --------------------
-# profile: ide, ide-mirror, ide-cn, ide-mobile, vpn-server, clean
+# profile: vpn-server, ide, ide-mirror, ide-cn, ide-mobile, eject
 switch-home profile="ide":
 	nix run .#home-manager -- switch --show-trace --impure --flake .#{{profile}} -b backup
 
@@ -45,30 +46,49 @@ switch-home profile="ide":
 
 # -------------------- nixos --------------------
 
+[private]
 switch-darwin:
 	nix run .#nix-darwin -- switch --show-trace --flake .#darwin
+[private]
 switch-android:
 	nix-on-droid switch --show-trace --flake .#default
+# os: darwin, android
+switch-os os="darwin":
+  just switch-{{os}}
 
 
 
 # -------------------- all-in-one command --------------------
 
+[private]
 init-vpn-server: pre-init-nix pre-init-age (switch-home "vpn-server") post-init-pm2
+[private]
 init-ide: pre-init-nix pre-init-age (switch-home "ide") post-init-pm2 post-init-zsh
+[private]
 init-ide-on-darwin-work: init-ide (switch-home "darwin") darwin-post-install-pkgs-work darwin-post-link-dirs darwin-post-restore-raycast
+[private]
 init-ide-on-darwin-personal: init-ide-on-darwin-work darwin-post-install-pkgs-personal
+[private]
 init-ide-on-mobile: mobile-pre-init-nix-on-doird (switch-home "ide-mobile")
-clean-darwin: (switch-home "clean") darwin-uninstall-pkgs
+[private]
+eject-darwin: (switch-home "eject") darwin-uninstall-pkgs
 
+# profile: vpn-server, ide, ide-on-darwin-work, ide-on-darwin-personal, ide-on-mobile
+init profile="ide":
+  just init-{{profile}}
+
+# profile: darwin
+eject os="darwin":
+  just eject-{{os}}
 
 
 # -------------------- utils --------------------
 
+[private]
 nixd:
 	nix eval --json --file .nixd.nix > .nixd.json
 
 # e.g. $ make nix-hash url=https://github.com/soraliu/clash_singbox-tools/raw/main/ClashPremium-release/clashpremium-linux-amd64
-
+[private]
 nix-hash url:
 	@nix-hash --type sha256 --to-sri $(nix-prefetch-url "{{url}}" 2>/dev/null | tail -n1) 2>/dev/null
