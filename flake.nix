@@ -120,7 +120,7 @@
         homeConfigurations = {
           vpn-server = mkHome {
             modules = [
-              ./users/vpn-server
+              ./home/vpn-server.nix
             ];
           };
           # m3 || wsl || ec2
