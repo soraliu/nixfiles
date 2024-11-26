@@ -58,6 +58,7 @@ else
     exit 1
   fi
 
+  echo "export PATH+=:${path_to_nix_bin}" >> ~/.bashrc
   sudo ln -sf ${path_to_nix_bin}/nix ${path_to_nix_link}/nix
   sudo ln -sf ${path_to_nix_bin}/nix-build ${path_to_nix_link}/nix-build
 fi
