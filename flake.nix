@@ -153,9 +153,9 @@
           };
 
           # clean all packages & generated files
-          clean = mkHome {
+          eject = mkHome {
             modules = [
-              ./home/clean.nix
+              ./home/eject.nix
             ];
           };
         };
