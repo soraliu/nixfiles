@@ -1,3 +1,5 @@
+export PATH := `echo "$PATH:$(dirname $(readlink $(which nix)))"`
+
 [private]
 default:
   just --list

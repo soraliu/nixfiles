@@ -43,7 +43,7 @@ else
 fi
 
 path_to_nix_link=/usr/local/bin
-if [ -f ${path_to_nix_link}/nix ] && [ -f ${path_to_nix_link}/nix-build ]; then
+if [ -f ${path_to_nix_link}/nix ]; then
   echo "Info: nix && nix-build have already linked! Skip."
 else
   # Link nix to /usr/local/bin
@@ -58,7 +58,5 @@ else
     exit 1
   fi
 
-  echo "export PATH+=:${path_to_nix_bin}" >> ~/.bashrc
   sudo ln -sf ${path_to_nix_bin}/nix ${path_to_nix_link}/nix
-  sudo ln -sf ${path_to_nix_bin}/nix-build ${path_to_nix_link}/nix-build
 fi

@@ -1,7 +1,9 @@
 { pkgs, ... }: {
   imports = [
-    ./base.nix
+    ../pkgs/sops
+    ../pkgs/pm2
 
+    ./modules/home-manager
     ./modules/network/hysteria
   ];
 
