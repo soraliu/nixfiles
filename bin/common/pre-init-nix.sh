@@ -42,21 +42,22 @@ else
   ${nix_bin} --update
 fi
 
-path_to_nix_link=/usr/local/bin/nix
-if [ -f ${path_to_nix_link} ]; then
-  echo "Info: nix has already linked! Skip."
+path_to_nix_link=/usr/local/bin
+if [ -f ${path_to_nix_link}/nix ] && [ -f ${path_to_nix_link}/nix-build ]; then
+  echo "Info: nix && nix-build have already linked! Skip."
 else
   # Link nix to /usr/local/bin
-  if [ -f $HOME/.nix-profile/bin/nix ]; then
+  if [ -e $HOME/.nix-profile/bin ]; then
     # linux
-    path_to_nix_bin=$HOME/.nix-profile/bin/nix
-  elif [ -f /run/current-system/sw/bin/nix ]; then
+    path_to_nix_bin=$HOME/.nix-profile/bin
+  elif [ -e /run/current-system/sw/bin ]; then
     # macos
-    path_to_nix_bin=/run/current-system/sw/bin/nix
+    path_to_nix_bin=/run/current-system/sw/bin
   else
     echo "Error: nix binary not found!"
     exit 1
   fi
 
-  sudo ln -sf ${path_to_nix_bin} ${path_to_nix_link}
+  sudo ln -sf ${path_to_nix_bin}/nix ${path_to_nix_link}/nix
+  sudo ln -sf ${path_to_nix_bin}/nix-build ${path_to_nix_link}/nix-build
 fi
