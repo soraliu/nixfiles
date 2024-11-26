@@ -33,8 +33,7 @@
   ]) ++ (with unstablePkgs; [
   ]);
 
-  home.activation.initJust = lib.hm.dag.entryAfter [ "linkGeneration" ] ''
-    ${pkgs.just}/bin/just --completions zsh > ${config.programs.zsh.completionsDir}/_just
-  '';
-
+  home.activation.initJust = lib.mkIf config.programs.zsh.enable (lib.hm.dag.entryAfter [ "linkGeneration" ] ''
+    ${lib.mkIf config.programs.zsh.enable ''${pkgs.just}/bin/just --completions zsh > ${config.programs.zsh.completionsDir}/_just''}
+  '');
 }
