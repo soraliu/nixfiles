@@ -7,9 +7,7 @@ in
     ./base.nix
 
     ./modules/ai/shell-gpt
-
     ./modules/ide
-
     ./modules/lang/clang.nix
     ./modules/lang/nodejs.nix
     ./modules/lang/python.nix

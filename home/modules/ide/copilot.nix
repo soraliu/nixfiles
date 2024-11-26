@@ -1,4 +1,4 @@
-{ pkgs, ... }: {
+{ ... }: {
   config.programs.sops = {
     decryptFiles = [{
       from = "secrets/.config/github-copilot/hosts.enc.json";
