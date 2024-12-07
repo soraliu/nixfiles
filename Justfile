@@ -1,3 +1,5 @@
+# Just: https://github.com/casey/just
+#   Set Params: https://just.systems/man/en/recipe-parameters.html
 export PATH := `echo "$PATH:$HOME/.nix-profile/bin:/run/current-system/sw/bin"`
 
 [private]
