@@ -127,6 +127,7 @@
           ide = mkHome {
             modules = [
               ./home/ide.nix
+              nix-index-database.hmModules.nix-index
             ];
           };
           # c02fk4mjmd6m

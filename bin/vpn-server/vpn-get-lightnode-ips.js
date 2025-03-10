@@ -1,6 +1,11 @@
 #!/usr/bin/env node
 
-const nodes = [
+let o,
+  a,
+  r,
+  i = null;
+
+let nodes = [
   {
     text: "Silicon Valley",
     continent: "North America",
@@ -114,6 +119,7 @@ const nodes = [
     url: "saudi-arabia-vps",
     value: "5",
     tab: "LightNode",
+    countryImg: o,
     countryImgCode: "sa",
     banner: {
       src: "/_next/static/media/riyadh.d4a7d8e2.jpg",
@@ -197,6 +203,7 @@ const nodes = [
     url: "hanoi-vps",
     value: "8",
     tab: "LightNode",
+    countryImg: a,
     countryImgCode: "vn",
     banner: {
       src: "/_next/static/media/hanoi.bf3f8c5d.jpg",
@@ -248,6 +255,7 @@ const nodes = [
     url: "vietnam-vps",
     value: "10",
     tab: "LightNode",
+    countryImg: a,
     countryImgCode: "vn",
     banner: {
       src: "/_next/static/media/hochiminhcity.0d7a1fa0.jpg",
@@ -271,6 +279,7 @@ const nodes = [
     url: "hong-kong-vps",
     value: "11",
     tab: "LightNode",
+    countryImg: r,
     countryImgCode: "cn",
     banner: {
       src: "/_next/static/media/hongkong.1d9e7ffc.jpg",
@@ -301,6 +310,7 @@ const nodes = [
     url: "taiwan-vps",
     value: "12",
     tab: "LightNode",
+    countryImg: r,
     countryImgCode: "cn",
     banner: {
       src: "/_next/static/media/taipeichina.20417877.jpg",
@@ -492,6 +502,7 @@ const nodes = [
     url: "jeddah-vps",
     value: "19",
     tab: "LightNode",
+    countryImg: o,
     countryImgCode: "sa",
     banner: {
       src: "/_next/static/media/jeddah.5b645cf5.jpg",
@@ -515,6 +526,7 @@ const nodes = [
     url: "japan-vps",
     value: "20",
     tab: "LightNode",
+    countryImg: i,
     countryImgCode: "jp",
     banner: {
       src: "/_next/static/media/Tokyo.3808ecc7.jpg",
@@ -1187,6 +1199,7 @@ const nodes = [
     continent: "Asia",
     value: "999",
     tab: "VU&DO",
+    countryImg: i,
     countryImgCode: "jp",
     position: {
       top: 225,
@@ -1208,7 +1221,7 @@ const main = async () => {
       );
       // use regexp to extract ip
       const ip = originalIp.match(/(\d{1,3}\.){3}\d{1,3}/)[0];
-      console.log("ip:", ip);
+      console.log(`${url} ip:`, ip);
       return ip;
     }),
   );
