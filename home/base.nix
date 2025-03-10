@@ -10,6 +10,9 @@
 
 
   home.packages = (with pkgs; [
+    # utils
+    coreutils
+
     # fs
     findutils # find, xargs
     gnugrep   # GNU grep
