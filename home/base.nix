@@ -34,6 +34,7 @@
   ]);
 
   home.activation.initJust = lib.mkIf config.programs.zsh.enable (lib.hm.dag.entryAfter [ "linkGeneration" ] ''
+    mkdir -p ${config.programs.zsh.completionsDir}
     ${pkgs.just}/bin/just --completions zsh > ${config.programs.zsh.completionsDir}/_just
   '');
 }
