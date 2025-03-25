@@ -62,6 +62,9 @@ else
   elif [ -e /run/current-system/sw/bin ]; then
     # macos
     path_to_nix_bin=/run/current-system/sw/bin
+  elif [ -e /nix/var/nix/profiles/default/bin ]; then
+    # wsl
+    path_to_nix_bin=/nix/var/nix/profiles/default/bin
   else
     echo "Error: nix binary not found!"
     exit 1
