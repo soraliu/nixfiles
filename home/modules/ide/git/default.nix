@@ -25,6 +25,7 @@
           pull.rebase = "true";
           hub.protocol = "https";
           merge.conflictStyle = "diff3";
+          core.quotePath = "off";
         } // (if pkgs.stdenv.isDarwin then {} else {
           credential.helper = "store";
         });
