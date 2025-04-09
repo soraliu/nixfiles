@@ -6,6 +6,7 @@ setopt nomonitor nonotify
 
 # set lang & color & user
 export LC_ALL=en_US.UTF-8
+export LESSCHARSET=utf-8
 export TERM="xterm-256color"
 export USER=${USER:-$USERNAME}
 
