@@ -63,3 +63,5 @@ users
 ```sh
 nix run .#home-manager -- switch --impure --show-trace --flake .
 nix run .#nix-darwin -- switch --flake .
+```
+
