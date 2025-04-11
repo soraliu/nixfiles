@@ -74,13 +74,21 @@
     }: with flake-utils.lib; eachDefaultSystem (system:
     let
       log = v: builtins.trace v v;
-      systemMaps = {
-        "x86_64-darwin" = "common-darwin";
-        "aarch64-darwin" = "common-darwin";
-      };
       overlays = [
         # inputs.neovim-nightly-overlay.overlay
       ];
+      pkgs = builtins.trace system (import nixpkgs {
+        inherit system;
+        config.allowUnfree = true;
+        # overlays = overlays;
+      });
+
+      mkDocker = {}: rec {
+        nginx = import ./docker/basic-nginx.nix {
+          inherit system;
+          inherit pkgs;
+        };
+      };
 
       mkHome =
         { modules
@@ -90,11 +98,6 @@
         , isMobile ? false
         , extraSpecialArgs ? { }
         }: home-manager.lib.homeManagerConfiguration {
-          pkgs = builtins.trace system (import nixpkgs {
-            inherit system;
-            config.allowUnfree = true;
-            # overlays = overlays;
-          });
 
           modules = log (builtins.filter (el: el != "") modules);
 
@@ -192,6 +195,8 @@
             ];
           };
         };
+
+        docker-image = mkDocker { };
       };
     });
 }
