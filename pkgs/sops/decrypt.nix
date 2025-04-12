@@ -6,7 +6,7 @@
 # e.g.: `/nix/store/xz45jvrijbicfqv8rvc3nqxgn5zakj20-sops-decrypted-files/.git-credentials`
 # files.[].from -> related to `root` path
 # files.[].to -> related to `home` path
-{ pkgs, ageKeyFile, files ? [] }: pkgs.stdenv.mkDerivation {
+{ pkgs, ageKeyFile ? /tmp/.age/keys.txt, files ? [] }: pkgs.stdenv.mkDerivation {
   name = "sops-decrypted-files";
   version = "0.0.1";
   system = builtins.currentSystem;
