@@ -1,10 +1,20 @@
-{ pkgs ? import <nixpkgs> { }
-, pkgsLinux ? import <nixpkgs> { system = "x86_64-linux"; }
-}:
+{ pkgs ? import <nixpkgs> { system = "x86_64-linux"; }, ... }: pkgs.dockerTools.buildImage {
+  name = "hello";
+  tag = "latest";
+  created = "now";
 
-pkgs.dockerTools.buildImage {
-  name = "hello-docker";
+  copyToRoot = with pkgs.dockerTools; [
+    usrBinEnv
+    binSh
+  ];
+
+  runAsRoot = ''
+    echo "hello world"
+  '';
+
   config = {
-    Cmd = [ "${pkgsLinux.hello}/bin/hello" ];
+    Cmd = [
+      "/bin/sh"
+    ];
   };
 }

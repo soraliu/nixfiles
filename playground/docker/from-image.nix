@@ -2,9 +2,6 @@
   name = "nix-nginx";
   tag = "latest";
 
-  # fromImage = "library/alpine";
-  # fromImageName = null;
-  # fromImageTag = "3.21.3";
   fromImage = pkgs.dockerTools.pullImage {
     imageName = "library/alpine";
     imageDigest = "sha256:1c4eef651f65e2f7daee7ee785882ac164b02b78fb74503052a26dc061c90474";
@@ -12,13 +9,19 @@
     finalImageTag = "3.21.3";
     sha256 = "sha256-BLd0y9w1FIBJO5o4Nu5Wuv9dtGhgvh+gysULwnR9lOo=";
   };
+  copyToRoot = with pkgs; [
+    nginx
+  ];
   runAsRoot = ''
     #!${pkgs.runtimeShell}
-    /sbin/apk update -y
-    /sbin/apk add --no-cache nginx
+    mkdir -p /var/log/nginx /var/cache/nginx
   '';
   config = {
-    Cmd = [ "nginx" "-g" "daemon off;" ];
-    # Cmd = [ "/bin/sh" ];
+    Cmd = [
+      "${pkgs.nginx}/bin/nginx"
+      "-g"
+      "daemon off; error_log /dev/stderr; pid /dev/null;"
+    ];
+    ExposedPorts = { "80/tcp" = { }; };
   };
 }

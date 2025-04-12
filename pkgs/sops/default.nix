@@ -4,7 +4,6 @@ let
   decryptFiles = cfg.decryptFiles;
   decryptedPath = pkgs.callPackage ./decrypt.nix {
     inherit pkgs;
-    ageKeyFile = /tmp/.age/keys.txt;
     files = decryptFiles;
   };
 in
