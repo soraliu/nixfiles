@@ -1,6 +1,7 @@
 { pkgs ? import <nixpkgs> { }, ... }: pkgs.dockerTools.buildImage {
-  name = "nixos-nginx-basic";
+  name = "frpc";
   tag = "latest";
+  created = "now";
 
   copyToRoot = with pkgs.dockerTools; [
     usrBinEnv
@@ -8,7 +9,7 @@
     caCertificates
     (fakeNss.override {
       extraGroupLines = [
-        "nogroup:x:1:"
+        "nogroup:x:65533:"
       ];
     })
 
