@@ -98,6 +98,7 @@
         , isMobile ? false
         , extraSpecialArgs ? { }
         }: home-manager.lib.homeManagerConfiguration {
+          inherit pkgs;
 
           modules = log (builtins.filter (el: el != "") modules);
 
@@ -166,12 +167,7 @@
 
         darwinConfigurations = {
           "darwin" = nix-darwin.lib.darwinSystem {
-            inherit system;
-
-            pkgs = import nixpkgs {
-              inherit system;
-              config.allowUnfree = true;
-            };
+            inherit system pkgs;
 
             modules = log [
               ./systems/darwin.nix
@@ -183,12 +179,7 @@
 
         nixOnDroidConfigurations = {
           "default" = nix-on-droid.lib.nixOnDroidConfiguration {
-            inherit system;
-
-            pkgs = import nixpkgs {
-              inherit system;
-              config.allowUnfree = true;
-            };
+            inherit system pkgs;
 
             modules = [
               ./systems/aarch64-linux.nix
