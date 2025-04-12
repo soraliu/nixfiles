@@ -84,7 +84,7 @@
       });
 
       mkDocker = {}: rec {
-        nginx = import ./docker/basic-nginx.nix {
+        frpc = import ./docker/frpc.nix {
           inherit system;
           inherit pkgs;
         };
