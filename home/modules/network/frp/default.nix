@@ -10,7 +10,7 @@
       sops = {
         decryptFiles = [{
           from = "secrets/.config/frp/frps.enc.toml";
-          to = ".config/frp/frps.yaml";
+          to = ".config/frp/frps.toml";
         }];
       };
       pm2 = {
