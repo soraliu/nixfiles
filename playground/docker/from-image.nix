@@ -11,6 +11,20 @@
   };
   copyToRoot = with pkgs; [
     nginx
+    (writeTextFile {
+      name = "index.html";
+      text = "<h1>Hello NixOS Docker!</h1>";
+      destination = "${pkgs.nginx}/html/index.html";
+    })
+    (
+      import ../../pkgs/sops/decrypt.nix {
+        inherit pkgs;
+        files = [{
+          from = "secrets/.npmrc.enc";
+          to = "root/.npmrc";
+        }];
+      }
+    )
   ];
   runAsRoot = ''
     #!${pkgs.runtimeShell}
@@ -23,5 +37,6 @@
       "daemon off; error_log /dev/stderr; pid /dev/null;"
     ];
     ExposedPorts = { "80/tcp" = { }; };
+    WorkingDir = "/root";
   };
 }
