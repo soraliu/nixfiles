@@ -16,7 +16,7 @@
       pm2 = {
         services = [{
           name = "frps";
-          script = "${pkgs.frp}/bin/hysteria";
+          script = "${pkgs.frp}/bin/frps";
           args = "-c ${config.home.homeDirectory}/.config/frp/frps.toml";
           exp_backoff_restart_delay = 100;
           max_restarts = 3;
