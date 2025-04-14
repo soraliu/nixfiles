@@ -61,6 +61,9 @@ switch-os os="darwin":
   just switch-{{os}}
 
 
+# build docker image: frpc
+build-docker image="frpc":
+  nix build .#docker.{{image}} --print-out-paths
 
 # -------------------- all-in-one command --------------------
 
