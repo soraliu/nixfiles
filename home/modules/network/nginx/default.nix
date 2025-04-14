@@ -23,7 +23,7 @@
         services = [{
           name = "nginx";
           script = "${pkgs.nginx}/bin/nginx";
-          args = "-c ${config.home.homeDirectory}/.config/nginx/frps.conf";
+          args = "-c ${config.home.homeDirectory}/.config/nginx/frps.conf -g 'daemon off;'";
           exp_backoff_restart_delay = 100;
           max_restarts = 3;
         }];
