@@ -5,6 +5,7 @@
 
     ./modules/home-manager
     ./modules/network/hysteria
+    ./modules/network/frp
   ];
 
   home.packages = with pkgs; [ ];
