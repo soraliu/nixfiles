@@ -1,4 +1,4 @@
-{ pkgs, config, ... }: {
+{ pkgs, lib, config, ... }: {
   config = {
     home = {
       packages = with pkgs; [
@@ -34,4 +34,7 @@
   config.home.file = {
     ".config/nginx/50x.html".source = ./50x.html;
   };
+  config.home.activation.initNginx = lib.hm.dag.entryAfter [ "linkGeneration" ] ''
+    mkdir -p /var/log/nginx
+  '';
 }
