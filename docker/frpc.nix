@@ -1,4 +1,8 @@
-{ pkgs ? import <nixpkgs> { }, ... }: pkgs.dockerTools.buildImage {
+{ pkgs ? import <nixpkgs> { }, ... }:
+let
+  pathToFrpcConfig = "root/.config/frp/frpc.toml";
+in
+pkgs.dockerTools.buildImage {
   name = "frpc";
   tag = "latest";
   created = "now";
@@ -12,35 +16,24 @@
   };
 
   copyToRoot = with pkgs; [
-    nginx
-    (writeTextFile {
-      name = "index.html";
-      text = "<h1>Hello NixOS Docker!</h1>";
-      destination = "${pkgs.nginx}/html/index.html";
-    })
+    frp
     (
       import ../pkgs/sops/decrypt.nix {
         inherit pkgs;
         files = [{
-          from = "secrets/.npmrc.enc";
-          to = "root/.npmrc";
+          from = "secrets/.config/frp/frpc.enc.toml";
+          to = pathToFrpcConfig;
         }];
       }
     )
   ];
 
-  runAsRoot = ''
-    ${pkgs.coreutils}/bin/mkdir -p /var/log/nginx /var/cache/nginx
-    ${pkgs.coreutils}/bin/chmod 755 /var/log/nginx
-  '';
-
   config = {
     Cmd = [
-      "${pkgs.nginx}/bin/nginx"
-      "-g"
-      "daemon off; error_log /dev/stderr; pid /dev/null;"
+      "${pkgs.frp}/bin/frpc"
+      "-c"
+      "/${pathToFrpcConfig}"
     ];
-    ExposedPorts = { "80/tcp" = { }; };
     WorkingDir = "/root";
   };
 }

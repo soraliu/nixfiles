@@ -187,7 +187,7 @@
           };
         };
 
-        docker-image = mkDocker { };
+        docker = mkDocker { };
       };
     });
 }
