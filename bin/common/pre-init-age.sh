@@ -25,7 +25,7 @@ retry=1
 max_retry=10
 while (( retry < max_retry )) && ( ! grep 'AGE-SECRET-KEY' ${path_to_age_file} 1>/dev/null 2>&1 ); do
   echo "[retry ${retry}] AGE-SECRET-KEY does not exist in ${path_to_age_file}, trying to access it..."
-  curl -o ${path_to_age_file} -H "Authorization: Basic $(printf ${user}:${pw} | base64)" https://${host}/d/config/${age_dir}/${age_file}
+  curl -o ${path_to_age_file} -u "${user}:${pw}" https://${host}/dav/config/${age_dir}/${age_file}
   retry=$((retry + 1))
 done
 
