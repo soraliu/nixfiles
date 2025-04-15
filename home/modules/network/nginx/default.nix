@@ -1,4 +1,10 @@
-{ pkgs, lib, config, ... }: {
+{ pkgs, lib, config, ... }: let
+  script = pkgs.writeText "nginx-start-script.sh" ''
+    #!/bin/sh
+    mkdir -p /var/log/nginx
+    nginx -c ${config.home.homeDirectory}/.config/nginx/frps.conf -g 'daemon off;'
+  '';
+in {
   config = {
     home = {
       packages = with pkgs; [
@@ -22,8 +28,7 @@
       pm2 = {
         services = [{
           name = "nginx";
-          script = "${pkgs.nginx}/bin/nginx";
-          args = "-c ${config.home.homeDirectory}/.config/nginx/frps.conf -g 'daemon off;'";
+          script = script;
           exp_backoff_restart_delay = 100;
           max_restarts = 3;
         }];
@@ -34,7 +39,4 @@
   config.home.file = {
     ".config/nginx/50x.html".source = ./50x.html;
   };
-  config.home.activation.initNginx = lib.hm.dag.entryAfter [ "linkGeneration" ] ''
-    mkdir -p /var/log/nginx
-  '';
 }
