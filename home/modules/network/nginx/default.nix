@@ -2,7 +2,7 @@
   script = pkgs.writeText "nginx-start-script.sh" ''
     #!/bin/sh
     mkdir -p /var/log/nginx
-    nginx -c ${config.home.homeDirectory}/.config/nginx/frps.conf -g 'daemon off;'
+    ${pkgs.nginx}/bin/nginx -c ${config.home.homeDirectory}/.config/nginx/frps.conf -g 'daemon off;'
   '';
 in {
   config = {
