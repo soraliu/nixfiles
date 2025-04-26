@@ -45,7 +45,7 @@ mobile-pre-init-nix-on-doird:
 
 
 # -------------------- home-manager --------------------
-# profile: vpn-server, ide, ide-mirror, ide-cn, ide-mobile, eject
+# profile: vpn-server, drive-server, ide, ide-mirror, ide-cn, ide-mobile, eject
 switch-home profile="ide":
 	nix run .#home-manager -- switch --show-trace --impure --flake .#{{profile}} -b backup
 
@@ -73,6 +73,8 @@ build-docker image="frpc":
 [private]
 init-vpn-server: pre-init-nix pre-init-age (switch-home "vpn-server") post-init-pm2
 [private]
+init-drive-server: pre-init-nix-cn pre-init-age (switch-home "drive-server") post-init-pm2
+[private]
 init-ide: pre-init-nix pre-init-age (switch-home "ide") post-init-pm2 post-init-zsh
 [private]
 init-ide-cn: pre-init-nix-cn pre-init-age (switch-home "ide-cn") post-init-pm2 post-init-zsh
@@ -85,7 +87,7 @@ init-ide-on-mobile: mobile-pre-init-nix-on-doird (switch-home "ide-mobile")
 [private]
 eject-darwin: (switch-home "eject") darwin-uninstall-pkgs
 
-# profile: vpn-server, ide, ide-on-darwin-work, ide-on-darwin-personal, ide-on-mobile
+# profile: vpn-server, drive-server, ide, ide-on-darwin-work, ide-on-darwin-personal, ide-on-mobile
 init profile="ide":
   just init-{{profile}}
 

@@ -127,6 +127,12 @@
               ./home/vpn-server.nix
             ];
           };
+          # cn drive
+          drive-server = mkHome {
+            modules = [
+              ./home/drive-server.nix
+            ];
+          };
           # m3 || wsl || ec2
           ide = mkHome {
             modules = [
