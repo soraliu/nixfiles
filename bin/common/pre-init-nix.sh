@@ -39,9 +39,9 @@ if [ ! -d /nix ]; then
   os_type=$(uname)
 
   if [ $os_type == "Darwin" ]; then
-    curl -L "$download_url" | sh -s
+    curl -L "$download_url" | sh -s -- --no-channel-add --yes
   elif [ $os_type == "Linux" ]; then
-    curl -L "$download_url" | sh -s -- --daemon
+    curl -L "$download_url" | sh -s -- --no-channel-add --yes --daemon
   else
       echo "Unsupported OS"
       exit 1
