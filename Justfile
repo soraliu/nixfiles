@@ -12,6 +12,9 @@ default:
 pre-init-nix:
 	./bin/common/pre-init-nix.sh
 [private]
+pre-init-nix-cn:
+	./bin/common/pre-init-nix.sh -r cn
+[private]
 pre-init-age:
 	./bin/common/pre-init-age.sh
 [private]
@@ -71,6 +74,8 @@ build-docker image="frpc":
 init-vpn-server: pre-init-nix pre-init-age (switch-home "vpn-server") post-init-pm2
 [private]
 init-ide: pre-init-nix pre-init-age (switch-home "ide") post-init-pm2 post-init-zsh
+[private]
+init-ide-cn: pre-init-nix-cn pre-init-age (switch-home "ide-cn") post-init-pm2 post-init-zsh
 [private]
 init-ide-on-darwin-work: init-ide (switch-home "darwin") darwin-post-install-pkgs-work darwin-post-link-dirs darwin-post-restore-raycast
 [private]

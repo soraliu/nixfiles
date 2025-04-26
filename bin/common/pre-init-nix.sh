@@ -2,14 +2,46 @@
 
 set -e
 
+# global, cn
+region=global
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        -r|--region)
+            region="$2"
+            shift 2
+            ;;
+        *)
+            echo "unknown arg: $0 $1"
+            usage
+            ;;
+    esac
+done
+
 # Install nix
+
+case $region in
+  global)
+    # global
+    download_url="https://releases.nixos.org/nix/nix-2.19.3/install"
+    nix_version=https://nixos.org/channels/nixos-23.11
+    ;;
+  cn)
+    # cn
+    download_url="https://mirrors.tuna.tsinghua.edu.cn/nix/latest/install"
+    nix_version=https://mirrors.tuna.tsinghua.edu.cn/nix-channels/nixos-23.11
+    ;;
+  *)
+    echo "unknown region: $region"
+    exit 1
+esac
+
 if [ ! -d /nix ]; then
   os_type=$(uname)
 
   if [ $os_type == "Darwin" ]; then
-    curl -L https://releases.nixos.org/nix/nix-2.19.3/install | sh -s
+    curl -L "$download_url" | sh -s
   elif [ $os_type == "Linux" ]; then
-    curl -L https://releases.nixos.org/nix/nix-2.19.3/install | sh -s -- --daemon
+    curl -L "$download_url" | sh -s -- --daemon
   else
       echo "Unsupported OS"
       exit 1
@@ -40,7 +72,6 @@ fi
 
 # Specify the version of nixpkgs
 nix_version_name=nixos-23.11
-nix_version=https://nixos.org/channels/nixos-23.11
 nix_bin=$([ -z "$(command -v nix-channel)" ] && echo "/nix/var/nix/profiles/default/bin/nix-channel" || echo "nix-channel")
 if [[ "$(${nix_bin} --list | grep "$nix_version_name" | cut -d ' ' -f 2)" == "${nix_version}" ]]; then
   echo "Info: ${nix_version_name} ${nix_version} already exists! Skip."
