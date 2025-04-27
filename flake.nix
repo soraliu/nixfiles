@@ -88,6 +88,10 @@
           inherit system;
           inherit pkgs;
         };
+        frpc-drive = import ./docker/frpc-drive.nix {
+          inherit system;
+          inherit pkgs;
+        };
       };
 
       mkHome =
