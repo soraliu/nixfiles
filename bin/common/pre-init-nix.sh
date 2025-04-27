@@ -83,6 +83,10 @@ else
 fi
 
 path_to_nix_link=/usr/local/bin
+if [ ! -d /usr/local/bin ]; then
+  path_to_nix_link=/usr/bin
+fi
+
 if [ -f ${path_to_nix_link}/nix ]; then
   echo "Info: nix && nix-build have already linked! Skip."
 else
