@@ -22,13 +22,13 @@ done
 case $region in
   global)
     # global
-    download_url="https://releases.nixos.org/nix/nix-2.19.3/install"
-    nix_version=https://nixos.org/channels/nixos-23.11
+    download_url="https://releases.nixos.org/nix/nix-2.28.2/install"
+    nix_version=https://nixos.org/channels/nixos-24.11
     ;;
   cn)
     # cn
     download_url="https://mirrors.tuna.tsinghua.edu.cn/nix/latest/install"
-    nix_version=https://mirrors.tuna.tsinghua.edu.cn/nix-channels/nixos-23.11
+    nix_version=https://mirrors.tuna.tsinghua.edu.cn/nix-channels/nixos-24.11
     ;;
   *)
     echo "unknown region: $region"
@@ -71,7 +71,7 @@ else
 fi
 
 # Specify the version of nixpkgs
-nix_version_name=nixos-23.11
+nix_version_name=nixos-24.11
 nix_bin=$([ -z "$(command -v nix-channel)" ] && echo "/nix/var/nix/profiles/default/bin/nix-channel" || echo "nix-channel")
 if [[ "$(${nix_bin} --list | grep "$nix_version_name" | cut -d ' ' -f 2)" == "${nix_version}" ]]; then
   echo "Info: ${nix_version_name} ${nix_version} already exists! Skip."
