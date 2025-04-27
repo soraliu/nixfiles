@@ -9,5 +9,7 @@
     ./modules/network/nginx
   ];
 
-  home.packages = with pkgs; [ ];
+  home.packages = with pkgs; [
+    bandwhich
+  ];
 }
