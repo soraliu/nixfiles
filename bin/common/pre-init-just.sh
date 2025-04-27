@@ -13,6 +13,11 @@ else
 fi
 
 path_to_just_link=/usr/local/bin/just
+
+if [ ! -d /usr/local/bin ]; then
+  path_to_just_link=/usr/bin/just
+fi
+
 if [ -f ${path_to_just_link} ]; then
   echo "Info: just has already linked! Skip."
 else
