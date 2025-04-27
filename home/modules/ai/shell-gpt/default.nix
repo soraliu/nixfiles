@@ -1,7 +1,7 @@
 { pkgs, lib, config, ... }: {
   config = {
     home.packages = with pkgs; [
-      shell_gpt
+      shell-gpt
     ];
 
     home.activation.copyShellGPTFile = let
