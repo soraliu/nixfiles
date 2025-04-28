@@ -1,4 +1,4 @@
-{ pkgs, lib, config, isMobile, ... }: let
+{ pkgs, unstablePkgs, lib, config, isMobile, ... }: let
   pluginTpl = ''
     pane size=1 borderless=true {
       plugin location="file:~/.config/zellij/plugins/zjstatus.wasm" {
@@ -94,12 +94,9 @@
     }
   '';
 in {
-  programs = {
-    zellij = {
-      enable = true;
-      # enableZshIntegration = true;
-    };
-  };
+  home.packages = with unstablePkgs; [
+    zellij
+  ];
 
   home = {
     file = {
