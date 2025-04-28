@@ -5,6 +5,7 @@
 
     ./modules/home-manager
     ./modules/network/frp
+    ./modules/network/nginx/drive-server.nix
   ];
 
   home.packages = with pkgs; [ ];
