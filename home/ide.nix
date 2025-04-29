@@ -7,7 +7,6 @@ in
     ./base.nix
 
     ./modules/ai/shell-gpt
-    ./modules/ai/open-webui
 
     ./modules/ide
 
