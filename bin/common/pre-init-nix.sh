@@ -23,12 +23,14 @@ case $region in
   global)
     # global
     download_url="https://releases.nixos.org/nix/nix-2.28.2/install"
-    nix_version=https://nixos.org/channels/nixos-24.11
+    nix_version_24=https://nixos.org/channels/nixos-24.11
+    nix_version_unstable=https://nixos.org/channels/nixos-unstable
     ;;
   cn)
     # cn
     download_url="https://mirrors.tuna.tsinghua.edu.cn/nix/latest/install"
-    nix_version=https://mirrors.tuna.tsinghua.edu.cn/nix-channels/nixos-24.11
+    nix_version_24=https://mirrors.tuna.tsinghua.edu.cn/nix-channels/nixos-24.11
+    nix_version_unstable=https://mirrors.tuna.tsinghua.edu.cn/nix-channels/nixos-unstable
     ;;
   *)
     echo "unknown region: $region"
@@ -71,16 +73,22 @@ else
 fi
 
 # Specify the version of nixpkgs
-nix_version_name=nixpkgs
 nix_bin=$([ -z "$(command -v nix-channel)" ] && echo "/nix/var/nix/profiles/default/bin/nix-channel" || echo "nix-channel")
-if [[ "$(${nix_bin} --list | grep "$nix_version_name" | cut -d ' ' -f 2)" == "${nix_version}" ]]; then
-  echo "Info: ${nix_version_name} ${nix_version} already exists! Skip."
-else
-  echo "Info: ${nix_version_name} ${nix_version} does not exist! Updating..."
-  ${nix_bin} --remove "$nix_version_name"
-  ${nix_bin} --add "$nix_version"
-  ${nix_bin} --update
-fi
+function set_nix_channel() {
+  local channel_name=$1
+  local channel_url=$2
+
+  if [[ "$(${nix_bin} --list | grep "$channel_name" | cut -d ' ' -f 2)" == "$channel_url" ]]; then
+    echo "Info: ${channel_name} ${channel_url} already exists! Skip."
+  else
+    echo "Info: ${channel_name} ${channel_url} does not exist! Updating..."
+    ${nix_bin} --remove "$channel_name"
+    ${nix_bin} --add "$channel_url" "$channel_name"
+    ${nix_bin} --update
+  fi
+}
+set_nix_channel "nixos-24.11" $nix_version_24
+set_nix_channel nixpkgs $nix_version_unstable
 
 path_to_nix_link=/usr/local/bin
 if [ ! -d /usr/local/bin ]; then
