@@ -59,7 +59,7 @@
   codingLayout = ''
     layout {
       tab hide_floating_panes=true {
-        pane size="75%" command="~/.nix-profile/bin/nvim" focus=true {}
+        pane size="75%" command="$HOME_PROFILE_DIRECTORY/bin/nvim" focus=true {}
         pane name="Command:" size="25%" {}
 
         ${pluginTpl}

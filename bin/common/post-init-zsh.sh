@@ -4,7 +4,7 @@
 
 set -e
 
-path_to_zsh="$(readlink -f ~/.nix-profile/bin/zsh 2>/dev/null)"
+path_to_zsh="$(readlink -f $HOME_PROFILE_DIRECTORY/bin/zsh 2>/dev/null)"
 path_to_config=/etc/shells
 
 if [ ! -f "$path_to_zsh" ]; then
