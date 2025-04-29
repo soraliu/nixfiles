@@ -53,20 +53,13 @@ switch-home profile="ide":
 
 # -------------------- nixos --------------------
 
-[private]
+# switch nixos: wsl
+switch-nixos profile="wsl":
+  nixos-rebuild switch --show-trace --impure --flake .#{{profile}}
 switch-darwin:
 	nix run .#nix-darwin -- switch --show-trace --flake .#darwin
-[private]
 switch-android:
 	nix-on-droid switch --show-trace --flake .#default
-# os: darwin, android
-switch-os os="darwin":
-  just switch-{{os}}
-
-
-# build docker image: frpc
-build-docker image="frpc":
-  nix build .#docker.{{image}} --print-out-paths
 
 # -------------------- all-in-one command --------------------
 
@@ -95,6 +88,11 @@ init profile="ide":
 eject os="darwin":
   just eject-{{os}}
 
+# -------------------- docker --------------------
+
+# build docker image: frpc
+build-docker image="frpc":
+  nix build .#docker.{{image}} --print-out-paths
 
 # -------------------- utils --------------------
 

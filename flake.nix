@@ -66,6 +66,7 @@
     inputs@{ nixpkgs
     , nixpkgs-unstable
     , nix-index-database
+    , nixos-wsl
     , nix-darwin
     , home-manager
     , flake-utils
@@ -82,7 +83,10 @@
         config.allowUnfree = true;
         # overlays = overlays;
       });
-
+      unstablePkgs = import nixpkgs-unstable {
+        inherit system;
+        config.allowUnfree = true;
+      };
       mkDocker = {}: rec {
         frpc = import ./docker/frpc.nix {
           inherit system;
@@ -94,14 +98,15 @@
         };
       };
 
-      mkHome =
-        { modules
-        , useSecret ? true
+      mkHomeExtraSpecialArgs =
+        { useSecret ? true
         , useProxy ? false
         , useMirrorDrive ? false # useMirrorDrive is a boolean to config if copy remote config from google drive by rclone instead of Google drive stream
         , isMobile ? false
-        , extraSpecialArgs ? { }
-        }: home-manager.lib.homeManagerConfiguration {
+        }: { inherit useSecret useProxy useMirrorDrive isMobile; };
+
+      mkHome =
+        { modules ? [ ], extraSpecialArgs ? (mkHomeExtraSpecialArgs { }) }: home-manager.lib.homeManagerConfiguration {
           inherit pkgs;
 
           modules = log (builtins.filter (el: el != "") modules);
@@ -110,14 +115,27 @@
           #   which means those functions can access `useSecret` directly instead of `specialArgs.useSecret`
           #   TL;DR: https://github.com/nix-community/home-manager/blob/36f873dfc8e2b6b89936ff3e2b74803d50447e0a/modules/default.nix#L26
           extraSpecialArgs = {
-            inherit system useSecret useProxy useMirrorDrive isMobile;
-
-            unstablePkgs = import nixpkgs-unstable {
-              inherit system;
-              config.allowUnfree = true;
-            };
+            inherit system unstablePkgs;
           } // extraSpecialArgs;
         };
+
+      mkNixOS = { modules ? [ ], imports ? [ ], extraSpecialArgs ? (mkHomeExtraSpecialArgs { }) }: nixpkgs.lib.nixosSystem {
+        inherit system pkgs;
+
+        modules = log (builtins.filter (el: el != "") (modules ++ [
+          home-manager.nixosModules.home-manager
+          {
+            home-manager.useGlobalPkgs = true;
+            home-manager.useUserPackages = true;
+            home-manager.extraSpecialArgs = {
+              inherit system unstablePkgs;
+            } // extraSpecialArgs;
+
+            home-manager.users.root.imports = log (builtins.filter (el: el != "") imports);
+          }
+        ]));
+
+      };
     in
     {
       packages = {
@@ -146,25 +164,31 @@
           };
           # c02fk4mjmd6m
           ide-mirror = mkHome {
-            useMirrorDrive = true;
             modules = [
               ./home/ide.nix
             ];
+            extraSpecialArgs = mkHomeExtraSpecialArgs {
+              useMirrorDrive = true;
+            };
           };
           # cn ec2
           ide-cn = mkHome {
-            useProxy = true;
             modules = [
               ./home/ide.nix
             ];
+            extraSpecialArgs = mkHomeExtraSpecialArgs {
+              useProxy = true;
+            };
           };
           # mobile
           ide-mobile = mkHome {
-            isMobile = true;
-            useMirrorDrive = true;
             modules = [
               ./home/ide.nix
             ];
+            extraSpecialArgs = mkHomeExtraSpecialArgs {
+              isMobile = true;
+              useMirrorDrive = true;
+            };
           };
 
           # clean all packages & generated files
@@ -185,6 +209,20 @@
 
             specialArgs = { inherit inputs; };
           };
+        };
+
+        nixosConfigurations = {
+          wsl = mkNixOS
+            {
+              modules = [
+                nixos-wsl.nixosModules.default
+                ./systems/nixos-wsl.nix
+              ];
+              imports = [
+                ./home/ide.nix
+                nix-index-database.hmModules.nix-index
+              ];
+            };
         };
 
         nixOnDroidConfigurations = {
