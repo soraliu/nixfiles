@@ -71,7 +71,7 @@ else
 fi
 
 # Specify the version of nixpkgs
-nix_version_name=nixos-24.11
+nix_version_name=nixpkgs
 nix_bin=$([ -z "$(command -v nix-channel)" ] && echo "/nix/var/nix/profiles/default/bin/nix-channel" || echo "nix-channel")
 if [[ "$(${nix_bin} --list | grep "$nix_version_name" | cut -d ' ' -f 2)" == "${nix_version}" ]]; then
   echo "Info: ${nix_version_name} ${nix_version} already exists! Skip."
