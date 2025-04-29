@@ -18,6 +18,7 @@
     gnugrep   # GNU grep
     fd        # better find
     tree      # show dir like a tree
+    zip unzip # zip, unzip
 
     # network
     inetutils # provide: `telnet`, `ftp`, `hostname`, `ifconfig`, `traceroute`, `ping`, etc
