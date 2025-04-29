@@ -24,6 +24,7 @@
     inetutils # provide: `telnet`, `ftp`, `hostname`, `ifconfig`, `traceroute`, `ping`, etc
     wget      # wget
     curl      # curl
+    iperf3    # speed bandwidth test
 
     # makefile
     gnumake   # provide make
