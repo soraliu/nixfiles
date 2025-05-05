@@ -92,7 +92,7 @@ eject os="darwin":
 
 # build docker image: frpc
 build-docker image="frpc":
-  nix build .#docker.{{image}} --print-out-paths
+  nix build .#docker.{{image}} --print-out-paths --impure
 
 # -------------------- utils --------------------
 
