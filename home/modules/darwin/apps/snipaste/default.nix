@@ -6,7 +6,7 @@
     version = "2.8.6";
 
     src = fetchurl {
-      url = "https://drive.soraliu.dev/0:/Software/Darwin/Snipaste/${version}/Snipaste.dmg";
+      url = "https://drive.home.soraliu.dev/dav/software/darwin/Snipaste/${version}/Snipaste.dmg";
       hash = "sha256-tvamAg7/IyjO3510j7rmZ60baKR6tDX2S19LsFPlSZk=";
     };
   };
