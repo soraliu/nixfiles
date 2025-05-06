@@ -10,7 +10,7 @@
   home = {
     packages = with unstablePkgs; [
       postman
-      dbeaver
+      dbeaver-bin
       obsidian
     ];
   };
