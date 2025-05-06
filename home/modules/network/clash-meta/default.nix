@@ -51,7 +51,7 @@ in {
     programs = {
       sops = {
         decryptFiles = [{
-          from = "secrets/.config/clash/config.enc.yaml";
+          from = "secrets/.config/clash/config-whitelist.enc.yaml";
           to = ".config/clash/config.yaml";
         }];
       };
