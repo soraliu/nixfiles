@@ -1,11 +1,6 @@
-{ config, pkgs, ... }:
+{ config, pkgs, unstablePkgs, ... }:
 let
-  font = import ../common/font.nix;
-  fonts = with pkgs; [
-    font.medium
-    font.mediumItalic
-  ];
-  pathToIterm2Config = "~/.config/iterm2/com.googlecode.iterm2";
+  pathToIterm2Config = "$HOME/.config/iterm2/com.googlecode.iterm2";
 in
 {
   # List packages installed in system profile. To search by name, run:
@@ -14,7 +9,7 @@ in
 
   # Auto upgrade nix package and the daemon service.
   services.nix-daemon.enable = true;
-  nix.settings.trusted-users = [ "@staff" ];
+  nix.settings.trusted-users = [ "soraliu" "@staff" ];
   nixpkgs.config.allowUnfree = true;
 
   # Used for backwards compatibility, please read the changelog before changing.
@@ -33,6 +28,7 @@ in
     '';
   };
 
-  fonts.fontDir.enable = true;
-  fonts.fonts = fonts;
+  fonts.packages = with unstablePkgs; [
+    nerd-fonts.sauce-code-pro
+  ];
 }

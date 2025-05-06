@@ -37,7 +37,7 @@
     };
 
     nix-darwin = {
-      url = "github:lnl7/nix-darwin/550340062c16d7ef8c2cc20a3d2b97bcd3c6b6f6";
+      url = "github:lnl7/nix-darwin/nix-darwin-24.11";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -207,7 +207,7 @@
               ./systems/darwin.nix
             ];
 
-            specialArgs = { inherit inputs; };
+            specialArgs = { inherit unstablePkgs; };
           };
         };
 
