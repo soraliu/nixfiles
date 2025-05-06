@@ -53,9 +53,7 @@ in
 
     # shell
     comma # run software without installing it (need nix-index), Github: https://github.com/nix-community/comma
-  ]) ++ (with unstablePkgs; [
-    bitwarden-cli # secret management
-  ]);
+  ]) ++ (with unstablePkgs; [ ]);
 
   home.sessionVariables = {
     BAT_THEME = "Coldark-Dark"; # used by `bat`

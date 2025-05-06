@@ -21,7 +21,7 @@ in
   # $ darwin-rebuild changelog
   system.stateVersion = 4;
   system.defaults.dock.autohide = true;
-  system.defaults.dock.orientation = "left";
+  system.defaults.dock.orientation = "right";
   system.defaults.NSGlobalDomain._HIHideMenuBar = true;
 
   system.defaults.NSGlobalDomain.InitialKeyRepeat = 12;
