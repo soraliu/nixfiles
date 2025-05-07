@@ -1,4 +1,4 @@
-{ pkgs, lib, config, isMobile, ... }: {
+{ pkgs, unstablePkgs, lib, config, isMobile, ... }: {
 
   imports = [
     ../search/ripgrep
@@ -6,6 +6,7 @@
 
   programs.neovim = {
     enable = true;
+    package = unstablePkgs.neovim-unwrapped;
     viAlias = true;
     vimAlias = true;
     defaultEditor = true;

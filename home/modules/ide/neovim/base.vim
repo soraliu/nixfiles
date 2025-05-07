@@ -61,7 +61,6 @@ set helplang=zh
 set encoding=utf-8
 set fileencodings=utf-8,ucs-bom,cp936,gb18030
   \,big5,euc-jp,euc-kr,latin1
-set termencoding=utf-8
 
 " 设置tab为2个空格
 set shiftwidth=2                                            " 设置自动对齐tab为2个空格
@@ -79,7 +78,6 @@ set backspace=indent,eol,start                              " 让backspace能够
 
 " buffer
 set wildmenu wildmode=full                                  " 设置显示buffer匹配结果
-set pastetoggle=<F9>                                        " 切换到拷贝模式
 
 " clipboard
 " 复制当前文件地址到剪切板

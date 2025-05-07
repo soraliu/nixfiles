@@ -3,67 +3,196 @@
 -- -------------------------------------------------------------------------------------------------------------------------------
 table.insert(plugins, {
   {
-    'williamboman/mason.nvim',
-    opts = {
-      ui = {
-        icons = {
-          package_installed = '✓',
-          package_pending = '➜',
-          package_uninstalled = '✗',
+    'williamboman/mason-lspconfig.nvim',
+    event = { 'BufReadPre', 'BufNewFile' },
+    dependencies = {
+      'neovim/nvim-lspconfig',
+      'williamboman/mason.nvim',
+      {
+        'jay-babu/mason-null-ls.nvim',
+        opts = {
+          ensure_installed = {
+            -- Opt to list sources here, when available in mason.
+            'prettierd',
+            'eslint_d',
+            'revive',
+          },
+          automatic_installation = false,
+          handlers = {},
         },
       },
     },
-  },
-  {
-    'jay-babu/mason-null-ls.nvim',
-    event = { 'BufReadPre', 'BufNewFile' },
-    opts = {
-      ensure_installed = {
-        -- Opt to list sources here, when available in mason.
-        'prettierd',
-        'eslint_d',
-        'revive',
-      },
-      automatic_installation = false,
-      handlers = {},
-    },
-  },
-  {
-    'williamboman/mason-lspconfig.nvim',
-    opts = {
-      ensure_installed = {
-        'cmake',                 -- Makefile, configure.ac
-        'bashls',                -- bash
-        'jsonls',                -- json
-        'gopls',                 -- golang
-        'tsserver',              -- js, jsx, ts, tsx
-        'rnix',                  -- nix
-        'yamlls',                -- yaml
-        'lua_ls',                -- lua
-        'emmet_language_server', -- css emmet
-        'html',                  -- html
-      },
-    },
-    init = function()
-      require('mason-lspconfig').setup_handlers({
-        -- The first entry (without a key) will be the default handler
-        -- and will be called for each installed server that doesn't have
-        -- a dedicated handler.
-        function(server_name) -- default handler (optional)
-          require('lspconfig')[server_name].setup({})
+    config = function()
+      -- mason & lspconfig setup
+      require('mason').setup({
+        ui = {
+          icons = {
+            package_installed = '✓',
+            package_pending = '➜',
+            package_uninstalled = '✗',
+          },
+        },
+      })
+      require('mason-lspconfig').setup({
+        ensure_installed = {
+          'cmake',                 -- Makefile, configure.ac
+          'bashls',                -- bash
+          'jsonls',                -- json
+          'gopls',                 -- golang
+          'ts_ls',                 -- js, jsx, ts, tsx
+          'rnix',                  -- nix
+          'yamlls',                -- yaml
+          'lua_ls',                -- lua
+          'emmet_language_server', -- css emmet
+          'html',                  -- html
+        },
+        automatic_installation = true,
+      })
+
+      local lspconfig = require('lspconfig')
+
+      -- 🧠 support virtual_text
+      vim.diagnostic.config({
+        virtual_text = true,
+        virtual_lines = false,
+        signs = true,
+        underline = true,
+        update_in_insert = false,
+        severity_sort = true,
+      })
+
+      -- Use LspAttach autocommand to only map the following keys
+      -- after the language server attaches to the current buffer
+      vim.api.nvim_create_autocmd('LspAttach', {
+        group = vim.api.nvim_create_augroup('UserLspConfig', {}),
+        callback = function(ev)
+          -- Enable completion triggered by <c-x><c-o>
+          vim.bo[ev.buf].omnifunc = 'v:lua.vim.lsp.omnifunc'
+
+          -- Register keymaps
+          local wk = require('which-key')
+          local buffer = ev.buf
+
+          -- enable inline hint
+          vim.lsp.inlay_hint.enable = true
+
+          wk.add({
+            mode = 'n',
+            buffer = buffer,
+            -- See `:help vim.lsp.*` for documentation on any of the below functions
+            -- See `:help vim.diagnostic.*` for documentation on any of the below functions
+            { 'K',         vim.lsp.buf.hover,           desc = 'Show Hover Doc' },
+            { '<c-]>',     vim.lsp.buf.definition,      desc = 'Go Definition' },
+
+            { '<space>g',  group = 'Go Somewhere' },
+            { '<space>go', vim.lsp.buf.type_definition, desc = 'Go Type Definition' },
+            { '<space>gd', vim.lsp.buf.declaration,     desc = 'Go Declaration' },
+
+            { '<space>a',  group = 'Action' },
+            { '<space>ar', vim.lsp.buf.rename,          desc = 'LSP Rename' },
+            {
+              '<space>af',
+              function()
+                vim.lsp.buf.format({ async = true })
+              end,
+              desc = 'LSP Format',
+            },
+          })
+
+          -- TODO: to support auto show function signature
         end,
+      })
 
-        -- To support coq_nvim
-        -- local coq = require "coq"
-        -- function (server_name) -- default handler (optional)
-        --     require("lspconfig")[server_name].setup(coq.lsp_ensure_capabilities {})
-        -- end,
+      -- Lua
+      lspconfig.lua_ls.setup({
+        on_init = function(client)
+          local path = client.workspace_folders[1].name
+          if not vim.loop.fs_stat(path .. '/.luarc.json') and not vim.loop.fs_stat(path .. '/.luarc.jsonc') then
+            client.config.settings = vim.tbl_deep_extend('force', client.config.settings, {
+              Lua = {
+                runtime = {
+                  -- Tell the language server which version of Lua you're using
+                  -- (most likely LuaJIT in the case of Neovim)
+                  version = 'LuaJIT',
+                },
+                -- Make the server aware of Neovim runtime files
+                workspace = {
+                  checkThirdParty = false,
+                  library = {
+                    'vim.env.VIMRUNTIME',
+                    -- Depending on the usage, you might want to add additional paths here.
+                    -- E.g.: For using `vim.*` functions, add vim.env.VIMRUNTIME/lua.
+                    'vim.env.VIMRUNTIME/lua',
+                    '${3rd}/luv/library',
+                    -- "${3rd}/busted/library",
+                  },
+                },
+              },
+            })
+          end
+          return true
+        end,
+      })
 
-        -- Next, you can provide a dedicated handler for specific servers.
-        -- For example, a handler override for the `rust_analyzer`:
-        -- ["rust_analyzer"] = function ()
-        --     require("rust-tools").setup {}
-        -- end
+      -- swift
+      lspconfig.sourcekit.setup({
+        -- cmd = { "sourcekit-lsp" },
+        -- root_dir = lspconfig.util.root_pattern(".git", "Package.swift", "compile_commands.json"),
+        cmd = { 'xcrun', 'sourcekit-lsp' },
+        filetypes = { 'swift', 'objective-c', 'objective-cpp' },
+        root_dir = require('lspconfig').util.root_pattern('*.xcodeproj', '*.xcworkspace', '.git'),
+        settings = {},
+      })
+
+      -- Golang
+      lspconfig.gopls.setup({
+        settings = {
+          gopls = {
+            analyses = {
+              unusedparams = true,
+            },
+            staticcheck = true,
+            gofumpt = true,
+          },
+        },
+      })
+
+      -- CSS Emmet
+      lspconfig.emmet_language_server.setup({
+        filetypes = {
+          'css',
+          'eruby',
+          'html',
+          'javascript',
+          'javascriptreact',
+          'less',
+          'sass',
+          'scss',
+          'pug',
+          'typescriptreact',
+        },
+        -- Read more about this options in the [vscode docs](https://code.visualstudio.com/docs/editor/emmet#_emmet-configuration).
+        -- **Note:** only the options listed in the table are supported.
+        init_options = {
+          ---@type table<string, string>
+          includeLanguages = {},
+          --- @type string[]
+          excludeLanguages = {},
+          --- @type string[]
+          extensionsPath = {},
+          --- @type table<string, any> [Emmet Docs](https://docs.emmet.io/customization/preferences/)
+          preferences = {},
+          --- @type boolean Defaults to `true`
+          showAbbreviationSuggestions = true,
+          --- @type "always" | "never" Defaults to `"always"`
+          showExpandedAbbreviation = 'always',
+          --- @type boolean Defaults to `false`
+          showSuggestionsAsSnippets = false,
+          --- @type table<string, any> [Emmet Docs](https://docs.emmet.io/customization/syntax-profiles/)
+          syntaxProfiles = {},
+          --- @type table<string, string> [Emmet Docs](https://docs.emmet.io/customization/snippets/#variables)
+          variables = {},
+        },
       })
     end,
   },
@@ -296,163 +425,6 @@ table.insert(plugins, {
 -- Native LSP
 -- -------------------------------------------------------------------------------------------------------------------------------
 table.insert(plugins, {
-  {
-    'neovim/nvim-lspconfig',
-    lazy = false,
-    config = function()
-      local lspconfig = require('lspconfig')
-
-      -- Use LspAttach autocommand to only map the following keys
-      -- after the language server attaches to the current buffer
-      vim.api.nvim_create_autocmd('LspAttach', {
-        group = vim.api.nvim_create_augroup('UserLspConfig', {}),
-        callback = function(ev)
-          -- Enable completion triggered by <c-x><c-o>
-          vim.bo[ev.buf].omnifunc = 'v:lua.vim.lsp.omnifunc'
-
-          -- Register keymaps
-          local wk = require('which-key')
-          local buffer = ev.buf
-
-          wk.add({
-            mode = 'n',
-            buffer = buffer,
-            -- See `:help vim.lsp.*` for documentation on any of the below functions
-            -- See `:help vim.diagnostic.*` for documentation on any of the below functions
-            { 'K',         vim.lsp.buf.hover,           desc = 'Show Hover Doc' },
-            { '<c-]>',     vim.lsp.buf.definition,      desc = 'Go Definition' },
-
-            { '<space>g',  group = 'Go Somewhere' },
-            { '<space>go', vim.lsp.buf.type_definition, desc = 'Go Type Definition' },
-            { '<space>gd', vim.lsp.buf.declaration,     desc = 'Go Declaration' },
-
-            { '<space>a',  group = 'Action' },
-            { '<space>ar', vim.lsp.buf.rename,          desc = 'LSP Rename' },
-            {
-              '<space>af',
-              function()
-                vim.lsp.buf.format({ async = true })
-              end,
-              desc = 'LSP Format',
-            },
-          })
-
-          -- TODO: to support auto show function signature
-        end,
-      })
-
-      -- Lua
-      lspconfig.lua_ls.setup({
-        on_init = function(client)
-          local path = client.workspace_folders[1].name
-          if not vim.loop.fs_stat(path .. '/.luarc.json') and not vim.loop.fs_stat(path .. '/.luarc.jsonc') then
-            client.config.settings = vim.tbl_deep_extend('force', client.config.settings, {
-              Lua = {
-                runtime = {
-                  -- Tell the language server which version of Lua you're using
-                  -- (most likely LuaJIT in the case of Neovim)
-                  version = 'LuaJIT',
-                },
-                -- Make the server aware of Neovim runtime files
-                workspace = {
-                  checkThirdParty = false,
-                  library = {
-                    'vim.env.VIMRUNTIME',
-                    -- Depending on the usage, you might want to add additional paths here.
-                    -- E.g.: For using `vim.*` functions, add vim.env.VIMRUNTIME/lua.
-                    'vim.env.VIMRUNTIME/lua',
-                    '${3rd}/luv/library',
-                    -- "${3rd}/busted/library",
-                  },
-                },
-              },
-            })
-          end
-          return true
-        end,
-      })
-
-      -- swift
-      lspconfig.sourcekit.setup({
-        -- cmd = { "sourcekit-lsp" },
-        -- root_dir = lspconfig.util.root_pattern(".git", "Package.swift", "compile_commands.json"),
-        cmd = { 'xcrun', 'sourcekit-lsp' },
-        filetypes = { 'swift', 'objective-c', 'objective-cpp' },
-        root_dir = require('lspconfig').util.root_pattern('*.xcodeproj', '*.xcworkspace', '.git'),
-        settings = {},
-      })
-
-      -- Golang
-      lspconfig.gopls.setup({
-        settings = {
-          gopls = {
-            analyses = {
-              unusedparams = true,
-            },
-            staticcheck = true,
-            gofumpt = true,
-          },
-        },
-      })
-
-      -- CSS Emmet
-      lspconfig.emmet_language_server.setup({
-        filetypes = {
-          'css',
-          'eruby',
-          'html',
-          'javascript',
-          'javascriptreact',
-          'less',
-          'sass',
-          'scss',
-          'pug',
-          'typescriptreact',
-        },
-        -- Read more about this options in the [vscode docs](https://code.visualstudio.com/docs/editor/emmet#_emmet-configuration).
-        -- **Note:** only the options listed in the table are supported.
-        init_options = {
-          ---@type table<string, string>
-          includeLanguages = {},
-          --- @type string[]
-          excludeLanguages = {},
-          --- @type string[]
-          extensionsPath = {},
-          --- @type table<string, any> [Emmet Docs](https://docs.emmet.io/customization/preferences/)
-          preferences = {},
-          --- @type boolean Defaults to `true`
-          showAbbreviationSuggestions = true,
-          --- @type "always" | "never" Defaults to `"always"`
-          showExpandedAbbreviation = 'always',
-          --- @type boolean Defaults to `false`
-          showSuggestionsAsSnippets = false,
-          --- @type table<string, any> [Emmet Docs](https://docs.emmet.io/customization/syntax-profiles/)
-          syntaxProfiles = {},
-          --- @type table<string, string> [Emmet Docs](https://docs.emmet.io/customization/snippets/#variables)
-          variables = {},
-        },
-      })
-    end,
-    dependencies = {
-      {
-        -- Note: To make it work with Nix, should update the env of nvim-python to fix the issue of `can't find coq module`
-        -- 1. run `:checkhealth provider`
-        -- 2. edit the file of the value of `g:python3_host_prog`, e.g. `vi /nix/store/wb8ql9px3dn5j63k0nhnxlv1zzy0bcj4-neovim-0.9.4/bin/nvim-python3`
-        -- 3. add `export PYTHONPATH="/root/.local/share/nvim/lazy/coq_nvim"` below the `unset PYTHONPATH`
-        -- 4. force save the change
-
-        -- uncomment the following codes to use `coq_nvim`
-        -- "ms-jpq/coq_nvim",
-        -- branch = "coq",
-        -- dependencies = {
-        --   "ms-jpq/coq.artifacts",
-        --   branch = "artifacts"
-        -- },
-        -- config = function()
-        -- end,
-      },
-    },
-  },
   {
     'aznhe21/actions-preview.nvim',
     lazy = true,
