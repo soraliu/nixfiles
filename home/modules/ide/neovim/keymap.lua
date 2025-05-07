@@ -22,29 +22,33 @@ function keysRegisterBase()
   vim.api.nvim_set_keymap('c', '<C-k>', '<C-p>', {})
   -- open url
   vim.keymap.set('n', 'gx', ':sil !open <c-r><c-a><cr>', { silent = true, noremap = false, desc = 'Open Url' })
+  -- close window
+  vim.keymap.set(
+    'n',
+    '<c-w>',
+    '<cmd>bp<bar>sp<bar>bn<bar>bd<cr>',
+    { nowait = true, noremap = true, silent = true, desc = 'Close Buffer' }
+  )
 
   wk.add({
     mode = 'n',
 
     -- File Management
-    { '<c-s>',     '<cmd>w<cr>',                       desc = 'Save File' },
-    { '<c-q>',     '<cmd>q<cr>',                       desc = 'Quit' },
-
-    -- Buffer Management
-    { '<c-w>',     '<cmd>bp<bar>sp<bar>bn<bar>bd<cr>', desc = 'Close Buffer' },
+    { '<c-s>',     '<cmd>w<cr>',                   desc = 'Save File' },
+    { '<c-q>',     '<cmd>q<cr>',                   desc = 'Quit' },
 
     -- Windows Management
     { '<space>w',  group = 'Windows Management' },
-    { '<space>wh', '<c-w>h',                           desc = 'Focus on Left' },
-    { '<space>wl', '<c-w>l',                           desc = 'Focus on Right' },
-    { '<space>wj', '<c-w>j',                           desc = 'Focus on Bottom' },
-    { '<space>wk', '<c-w>k',                           desc = 'Focus on Above' },
-    { '<space>wr', '<c-w>=',                           desc = 'Restore window size' },
-    { '<space>wz', '<cmd>ZenMode<cr>',                 desc = 'Toggle ZenMode' },
-    { '<space>w[', '<cmd>vertical resize -10<cr>',     desc = 'Vertical Size -10' },
-    { '<space>w]', '<cmd>vertical resize +10<cr>',     desc = 'Vertical Size +10' },
-    { '<space>w-', '<cmd>resize -10<cr>',              desc = 'Window Size -10' },
-    { '<space>w+', '<cmd>resize +10<cr>',              desc = 'Window Size +10' },
+    { '<space>wh', '<c-w>h',                       desc = 'Focus on Left' },
+    { '<space>wl', '<c-w>l',                       desc = 'Focus on Right' },
+    { '<space>wj', '<c-w>j',                       desc = 'Focus on Bottom' },
+    { '<space>wk', '<c-w>k',                       desc = 'Focus on Above' },
+    { '<space>wr', '<c-w>=',                       desc = 'Restore window size' },
+    { '<space>wz', '<cmd>ZenMode<cr>',             desc = 'Toggle ZenMode' },
+    { '<space>w[', '<cmd>vertical resize -10<cr>', desc = 'Vertical Size -10' },
+    { '<space>w]', '<cmd>vertical resize +10<cr>', desc = 'Vertical Size +10' },
+    { '<space>w-', '<cmd>resize -10<cr>',          desc = 'Window Size -10' },
+    { '<space>w+', '<cmd>resize +10<cr>',          desc = 'Window Size +10' },
   })
 
   wk.add({

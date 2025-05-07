@@ -74,7 +74,9 @@ table.insert(plugins, {
           local buffer = ev.buf
 
           -- enable inline hint
-          vim.lsp.inlay_hint.enable = true
+          if vim.lsp.inlay_hint then
+            vim.lsp.inlay_hint.enable(true)
+          end
 
           wk.add({
             mode = 'n',
@@ -132,6 +134,36 @@ table.insert(plugins, {
           end
           return true
         end,
+      })
+
+      -- javascript/typescript
+      lspconfig.ts_ls.setup({
+        settings = {
+          javascript = {
+            inlayHints = {
+              includeInlayParameterNameHints = 'all',
+              includeInlayParameterNameHintsWhenArgumentMatchesName = true,
+              includeInlayFunctionParameterTypeHints = true,
+              includeInlayVariableTypeHints = true,
+              includeInlayVariableTypeHintsWhenTypeMatchesName = true,
+              includeInlayPropertyDeclarationTypeHints = true,
+              includeInlayFunctionLikeReturnTypeHints = true,
+              includeInlayEnumMemberValueHints = true,
+            },
+          },
+          typescript = {
+            inlayHints = {
+              includeInlayParameterNameHints = 'all',
+              includeInlayParameterNameHintsWhenArgumentMatchesName = true,
+              includeInlayFunctionParameterTypeHints = true,
+              includeInlayVariableTypeHints = true,
+              includeInlayVariableTypeHintsWhenTypeMatchesName = true,
+              includeInlayPropertyDeclarationTypeHints = true,
+              includeInlayFunctionLikeReturnTypeHints = true,
+              includeInlayEnumMemberValueHints = true,
+            },
+          },
+        },
       })
 
       -- swift
