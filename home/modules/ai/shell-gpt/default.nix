@@ -1,6 +1,6 @@
-{ pkgs, lib, config, ... }: {
+{ unstablePkgs, lib, config, ... }: {
   config = {
-    home.packages = with pkgs; [
+    home.packages = with unstablePkgs; [
       shell-gpt
     ];
 
