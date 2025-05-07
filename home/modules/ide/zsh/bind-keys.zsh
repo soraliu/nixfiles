@@ -13,7 +13,7 @@ function bindkey_of_sgpt() {
       _sgpt_prev_cmd=$BUFFER
       BUFFER+="⌛"
       zle -I && zle redisplay
-      BUFFER=$(sgpt --shell <<< "$_sgpt_prev_cmd")
+      BUFFER=$(sgpt --shell <<< "$_sgpt_prev_cmd" --no-interaction)
       zle end-of-line
   fi
   }
