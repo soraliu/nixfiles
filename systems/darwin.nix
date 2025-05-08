@@ -1,8 +1,4 @@
-{ config, pkgs, unstablePkgs, ... }:
-let
-  pathToIterm2Config = "$HOME/.config/iterm2/com.googlecode.iterm2";
-in
-{
+{ config, pkgs, unstablePkgs, ... }: {
   # List packages installed in system profile. To search by name, run:
   # $ nix-env -qaP | grep wget
   environment.systemPackages = [ ];
@@ -24,7 +20,9 @@ in
 
   system.activationScripts = {
     postUserActivation.text = ''
-      defaults write com.googlecode.iterm2 PrefsCustomFolder -string '${pathToIterm2Config}'
+      if ! defaults write com.googlecode.iterm2 PrefsCustomFolder -string "$HOME/.config/iterm2/com.googlecode.iterm2"; then
+        echo "warning: failed to set iTerm2 default preference folder, continuing..."
+      fi
     '';
   };
 
