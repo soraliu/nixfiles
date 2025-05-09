@@ -1,5 +1,6 @@
-{ pkgs ? import <nixpkgs> { }, ... }:
+{ ... }:
 let
+  pkgs = import <nixpkgs> { system = "x86_64-linux"; };
   pathToFrpcConfig = "root/.config/frp/frpc.toml";
 in
 pkgs.dockerTools.buildImage {
