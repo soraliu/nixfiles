@@ -104,3 +104,12 @@ nixd:
 [private]
 nix-hash url:
 	@nix-hash --type sha256 --to-sri $(nix-prefetch-url "{{url}}" 2>/dev/null | tail -n1) 2>/dev/null
+
+# -------------------- bin --------------------
+[private]
+bbr:
+	./bin/vpn-server/bbr.sh
+
+# vpn-server: bbr
+bin name:
+  just {{name}}
