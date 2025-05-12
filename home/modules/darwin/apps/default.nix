@@ -2,6 +2,7 @@
   imports = [
     ./clashx
     ./iterm2
+    ./karabiner
     ./raycast
     ./snipaste
     ./sublime
