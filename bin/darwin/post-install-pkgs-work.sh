@@ -19,6 +19,8 @@ install_dmg -n 'Vysor.app' -u 'https://nuts.vysor.io/download/osx' -t 'dmg' &
 install_dmg -n 'iTerm.app' -u 'https://iterm2.com/downloads/stable/iTerm2-3_5_4.zip' &
 install_dmg -n 'CompressX.app' -u 'https://drive.home.soraliu.dev/dav/software/darwin/CompressX/1.14/CompressX-1.14.dmg' &
 install_dmg -n 'Pearcleaner.app' -u 'https://github.com/alienator88/Pearcleaner/releases/download/4.4.3/Pearcleaner.dmg' &
+install_dmg -n 'CleanShot X.app' -u 'https://drive.home.soraliu.dev/dav/software/darwin/CleanShotX/4.7.6/CleanShotX.dmg' &
+
 
 if $(uname -m | grep -q 'arm'); then
   install_dmg -n 'Docker.app' -u 'https://desktop.docker.com/mac/main/arm64/Docker.dmg?utm_source=docker&utm_medium=webreferral&utm_campaign=docs-driven-download-mac-arm64' -t 'dmg' &
