@@ -1,3 +1,4 @@
+# @deprecated: use home/modules/darwin/apps/cleanshotx/default.nix
 { pkgs, ... }: with pkgs; let
   app = import ../app.nix rec {
     inherit pkgs;

@@ -4,7 +4,6 @@
     ./iterm2
     ./karabiner
     ./raycast
-    ./snipaste
     ./sublime
   ];
 
