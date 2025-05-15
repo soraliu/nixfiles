@@ -241,9 +241,9 @@ table.insert(plugins, {
     'numToStr/Comment.nvim',
     lazy = true,
     keys = {
-      { '<c-_>',  '<Plug>(comment_toggle_linewise)',         mode = 'n' },
+      { '<c-/>',  '<Plug>(comment_toggle_linewise)',         mode = 'n' },
       { '<c-\\>', '<Plug>(comment_toggle_blockwise)',        mode = 'n' },
-      { '<c-_>',  '<Plug>(comment_toggle_linewise_visual)',  mode = 'x' },
+      { '<c-/>',  '<Plug>(comment_toggle_linewise_visual)',  mode = 'x' },
       { '<c-\\>', '<Plug>(comment_toggle_blockwise_visual)', mode = 'x' },
     },
     config = function()
@@ -251,16 +251,16 @@ table.insert(plugins, {
         ---LHS of toggle mappings in NORMAL mode
         toggler = {
           ---Line-comment toggle keymap
-          line = '<c-_>',
+          line = '<c-/>',
           ---Block-comment toggle keymap
           block = '<c-\\>',
         },
         ---LHS of operator-pending mappings in NORMAL and VISUAL mode
         opleader = {
-          ---Line-comment keymap
-          line = 'gc',
-          ---Block-comment keymap
-          block = 'gb',
+          ---Line-comment toggle keymap
+          line = '<c-/>',
+          ---Block-comment toggle keymap
+          block = '<c-\\>',
         },
       }
 
