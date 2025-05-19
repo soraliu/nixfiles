@@ -5,7 +5,7 @@ set -e
 source ./install-dmg.util.sh
 
 install_dmg -n 'Google Drive.app' -u 'https://dl.google.com/drive-file-stream/GoogleDrive.dmg'
-install_dmg -n 'Karabiner-Elements.app' -u 'https://github.com/pqrs-org/Karabiner-Elements/releases/download/v14.13.0/Karabiner-Elements-14.13.0.dmg' &
+install_dmg -n 'Karabiner-Elements.app' -u 'https://github.com/pqrs-org/Karabiner-Elements/releases/download/v15.3.0/Karabiner-Elements-15.3.0.dmg' &
 install_dmg -n 'Raycast.app' -u 'https://releases.raycast.com/download' -t 'dmg' &
 install_dmg -n 'Caffeine.app' -u 'https://drive.home.soraliu.dev/dav/software/darwin/Caffeine/1.1.3/Caffeine.dmg' &
 install_dmg -n 'Proxyman.app' -u 'https://github.com/ProxymanApp/Proxyman/releases/download/5.1.1/Proxyman_5.1.1.dmg' &
