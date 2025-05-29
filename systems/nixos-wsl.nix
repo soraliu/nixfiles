@@ -30,7 +30,7 @@
   fileSystems."/mnt/nas" = {
     device = "//192.168.31.133/personal_folder";
     fsType = "cifs";
-    options = [ "credentials=/etc/.smbcredentials" ];
+    options = [ "credentials=/etc/.smbcredentials,file_mode=0777,dir_mode=0777" ];
   };
 
   programs.sops = {
