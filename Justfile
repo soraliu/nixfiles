@@ -107,9 +107,13 @@ nix-hash url:
 
 # -------------------- bin --------------------
 [private]
-bbr:
+sops file args:
+  sops -d {{file}} | bash -s -- {{args}}
+
+# init linux bbr/bbrplus + fq/cake
+bin-bbr:
 	./bin/vpn-server/bbr.sh
 
-# vpn-server: bbr
-bin name:
-  just {{name}}
+# @params: ["frpc", "frpc-drive"], rebuild frpc docker image & restart frpc on remote server
+bin-restart-frpc frpc="frpc":
+  @just sops ./secrets/bin/x86_64-linux/frp/restart-frpc.enc.sh "{{frpc}}"
