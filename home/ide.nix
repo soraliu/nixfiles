@@ -57,6 +57,6 @@ in
 
   home.sessionVariables = {
     BAT_THEME = "Coldark-Dark"; # used by `bat`
-    PATH = "$NODEJS_PATH/bin:$GOPATH/bin:$PATH";
+    PATH = "$HOME/.volta/bin:$GOPATH/bin:$PATH";
   };
 }
