@@ -27,11 +27,13 @@ if $(uname -m | grep -q 'arm'); then
   install_dmg -n 'Synergy.app' -u 'https://symless.com/synergy/synergy/api/download/synergy-macOS_arm64-v3.0.80.1-rc3.dmg' &
   install_dmg -n 'Todoist.app' -u 'https://todoist.com/mac_app?arch=arm' -t 'dmg' &
   install_dmg -n 'Wireshark.app' -u 'https://2.na.dl.wireshark.org/osx/Wireshark%204.2.6%20Arm%2064.dmg' &
+  install_dmg -n 'Anki.app' -u 'https://github.com/ankitects/anki/releases/download/25.02.6/anki-25.02.6-mac-apple-qt6.dmg' &
 elif $(uname -m | grep -q 'x86'); then
   install_dmg -n 'Docker.app' -u 'https://desktop.docker.com/mac/main/amd64/Docker.dmg?utm_source=docker&utm_medium=webreferral&utm_campaign=docs-driven-download-mac-amd64' -t 'dmg' &
   install_dmg -n 'Synergy.app' -u 'https://symless.com/synergy/synergy/api/download/synergy-macOS_x64-v3.0.80.1-rc3.dmg' &
   install_dmg -n 'Todoist.app' -u 'https://todoist.com/mac_app?arch=x64' -t 'dmg' &
   install_dmg -n 'Wireshark.app' -u 'https://2.na.dl.wireshark.org/osx/Wireshark%204.2.6%20Intel%2064.dmg' &
+  install_dmg -n 'Anki.app' -u 'https://github.com/ankitects/anki/releases/download/25.02.6/anki-25.02.6-mac-intel-qt6.dmg' &
 else
   echo "Error: Unknown arch $(uname -m)"
 fi
