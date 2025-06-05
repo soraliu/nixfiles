@@ -16,7 +16,7 @@ table.insert(plugins, {
     end,
     keys = {
       { '<space>wa', '<cmd>NvimTreeFindFile<cr>', mode = { 'n' }, desc = 'Find File' },
-      { '<space>we', '<cmd>NvimTreeToggle<cr>', mode = { 'n' }, desc = 'Toggle Nvim Tree' },
+      { '<space>we', '<cmd>NvimTreeToggle<cr>',   mode = { 'n' }, desc = 'Toggle Nvim Tree' },
     },
     config = function()
       local function on_attach(bufnr)
@@ -45,6 +45,15 @@ table.insert(plugins, {
         vim.keymap.set('n', 'p', api.node.navigate.parent, opts('Parent Directory'))
         vim.keymap.set('n', 'P', api.fs.paste, opts('Paste'))
         vim.keymap.set('n', 'm', api.fs.rename_full, opts('Rename: Full Path'))
+        local function open_in_finder()
+          local node = api.tree.get_node_under_cursor()
+          if node and node.absolute_path then
+            vim.fn.jobstart({ 'open', '-R', node.absolute_path }, { detach = true })
+          else
+            vim.notify('No valid file under cursor', vim.log.levels.WARN)
+          end
+        end
+        vim.keymap.set('n', 'r', open_in_finder, { buffer = bufnr, desc = 'Open in Finder' })
       end
 
       -- OR setup with some options
