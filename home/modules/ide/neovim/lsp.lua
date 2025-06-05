@@ -509,7 +509,27 @@ table.insert(plugins, {
 
         -- formatting
         --  TS, JS
-        null_ls.builtins.formatting.prettierd,
+        require('none-ls.formatting.eslint_d'),
+        -- 其他格式用 prettierd
+        null_ls.builtins.formatting.prettierd.with({
+          filetypes = {
+            'json',
+            'jsonc',
+            'markdown',
+            'markdown.mdx',
+            'yaml',
+            'html',
+            'css',
+            'scss',
+            'less',
+            'graphql',
+            'svelte',
+            'vue',
+            'astro',
+            'handlebars',
+          },
+        }),
+
         --  golang
         null_ls.builtins.formatting.goimports,
         null_ls.builtins.formatting.golines.with({
