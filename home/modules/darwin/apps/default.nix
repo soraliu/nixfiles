@@ -5,6 +5,7 @@
     ./karabiner
     ./raycast
     ./sublime
+    ./rime
   ];
 
   home = {
