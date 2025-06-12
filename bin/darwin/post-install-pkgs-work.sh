@@ -3,6 +3,7 @@
 set -e
 
 source ./install-dmg.util.sh
+source ./install.util.sh
 
 install_dmg -n 'Google Drive.app' -u 'https://dl.google.com/drive-file-stream/GoogleDrive.dmg'
 install_dmg -n 'Karabiner-Elements.app' -u 'https://github.com/pqrs-org/Karabiner-Elements/releases/download/v15.3.0/Karabiner-Elements-15.3.0.dmg' &
@@ -20,6 +21,7 @@ install_dmg -n 'iTerm.app' -u 'https://iterm2.com/downloads/stable/iTerm2-3_5_4.
 install_dmg -n 'CompressX.app' -u 'https://drive.home.soraliu.dev/dav/software/darwin/CompressX/1.14/CompressX-1.14.dmg' &
 install_dmg -n 'Pearcleaner.app' -u 'https://github.com/alienator88/Pearcleaner/releases/download/4.4.3/Pearcleaner.dmg' &
 install_dmg -n 'CleanShot X.app' -u 'https://drive.home.soraliu.dev/dav/software/darwin/CleanShotX/4.7.6/CleanShotX.dmg' &
+install -n 'Squirrel.app' -u 'https://github.com/rime/squirrel/releases/download/1.0.3/Squirrel-1.0.3.pkg' &
 
 
 if $(uname -m | grep -q 'arm'); then

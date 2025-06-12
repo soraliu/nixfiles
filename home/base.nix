@@ -32,6 +32,9 @@
 
     # string
     sd        # sed alternative
+
+    # sign
+    gnupg   # GnuPG, provide: `gpg`, `gpg2`, `gpgconf`, `gpg-connect-agent`, etc
   ]) ++ (with unstablePkgs; [
   ]);
 
