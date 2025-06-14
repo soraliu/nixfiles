@@ -74,9 +74,9 @@ table.insert(plugins, {
           local buffer = ev.buf
 
           -- enable inline hint
-          if vim.lsp.inlay_hint then
-            vim.lsp.inlay_hint.enable(true)
-          end
+          -- if vim.lsp.inlay_hint then
+          --   vim.lsp.inlay_hint.enable(true)
+          -- end
 
           wk.add({
             mode = 'n',
