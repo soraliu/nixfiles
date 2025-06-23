@@ -13,6 +13,7 @@ in
     ./modules/lang/clang.nix
     ./modules/lang/nodejs.nix
     ./modules/lang/python.nix
+    ./modules/lang/android.nix
     ./modules/lang/go.nix
     ./modules/lang/lua.nix
     ./modules/lang/rust.nix
