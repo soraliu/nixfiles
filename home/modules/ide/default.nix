@@ -7,5 +7,6 @@
     ./search
 
     ./copilot.nix
+    ./iac.nix
   ];
 }
