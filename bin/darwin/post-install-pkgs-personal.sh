@@ -7,6 +7,8 @@ install_dmg -n 'WhatsApp.app' -u 'https://web.whatsapp.com/desktop/mac_native/re
 
 if $(uname -m | grep -q 'arm'); then
   install_dmg -n 'BaiduNetdisk_mac.app' -u 'https://pkg-ant.baidu.com/issue/netdisk/MACguanjia/4.36.2/BaiduNetdisk_mac_4.36.2_x64.dmg' &
+  install_dmg -n 'UGREEN NAS.app' -u 'https://drive.home.soraliu.dev/dav/software/darwinUgreen/1.4.1.66582-dc997/darwin_arm64.dmg' &
+
 elif $(uname -m | grep -q 'x86'); then
   install_dmg -n 'BaiduNetdisk_mac.app' -u 'https://pkg-ant.baidu.com/issue/netdisk/MACguanjia/4.36.2/BaiduNetdisk_mac_4.36.2_arm64.dmg' &
 else
