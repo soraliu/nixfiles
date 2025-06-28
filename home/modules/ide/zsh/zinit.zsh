@@ -12,7 +12,11 @@ source "${ZINIT_HOME}/zinit.zsh"
 # -------------------------------------------------------------------------------------------------------------------------------
 # Theme
 #   Github: https://github.com/romkatv/powerlevel10k/tree/master
-zinit lucid atload'source ~/.p10k.zsh; _p9k_precmd' nocd for romkatv/powerlevel10k
+#   For Cursor AI assistant compatibility
+if [[ "$TERM_PROGRAM" != "vscode" ]]; then
+  zinit lucid atload'source ~/.p10k.zsh; _p9k_precmd' nocd for romkatv/powerlevel10k
+fi
+
 
 # vi mode
 #   Github: https://github.com/jeffreytse/zsh-vi-mode
