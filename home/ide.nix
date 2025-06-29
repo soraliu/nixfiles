@@ -20,6 +20,9 @@ in
     ./modules/lang/db.nix
 
     ./modules/network/clash-meta
+    ./modules/network/nebula
+
+    ./modules/cloud
 
     (if isDarwin then ./modules/darwin else "")
   ];

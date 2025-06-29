@@ -1,4 +1,4 @@
-{ pkgs, lib, config, ... }:
+{ pkgs, unstablePkgs, lib, config, ... }:
 let
   cfg = config.programs.pm2;
   services = cfg.services;
@@ -9,6 +9,14 @@ let
   '';
 in
 {
+  # imports = builtins.filter (el: el != null) [
+  #   (lib.mkIf cfg.enable ../../home/modules/lang/nodejs.nix)
+  # ];
+  imports = [
+    ../../home/modules/lang/nodejs.nix
+  ];
+
+
   options.programs.pm2 = {
     enable = lib.mkOption {
       type = lib.types.bool;
@@ -31,19 +39,20 @@ in
   };
 
   config.home = with lib; mkIf (cfg.enable && (length services > 0)) {
-    packages = with pkgs; [
-      pm2
-    ];
+    packages = with pkgs; [ ];
 
-    activation.initPm2 = hm.dag.entryAfter [ "linkGeneration" ] ''
-      pm2_bin=${pkgs.pm2}/bin/pm2
+
+    activation.initPm2 = hm.dag.entryAfter [ "initVolta" ] ''
+      ${unstablePkgs.volta}/bin/volta run npm i -g pm2
+
+      pm2_bin=~/.volta/bin/pm2
 
       set +e
       $pm2_bin delete all 2>/dev/null
       set -e
 
       $pm2_bin start ${pathToConfig}
-      $pm2_bin save
+      $pm2_bin update
     '';
   };
 }
