@@ -1,9 +1,15 @@
-{ pkgs, config, ... }: {
+{ pkgs, config, lib, ... }: {
   config = {
     home = {
       packages = with pkgs; [
         nebula
       ];
+
+      activation.outputNebulaSudoers = lib.hm.dag.entryAfter [ "linkGeneration" ] ''
+        #/usr/bin/env bash
+        echo "Pls adding nebula to sudoers manually"
+        echo "echo '${config.home.username} ALL=(ALL) NOPASSWD: ${pkgs.nebula}/bin/nebula' | sudo tee /etc/sudoers.d/nebula"
+      '';
     };
 
     programs = {
