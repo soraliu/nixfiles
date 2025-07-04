@@ -76,6 +76,7 @@ table.insert(plugins, {
         },
         filters = {
           dotfiles = false,
+          git_ignore = false,
         },
       })
     end,
