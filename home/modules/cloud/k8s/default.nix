@@ -6,7 +6,6 @@
         kubectl-explore
         kubectl-node-shell
         kubectl-ktop
-        kubectl-view-secret
         kubernetes-helm
         istioctl
         k9s
