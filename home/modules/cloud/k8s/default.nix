@@ -1,7 +1,7 @@
-{ pkgs, config, ... }: {
+{ pkgs, unstablePkgs, config, ... }: {
   config = {
     home = {
-      packages = with pkgs; [
+      packages = (with pkgs; [
         kubectl
         kubectl-explore
         kubectl-node-shell
@@ -9,8 +9,10 @@
         kubernetes-helm
         istioctl
         k9s
+        yq-go
+      ]) ++ (with unstablePkgs; [
         fluxcd
-      ];
+      ]);
     };
   };
 }
