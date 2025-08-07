@@ -62,6 +62,6 @@ in
 
   home.sessionVariables = {
     BAT_THEME = "Coldark-Dark"; # used by `bat`
-    PATH = "$HOME/.volta/bin:$GOPATH/bin:$PATH";
+    PATH = if isDarwin then "$HOME/.volta/bin:$GOPATH/bin:/opt/homebrew/bin:$PATH" else "$HOME/.volta/bin:$GOPATH/bin:$PATH";
   };
 }
