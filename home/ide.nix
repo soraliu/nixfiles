@@ -54,11 +54,10 @@ in
 
     # container
     docker # docker cli
-    colima # container runtime
 
     # shell
     comma # run software without installing it (need nix-index), Github: https://github.com/nix-community/comma
-  ]) ++ (with unstablePkgs; [ ]);
+  ]) ++ (with unstablePkgs; []);
 
   home.sessionVariables = {
     BAT_THEME = "Coldark-Dark"; # used by `bat`
