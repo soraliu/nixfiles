@@ -2,7 +2,7 @@
 let
   pathToRcloneRoot = "${builtins.getEnv "HOME"}/Rclone/";
 
-  cfg = config.programs.rclone;
+  cfg = config.programs.customRclone;
   # [{ remote = "gdrive:path/to/dir"; local = "$HOME/Drive/path/to/dir"; link = "/another_path/to/dir"; filter = "/path/to/filters.txt";  }]
   syncPaths = map
     ({ remote, local ? "", filter ? "", command ? "bisync" }: {
@@ -50,18 +50,18 @@ let
   '';
 in
 {
-  options.programs.rclone = {
+  options.programs.customRclone = {
     enable = lib.mkOption {
       type = lib.types.bool;
       default = true;
       example = false;
-      description = lib.mdDoc "Whether to enable rclone.";
+      description = lib.doc "Whether to enable custom rclone.";
     };
     syncPaths = lib.mkOption {
       type = lib.types.listOf lib.types.attrs;
       default = [ ];
       example = [{ local = "/path/to/dir"; remote = "gdrive:path/to/dir"; filter = "/path/to/filters.txt"; command = "copy"; }];
-      description = lib.mdDoc "rclone [command] paths. Notice: paths only support directories and can't be ended with / if the command is 'bisync'";
+      description = lib.doc "rclone [command] paths. Notice: paths only support directories and can't be ended with / if the command is 'bisync'";
     };
   };
 

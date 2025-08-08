@@ -3,7 +3,7 @@
     type = lib.types.str;
     default = "~/.local/share/zinit/completions";
     example = "~/.local/share/zinit/completions";
-    description = lib.mdDoc "Whether to put zsh completions.";
+    description = lib.doc "Whether to put zsh completions.";
   };
   config.programs = {
     zsh = {
