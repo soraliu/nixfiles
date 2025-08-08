@@ -34,7 +34,7 @@ in {
       type = lib.types.bool;
       default = useProxy;
       example = true;
-      description = lib.mdDoc "Whether to enable clash premium.";
+      description = lib.doc "Whether to enable clash premium.";
     };
   };
 

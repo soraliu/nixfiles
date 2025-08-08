@@ -6,7 +6,7 @@
 
   programs.neovim = {
     enable = true;
-    package = unstablePkgs.neovim-unwrapped;
+    package = pkgs.neovim-unwrapped;
     viAlias = true;
     vimAlias = true;
     defaultEditor = true;

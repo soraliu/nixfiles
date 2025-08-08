@@ -22,7 +22,7 @@ in
       type = lib.types.bool;
       default = true;
       example = false;
-      description = lib.mdDoc "Whether to enable pm2.";
+      description = lib.doc "Whether to enable pm2.";
     };
     services = lib.mkOption {
       type = lib.types.listOf lib.types.attrs;
@@ -34,7 +34,7 @@ in
         autorestart = false;
         cron_restart = "*/1 * * * *";
       }];
-      description = lib.mdDoc "Run daemons";
+      description = lib.doc "Run daemons";
     };
   };
 

@@ -10,19 +10,19 @@ in
       type = lib.types.bool;
       default = true;
       example = false;
-      description = lib.mdDoc "Whether to enable linker.";
+      description = lib.doc "Whether to enable linker.";
     };
     useMirror = lib.mkOption {
       type = lib.types.bool;
       default = useMirrorDrive;
       example = true;
-      description = lib.mdDoc "Whether to use rclone to copy files to lcoal.";
+      description = lib.doc "Whether to use rclone to copy files to lcoal.";
     };
     links = lib.mkOption {
       type = lib.types.listOf lib.types.attrs;
       default = [ ];
       example = [{ source = "gdrive:path/to/source/file_or_dir"; link = "/path/to/link/file_or_dir"; }];
-      description = lib.mdDoc "Link paths to dirs in remote storage. Support Google Drive or local absolute path";
+      description = lib.doc "Link paths to dirs in remote storage. Support Google Drive or local absolute path";
     };
   };
 
@@ -45,7 +45,7 @@ in
       '';
     })
     (mkIf cfg.useMirror {
-      programs.rclone.syncPaths = builtins.map
+      programs.customRclone.syncPaths = builtins.map
         ({ source, link }: {
           remote = source;
           local = link;

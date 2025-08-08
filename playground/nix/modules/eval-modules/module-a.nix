@@ -6,12 +6,12 @@
       type = lib.types.bool;
       default = true;
       example = false;
-      description = lib.mdDoc "Whether to enable.";
+      description = lib.doc "Whether to enable.";
     };
     content = lib.mkOption {
       type = lib.types.str;
       default = txt;
-      description = lib.mdDoc "Content text.";
+      description = lib.doc "Content text.";
     };
   };
 }
