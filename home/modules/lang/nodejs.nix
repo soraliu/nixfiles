@@ -10,10 +10,12 @@
     to = ".npmrc";
   }];
 
-  config.home.activation.initVolta = lib.hm.dag.entryAfter [ "linkGeneration" ] ''
+  config.home.activation.initVoltaCompletion = lib.mkIf config.programs.zsh.enable (lib.hm.dag.entryAfter [ "linkGeneration" ] ''
     mkdir -p ${config.programs.zsh.completionsDir}
     ${unstablePkgs.volta}/bin/volta completions zsh > ${config.programs.zsh.completionsDir}/_volta
+  '');
 
+  config.home.activation.initVolta = lib.hm.dag.entryAfter [ "initVoltaCompletion" ] ''
     export PATH="$HOME/.volta/bin:$PATH"
     ${unstablePkgs.volta}/bin/volta install node
     ${unstablePkgs.volta}/bin/volta install pnpm
