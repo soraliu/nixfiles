@@ -11,11 +11,8 @@
   }];
 
   config.home.activation.initVolta = lib.hm.dag.entryAfter [ "linkGeneration" ] ''
-    echo "Enable Volta completion: ${config.programs.zsh.enable}"
-    if "${config.programs.zsh.enable}" != "false"; then
-      mkdir -p ${config.programs.zsh.completionsDir}
-      ${unstablePkgs.volta}/bin/volta completions zsh > ${config.programs.zsh.completionsDir}/_volta
-    fi
+    mkdir -p ${config.programs.zsh.completionsDir}
+    ${unstablePkgs.volta}/bin/volta completions zsh > ${config.programs.zsh.completionsDir}/_volta
 
     export PATH="$HOME/.volta/bin:$PATH"
     ${unstablePkgs.volta}/bin/volta install node
