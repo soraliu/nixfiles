@@ -42,7 +42,7 @@ in
     htop-vim # better top, Github: https://github.com/KoffeinFlummi/htop-vim
 
     # network
-    wrk # API pressure test tool
+    hey
     dogdns # dig alternative
     bandwhich # show network usage by process, need be executed by `sudo bandwhich`, Github: https://github.com/imsnif/bandwhich
 
