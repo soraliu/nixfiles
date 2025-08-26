@@ -6,7 +6,9 @@
         kubectl-explore
         kubectl-node-shell
         kubectl-ktop
+        kubectl-cnpg
         kubernetes-helm
+        redis
         istioctl
         k9s
         yq-go
