@@ -1,5 +1,6 @@
 { config, lib, pkgs, ... }: let
   font = import ../common/font.nix;
+  versions = import ../versions.nix;
 in
 
 {
@@ -10,7 +11,7 @@ in
   environment.etcBackupExtension = ".bak";
 
   # Read the changelog before changing this value
-  system.stateVersion = "25.05";
+  system.stateVersion = versions.version;
 
   # Set up nix for flakes
   nix.extraOptions = ''
