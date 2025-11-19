@@ -10,6 +10,7 @@
         kubernetes-helm
         redis
         istioctl
+        cilium-cli
         k9s
         yq-go
       ]) ++ (with unstablePkgs; [
