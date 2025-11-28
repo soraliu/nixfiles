@@ -13,4 +13,8 @@
     bandwhich
     iperf3
   ];
+
+  home.sessionVariables = {
+    PATH = "$HOME/.volta/bin:$GOPATH/bin:$PATH";
+  };
 }
