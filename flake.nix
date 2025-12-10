@@ -24,7 +24,7 @@
   inputs = {
     # Specify the source of Home Manager and Nixpkgs.
     # Version controlled by ./versions.nix - keep in sync!
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-25.05";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-25.11";
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
 
     nix-index-database = {
@@ -34,13 +34,13 @@
 
     home-manager = {
       # Version controlled by ./versions.nix - keep in sync!
-      url = "github:nix-community/home-manager/release-25.05";
+      url = "github:nix-community/home-manager/release-25.11";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
     nix-darwin = {
       # Version controlled by ./versions.nix - keep in sync!
-      url = "github:lnl7/nix-darwin/nix-darwin-25.05";
+      url = "github:lnl7/nix-darwin/nix-darwin-25.11";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 

@@ -23,13 +23,13 @@ case $region in
   global)
     # global
     download_url="https://releases.nixos.org/nix/nix-2.28.2/install"
-    nix_version_25=https://nixos.org/channels/nixos-25.05
+    nix_version_25=https://nixos.org/channels/nixos-25.11
     nix_version_unstable=https://nixos.org/channels/nixos-unstable
     ;;
   cn)
     # cn
     download_url="https://mirrors.tuna.tsinghua.edu.cn/nix/latest/install"
-    nix_version_25=https://mirrors.tuna.tsinghua.edu.cn/nix-channels/nixos-25.05
+    nix_version_25=https://mirrors.tuna.tsinghua.edu.cn/nix-channels/nixos-25.11
     nix_version_unstable=https://mirrors.tuna.tsinghua.edu.cn/nix-channels/nixos-unstable
     ;;
   *)
@@ -87,7 +87,7 @@ function set_nix_channel() {
     ${nix_bin} --update
   fi
 }
-set_nix_channel "nixos-25.05" $nix_version_25
+set_nix_channel "nixos-25.11" $nix_version_25
 set_nix_channel nixpkgs $nix_version_unstable
 
 path_to_nix_link=/usr/local/bin

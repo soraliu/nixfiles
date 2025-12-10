@@ -13,13 +13,10 @@
         save = 100000;
       };
 
-      initExtraFirst = builtins.concatStringsSep "\n\n\n" [
+      initContent = builtins.concatStringsSep "\n\n\n" [
         (builtins.readFile ./init.zsh)
         (builtins.readFile ./fn.zsh)
         (builtins.readFile ./bind-keys.zsh)
-      ];
-
-      initExtra = builtins.concatStringsSep "\n\n\n" [
         ''
           source ${pkgs.nix-index}/etc/profile.d/command-not-found.sh
         ''
