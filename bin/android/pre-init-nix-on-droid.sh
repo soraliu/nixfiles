@@ -1,5 +1,5 @@
 #!/usr/bin/env nix-shell
-#! nix-shell -I nixpkgs=https://github.com/NixOS/nixpkgs/archive/release-25.05.tar.gz
+#! nix-shell -I nixpkgs=https://github.com/NixOS/nixpkgs/archive/release-25.11.tar.gz
 #! nix-shell -p bash busybox git curl
 
 nix-on-droid switch --show-trace --flake github:soraliu/nixfiles#defaults

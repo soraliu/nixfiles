@@ -32,8 +32,7 @@
       (builtins.readFile ./marks.lua) # Marks
       (builtins.readFile ./ai.lua) # Copilot & ChatGPT
       (builtins.readFile ./treesitter.lua) # Syntax highlight
-      (builtins.readFile (pkgs.substituteAll {
-        src = ./lualine.lua;
+      (builtins.readFile (pkgs.replaceVars ./lualine.lua {
         branch = if isMobile then "" else "branch";
         encoding = if isMobile then "" else "encoding";
         fileformat = if isMobile then "" else "fileformat";
