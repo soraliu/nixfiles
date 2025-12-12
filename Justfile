@@ -30,9 +30,6 @@ darwin-post-install-pkgs-work:
 darwin-post-install-pkgs-personal:
 	./bin/darwin/post-install-pkgs-personal.sh
 [private]
-darwin-post-link-dirs:
-	./bin/darwin/post-link-dirs.sh
-[private]
 darwin-post-restore-raycast:
 	./bin/darwin/post-restore-raycast.sh
 [private]
@@ -72,7 +69,7 @@ init-ide: pre-init-nix pre-init-age (switch-home "ide") post-init-pm2 post-init-
 [private]
 init-ide-cn: pre-init-nix-cn pre-init-age (switch-home "ide-cn") post-init-pm2 post-init-zsh
 [private]
-init-ide-on-darwin-work: init-ide (switch-home "darwin") darwin-post-install-pkgs-work darwin-post-link-dirs darwin-post-restore-raycast
+init-ide-on-darwin-work: init-ide (switch-home "darwin") darwin-post-install-pkgs-work darwin-post-restore-raycast
 [private]
 init-ide-on-darwin-personal: init-ide-on-darwin-work darwin-post-install-pkgs-personal
 [private]
