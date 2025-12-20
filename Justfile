@@ -114,3 +114,8 @@ bin-bbr:
 # @params: ["frpc", "frpc-drive"], rebuild frpc docker image & restart frpc on remote server
 bin-restart-frpc frpc="frpc":
   @just sops ./secrets/bin/x86_64-linux/frp/restart-frpc.enc.sh "{{frpc}}"
+
+
+# -------------------- flake --------------------
+update-unstable-pkg:
+  nix flake update nixpkgs-unstable
