@@ -6,7 +6,6 @@
         kubectl-explore
         kubectl-node-shell
         kubectl-ktop
-        kubectl-cnpg
         kubernetes-helm
         redis
         istioctl
@@ -15,6 +14,7 @@
         yq-go
       ]) ++ (with unstablePkgs; [
         fluxcd
+        kubectl-cnpg
       ]);
     };
   };
