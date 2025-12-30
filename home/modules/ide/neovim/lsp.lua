@@ -556,7 +556,28 @@ table.insert(plugins, {
               group = augroup,
               buffer = bufnr,
               callback = function()
-                vim.lsp.buf.format({ async = false })
+                -- Check if this is a large file (set by performance.lua)
+                local is_large_file = vim.b.large_file or false
+
+                -- For large files, skip formatting or use async
+                if is_large_file then
+                  vim.notify('Skipping format for large file', vim.log.levels.INFO)
+                  return
+                end
+
+                -- Determine if we should use async based on file size
+                local line_count = vim.api.nvim_buf_line_count(bufnr)
+                local use_async = line_count > 1000
+
+                vim.lsp.buf.format({
+                  async = use_async,
+                  timeout_ms = use_async and 10000 or 5000,
+                })
+
+                -- Show notification for async formatting
+                if use_async then
+                  vim.notify('Formatting in background...', vim.log.levels.INFO, { timeout = 1000 })
+                end
               end,
             })
           end

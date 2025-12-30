@@ -13,6 +13,7 @@
 
     extraLuaConfig = builtins.concatStringsSep "\n\n\n" [
       (builtins.readFile ./lazy.lua)
+      (builtins.readFile ./performance.lua) # Performance optimization for large files
       (builtins.readFile ./keymap.lua) # Keymap preset(Using folke/which-key.nvim)
 
       (builtins.readFile ./theme.lua) # Theme palette
