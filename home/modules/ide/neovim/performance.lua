@@ -80,9 +80,3 @@ end
 
 -- Initialize
 setup()
-
--- Expose configuration for user customization
-return {
-  setup = setup,
-  config = config,
-}
