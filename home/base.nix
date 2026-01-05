@@ -22,6 +22,9 @@
 
     # network
     inetutils # provide: `telnet`, `ftp`, `hostname`, `ifconfig`, `traceroute`, `ping`, etc
+    gping     # gping
+    tcping-go # tcping
+    nexttrace # nexttrace
     wget      # wget
     curl      # curl
     grpcurl   # grpcurl
