@@ -12,6 +12,7 @@
         cilium-cli
         k9s
         yq-go
+        minio-client
       ]) ++ (with unstablePkgs; [
         fluxcd
         kubectl-cnpg
