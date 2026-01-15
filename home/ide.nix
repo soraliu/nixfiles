@@ -1,6 +1,8 @@
 { lib, pkgs, unstablePkgs, system, ... }:
 let
   isDarwin = system == "x86_64-darwin" || system == "aarch64-darwin";
+  commonPath = "$HOME/.volta/bin:$GOPATH/bin:$HOME/.local/bin";
+  darwinPath = "/opt/homebrew/bin";
 in
 {
   imports = builtins.filter (el: el != "") [
@@ -61,6 +63,6 @@ in
 
   home.sessionVariables = {
     BAT_THEME = "Coldark-Dark"; # used by `bat`
-    PATH = if isDarwin then "$HOME/.volta/bin:$GOPATH/bin:/opt/homebrew/bin:$PATH" else "$HOME/.volta/bin:$GOPATH/bin:$PATH";
+    PATH = if isDarwin then "${commonPath}:${darwinPath}:$PATH" else "${commonPath}:$PATH";
   };
 }
