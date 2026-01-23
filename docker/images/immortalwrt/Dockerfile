@@ -19,10 +19,20 @@ RUN mkdir -p /var/lock && opkg update && \
 # ----------------------------------------------------
 # 添加 Nikki 的软件源 Feed [5]
 RUN wget -O - https://github.com/nikkinikki-org/OpenWrt-nikki/raw/refs/heads/main/feed.sh | ash
-
-# 更新 Feed 并安装 Nikki 及其依赖
 RUN opkg update && \
-    opkg install nikki luci-app-nikki luci-i18n-nikki-zh-cn
+    opkg install nikki luci-app-nikki luci-i18n-nikki-zh-cn 
+# 设置 Nikki 的代理模式为 TProxy, 并添加 root 用户到访问控制列表(防止回环)
+RUN uci set nikki.proxy.tcp_mode='tproxy' && \
+    uci set nikki.proxy.udp_mode='tproxy' && \
+    uci set nikki.mixin.tun_enabled='0' && \
+    uci add_list nikki.@router_access_control[0].user="root" && \
+    uci commit nikki
+    
+# scp
+RUN opkg install openssh-sftp-server
+
+# ui
+RUN opkg install luci-theme-argon && uci set luci.main.lang='zh_cn' && uci commit luci
 
 # ----------------------------------------------------
 # 3. 固化旁路由网络配置 (UCI 设置)
