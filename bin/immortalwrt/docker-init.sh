@@ -46,10 +46,11 @@ Usage: $(basename "$0") [OPTIONS]
 Setup ImmortalWrt Docker container with macvlan network.
 
 Options:
-  -s, --step <N>    Execute only step N (1-4)
+  -s, --step <N>    Execute only step N (0-4)
   -h, --help        Show this help message
 
 Steps:
+  0  Reset container (stop & remove, then rebuild and run)
   1  Build the Docker image
   2  Create macvlan network
   3  Run the Docker container
@@ -89,6 +90,19 @@ step_3_run_container() {
     --restart=always \
     "${IMAGE_NAME}" \
     /sbin/init
+}
+
+step_0_reset_container() {
+  log_step 0 "Reset ${IMAGE_NAME} container"
+
+  run_cmd "Stop ${IMAGE_NAME} container" \
+    docker stop "${IMAGE_NAME}" 2>/dev/null || true
+
+  run_cmd "Remove ${IMAGE_NAME} container" \
+    docker rm "${IMAGE_NAME}" 2>/dev/null || true
+
+  step_1_build_image
+  step_3_run_container
 }
 
 step_4_configure_macvlan_shim() {
@@ -133,11 +147,12 @@ done
 # ==============================================================================
 run_step() {
   case "$1" in
+    0) step_0_reset_container ;;
     1) step_1_build_image ;;
     2) step_2_create_network ;;
     3) step_3_run_container ;;
     4) step_4_configure_macvlan_shim ;;
-    *) echo "Invalid step: $1 (valid: 1-4)"; exit 1 ;;
+    *) echo "Invalid step: $1 (valid: 0-4)"; exit 1 ;;
   esac
 }
 
