@@ -63,9 +63,8 @@ RUN uci set dhcp.lan.ignore='1' && \
 # 4. 固化防火墙配置 (关键步骤)
 # ----------------------------------------------------
 # 开启 IP 动态伪装 (Masquerading)，确保旁路由流量能正常 NAT 转发 [8, 9]
-RUN uci set firewall.lan=zone && \
-    uci set firewall.lan.name='lan' && \
-    uci set firewall.lan.network='lan' && \
+RUN LAN_ID=$(uci show firewall | grep "\.name='lan'" | awk -F. '{print $2}' | head -n 1) && \
+    [ -n "$LAN_ID" ] && uci rename firewall."$LAN_ID"='lan'; \
     uci set firewall.lan.input='ACCEPT' && \
     uci set firewall.lan.output='ACCEPT' && \
     uci set firewall.lan.forward='ACCEPT' && \
