@@ -29,8 +29,14 @@ RUN opkg update && \
 # ----------------------------------------------------
 # 设定 LAN 口为静态 IP，指向主路由网关 [2, 6]
 # 请根据实际情况修改 ipaddr (旁路由IP) 和 gateway (主路由IP)
-RUN uci get network.lan >/dev/null 2>&1 || uci set network.lan=interface
+
+RUN uci add network device && \
+    uci set network.@device[-1].name='br-lan' && \
+    uci set network.@device[-1].type='bridge' && \
+    uci add_list network.@device[-1].ports='eth0' && \
+RUN uci get network.lan >/dev/null 2>&1 || uci set network.lan=interface 
 RUN uci set network.lan.proto='static' && \
+    uci set network.lan.device='br-lan' && \
     uci set network.lan.ipaddr="$wrt_ip" && \
     uci set network.lan.netmask="$netmask" && \
     uci set network.lan.gateway="$gateway" && \
