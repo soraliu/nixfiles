@@ -31,10 +31,10 @@ RUN opkg update && \
 # 请根据实际情况修改 ipaddr (旁路由IP) 和 gateway (主路由IP)
 RUN uci get network.lan >/dev/null 2>&1 || uci set network.lan=interface
 RUN uci set network.lan.proto='static' && \
-    uci set network.lan.ipaddr='${wrt_ip}' && \
-    uci set network.lan.netmask='${netmask}' && \
-    uci set network.lan.gateway='${gateway}' && \
-    uci set network.lan.dns='${gateway} 223.5.5.5' && \
+    uci set network.lan.ipaddr="$wrt_ip" && \
+    uci set network.lan.netmask="$netmask" && \
+    uci set network.lan.gateway="$gateway" && \
+    uci set network.lan.dns="$gateway 223.5.5.5" && \
     uci commit network
 
 # 禁用 LAN 口的 DHCP 服务，避免与主路由冲突 [2, 7]
