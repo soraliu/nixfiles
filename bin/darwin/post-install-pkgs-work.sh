@@ -24,7 +24,7 @@ install_dmg -n 'CompressX.app' -u 'https://drive.home.soraliu.dev/dav/software/d
 install_dmg -n 'Pearcleaner.app' -u 'https://github.com/alienator88/Pearcleaner/releases/download/4.4.3/Pearcleaner.dmg' &
 install_dmg -n 'CleanShot X.app' -u 'https://drive.home.soraliu.dev/dav/software/darwin/CleanShotX/4.7.6/CleanShotX.dmg' &
 install -n 'Obsidian.app' -u 'https://github.com/obsidianmd/obsidian-releases/releases/download/v1.10.6/Obsidian-1.10.6.dmg' -t 'dmg' &
-install -n 'ClashX.Meta.app' -u 'https://github.com/MetaCubeX/ClashX.Meta/releases/download/v1.3.12/ClashX.Meta.macOS.12.0+.zip' -t 'zip' &
+install -n 'ClashX.Meta.app' -u 'https://github.com/MetaCubeX/ClashX.Meta/releases/download/v1.4.29/ClashX.Meta.zip' -t 'zip' &
 install -n '/Library/Input Methods/Squirrel.app' -u 'https://github.com/rime/squirrel/releases/download/1.0.3/Squirrel-1.0.3.pkg' &
 
 
