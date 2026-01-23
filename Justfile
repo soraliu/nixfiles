@@ -115,7 +115,6 @@ bin-bbr:
 bin-restart-frpc frpc="frpc":
   @just sops ./secrets/bin/x86_64-linux/frp/restart-frpc.enc.sh "{{frpc}}"
 
-
 # -------------------- flake --------------------
 update-unstable-pkg:
   nix flake update nixpkgs-unstable
