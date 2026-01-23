@@ -35,8 +35,8 @@ RUN uci set network.lan.proto='static' && \
     uci set network.lan.netmask="$netmask" && \
     uci set network.lan.gateway="$gateway" && \
     uci set network.lan.dns="$gateway 223.5.5.5" && \
-    uci delete firewall.wan 2>/dev/null && \
-    uci delete firewall.wan6 2>/dev/null && \
+    uci delete network.wan 2>/dev/null && \
+    uci delete network.wan6 2>/dev/null && \
     uci commit network
 
 # 禁用 LAN 口的 DHCP 服务，避免与主路由冲突 [2, 7]
