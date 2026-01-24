@@ -1,0 +1,7 @@
+[private]
+default:
+  just --list
+
+# build docker image: frpc, immortalwrt
+build image="frpc":
+  nix build .#docker.{{image}} --print-out-paths --impure
