@@ -8,8 +8,8 @@ ENV CI=1
 ARG gateway="192.168.31.1"
 ARG netmask="255.255.255.0"
 ARG wrt_ip="192.168.31.2"
-ARG http_proxy=""
-ARG https_proxy=""
+ARG http_proxy
+ARG https_proxy
 
 # ============================================================
 # 1. Initialize Package Manager & Install Base Tools
