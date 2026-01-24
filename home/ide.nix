@@ -12,7 +12,6 @@ in
 
     ./modules/ide
 
-    ./modules/lang/clang.nix
     ./modules/lang/nodejs.nix
     ./modules/lang/python.nix
     ./modules/lang/android.nix
@@ -55,7 +54,7 @@ in
     jq # jq format
 
     # container
-    docker # docker cli
+    docker-client # docker cli
 
     # shell
     comma # run software without installing it (need nix-index), Github: https://github.com/nix-community/comma
