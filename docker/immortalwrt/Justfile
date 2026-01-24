@@ -1,0 +1,109 @@
+[private]
+default:
+  just --list
+
+# ==============================================================================
+# Configuration
+# ==============================================================================
+IMMORTALWRT_IMAGE_NAME := "immortalwrt"
+IMMORTALWRT_NETWORK_NAME := "macnet"
+IMMORTALWRT_IP_PREFIX := "192.168.31"
+IMMORTALWRT_NETMASK := "255.255.255.0"
+IMMORTALWRT_PARENT_INTERFACE := "eth0"
+
+IMMORTALWRT_GATEWAY := IMMORTALWRT_IP_PREFIX + ".1"
+IMMORTALWRT_WRT_IP := IMMORTALWRT_IP_PREFIX + ".2"
+IMMORTALWRT_SUBNET := IMMORTALWRT_IP_PREFIX + ".0/24"
+
+# ==============================================================================
+# Helper Functions (defined as recipes for use in other recipes)
+# ==============================================================================
+
+# ==============================================================================
+# Build Recipes
+# ==============================================================================
+
+# build immortalwrt base image from Dockerfile (required before build-config)
+build-base:
+  #!/usr/bin/env bash
+  set -e
+  docker build --platform linux/amd64 \
+    -t immortalwrt-base:latest \
+    --progress=plain \
+    --build-arg gateway="{{IMMORTALWRT_GATEWAY}}" \
+    --build-arg netmask="{{IMMORTALWRT_NETMASK}}" \
+    --build-arg wrt_ip="{{IMMORTALWRT_WRT_IP}}" \
+    .
+  docker save immortalwrt-base:latest -o /tmp/immortalwrt-base.tar
+
+# build immortalwrt config image with Nix (requires build-base)
+build-config: build-base
+  #!/usr/bin/env bash
+  set -e
+  nix_output=$(nix build .#docker.immortalwrt --print-out-paths --impure)
+  echo "$nix_output"
+
+# build and import immortalwrt docker image (complete workflow)
+build: build-base
+  #!/usr/bin/env bash
+  set -e
+  echo "Step 1: Building Dockerfile base image..."
+  just build-base
+  echo "Step 2: Building Nix image with sops-decrypted config..."
+  nix_output=$(just build-config)
+  echo "Step 3: Importing Nix image to Docker..."
+  docker load -i "$nix_output"
+  echo "✓ Successfully built and imported immortalwrt image to Docker"
+
+# ==============================================================================
+# Network & Container Management Recipes
+# ==============================================================================
+
+# create macvlan network for immortalwrt container
+create-network:
+  #!/usr/bin/env bash
+  set -e
+  echo ""
+  echo "========================================"
+  echo "[Step 2] Create macvlan network: {{IMMORTALWRT_NETWORK_NAME}}"
+  echo "========================================"
+  docker network create -d macvlan \
+    --subnet="{{IMMORTALWRT_SUBNET}}" \
+    --gateway="{{IMMORTALWRT_GATEWAY}}" \
+    -o parent="{{IMMORTALWRT_PARENT_INTERFACE}}" \
+    "{{IMMORTALWRT_NETWORK_NAME}}" || true
+
+# run immortalwrt docker container
+run:
+  #!/usr/bin/env bash
+  set -e
+  echo ""
+  echo "========================================"
+  echo "[Step 3] Run the {{IMMORTALWRT_IMAGE_NAME}} docker container"
+  echo "========================================"
+  docker run -d \
+    --name="{{IMMORTALWRT_IMAGE_NAME}}" \
+    --network="{{IMMORTALWRT_NETWORK_NAME}}" \
+    --privileged \
+    --restart=always \
+    "{{IMMORTALWRT_IMAGE_NAME}}" \
+    /sbin/init
+
+# reset immortalwrt container (stop, remove, rebuild, run)
+reset:
+  #!/usr/bin/env bash
+  set -e
+  echo ""
+  echo "========================================"
+  echo "[Step 0] Reset {{IMMORTALWRT_IMAGE_NAME}} container"
+  echo "========================================"
+  
+  echo "Stopping {{IMMORTALWRT_IMAGE_NAME}} container..."
+  docker stop "{{IMMORTALWRT_IMAGE_NAME}}" 2>/dev/null || true
+  
+  echo "Removing {{IMMORTALWRT_IMAGE_NAME}} container..."
+  docker rm "{{IMMORTALWRT_IMAGE_NAME}}" 2>/dev/null || true
+  
+  echo "Rebuilding and running..."
+  just build
+  just run

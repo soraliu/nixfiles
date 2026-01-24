@@ -85,12 +85,6 @@ init profile="ide":
 eject os="darwin":
   just eject-{{os}}
 
-# -------------------- docker --------------------
-
-# build docker image: frpc
-build-docker image="frpc":
-  nix build .#docker.{{image}} --print-out-paths --impure
-
 # -------------------- utils --------------------
 
 [private]

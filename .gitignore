@@ -1,3 +1,5 @@
 **/result
 .local
 .DS_Store
+.windsurf
+.cursor

@@ -90,7 +90,12 @@
           inherit system;
           inherit pkgs;
         };
-        frpc-drive = import ./docker/frpc-drive.nix {
+        frpc-drive = import ./docker/frpc.nix {
+          inherit system;
+          inherit pkgs;
+          variant = "frpc-drive";
+        };
+        immortalwrt = import ./docker/immortalwrt/default.nix {
           inherit system;
           inherit pkgs;
         };

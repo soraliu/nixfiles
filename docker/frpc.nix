@@ -1,10 +1,17 @@
-{ ... }:
+{ pkgs ? import <nixpkgs> { }, variant ? "frpc", ... }:
 let
-  pkgs = import <nixpkgs> { system = "x86_64-linux"; };
   pathToFrpcConfig = "root/.config/frp/frpc.toml";
+  
+  variantConfig = if variant == "frpc-drive" then {
+    imageName = "frpc-drive";
+    secretFile = "secrets/.config/frp/frpc-drive.enc.toml";
+  } else {
+    imageName = "frpc";
+    secretFile = "secrets/.config/frp/frpc.enc.toml";
+  };
 in
 pkgs.dockerTools.buildImage {
-  name = "frpc";
+  name = variantConfig.imageName;
   tag = "latest";
   created = "now";
 
@@ -22,7 +29,7 @@ pkgs.dockerTools.buildImage {
       import ../pkgs/sops/decrypt.nix {
         inherit pkgs;
         files = [{
-          from = "secrets/.config/frp/frpc.enc.toml";
+          from = variantConfig.secretFile;
           to = pathToFrpcConfig;
         }];
       }
