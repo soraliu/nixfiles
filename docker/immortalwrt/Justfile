@@ -24,15 +24,24 @@ IMMORTALWRT_SUBNET := IMMORTALWRT_IP_PREFIX + ".0/24"
 # ==============================================================================
 
 # build immortalwrt base image from Dockerfile (required before build-config)
-build-base:
+build-base proxy="":
   #!/usr/bin/env bash
   set -e
-  docker build --platform linux/amd64 \
-    -t immortalwrt-base:latest \
-    --build-arg gateway="{{IMMORTALWRT_GATEWAY}}" \
-    --build-arg netmask="{{IMMORTALWRT_NETMASK}}" \
-    --build-arg wrt_ip="{{IMMORTALWRT_WRT_IP}}" \
-    .
+  
+  DOCKER_ARGS=(
+    "--platform" "linux/amd64"
+    "-t" "immortalwrt-base:latest"
+    "--build-arg" "gateway={{IMMORTALWRT_GATEWAY}}"
+    "--build-arg" "netmask={{IMMORTALWRT_NETMASK}}"
+    "--build-arg" "wrt_ip={{IMMORTALWRT_WRT_IP}}"
+  )
+  
+  if [ -n "{{proxy}}" ]; then
+    DOCKER_ARGS+=("--build-arg" "http_proxy={{proxy}}")
+    DOCKER_ARGS+=("--build-arg" "https_proxy={{proxy}}")
+  fi
+  
+  docker build "${DOCKER_ARGS[@]}" .
   docker save immortalwrt-base:latest -o /tmp/immortalwrt-base.tar
 
 # build immortalwrt config image with Nix (requires build-base)
