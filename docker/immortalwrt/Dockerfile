@@ -12,6 +12,8 @@ ARG wrt_ip="192.168.31.2"
 # ============================================================
 # 1. Initialize Package Manager & Install Base Tools
 # ============================================================
+# Add Nikki package feed
+RUN wget -O - https://github.com/nikkinikki-org/OpenWrt-nikki/raw/refs/heads/main/feed.sh | ash
 # Setup mirror switching script for package manager resilience
 RUN mkdir -p /var/lock && \
     printf '#!/bin/sh\nMIRRORS="downloads.immortalwrt.org mirrors.ustc.edu.cn/immortalwrt mirrors.geekpie.club/immortalwrt"\nfor m in $MIRRORS; do\n    if wget -q --spider https://$m/releases/ 2>/dev/null; then\n        echo "Mirror available: https://$m"\n        sed -i "s|downloads.immortalwrt.org|$m|g" /etc/opkg/distfeeds.conf\n        opkg update\n        exit 0\n    fi\ndone\necho "No available mirror found"\nexit 1\n' > /usr/bin/opkg-mirror-switch && \
@@ -64,8 +66,6 @@ RUN LAN_ID=$(uci show firewall | grep "\.name='lan'" | awk -F. '{print $2}' | he
 # ============================================================
 # 4. Install & Configure Nikki (Clash Client)
 # ============================================================
-# Add Nikki package feed
-RUN wget -O - https://github.com/nikkinikki-org/OpenWrt-nikki/raw/refs/heads/main/feed.sh | ash
 # Install Nikki and related packages
 RUN opkg install nikki luci-app-nikki luci-i18n-nikki-zh-cn
 # Configure Nikki proxy mode and access control

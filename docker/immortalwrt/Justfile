@@ -29,7 +29,6 @@ build-base:
   set -e
   docker build --platform linux/amd64 \
     -t immortalwrt-base:latest \
-    --progress=plain \
     --build-arg gateway="{{IMMORTALWRT_GATEWAY}}" \
     --build-arg netmask="{{IMMORTALWRT_NETMASK}}" \
     --build-arg wrt_ip="{{IMMORTALWRT_WRT_IP}}" \
