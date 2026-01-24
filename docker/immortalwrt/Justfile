@@ -45,14 +45,14 @@ build-base proxy="":
   docker save immortalwrt-base:latest -o /tmp/immortalwrt-base.tar
 
 # build immortalwrt config image with Nix (requires build-base)
-build-config: build-base
+build-config:
   #!/usr/bin/env bash
   set -e
   nix_output=$(nix build .#docker.immortalwrt --print-out-paths --impure)
   echo "$nix_output"
 
 # build and import immortalwrt docker image (complete workflow)
-build: build-base
+build:
   #!/usr/bin/env bash
   set -e
   echo "Step 1: Building Dockerfile base image..."
