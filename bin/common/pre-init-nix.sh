@@ -25,12 +25,14 @@ case $region in
     download_url="https://releases.nixos.org/nix/nix-2.28.2/install"
     nix_version_25=https://nixos.org/channels/nixos-25.11
     nix_version_unstable=https://nixos.org/channels/nixos-unstable
+    substituters="https://cache.nixos.org https://nix-community.cachix.org"
     ;;
   cn)
     # cn
     download_url="https://mirrors.tuna.tsinghua.edu.cn/nix/latest/install"
     nix_version_25=https://mirrors.tuna.tsinghua.edu.cn/nix-channels/nixos-25.11
     nix_version_unstable=https://mirrors.tuna.tsinghua.edu.cn/nix-channels/nixos-unstable
+    substituters="https://mirrors.tuna.tsinghua.edu.cn/nix-channels/store https://mirror.sjtu.edu.cn/nix-channels/store https://cache.nixos.org https://nix-community.cachix.org"
     ;;
   *)
     echo "unknown region: $region"
@@ -53,17 +55,37 @@ else
 fi
 
 # Enable nix-command and flakes
-config="experimental-features = nix-command flakes"
 path_to_nix_config=$HOME/.config/nix/nix.conf
-if [ ! -f "$path_to_nix_config" ] || ! grep -q "$config" $path_to_nix_config; then
-  mkdir -p $(dirname $path_to_nix_config)
-  echo "$config" >> $path_to_nix_config
+mkdir -p $(dirname $path_to_nix_config)
+
+# experimental-features
+config_experimental="experimental-features = nix-command flakes"
+if [ ! -f "$path_to_nix_config" ] || ! grep -q "experimental-features" $path_to_nix_config; then
+  echo "$config_experimental" >> $path_to_nix_config
 else
-  echo "Info: ${path_to_nix_config} has already support nix flake! Skip."
+  echo "Info: experimental-features already configured! Skip."
+fi
+
+# substituters
+config_substituters="substituters = $substituters"
+if ! grep -q "^substituters" $path_to_nix_config; then
+  echo "$config_substituters" >> $path_to_nix_config
+  echo "Info: substituters configured: $substituters"
+else
+  echo "Info: substituters already configured! Skip."
+fi
+
+# trusted-public-keys
+config_trusted_keys="trusted-public-keys = cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY= nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
+if ! grep -q "^trusted-public-keys" $path_to_nix_config; then
+  echo "$config_trusted_keys" >> $path_to_nix_config
+  echo "Info: trusted-public-keys configured"
+else
+  echo "Info: trusted-public-keys already configured! Skip."
 fi
 
 # trusted substituters
-trusted_settings='{"extra-trusted-public-keys":{"nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs=":true},"substituters":{"https://cache.nixos.org https://nix-community.cachix.org":true}}'
+trusted_settings="{\"extra-trusted-public-keys\":{\"nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs=\":true},\"substituters\":{\"${substituters}\":true}}"
 path_to_trusted_settings=$HOME/.local/share/nix/trusted-settings.json
 if [ ! -f "$path_to_trusted_settings" ]; then
   mkdir -p $(dirname $path_to_trusted_settings)
