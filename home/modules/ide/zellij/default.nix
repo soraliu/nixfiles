@@ -46,11 +46,11 @@
           start_suspended true
         }
       ''}
-      pane command="joshuto" size="${if isMobile then "50%" else "40%"}" {
+      pane command="yazi" size="${if isMobile then "50%" else "40%"}" {
         start_suspended true
       }
-      pane command="dua" size="${if isMobile then "50%" else "20%"}" {
-        args "interactive" "${config.home.homeDirectory}"
+      pane command="gdu" size="${if isMobile then "50%" else "20%"}" {
+        args "${config.home.homeDirectory}"
         start_suspended true
       }
     }

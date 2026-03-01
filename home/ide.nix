@@ -30,21 +30,17 @@ in
 
   home.packages = builtins.filter (el: el != "") ((with pkgs; [
     # fs
-    dua # du alternative, `dua i` can also delete files
+    dust # modern du alternative with intuitive output, Github: https://github.com/bootandy/dust
+    gdu # fast disk usage analyzer with TUI, Github: https://github.com/dundee/gdu
     rsync # fast incremental file transfer, Github: https://github.com/WayneD/rsync
-    joshuto # ternimal file browser
-    catdoc # used by joshuto preview
-    exiftool # used by joshuto preview
-    (if !isDarwin then ueberzug else "") # show images for joshuto (Linux only)
+    yazi # modern terminal file manager, replaces joshuto, Github: https://github.com/sxyazi/yazi
+    pandoc # universal document converter, replaces catdoc, Github: https://github.com/jgm/pandoc
+    exiftool # used by yazi preview
+    chafa # modern terminal graphics, replaces ueberzug/catimg, Github: https://github.com/hpjansson/chafa
     bat # like cat, but supports syntax highlighting, Github: https://github.com/sharkdp/bat
-    catimg # prints images in terminal, Github: https://github.com/posva/catimg
-
-    # process
-    htop-vim # better top, Github: https://github.com/KoffeinFlummi/htop-vim
 
     # network
-    hey
-    dogdns # dig alternative
+    dog # modern DNS client, replaces dogdns, Github: https://github.com/ogham/dog
     bandwhich # show network usage by process, need be executed by `sudo bandwhich`, Github: https://github.com/imsnif/bandwhich
 
     # doc
@@ -52,6 +48,7 @@ in
 
     # json
     jq # jq format
+    gojq # high-performance jq alternative in Go, Github: https://github.com/itchyny/gojq
 
     # container
     docker-client # docker cli
