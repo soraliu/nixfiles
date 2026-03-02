@@ -2,7 +2,6 @@
 " vim configuration
 " ------------------------------------------------------------------------------------------------------------------------------
 " environment
-set nocompatible                                            " 去掉有关vi一致性模式，避免以前版本的bug和局限
 
 set nobackup                                                " 禁用临时文件
 set nowritebackup
@@ -13,11 +12,9 @@ set autoread                                                " 文件在外部被
 
 " don't beep
 set novisualbell
-set visualbell t_vb=
 set noerrorbells
 set tm=300                                                  " 设置命令超时时间
 set lazyredraw                                              " 在执行宏命令时，不进行显示重绘；在宏命令执行完成后，一次性重绘，以便提高性能
-set ttyfast                                                 " Indicates a fast terminal connection
 
 " display
 set title                                                   " change the terminal's title

@@ -45,7 +45,7 @@ end
 -- Check if file is large
 local function check_large_file()
   local buf = vim.api.nvim_get_current_buf()
-  local ok, stats = pcall(vim.loop.fs_stat, vim.api.nvim_buf_get_name(buf))
+  local ok, stats = pcall(vim.uv.fs_stat, vim.api.nvim_buf_get_name(buf))
 
   if not ok or not stats then
     return false

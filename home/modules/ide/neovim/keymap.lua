@@ -355,7 +355,10 @@ function keysRegisterTSMove()
   local next_hunk_repeat, prev_hunk_repeat = ts_repeat_move.make_repeatable_move_pair(gs.next_hunk, gs.prev_hunk)
   local next_url_repeat, prev_url_repeat = ts_repeat_move.make_repeatable_move_pair(url.next_url, url.prev_url)
   local next_diagnostic_repeat, prev_diagnostic_repeat =
-      ts_repeat_move.make_repeatable_move_pair(vim.diagnostic.goto_next, vim.diagnostic.goto_prev)
+      ts_repeat_move.make_repeatable_move_pair(
+        function() vim.diagnostic.jump({ count = 1, float = true }) end,
+        function() vim.diagnostic.jump({ count = -1, float = true }) end
+      )
   local next_mark_repeat, prev_mark_repeat =
       ts_repeat_move.make_repeatable_move_pair(grapple.cycle_forward, grapple.cycle_backward)
 

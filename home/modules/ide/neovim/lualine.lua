@@ -92,7 +92,7 @@ table.insert(plugins, {
             -- Lsp server name .
             function()
               local msg = 'None'
-              local buf_ft = vim.api.nvim_buf_get_option(0, 'filetype')
+              local buf_ft = vim.bo[0].filetype
               local clients = vim.lsp.get_clients()
               if next(clients) == nil then
                 return msg

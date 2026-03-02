@@ -131,11 +131,11 @@ table.insert(plugins, {
         max_visible_lines = 20,
       },
       openai_params = {
-        model = 'gpt-3.5-turbo',
-        max_tokens = 3000,
+        model = 'gpt-4o-mini',
+        max_tokens = 4096,
       },
       openai_edit_params = {
-        model = 'gpt-3.5-turbo',
+        model = 'gpt-4o-mini',
       },
     },
     keys = {
