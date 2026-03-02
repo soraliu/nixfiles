@@ -143,11 +143,9 @@ table.insert(plugins, {
 
       keysRegisterTSMove()
 
-      vim.cmd([[
-        set foldmethod=expr
-        set foldexpr=nvim_treesitter#foldexpr()
-        set nofoldenable                     " Disable folding at startup.
-      ]])
+      vim.wo.foldmethod = 'expr'
+      vim.wo.foldexpr = 'v:lua.vim.treesitter.foldexpr()'
+      vim.wo.foldenable = false
     end,
   },
 })

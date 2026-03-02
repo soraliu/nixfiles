@@ -161,12 +161,12 @@ table.insert(plugins, {
     },
   },
   {
-    'Yggdroot/indentLine', -- display the indention levels with thin vertical lines
-    config = function()
-      vim.cmd([[
-        let g:indentLine_char = '|'
-      ]])
-    end,
+    'lukas-reineke/indent-blankline.nvim', -- display the indention levels with thin vertical lines
+    main = 'ibl',
+    opts = {
+      indent = { char = '│' },
+      scope = { enabled = true },
+    },
   },
   {
     'junegunn/vim-easy-align', -- A simple, easy-to-use Vim alignment plugin.
@@ -208,7 +208,7 @@ table.insert(plugins, {
   },
   {
     'powerman/vim-plugin-AnsiEsc', -- conceal Ansi escape sequences but will cause subsequent text to be colored
-    cnfig = function()
+    config = function()
       -- TODO: check usability
       vim.cmd([[
         autocmd BufNewFile,BufRead *.ansi.log call timer_start(100, { tid -> execute('AnsiEsc')})

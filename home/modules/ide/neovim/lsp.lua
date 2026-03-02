@@ -40,7 +40,7 @@ table.insert(plugins, {
           'jsonls',                -- json
           'gopls',                 -- golang
           'ts_ls',                 -- js, jsx, ts, tsx
-          'rnix',                  -- nix
+          'nil_ls',                -- nix
           'yamlls',                -- yaml
           'lua_ls',                -- lua
           'emmet_language_server', -- css emmet
@@ -48,8 +48,6 @@ table.insert(plugins, {
         },
         automatic_installation = true,
       })
-
-      local lspconfig = require('lspconfig')
 
       -- 🧠 support virtual_text
       vim.diagnostic.config({
@@ -106,10 +104,10 @@ table.insert(plugins, {
       })
 
       -- Lua
-      lspconfig.lua_ls.setup({
+      vim.lsp.config('lua_ls', {
         on_init = function(client)
           local path = client.workspace_folders[1].name
-          if not vim.loop.fs_stat(path .. '/.luarc.json') and not vim.loop.fs_stat(path .. '/.luarc.jsonc') then
+          if not vim.uv.fs_stat(path .. '/.luarc.json') and not vim.uv.fs_stat(path .. '/.luarc.jsonc') then
             client.config.settings = vim.tbl_deep_extend('force', client.config.settings, {
               Lua = {
                 runtime = {
@@ -137,7 +135,7 @@ table.insert(plugins, {
       })
 
       -- javascript/typescript
-      lspconfig.ts_ls.setup({
+      vim.lsp.config('ts_ls', {
         settings = {
           typescript = {
             inlayHints = {
@@ -155,17 +153,14 @@ table.insert(plugins, {
       })
 
       -- swift
-      lspconfig.sourcekit.setup({
-        -- cmd = { "sourcekit-lsp" },
-        -- root_dir = lspconfig.util.root_pattern(".git", "Package.swift", "compile_commands.json"),
+      vim.lsp.config('sourcekit', {
         cmd = { 'xcrun', 'sourcekit-lsp' },
         filetypes = { 'swift', 'objective-c', 'objective-cpp' },
-        root_dir = require('lspconfig').util.root_pattern('*.xcodeproj', '*.xcworkspace', '.git'),
-        settings = {},
+        root_markers = { '*.xcodeproj', '*.xcworkspace', '.git' },
       })
 
       -- Golang
-      lspconfig.gopls.setup({
+      vim.lsp.config('gopls', {
         settings = {
           gopls = {
             analyses = {
@@ -178,7 +173,7 @@ table.insert(plugins, {
       })
 
       -- CSS Emmet
-      lspconfig.emmet_language_server.setup({
+      vim.lsp.config('emmet_language_server', {
         filetypes = {
           'css',
           'eruby',
@@ -214,6 +209,12 @@ table.insert(plugins, {
           variables = {},
         },
       })
+
+      -- 启用所有 LSP
+      vim.lsp.enable({
+        'lua_ls', 'ts_ls', 'sourcekit', 'gopls', 'emmet_language_server',
+        'cmake', 'bashls', 'jsonls', 'nil_ls', 'yamlls', 'html',
+      })
     end,
   },
 })
@@ -243,7 +244,7 @@ table.insert(plugins, {
       if not snip_status_ok then
         return
       end
-      require('luasnip/loaders/from_vscode').lazy_load()
+      require('luasnip.loaders.from_vscode').lazy_load()
 
       -- adds vscode-like pictograms(icons) to neovim built-in lsp
       local lspkind = require('lspkind')
