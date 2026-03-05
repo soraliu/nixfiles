@@ -17,12 +17,7 @@
 
     # 初始化 OpenClaw
     home.activation.initOpenclaw = config.lib.dag.entryAfter [ "writeBoundary" ] ''
-      export PATH="${pkgs.git}/bin:${pkgs.nodejs_22}/bin:$PATH"
-
-      if ! command -v openclaw &> /dev/null; then
-        echo "Installing OpenClaw globally..."
-        npm install -g openclaw@latest
-      fi
+      export PATH="${pkgs.git}/bin:$PATH"
 
       # 克隆 clawfiles 到 ~/.openclaw（如果不存在）
       if [ ! -d "${config.home.homeDirectory}/.openclaw/.git" ]; then
