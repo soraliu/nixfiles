@@ -1,7 +1,9 @@
 { pkgs, config, ... }: {
   config = {
     home.packages = with pkgs; [
-      # vLLM 通过 uv 安装，这里只添加系统依赖
+      # vLLM 通过 uv 安装，这里添加系统依赖
+      gcc-unwrapped.lib
+      stdenv.cc.cc.lib
     ];
 
     programs.pm2.services = [{
@@ -12,6 +14,7 @@
       env = {
         CUDA_VISIBLE_DEVICES = "0";
         HF_HOME = "${config.home.homeDirectory}/.cache/huggingface";
+        LD_LIBRARY_PATH = "${pkgs.stdenv.cc.cc.lib}/lib:${pkgs.gcc-unwrapped.lib}/lib";
       };
       exp_backoff_restart_delay = 5000;
       max_restarts = 3;
@@ -26,10 +29,7 @@
         echo "Creating vLLM environment..."
         ${pkgs.uv}/bin/uv venv "$VLLM_ENV"
         echo "Installing vLLM..."
-        "$VLLM_ENV/bin/pip" install vllm
-      elif [ ! -f "$VLLM_ENV/bin/vllm" ]; then
-        echo "vLLM not found in venv, installing..."
-        "$VLLM_ENV/bin/pip" install vllm
+        cd "$VLLM_ENV" && ${pkgs.uv}/bin/uv pip install vllm
       fi
     '';
   };
