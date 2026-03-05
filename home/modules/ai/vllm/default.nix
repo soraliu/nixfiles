@@ -15,6 +15,8 @@
         CUDA_VISIBLE_DEVICES = "0";
         HF_HOME = "${config.home.homeDirectory}/.cache/huggingface";
         LD_LIBRARY_PATH = "/usr/lib/wsl/lib:${pkgs.stdenv.cc.cc.lib}/lib:${pkgs.gcc-unwrapped.lib}/lib";
+        CC = "${pkgs.gcc}/bin/gcc";
+        CXX = "${pkgs.gcc}/bin/g++";
       };
       exp_backoff_restart_delay = 5000;
       max_restarts = 3;
