@@ -9,6 +9,7 @@ in
     ./base.nix
 
     ./modules/ai/shell-gpt
+    ./modules/ai/cc
 
     ./modules/ide
 
@@ -53,6 +54,9 @@ in
 
     # container
     docker-client # docker cli
+
+    # pw
+    bitwarden-cli # Bitwarden CLI
 
     # shell
     comma # run software without installing it (need nix-index), Github: https://github.com/nix-community/comma

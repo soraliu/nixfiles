@@ -7,6 +7,7 @@
         kubectl-node-shell
         kubectl-ktop
         kubernetes-helm
+        awscli2
         redis
         istioctl
         cilium-cli
