@@ -9,7 +9,7 @@
     programs.pm2.services = [{
       name = "vllm-glm4-flash";
       script = "${config.home.homeDirectory}/.local/share/uv/vllm-env/bin/python";
-      args = "-m vllm.entrypoints.openai.api_server --model zai-org/GLM-4.7-Flash --dtype bfloat16 --max-model-len 32768 --gpu-memory-utilization 0.85 --port 8000 --host 127.0.0.1";
+      args = "-m vllm.entrypoints.openai.api_server --model zai-org/GLM-4.7-Flash --dtype bfloat16 --max-model-len 16384 --gpu-memory-utilization 0.80 --port 8000 --host 127.0.0.1";
       cwd = config.home.homeDirectory;
       env = {
         CUDA_VISIBLE_DEVICES = "0";
