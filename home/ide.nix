@@ -8,6 +8,8 @@ in
 
     ./modules/ai/shell-gpt
     ./modules/ai/cc
+    ./modules/ai/vllm
+    ./modules/ai/openclaw
 
     ./modules/ide
 
