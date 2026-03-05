@@ -14,7 +14,7 @@
       env = {
         CUDA_VISIBLE_DEVICES = "0";
         HF_HOME = "${config.home.homeDirectory}/.cache/huggingface";
-        LD_LIBRARY_PATH = "${pkgs.stdenv.cc.cc.lib}/lib:${pkgs.gcc-unwrapped.lib}/lib";
+        LD_LIBRARY_PATH = "/usr/lib/wsl/lib:${pkgs.stdenv.cc.cc.lib}/lib:${pkgs.gcc-unwrapped.lib}/lib";
         VLLM_LOGGING_LEVEL = "DEBUG";
       };
       exp_backoff_restart_delay = 5000;
