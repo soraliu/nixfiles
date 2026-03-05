@@ -7,8 +7,8 @@
 
     programs.pm2.services = [{
       name = "openclaw";
-      script = "${pkgs.nodejs_22}/bin/npx";
-      args = "openclaw gateway";
+      script = "${config.home.homeDirectory}/.openclaw/node_modules/.bin/openclaw";
+      args = "gateway";
       cwd = "${config.home.homeDirectory}/.openclaw";
       exp_backoff_restart_delay = 3000;
       max_restarts = 5;
