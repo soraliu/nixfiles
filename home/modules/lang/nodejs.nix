@@ -17,8 +17,8 @@
 
   config.home.activation.initVolta = lib.hm.dag.entryAfter [ "initVoltaCompletion" ] ''
     export PATH="$HOME/.volta/bin:$PATH"
-    ${unstablePkgs.volta}/bin/volta install node
-    ${unstablePkgs.volta}/bin/volta install pnpm
-    npm install --global @anthropic-ai/claude-code@latest
+    ${unstablePkgs.volta}/bin/volta install node || echo "Warning: Failed to install node via Volta"
+    ${unstablePkgs.volta}/bin/volta install pnpm || echo "Warning: Failed to install pnpm via Volta"
+    npm install --global @anthropic-ai/claude-code@latest || echo "Warning: Failed to install claude-code"
   '';
 }
