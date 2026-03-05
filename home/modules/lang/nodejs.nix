@@ -19,5 +19,6 @@
     export PATH="$HOME/.volta/bin:$PATH"
     ${unstablePkgs.volta}/bin/volta install node
     ${unstablePkgs.volta}/bin/volta install pnpm
+    npm install --global @anthropic-ai/claude-code@latest
   '';
 }

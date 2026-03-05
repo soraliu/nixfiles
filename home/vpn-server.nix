@@ -14,7 +14,8 @@
     iperf3
   ];
 
-  home.sessionVariables = {
-    PATH = "$HOME/.volta/bin:$GOPATH/bin:$PATH";
-  };
+  home.sessionPath = [
+    "$HOME/.volta/bin"
+    "$GOPATH/bin"
+  ];
 }
