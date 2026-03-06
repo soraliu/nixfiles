@@ -79,11 +79,29 @@ set wildmenu wildmode=full                                  " 设置显示buffer
 " clipboard
 " 复制当前文件地址到剪切板
 set clipboard=unnamedplus                                   " 系统剪切板
-nmap <Leader>c :call system("xclip -i -selection c", expand("%:p"))<CR>
-nmap <Leader>cd :call system("xclip -i -selection c", expand("%:p:h"))<CR>
 
-" osx
-if !executable('xclip')
+" WSL: use win32yank.exe for clipboard
+if executable('win32yank.exe')
+  let g:clipboard = {
+    \   'name': 'win32yank',
+    \   'copy': {
+    \      '+': 'win32yank.exe -i --crlf',
+    \      '*': 'win32yank.exe -i --crlf',
+    \    },
+    \   'paste': {
+    \      '+': 'win32yank.exe -o --lf',
+    \      '*': 'win32yank.exe -o --lf',
+    \   },
+    \   'cache_enabled': 0,
+    \ }
+  nmap <Leader>c :call system("win32yank.exe -i --crlf", expand("%:p"))<CR>
+  nmap <Leader>cd :call system("win32yank.exe -i --crlf", expand("%:p:h"))<CR>
+" Linux: use xclip
+elseif executable('xclip')
+  nmap <Leader>c :call system("xclip -i -selection c", expand("%:p"))<CR>
+  nmap <Leader>cd :call system("xclip -i -selection c", expand("%:p:h"))<CR>
+" macOS: use pbcopy
+else
   set clipboard=unnamed
   nmap <Leader>c :let @+=expand('%:p')<CR>
   nmap <Leader>cd :let @+=expand('%:p:h')<CR>
