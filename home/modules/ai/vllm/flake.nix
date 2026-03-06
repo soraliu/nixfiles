@@ -44,7 +44,7 @@
             --model GadflyII/GLM-4.7-Flash-NVFP4 \
             --dtype auto \
             --max-model-len 32768 \
-            --gpu-memory-utilization 0.90 \
+            --gpu-memory-utilization 0.85 \
             --port 8000 \
             --host 127.0.0.1 \
             --trust-remote-code \
