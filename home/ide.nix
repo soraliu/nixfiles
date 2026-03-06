@@ -9,7 +9,6 @@ in
     ./modules/ai/huggingface.nix
     ./modules/ai/shell-gpt
     ./modules/ai/cc
-    ./modules/ai/vllm
     ./modules/ai/openclaw
 
     ./modules/ide
