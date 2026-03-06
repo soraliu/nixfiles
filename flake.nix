@@ -195,6 +195,14 @@
             };
           };
 
+          # WSL 推理环境（包含 vLLM）
+          wsl-infer = mkHome {
+            modules = [
+              ./home/wsl-infer.nix
+              nix-index-database.hmModules.nix-index
+            ];
+          };
+
           # clean all packages & generated files
           eject = mkHome {
             modules = [

@@ -1,0 +1,112 @@
+{
+  description = "vLLM Development Environment with Blackwell Optimization";
+
+  inputs = {
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+  };
+
+  outputs = { self, nixpkgs }:
+    let
+      system = "x86_64-linux";
+      pkgs = import nixpkgs {
+        inherit system;
+        config.allowUnfree = true;
+      };
+
+      # 全局 vLLM 环境路径
+      GLOBAL_VLLM_ENV = "$HOME/.cache/nix-vllm-env";
+
+      # CUDA 运行时依赖
+      runtimeLibs = with pkgs; [
+        cudaPackages_12.cuda_cudart
+        cudaPackages_12.libcublas
+        gcc-unwrapped.lib
+        stdenv.cc.cc.lib
+      ];
+
+      libPath = pkgs.lib.makeLibraryPath runtimeLibs;
+
+    in {
+      apps.${system}.vllm-serve = {
+        type = "app";
+        program = "${pkgs.writeShellScript "vllm-serve" ''
+          # 设置环境变量
+          export CUDA_VISIBLE_DEVICES=0
+          export HF_HOME="$HOME/.cache/huggingface"
+          export HF_ENDPOINT="https://hf-mirror.com"
+          export CUDA_CACHE_PATH="$HOME/.cache/cuda"
+          export LD_LIBRARY_PATH="/usr/lib/wsl/lib:${libPath}:$LD_LIBRARY_PATH"
+          export CC="${pkgs.gcc}/bin/gcc"
+          export CXX="${pkgs.gcc}/bin/g++"
+
+          # 启动 vLLM 服务
+          exec "${GLOBAL_VLLM_ENV}/bin/python" -m vllm.entrypoints.openai.api_server \
+            --model GadflyII/GLM-4.7-Flash-NVFP4 \
+            --dtype auto \
+            --max-model-len 32768 \
+            --gpu-memory-utilization 0.90 \
+            --port 8000 \
+            --host 127.0.0.1 \
+            --trust-remote-code \
+            --enforce-eager \
+            --disable-log-requests \
+            --enable-chunked-prefill \
+            --max-num-batched-tokens 8192
+        ''}";
+      };
+
+      devShells.${system}.default = pkgs.mkShell {
+        name = "vllm-blackwell-env";
+
+        buildInputs = with pkgs; [
+          uv
+          python312
+          gcc
+          cudaPackages_12.cuda_cudart
+          cudaPackages_12.libcublas
+          cudaPackages_12.cuda_nvcc  # 开发工具
+        ];
+
+        shellHook = ''
+          # 激活全局 vLLM 虚拟环境
+          if [ -d "${GLOBAL_VLLM_ENV}" ]; then
+            # 直接设置 PATH，不使用 source activate
+            export PATH="${GLOBAL_VLLM_ENV}/bin:$PATH"
+            export VIRTUAL_ENV="${GLOBAL_VLLM_ENV}"
+            echo "✅ vLLM 环境已激活: ${GLOBAL_VLLM_ENV}"
+          else
+            echo "⚠️  vLLM 环境不存在，请先运行 home-manager switch"
+            echo "   或手动创建: uv venv ${GLOBAL_VLLM_ENV} && uv pip install vllm"
+          fi
+
+          # 设置环境变量
+          export CUDA_VISIBLE_DEVICES=0
+          export HF_HOME="$HOME/.cache/huggingface"
+          export HF_ENDPOINT="https://hf-mirror.com"
+          export CUDA_CACHE_PATH="$HOME/.cache/cuda"
+
+          # WSL2 驱动优先，Nix CUDA 作为后备
+          export LD_LIBRARY_PATH="/usr/lib/wsl/lib:${libPath}:$LD_LIBRARY_PATH"
+
+          export CC="${pkgs.gcc}/bin/gcc"
+          export CXX="${pkgs.gcc}/bin/g++"
+
+          # 显示环境信息
+          echo ""
+          echo "🚀 vLLM Blackwell 开发环境"
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          echo "Python:       $(python --version 2>&1)"
+          echo "CUDA Toolkit: ${pkgs.cudaPackages_12.cuda_cudart.version}"
+          echo "vLLM 环境:    ${GLOBAL_VLLM_ENV}"
+          echo "HF 镜像:      $HF_ENDPOINT"
+          echo ""
+          echo "💡 快速命令："
+          echo "  python -c 'import vllm; print(vllm.__version__)'  # 检查 vLLM 版本"
+          echo "  python -c 'import torch; print(torch.cuda.is_available())'  # 检查 CUDA"
+          echo "  nvidia-smi  # 查看 GPU 状态"
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          echo ""
+        '';
+      };
+    };
+}
