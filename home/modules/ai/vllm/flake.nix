@@ -39,19 +39,23 @@
           export CC="${pkgs.gcc}/bin/gcc"
           export CXX="${pkgs.gcc}/bin/g++"
 
-          # 启动 vLLM 服务
+          # 启动 vLLM 服务 - RTX 5090 优化配置
           exec "${GLOBAL_VLLM_ENV}/bin/python" -m vllm.entrypoints.openai.api_server \
             --model GadflyII/GLM-4.7-Flash-NVFP4 \
-            --dtype auto \
+            --max-num-seqs 256 \
             --max-model-len 32768 \
             --gpu-memory-utilization 0.85 \
             --port 8000 \
             --host 127.0.0.1 \
             --trust-remote-code \
-            --enforce-eager \
             --disable-log-requests \
+            --kv-cache-dtype auto \
+            --enable-prefix-caching \
             --enable-chunked-prefill \
-            --max-num-batched-tokens 8192
+            --max-num-batched-tokens 32768 \
+            --tensor-parallel-size 1 \
+            --pipeline-parallel-size 1 \
+            --block-size 16
         ''}";
       };
 
