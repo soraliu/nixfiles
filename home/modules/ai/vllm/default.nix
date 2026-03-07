@@ -3,6 +3,7 @@
 let
   # 全局固定路径
   GLOBAL_VLLM_ENV = "${config.home.homeDirectory}/.cache/nix-vllm-env";
+  vllmModulePath = "${config.home.homeDirectory}/.cache/vllm-flake";
 
   # CUDA 运行时依赖
   runtimeLibs = with pkgs; [
@@ -29,6 +30,9 @@ let
 
 in {
   config = {
+    # 创建符号链接：将 vllm 模块链接到缓存目录
+    home.file."${vllmModulePath}".source = ./.;
+
     home.packages = with pkgs; [
       # vLLM 通过 uv 安装，这里添加系统依赖
       gcc-unwrapped.lib
@@ -44,29 +48,8 @@ in {
       name = "vllm-glm4-flash";
       interpreter = "${pkgs.bash}/bin/bash";
       script = "${pkgs.writeShellScript "vllm-pm2-launcher" ''
-        # 智能查找 nixfiles 路径
-        if [ -n "''${NIXFILES_ROOT:-}" ] && [ -d "$NIXFILES_ROOT/home/modules/ai/vllm" ]; then
-          NIXFILES_PATH="$NIXFILES_ROOT"
-        elif [ -d "$HOME/Github/nixfiles/home/modules/ai/vllm" ]; then
-          NIXFILES_PATH="$HOME/Github/nixfiles"
-        elif [ -d "$HOME/nixfiles/home/modules/ai/vllm" ]; then
-          NIXFILES_PATH="$HOME/nixfiles"
-        elif [ -d "$HOME/.config/home-manager/home/modules/ai/vllm" ]; then
-          NIXFILES_PATH="$HOME/.config/home-manager"
-        else
-          echo "Error: nixfiles repository not found"
-          echo "Tried locations:"
-          echo "  - \$NIXFILES_ROOT (if set)"
-          echo "  - $HOME/Github/nixfiles"
-          echo "  - $HOME/nixfiles"
-          echo "  - $HOME/.config/home-manager"
-          echo ""
-          echo "Please set NIXFILES_ROOT environment variable to your nixfiles repository path"
-          exit 1
-        fi
-
-        cd "$NIXFILES_PATH"
-        exec ${pkgs.nix}/bin/nix run --impure ./home/modules/ai/vllm#vllm-serve
+        cd "${vllmModulePath}"
+        exec ${pkgs.nix}/bin/nix run --impure .#vllm-serve
       ''}";
       cwd = config.home.homeDirectory;
       exp_backoff_restart_delay = 5000;
