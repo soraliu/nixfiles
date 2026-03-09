@@ -1,4 +1,4 @@
-{ unstablePkgs, ... }: {
+{ ... }: {
   imports = [
     ./clashx
     ./iterm2

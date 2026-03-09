@@ -1,11 +1,11 @@
 { lib, config, pkgs, unstablePkgs, ... }: {
   imports = [
-    ../pkgs/sops
-    ../pkgs/pm2
-    ../pkgs/linker
-    ../pkgs/rclone
+    ../../pkgs/sops
+    ../../pkgs/pm2
+    ../../pkgs/linker
+    ../../pkgs/rclone
 
-    ./modules/home-manager
+    ../modules/home-manager
   ];
 
 
