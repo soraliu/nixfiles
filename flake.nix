@@ -150,26 +150,26 @@
         homeConfigurations = {
           vpn-server = mkHome {
             modules = [
-              ./home/vpn-server.nix
+              ./home/profiles/vpn-server.nix
             ];
           };
           # cn drive
           drive-server = mkHome {
             modules = [
-              ./home/drive-server.nix
+              ./home/profiles/drive-server.nix
             ];
           };
           # m3 || wsl || ec2
           ide = mkHome {
             modules = [
-              ./home/ide.nix
+              ./home/profiles/ide.nix
               nix-index-database.hmModules.nix-index
             ];
           };
           # c02fk4mjmd6m
           ide-mirror = mkHome {
             modules = [
-              ./home/ide.nix
+              ./home/profiles/ide.nix
             ];
             extraSpecialArgs = mkHomeExtraSpecialArgs {
               useMirrorDrive = true;
@@ -178,7 +178,7 @@
           # cn ec2
           ide-cn = mkHome {
             modules = [
-              ./home/ide.nix
+              ./home/profiles/ide.nix
             ];
             extraSpecialArgs = mkHomeExtraSpecialArgs {
               useProxy = true;
@@ -187,7 +187,7 @@
           # mobile
           ide-mobile = mkHome {
             modules = [
-              ./home/ide.nix
+              ./home/profiles/ide.nix
             ];
             extraSpecialArgs = mkHomeExtraSpecialArgs {
               isMobile = true;
@@ -198,7 +198,7 @@
           # WSL 推理环境（包含 vLLM）
           wsl-infer = mkHome {
             modules = [
-              ./home/wsl-infer.nix
+              ./home/profiles/wsl-infer.nix
               nix-index-database.hmModules.nix-index
             ];
           };
@@ -206,7 +206,7 @@
           # clean all packages & generated files
           eject = mkHome {
             modules = [
-              ./home/eject.nix
+              ./home/profiles/eject.nix
             ];
           };
         };
@@ -231,7 +231,7 @@
                 ./systems/nixos-wsl.nix
               ];
               imports = [
-                ./home/ide.nix
+                ./home/profiles/ide.nix
                 nix-index-database.hmModules.nix-index
               ];
             };

@@ -1,7 +1,7 @@
 { config, lib, pkgs, ... }:
 let
   home = builtins.getEnv "HOME";
-  versions = import ../versions.nix;
+  versions = import ../../versions.nix;
 in
 with lib; {
   options.eject = mkOption {

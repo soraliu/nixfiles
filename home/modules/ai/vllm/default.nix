@@ -1,12 +1,14 @@
-{ pkgs, config, ... }:
+{ pkgs, lib, config, ... }:
 
 let
   # 全局固定路径
   GLOBAL_VLLM_ENV = "${config.home.homeDirectory}/.cache/nix-vllm-env";
   vllmModulePath = "${config.home.homeDirectory}/.cache/vllm-flake";
 
+  isLinux = pkgs.stdenv.isLinux;
+
   # CUDA 运行时依赖
-  runtimeLibs = with pkgs; [
+  runtimeLibs = with pkgs; lib.optionals isLinux [
     # WSL2 驱动（优先级最高）
     # /usr/lib/wsl/lib 在 LD_LIBRARY_PATH 中手动添加
 
@@ -29,18 +31,11 @@ let
   '';
 
 in {
-  config = {
+  config = lib.mkIf isLinux {
     # 创建符号链接：将 vllm 模块链接到缓存目录
     home.file."${vllmModulePath}".source = ./.;
 
-    home.packages = with pkgs; [
-      # vLLM 通过 uv 安装，这里添加系统依赖
-      gcc-unwrapped.lib
-      stdenv.cc.cc.lib
-      cudaPackages_12.cuda_cudart
-      cudaPackages_12.libcublas
-
-      # vLLM 包装脚本
+    home.packages = runtimeLibs ++ [
       vllmWrapper
     ];
 
