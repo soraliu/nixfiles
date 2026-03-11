@@ -46,7 +46,7 @@
             --max-model-len 32768 \
             --gpu-memory-utilization 0.85 \
             --port 8000 \
-            --host 127.0.0.1 \
+            --host 0.0.0.0 \
             --trust-remote-code \
             --disable-log-requests \
             --kv-cache-dtype auto \
