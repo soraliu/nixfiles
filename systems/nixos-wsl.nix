@@ -14,7 +14,22 @@
   ];
 
   wsl.enable = true;
-  # wsl.defaultUser = "root";
+  wsl.wslConf.boot.systemd = true;
+  wsl.wslConf.user.default = "sora";
+
+  # Sync .wslconfig to Windows side on activation
+  system.activationScripts.wslconfig.text = ''
+    WIN_PROFILE=$(cmd.exe /C "echo %USERPROFILE%" 2>/dev/null | tr -d '\r')
+    WSLCONFIG_PATH="$(wslpath "$WIN_PROFILE")/.wslconfig"
+    cat > "$WSLCONFIG_PATH" << 'EOF'
+[wsl2]
+networkingMode=mirrored
+firewall=false
+
+[experimental]
+hostAddressLoopback=true
+EOF
+  '';
 
   # docker support
   # TL;DR: https://github.com/nix-community/NixOS-WSL/issues/235
