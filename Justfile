@@ -117,7 +117,3 @@ update-unstable-pkg:
 # -------------------- ai --------------------
 vllm-serve:
     cd home/modules/ai/vllm && nix run .#vllm-serve
-
-# 配置 WSL2 网络，使 vLLM 服务可被局域网访问（需要在 Windows 上以管理员身份运行生成的 PowerShell 脚本）
-vllm-setup-network:
-    ./bin/wsl/setup-vllm-network.sh
