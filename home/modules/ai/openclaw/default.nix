@@ -23,20 +23,20 @@
     #   };
     # };
 
-    home.activation.initOpenclaw = lib.hm.dag.entryAfter [ "linkGeneration" ] ''
-      export PATH="${pkgs.git}/bin:$PATH"
+    # home.activation.initOpenclaw = lib.hm.dag.entryAfter [ "linkGeneration" ] ''
+    #   export PATH="${pkgs.git}/bin:$PATH"
 
-      # Clone clawfiles to ~/.openclaw (if not exists)
-      if [ ! -d "${config.home.homeDirectory}/.openclaw/.git" ]; then
-        echo "Cloning clawfiles repository..."
-        if [ -d "${config.home.homeDirectory}/.openclaw" ]; then
-          rm -rf "${config.home.homeDirectory}/.openclaw"
-        fi
-        ${pkgs.git}/bin/git clone https://github.com/soraliu/clawfiles.git "${config.home.homeDirectory}/.openclaw"
-      else
-        echo "clawfiles already cloned, pulling latest..."
-        ${pkgs.git}/bin/git -C "${config.home.homeDirectory}/.openclaw" pull --ff-only || true
-      fi
-    '';
+    #   # Clone clawfiles to ~/.openclaw (if not exists)
+    #   if [ ! -d "${config.home.homeDirectory}/.openclaw/.git" ]; then
+    #     echo "Cloning clawfiles repository..."
+    #     if [ -d "${config.home.homeDirectory}/.openclaw" ]; then
+    #       rm -rf "${config.home.homeDirectory}/.openclaw"
+    #     fi
+    #     ${pkgs.git}/bin/git clone https://github.com/soraliu/clawfiles.git "${config.home.homeDirectory}/.openclaw"
+    #   else
+    #     echo "clawfiles already cloned, pulling latest..."
+    #     ${pkgs.git}/bin/git -C "${config.home.homeDirectory}/.openclaw" pull --ff-only || true
+    #   fi
+    # '';
   };
 }
