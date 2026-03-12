@@ -1,6 +1,6 @@
 { pkgs, unstablePkgs, lib, config, ... }:
 let
-  pathToRcloneRoot = "${builtins.getEnv "HOME"}/Rclone/";
+  pathToRcloneRoot = "${config.home.homeDirectory}/Rclone/";
 
   cfg = config.programs.customRclone;
   # [{ remote = "gdrive:path/to/dir"; local = "$HOME/Drive/path/to/dir"; link = "/another_path/to/dir"; filter = "/path/to/filters.txt";  }]

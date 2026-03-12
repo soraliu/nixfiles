@@ -1,17 +1,17 @@
 { config, lib, ... }: {
   config = {
-    # HuggingFace 镜像配置
+    # HuggingFace mirror configuration
     home.sessionVariables = {
-      # 使用 hf-mirror.com 作为 HuggingFace 镜像
+      # Use hf-mirror.com as HuggingFace mirror
       HF_ENDPOINT = "https://hf-mirror.com";
 
-      # HuggingFace 缓存目录
+      # HuggingFace cache directory
       HF_HOME = "${config.home.homeDirectory}/.cache/huggingface";
 
-      # Transformers 缓存目录（兼容旧版本）
+      # Transformers cache directory (compatible with old versions)
       TRANSFORMERS_CACHE = "${config.home.homeDirectory}/.cache/huggingface/transformers";
 
-      # HuggingFace Hub 缓存目录
+      # HuggingFace Hub cache directory
       HF_HUB_CACHE = "${config.home.homeDirectory}/.cache/huggingface/hub";
     };
   };

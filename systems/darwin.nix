@@ -1,12 +1,14 @@
-{ config, pkgs, unstablePkgs, ... }: {
+{ config, pkgs, unstablePkgs, homeUser, ... }: {
   # List packages installed in system profile. To search by name, run:
   # $ nix-env -qaP | grep wget
   environment.systemPackages = [ ];
 
-  # Auto upgrade nix package and the daemon service.
-  services.nix-daemon.enable = true;
-  nix.settings.trusted-users = [ "soraliu" "@staff" ];
+  nix.settings.trusted-users = [ homeUser "@staff" ];
+  nix.settings.experimental-features = [ "nix-command" "flakes" ];
   nixpkgs.config.allowUnfree = true;
+
+  # system.primaryUser for activation scripts that need user context
+  system.primaryUser = homeUser;
 
   # Used for backwards compatibility, please read the changelog before changing.
   # $ darwin-rebuild changelog
@@ -19,10 +21,9 @@
   system.defaults.NSGlobalDomain.KeyRepeat = 2;
 
   system.activationScripts = {
-    postUserActivation.text = ''
-      if ! defaults write com.googlecode.iterm2 PrefsCustomFolder -string "$HOME/.config/iterm2/com.googlecode.iterm2"; then
+    postActivation.text = ''
+      sudo -u ${homeUser} defaults write com.googlecode.iterm2 PrefsCustomFolder -string "/Users/${homeUser}/.config/iterm2/com.googlecode.iterm2" || \
         echo "warning: failed to set iTerm2 default preference folder, continuing..."
-      fi
     '';
   };
 

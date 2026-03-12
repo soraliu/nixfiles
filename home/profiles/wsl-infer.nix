@@ -3,7 +3,7 @@ let
   isLinux = system == "x86_64-linux" || system == "aarch64-linux";
 in
 {
-  # 继承 ide.nix 的所有配置
+  # Inherit all configurations from ide.nix
   imports = [
     ./ide.nix
   ] ++ (lib.optionals isLinux [
@@ -11,7 +11,7 @@ in
     ../modules/ai/sglang
   ]);
 
-  # WSL 推理环境标识
+  # WSL inference environment identifier
   home.sessionVariables = {
     WSL_INFER_ENV = "true";
   };

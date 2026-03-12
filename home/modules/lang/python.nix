@@ -6,7 +6,7 @@
     python312Packages.pdfplumber
     uv
   ]) ++ (with unstablePkgs; [
-    # 使用 unstable 版本的 huggingface-cli（最新版本）
+    # Use unstable version of huggingface-cli (latest version)
     python312Packages.huggingface-hub
   ]);
 }

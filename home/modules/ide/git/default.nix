@@ -1,12 +1,12 @@
-{ pkgs, unstablePkgs, lib, ... }:
+{ pkgs, unstablePkgs, lib, secretsUser, userProfile, ... }:
 let
-  # 只读的 credential helper - 只从文件读取，不尝试写入
+  # Read-only credential helper - only reads from files, doesn't try to write
   git-credential-store-readonly = pkgs.writeShellScriptBin "git-credential-store-readonly" ''
-    # 只处理 get 操作，忽略 store/erase
+    # Only handle get operations, ignore store/erase
     if [ "$1" = "get" ]; then
       exec ${pkgs.git}/bin/git credential-store --file ~/.git-credentials get
     fi
-    # store 和 erase 操作直接退出，不报错
+    # store and erase operations exit directly, no error
     exit 0
   '';
 in
@@ -24,8 +24,8 @@ in
       git = {
         enable = true;
         settings = {
-          user.name = "Sora Liu";
-          user.email = "soraliu.dev@gmail.com";
+          user.name = lib.mkDefault userProfile.gitName;
+          user.email = lib.mkDefault userProfile.gitEmail;
           alias.lg = "log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit";
           alias.rg = "reflog --color --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit";
           init.defaultBranch = "main";
@@ -35,24 +35,24 @@ in
           merge.conflictStyle = "diff3";
           core.quotePath = "off";
         } // (if pkgs.stdenv.isDarwin then {} else {
-          # 使用自定义的只读 credential helper
+          # Use custom read-only credential helper
           credential.helper = "${git-credential-store-readonly}/bin/git-credential-store-readonly";
         });
       };
 
       gh = {
         enable = true;
-        # Linux: 使用 ~/.git-credentials (credential.helper = "store")
-        # macOS: 使用 gh 的 credential helper (更安全，集成 Keychain)
+        # Linux: use ~/.git-credentials (credential.helper = "store")
+        # macOS: use gh's credential helper (more secure, integrated with Keychain)
         gitCredentialHelper.enable = pkgs.stdenv.isDarwin;
       };
 
       sops = {
         decryptFiles = [{
-          from = "secrets/.git-credentials.enc";
+          from = "secrets/users/${secretsUser}/.git-credentials.enc";
           to = ".git-credentials";
         } {
-          from = "secrets/.config/hub";
+          from = "secrets/users/${secretsUser}/.config/hub";
           to = ".config/hub";
         }];
       };

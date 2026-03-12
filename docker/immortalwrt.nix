@@ -1,7 +1,7 @@
 { pkgs ? import <nixpkgs> { }, ... }:
 let
-  # 预构建的 immortalwrt 基础镜像 tar 文件路径
-  # 需要先运行: just build-immortalwrt-base 
+  # Pre-built immortalwrt base image tar file path
+  # Need to run first: just build-immortalwrt-base 
   immortalwrtBaseImage = /tmp/immortalwrt-base.tar;
 
   pathToClashConfig = "etc/nikki/profiles/config.yaml";

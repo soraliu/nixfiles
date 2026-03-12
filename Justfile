@@ -41,20 +41,28 @@ mobile-pre-init-nix-on-doird:
 
 
 
-# -------------------- home-manager --------------------
-# profile: vpn-server, drive-server, ide, ide-mirror, ide-cn, ide-mobile, eject
+# -------------------- home-manager - standalone --------------------
+# profile: ide, ide-mirror, ide-cn, ide-mobile, wsl-infer, clawbot, vpn-server, drive-server, eject
 switch-home profile="ide":
 	nix run .#home-manager -- switch --show-trace --impure --flake .#{{profile}} -b backup
 
-
-
-# -------------------- nixos --------------------
-
-# switch nixos: wsl
-switch-nixos profile="wsl":
+# -------------------- NixOS-WSL --------------------
+# profile: ide, wsl-infer
+switch-nixos profile="ide":
   nixos-rebuild switch --show-trace --impure --flake .#{{profile}}
-switch-darwin:
-	nix run .#nix-darwin -- switch --show-trace --flake .#darwin
+
+# -------------------- Ubuntu WSL2 --------------------
+# profile: ide, wsl-infer  (alias for switch-home)
+switch-ubuntu profile="ide":
+	nix run .#home-manager -- switch --show-trace --impure --flake .#{{profile}} -b backup
+
+# -------------------- Darwin --------------------
+# variant: darwin, darwin-mirror, darwin-clawbot
+# New nix-darwin requires root activation; env PATH preserves nix paths; --extra-experimental-features solves first-time activation chicken-egg issue
+switch-darwin variant="darwin":
+	sudo env PATH="$PATH" nix --extra-experimental-features 'nix-command flakes' run .#nix-darwin -- switch --show-trace --impure --flake .#{{variant}}
+
+# -------------------- Android --------------------
 switch-android:
 	nix-on-droid switch --show-trace --flake .#default
 
@@ -69,15 +77,21 @@ init-ide: pre-init-nix pre-init-age (switch-home "ide") post-init-pm2 post-init-
 [private]
 init-ide-cn: pre-init-nix-cn pre-init-age (switch-home "ide-cn") post-init-pm2 post-init-zsh
 [private]
-init-ide-on-darwin-work: init-ide (switch-home "darwin") darwin-post-install-pkgs-work darwin-post-restore-raycast
+init-wsl-ubuntu: pre-init-nix pre-init-age (switch-ubuntu "ide") post-init-pm2 post-init-zsh
+[private]
+init-wsl-ubuntu-infer: pre-init-nix pre-init-age (switch-ubuntu "wsl-infer") post-init-pm2 post-init-zsh
+[private]
+init-ide-on-darwin-work: pre-init-nix pre-init-age (switch-darwin "darwin") darwin-post-install-pkgs-work darwin-post-restore-raycast
 [private]
 init-ide-on-darwin-personal: init-ide-on-darwin-work darwin-post-install-pkgs-personal
+[private]
+init-clawbot-on-darwin: pre-init-nix pre-init-age (switch-darwin "darwin-clawbot")
 [private]
 init-ide-on-mobile: mobile-pre-init-nix-on-doird (switch-home "ide-mobile")
 [private]
 eject-darwin: (switch-home "eject") darwin-uninstall-pkgs
 
-# profile: vpn-server, drive-server, ide, ide-on-darwin-work, ide-on-darwin-personal, ide-on-mobile
+# profile: vpn-server, drive-server, ide, ide-on-darwin-work, ide-on-darwin-personal, wsl-ubuntu, wsl-ubuntu-infer, clawbot-on-darwin, ide-on-mobile
 init profile="ide":
   just init-{{profile}}
 

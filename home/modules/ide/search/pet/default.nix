@@ -1,4 +1,4 @@
-{ pkgs, lib, ... }: {
+{ pkgs, lib, config, ... }: {
   config = {
     home = {
       packages = with pkgs; [
@@ -6,7 +6,7 @@
       ];
 
       activation.initPet = lib.hm.dag.entryAfter ["linkGeneration"] ''
-        path_to_config="${builtins.getEnv "HOME"}/.config/pet"
+        path_to_config="${config.home.homeDirectory}/.config/pet"
         mkdir -p "$path_to_config"
         touch "$path_to_config/snippet.toml"
         ${pkgs.pet}/bin/pet sync

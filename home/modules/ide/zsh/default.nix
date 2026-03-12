@@ -1,4 +1,4 @@
-{ pkgs, lib, useProxy, ... }: {
+{ pkgs, lib, useProxy, secretsUser, ... }: {
   options.programs.zsh.completionsDir = lib.mkOption {
     type = lib.types.str;
     default = "~/.local/share/zinit/completions";
@@ -33,7 +33,7 @@
 
     sops = {
       decryptFiles = [{
-        from = "secrets/.keys.enc.zsh";
+        from = "secrets/users/${secretsUser}/.keys.enc.zsh";
         to = ".keys.zsh";
       }];
     };

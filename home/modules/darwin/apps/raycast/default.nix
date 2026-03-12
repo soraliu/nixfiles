@@ -1,4 +1,4 @@
-{ pkgs, ... }: with pkgs; {
+{ pkgs, config, ... }: with pkgs; {
   config = {
     programs = {
       sops.decryptFiles = [{
@@ -9,11 +9,11 @@
       linker.links = [
         {
           source = "gdrive:Sync/Config/Darwin/com.raycast.macos";
-          link = (builtins.getEnv "HOME") + "/Library/Application Support/com.raycast.macos";
+          link = config.home.homeDirectory + "/Library/Application Support/com.raycast.macos";
         }
         {
           source = "gdrive:Sync/Config/Darwin/.config/raycast";
-          link = (builtins.getEnv "HOME") + "/.config/raycast";
+          link = config.home.homeDirectory + "/.config/raycast";
         }
       ];
     };

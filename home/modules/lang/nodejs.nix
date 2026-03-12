@@ -1,4 +1,4 @@
-{ unstablePkgs, config, lib, ... }: {
+{ unstablePkgs, config, lib, secretsUser, ... }: {
   config.home.packages = with unstablePkgs; [
     volta # node version & binaries manager
   ];
@@ -6,7 +6,7 @@
     VOLTA_HOME = "$HOME/.volta";
   };
   config.programs.sops.decryptFiles = [{
-    from = "secrets/.npmrc.enc";
+    from = "secrets/users/${secretsUser}/.npmrc.enc";
     to = ".npmrc";
   }];
 
