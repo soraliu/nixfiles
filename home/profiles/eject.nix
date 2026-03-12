@@ -1,7 +1,8 @@
-{ config, lib, pkgs, ... }:
+{ config, lib, pkgs, system, homeUser, ... }:
 let
-  home = builtins.getEnv "HOME";
   versions = import ../../versions.nix;
+  isDarwin = builtins.match ".*-darwin" system != null;
+  homeDir = config.home.homeDirectory;
 in
 with lib; {
   options.eject = mkOption {
@@ -14,8 +15,11 @@ with lib; {
   };
 
   config = mkIf config.eject {
-    home.username = builtins.getEnv "USER";
-    home.homeDirectory = home;
+    home.username = homeUser;
+    home.homeDirectory =
+      if homeUser == "root" then "/root"
+      else if isDarwin then "/Users/${homeUser}"
+      else "/home/${homeUser}";
 
     home.packages = lib.mkForce [ ];
     home.file = lib.mkForce { };
@@ -34,18 +38,18 @@ with lib; {
         $pm2_bin save --force
 
         # Remove rclone files
-        echo "rm -rf ${home}/Rclone"
-        rm -rf ${home}/Rclone
-        echo "rm -rf ${home}/.config/rclone"
-        rm -rf ${home}/.config/rclone
+        echo "rm -rf ${homeDir}/Rclone"
+        rm -rf ${homeDir}/Rclone
+        echo "rm -rf ${homeDir}/.config/rclone"
+        rm -rf ${homeDir}/.config/rclone
 
         # Delete pet files
-        echo "rm -rf ${home}/.config/pet"
-        rm -rf ${home}/.config/pet
+        echo "rm -rf ${homeDir}/.config/pet"
+        rm -rf ${homeDir}/.config/pet
 
         # Delete shell_gpt files
-        echo "rm -rf ${home}/.config/shell_gpt"
-        rm -rf ${home}/.config/shell_gpt
+        echo "rm -rf ${homeDir}/.config/shell_gpt"
+        rm -rf ${homeDir}/.config/shell_gpt
 
         set -e
       '';

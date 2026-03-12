@@ -1,13 +1,18 @@
-{ config, lib, ... }: 
+{ config, lib, system, homeUser, ... }: 
 let
   versions = import ../../../versions.nix;
+  isDarwin = builtins.match ".*-darwin" system != null;
 in
 {
   # Let Home Manager install and manage itself.
   programs.home-manager.enable = true;
   home.stateVersion = versions.version;
-  home.username = lib.mkDefault (builtins.getEnv "USER");
-  home.homeDirectory = lib.mkDefault (builtins.getEnv "HOME");
+  home.username = lib.mkDefault homeUser;
+  home.homeDirectory = lib.mkDefault (
+    if homeUser == "root" then "/root"
+    else if isDarwin then "/Users/${homeUser}"
+    else "/home/${homeUser}"
+  );
 
   home.sessionVariables = {
     HOME_PROFILE_DIRECTORY = config.home.profileDirectory;
