@@ -141,7 +141,10 @@
       };
 
       mkHome =
-        { modules ? [ ], extraSpecialArgs ? (mkHomeExtraSpecialArgs { }) }: home-manager.lib.homeManagerConfiguration {
+        { modules ? [ ]
+        , homeUser ? "soraliu"
+        , extraSpecialArgs ? (mkHomeExtraSpecialArgs { })
+        }: home-manager.lib.homeManagerConfiguration {
           inherit pkgs;
 
           modules = log (builtins.filter (el: el != "") modules);
@@ -150,7 +153,7 @@
           #   which means those functions can access `useSecret` directly instead of `specialArgs.useSecret`
           #   TL;DR: https://github.com/nix-community/home-manager/blob/36f873dfc8e2b6b89936ff3e2b74803d50447e0a/modules/default.nix#L26
           extraSpecialArgs = {
-            inherit system unstablePkgs;
+            inherit system unstablePkgs homeUser;
           } // extraSpecialArgs;
         };
 
@@ -168,7 +171,7 @@
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
             home-manager.extraSpecialArgs = {
-              inherit system unstablePkgs;
+              inherit system unstablePkgs homeUser;
             } // extraSpecialArgs;
 
             home-manager.users.${homeUser} = {
@@ -196,7 +199,7 @@
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
             home-manager.extraSpecialArgs = {
-              inherit system unstablePkgs;
+              inherit system unstablePkgs homeUser;
             } // extraSpecialArgs;
 
             home-manager.users.${homeUser} = {
@@ -225,7 +228,7 @@
           wsl-infer    = mkHome { modules = homeModules.wsl-infer; };
 
           # clawbot — ide + openclaw, independent profile
-          clawbot      = mkHome { modules = homeModules.clawbot; extraSpecialArgs = mkHomeExtraSpecialArgs { secretsUser = "clawbot"; }; };
+          clawbot      = mkHome { modules = homeModules.clawbot; homeUser = "clawbot"; extraSpecialArgs = mkHomeExtraSpecialArgs { secretsUser = "clawbot"; }; };
 
           # servers
           vpn-server   = mkHome { modules = homeModules.vpn-server; };

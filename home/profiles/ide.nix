@@ -7,13 +7,25 @@ in
   imports = builtins.filter (el: el != "") [
     ../core/base.nix
 
-    ../modules/sys
+    ../modules/sys/fs
+    ../modules/sys/network
+    ../modules/sys/doc
+    ../modules/sys/json
+    ../modules/sys/container
+    ../modules/sys/pw
+    ../modules/sys/shell
 
-    ../modules/ai/huggingface.nix
+    ../modules/ai/huggingface
     ../modules/ai/shell-gpt
     ../modules/ai/cc
 
-    ../modules/ide
+    ../modules/ide/git
+    ../modules/ide/zsh
+    ../modules/ide/neovim
+    ../modules/ide/zellij
+    ../modules/ide/search
+    ../modules/ide/copilot.nix
+    ../modules/ide/iac.nix
 
     ../modules/lang/nodejs.nix
     ../modules/lang/python.nix
@@ -26,8 +38,9 @@ in
     ../modules/network/clash-meta
     ../modules/network/nebula
 
-    ../modules/cloud
+    ../modules/cloud/k8s
 
-    (if isDarwin then ../modules/darwin else "")
+    (if isDarwin then ../modules/darwin/base.nix else "")
+    (if isDarwin then ../modules/darwin/apps else "")
   ];
 }

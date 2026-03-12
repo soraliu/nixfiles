@@ -44,23 +44,23 @@ mobile-pre-init-nix-on-doird:
 # -------------------- home-manager - standalone --------------------
 # profile: ide, ide-mirror, ide-cn, ide-mobile, wsl-infer, clawbot, vpn-server, drive-server, eject
 switch-home profile="ide":
-	nix run .#home-manager -- switch --show-trace --impure --flake .#{{profile}} -b backup
+	nix run .#home-manager -- switch --show-trace --flake .#{{profile}} -b backup
 
 # -------------------- NixOS-WSL --------------------
 # profile: ide, wsl-infer
 switch-nixos profile="ide":
-  nixos-rebuild switch --show-trace --impure --flake .#{{profile}}
+  nixos-rebuild switch --show-trace --flake .#{{profile}}
 
 # -------------------- Ubuntu WSL2 --------------------
 # profile: ide, wsl-infer  (alias for switch-home)
 switch-ubuntu profile="ide":
-	nix run .#home-manager -- switch --show-trace --impure --flake .#{{profile}} -b backup
+	nix run .#home-manager -- switch --show-trace --flake .#{{profile}} -b backup
 
 # -------------------- Darwin --------------------
 # variant: darwin, darwin-mirror, darwin-clawbot
 # New nix-darwin requires root activation; env PATH preserves nix paths; --extra-experimental-features solves first-time activation chicken-egg issue
 switch-darwin variant="darwin":
-	sudo env PATH="$PATH" nix --extra-experimental-features 'nix-command flakes' run .#nix-darwin -- switch --show-trace --impure --flake .#{{variant}}
+	sudo env PATH="$PATH" nix --extra-experimental-features 'nix-command flakes' run .#nix-darwin -- switch --show-trace --flake .#{{variant}}
 
 # -------------------- Android --------------------
 switch-android:

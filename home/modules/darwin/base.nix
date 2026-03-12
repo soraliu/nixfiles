@@ -1,8 +1,4 @@
 { pkgs, unstablePkgs, ... }: {
-  imports = [
-    ./apps
-  ];
-
   home.packages = (with pkgs; [
     tesseract
   ]) ++ (with unstablePkgs; [
