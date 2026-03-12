@@ -197,10 +197,13 @@
           home-manager.darwinModules.home-manager
           {
             home-manager.useGlobalPkgs = true;
-            home-manager.useUserPackages = true;
+            home-manager.useUserPackages = false;
             home-manager.extraSpecialArgs = {
               inherit system unstablePkgs homeUser;
             } // extraSpecialArgs;
+
+            # useUserPackages = false 时 home-manager 的 common.nix 会读取 config.users.users.${name}
+            users.users.${homeUser}.home = "/Users/${homeUser}";
 
             home-manager.users.${homeUser} = {
               imports = homeImports;
