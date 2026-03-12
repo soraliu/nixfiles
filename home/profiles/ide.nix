@@ -34,6 +34,7 @@ in
     ../modules/lang/lua.nix
     ../modules/lang/rust.nix
     ../modules/lang/db.nix
+    ../modules/lang/just.nix
 
     ../modules/network/clash-meta
     ../modules/network/nebula

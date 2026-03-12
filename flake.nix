@@ -79,7 +79,10 @@
     }: with flake-utils.lib; eachDefaultSystem (system:
     let
       log = v: builtins.trace v v;
+      # nix-openclaw 的 openclaw-gateway 需要 fetchPnpmDeps，nixos-25.11 中已移除
+      openclawNixpkgs = import nix-openclaw.inputs.nixpkgs { inherit system; };
       overlays = [
+        (final: prev: { inherit (openclawNixpkgs) fetchPnpmDeps; })
         nix-openclaw.overlays.default
       ];
       pkgs = builtins.trace system (import nixpkgs {
