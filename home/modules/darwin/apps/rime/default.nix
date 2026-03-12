@@ -1,10 +1,10 @@
-{ pkgs, ... }: with pkgs; {
+{ pkgs, config, ... }: with pkgs; {
   config = {
     programs = {
       linker.links = [
         {
           source = "gdrive:Sync/Config/Darwin/rime";
-          link = (builtins.getEnv "HOME") + "/Library/Rime";
+          link = config.home.homeDirectory + "/Library/Rime";
         }
       ];
     };

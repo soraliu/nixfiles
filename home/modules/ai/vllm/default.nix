@@ -1,30 +1,30 @@
 { pkgs, lib, config, ... }:
 
 let
-  # 全局固定路径
+  # Global fixed path
   GLOBAL_VLLM_ENV = "${config.home.homeDirectory}/.cache/nix-vllm-env";
   vllmModulePath = "${config.home.homeDirectory}/.cache/vllm-flake";
 
   isLinux = pkgs.stdenv.isLinux;
 
-  # CUDA 运行时依赖
+  # CUDA runtime dependencies
   runtimeLibs = with pkgs; lib.optionals isLinux [
-    # WSL2 驱动（优先级最高）
-    # /usr/lib/wsl/lib 在 LD_LIBRARY_PATH 中手动添加
+    # WSL2 drivers (highest priority)
+    # /usr/lib/wsl/lib manually added to LD_LIBRARY_PATH
 
-    # Nix CUDA Toolkit（版本锁定）
+    # Nix CUDA Toolkit (version locked)
     cudaPackages_12.cuda_cudart
     cudaPackages_12.libcublas
 
-    # 系统库
+    # System libraries
     gcc-unwrapped.lib
     stdenv.cc.cc.lib
   ];
 
-  # 构建 LD_LIBRARY_PATH
+  # Build LD_LIBRARY_PATH
   libPath = pkgs.lib.makeLibraryPath runtimeLibs;
 
-  # vLLM 包装脚本，自动设置 LD_LIBRARY_PATH
+  # vLLM wrapper script, automatically sets LD_LIBRARY_PATH
   vllmWrapper = pkgs.writeShellScriptBin "vllm" ''
     export LD_LIBRARY_PATH="/usr/lib/wsl/lib:${libPath}:$LD_LIBRARY_PATH"
     exec "${GLOBAL_VLLM_ENV}/bin/vllm" "$@"
@@ -32,7 +32,7 @@ let
 
 in {
   config = lib.mkIf isLinux {
-    # 创建符号链接：将 vllm 模块链接到缓存目录
+    # Create symbolic link: link vllm module to cache directory
     home.file."${vllmModulePath}".source = ./.;
 
     home.packages = runtimeLibs ++ [

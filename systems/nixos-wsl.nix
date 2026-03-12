@@ -15,7 +15,7 @@
 
   wsl.enable = true;
   wsl.wslConf.boot.systemd = true;
-  wsl.wslConf.user.default = "sora";
+  wsl.wslConf.user.default = "soraliu";
 
   # Sync .wslconfig to Windows side on activation
   system.activationScripts.wslconfig.text = ''

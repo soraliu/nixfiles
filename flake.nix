@@ -59,6 +59,10 @@
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.home-manager.follows = "home-manager";
     };
+
+    nix-openclaw = {
+      url = "github:openclaw/nix-openclaw";
+    };
   };
 
   outputs =
@@ -70,17 +74,18 @@
     , home-manager
     , flake-utils
     , nix-on-droid
+    , nix-openclaw
     , ...
     }: with flake-utils.lib; eachDefaultSystem (system:
     let
       log = v: builtins.trace v v;
       overlays = [
-        # inputs.neovim-nightly-overlay.overlay
+        nix-openclaw.overlays.default
       ];
       pkgs = builtins.trace system (import nixpkgs {
         inherit system;
         config.allowUnfree = true;
-        # overlays = overlays;
+        overlays = overlays;
       });
       unstablePkgs = import nixpkgs-unstable {
         inherit system;
@@ -102,12 +107,38 @@
         };
       };
 
+      # User identity info — same profile different users via secretsUser
+      userProfiles = {
+        soraliu = {
+          gitName = "Sora Liu";
+          gitEmail = "soraliu.dev@gmail.com";
+        };
+        clawbot = {
+          gitName = "Clawbot";
+          gitEmail = "clawbot@soraliu.dev";
+        };
+      };
+
       mkHomeExtraSpecialArgs =
         { useSecret ? true
         , useProxy ? false
         , useMirrorDrive ? false # useMirrorDrive is a boolean to config if copy remote config from google drive by rclone instead of Google drive stream
         , isMobile ? false
-        }: { inherit useSecret useProxy useMirrorDrive isMobile; };
+        , secretsUser ? "soraliu"
+        }: {
+          inherit useSecret useProxy useMirrorDrive isMobile secretsUser;
+          userProfile = userProfiles.${secretsUser} or userProfiles.soraliu;
+        };
+
+      # homeModules — Single Source of Truth for home profile imports
+      homeModules = {
+        ide = [ ./home/profiles/ide.nix nix-index-database.hmModules.nix-index ];
+        clawbot = [ ./home/profiles/clawbot.nix nix-index-database.hmModules.nix-index nix-openclaw.homeManagerModules.openclaw ];
+        wsl-infer = [ ./home/profiles/wsl-infer.nix nix-index-database.hmModules.nix-index ];
+        vpn-server = [ ./home/profiles/vpn-server.nix ];
+        drive-server = [ ./home/profiles/drive-server.nix ];
+        eject = [ ./home/profiles/eject.nix ];
+      };
 
       mkHome =
         { modules ? [ ], extraSpecialArgs ? (mkHomeExtraSpecialArgs { }) }: home-manager.lib.homeManagerConfiguration {
@@ -123,7 +154,12 @@
           } // extraSpecialArgs;
         };
 
-      mkNixOS = { modules ? [ ], imports ? [ ], extraSpecialArgs ? (mkHomeExtraSpecialArgs { }) }: nixpkgs.lib.nixosSystem {
+      mkNixOS = {
+        modules ? [],
+        homeImports ? [],
+        homeUser ? "soraliu",
+        extraSpecialArgs ? (mkHomeExtraSpecialArgs { })
+      }: nixpkgs.lib.nixosSystem {
         inherit system pkgs;
 
         modules = log (builtins.filter (el: el != "") (modules ++ [
@@ -135,10 +171,43 @@
               inherit system unstablePkgs;
             } // extraSpecialArgs;
 
-            home-manager.users.root.imports = log (builtins.filter (el: el != "") imports);
+            home-manager.users.${homeUser} = {
+              imports = homeImports;
+              home.username = nixpkgs.lib.mkForce homeUser;
+              home.homeDirectory = nixpkgs.lib.mkForce (
+                if homeUser == "root" then "/root" else "/home/${homeUser}"
+              );
+            };
           }
         ]));
+      };
 
+      mkDarwin = {
+        modules ? [],
+        homeImports ? [],
+        homeUser ? "soraliu",
+        extraSpecialArgs ? (mkHomeExtraSpecialArgs { })
+      }: nix-darwin.lib.darwinSystem {
+        inherit system pkgs;
+
+        modules = log (modules ++ [
+          home-manager.darwinModules.home-manager
+          {
+            home-manager.useGlobalPkgs = true;
+            home-manager.useUserPackages = true;
+            home-manager.extraSpecialArgs = {
+              inherit system unstablePkgs;
+            } // extraSpecialArgs;
+
+            home-manager.users.${homeUser} = {
+              imports = homeImports;
+              home.username = nixpkgs.lib.mkForce homeUser;
+              home.homeDirectory = nixpkgs.lib.mkForce "/Users/${homeUser}";
+            };
+          }
+        ]);
+
+        specialArgs = { inherit unstablePkgs homeUser; };
       };
     in
     {
@@ -148,93 +217,58 @@
         nix-on-droid = nix-on-droid.packages.${system};
 
         homeConfigurations = {
-          vpn-server = mkHome {
-            modules = [
-              ./home/profiles/vpn-server.nix
-            ];
-          };
-          # cn drive
-          drive-server = mkHome {
-            modules = [
-              ./home/profiles/drive-server.nix
-            ];
-          };
-          # m3 || wsl || ec2
-          ide = mkHome {
-            modules = [
-              ./home/profiles/ide.nix
-              nix-index-database.hmModules.nix-index
-            ];
-          };
-          # c02fk4mjmd6m
-          ide-mirror = mkHome {
-            modules = [
-              ./home/profiles/ide.nix
-            ];
-            extraSpecialArgs = mkHomeExtraSpecialArgs {
-              useMirrorDrive = true;
-            };
-          };
-          # cn ec2
-          ide-cn = mkHome {
-            modules = [
-              ./home/profiles/ide.nix
-            ];
-            extraSpecialArgs = mkHomeExtraSpecialArgs {
-              useProxy = true;
-            };
-          };
-          # mobile
-          ide-mobile = mkHome {
-            modules = [
-              ./home/profiles/ide.nix
-            ];
-            extraSpecialArgs = mkHomeExtraSpecialArgs {
-              isMobile = true;
-              useMirrorDrive = true;
-            };
-          };
+          # soraliu — default user
+          ide          = mkHome { modules = homeModules.ide; };
+          ide-mirror   = mkHome { modules = homeModules.ide; extraSpecialArgs = mkHomeExtraSpecialArgs { useMirrorDrive = true; }; };
+          ide-cn       = mkHome { modules = homeModules.ide; extraSpecialArgs = mkHomeExtraSpecialArgs { useProxy = true; }; };
+          ide-mobile   = mkHome { modules = homeModules.ide; extraSpecialArgs = mkHomeExtraSpecialArgs { isMobile = true; useMirrorDrive = true; }; };
+          wsl-infer    = mkHome { modules = homeModules.wsl-infer; };
 
-          # WSL 推理环境（包含 vLLM）
-          wsl-infer = mkHome {
-            modules = [
-              ./home/profiles/wsl-infer.nix
-              nix-index-database.hmModules.nix-index
-            ];
-          };
+          # clawbot — ide + openclaw, independent profile
+          clawbot      = mkHome { modules = homeModules.clawbot; extraSpecialArgs = mkHomeExtraSpecialArgs { secretsUser = "clawbot"; }; };
 
-          # clean all packages & generated files
-          eject = mkHome {
-            modules = [
-              ./home/profiles/eject.nix
-            ];
-          };
+          # servers
+          vpn-server   = mkHome { modules = homeModules.vpn-server; };
+          drive-server = mkHome { modules = homeModules.drive-server; };
+
+          # utility
+          eject        = mkHome { modules = homeModules.eject; };
         };
 
         darwinConfigurations = {
-          "darwin" = nix-darwin.lib.darwinSystem {
-            inherit system pkgs;
-
-            modules = log [
-              ./systems/darwin.nix
-            ];
-
-            specialArgs = { inherit unstablePkgs; };
+          # soraliu dev environment: just switch-darwin
+          "darwin" = mkDarwin {
+            modules = [ ./systems/darwin.nix ];
+            homeImports = homeModules.ide;
+          };
+          # soraliu mirror drive: just switch-darwin darwin-mirror
+          "darwin-mirror" = mkDarwin {
+            modules = [ ./systems/darwin.nix ];
+            homeImports = homeModules.ide;
+            extraSpecialArgs = mkHomeExtraSpecialArgs { useMirrorDrive = true; };
+          };
+          # clawbot environment: just switch-darwin darwin-clawbot
+          "darwin-clawbot" = mkDarwin {
+            modules = [ ./systems/darwin.nix ];
+            homeImports = homeModules.clawbot;
+            homeUser = "clawbot";
+            extraSpecialArgs = mkHomeExtraSpecialArgs { secretsUser = "clawbot"; };
           };
         };
 
         nixosConfigurations = {
-          wsl = mkNixOS
-            {
-              modules = [
-                nixos-wsl.nixosModules.default
-                ./systems/nixos-wsl.nix
-              ];
-              imports = [
-                ./home/profiles/ide.nix
-                nix-index-database.hmModules.nix-index
-              ];
-            };
+          # NixOS-WSL: just switch-nixos ide
+          ide = mkNixOS {
+            modules = [ nixos-wsl.nixosModules.default ./systems/nixos-wsl.nix ];
+            homeImports = homeModules.ide;
+            homeUser = "soraliu";
+          };
+          # NixOS-WSL: just switch-nixos wsl-infer
+          wsl-infer = mkNixOS {
+            modules = [ nixos-wsl.nixosModules.default ./systems/nixos-wsl.nix ];
+            homeImports = homeModules.wsl-infer;
+            homeUser = "soraliu";
+          };
         };
 
         nixOnDroidConfigurations = {

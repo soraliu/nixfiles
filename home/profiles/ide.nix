@@ -12,7 +12,6 @@ in
     ../modules/ai/huggingface.nix
     ../modules/ai/shell-gpt
     ../modules/ai/cc
-    ../modules/ai/openclaw
 
     ../modules/ide
 

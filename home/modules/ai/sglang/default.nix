@@ -1,28 +1,28 @@
 { pkgs, config, ... }:
 
 let
-  # 全局固定路径
+  # Global fixed path
   GLOBAL_SGLANG_ENV = "${config.home.homeDirectory}/.cache/nix-sglang-env";
   sglangModulePath = "${config.home.homeDirectory}/.cache/sglang-flake";
 
-  # CUDA 运行时依赖
+  # CUDA runtime dependencies
   runtimeLibs = with pkgs; [
-    # WSL2 驱动（优先级最高）
-    # /usr/lib/wsl/lib 在 LD_LIBRARY_PATH 中手动添加
+    # WSL2 drivers (highest priority)
+    # /usr/lib/wsl/lib manually added to LD_LIBRARY_PATH
 
-    # Nix CUDA Toolkit（版本锁定）
+    # Nix CUDA Toolkit (version locked)
     cudaPackages_12.cuda_cudart
     cudaPackages_12.libcublas
 
-    # 系统库
+    # System libraries
     gcc-unwrapped.lib
     stdenv.cc.cc.lib
   ];
 
-  # 构建 LD_LIBRARY_PATH
+  # Build LD_LIBRARY_PATH
   libPath = pkgs.lib.makeLibraryPath runtimeLibs;
 
-  # SGLang 包装脚本，自动设置 LD_LIBRARY_PATH
+  # SGLang wrapper script, automatically sets LD_LIBRARY_PATH
   sglangWrapper = pkgs.writeShellScriptBin "sglang" ''
     export LD_LIBRARY_PATH="/usr/lib/wsl/lib:${libPath}:$LD_LIBRARY_PATH"
     exec "${GLOBAL_SGLANG_ENV}/bin/python" -m sglang.launch_server "$@"
@@ -30,17 +30,17 @@ let
 
 in {
   config = {
-    # 创建符号链接：将 sglang 模块链接到缓存目录
+    # Create symbolic link: link sglang module to cache directory
     home.file."${sglangModulePath}".source = ./.;
 
     home.packages = with pkgs; [
-      # SGLang 通过 uv 安装，这里添加系统依赖
+      # SGLang installed via uv, add system dependencies here
       gcc-unwrapped.lib
       stdenv.cc.cc.lib
       cudaPackages_12.cuda_cudart
       cudaPackages_12.libcublas
 
-      # SGLang 包装脚本
+      # SGLang wrapper script
       sglangWrapper
     ];
 
@@ -57,7 +57,7 @@ in {
       min_uptime = 10000;
     }];
 
-    # 初始化脚本（使用全局路径）
+    # Initialization script (using global path)
     home.activation.initSglang = config.lib.dag.entryAfter [ "writeBoundary" ] ''
       SGLANG_ENV="${GLOBAL_SGLANG_ENV}"
 
@@ -68,7 +68,7 @@ in {
         cd "$SGLANG_ENV" && ${pkgs.uv}/bin/uv pip install sglang
       fi
 
-      # 创建 CUDA 缓存目录
+      # Create CUDA cache directory
       mkdir -p "${config.home.homeDirectory}/.cache/cuda"
     '';
   };

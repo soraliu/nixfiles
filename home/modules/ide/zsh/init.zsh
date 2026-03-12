@@ -17,15 +17,15 @@ ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=6'
 [ -f $HOME/.keys.zsh ] && source $HOME/.keys.zsh
 
 # set path (Single Source of Truth)
-# prepend 语义: 最后执行的优先级最高, 所以按优先级从低到高排列
+# prepend semantics: last executed has highest priority, so arrange from low to high priority
 [ -d "$HOME/.mint/bin" ] && PATH="$HOME/.mint/bin:$PATH"  # macOS mint
 [ "$(uname)" = "Darwin" ] && PATH="/opt/homebrew/bin:$PATH" # macOS homebrew
 PATH="/nix/var/nix/profiles/default/bin:$PATH"            # nix default profile
 PATH="/run/current-system/sw/bin:$PATH"                   # nixos system
 PATH="$HOME_PROFILE_DIRECTORY/bin:$PATH"                  # nix home-manager profile
 PATH="$GOPATH/bin:$PATH"                                  # golang
-PATH="$HOME/.local/bin:$PATH"                             # 用户本地二进制
-PATH="${VOLTA_HOME:-$HOME/.volta}/bin:$PATH"              # nodejs (volta) — 最高优先级
+PATH="$HOME/.local/bin:$PATH"                             # user local binaries
+PATH="${VOLTA_HOME:-$HOME/.volta}/bin:$PATH"              # nodejs (volta) — highest priority
 export PATH
 
 # install sdkman: curl -s "https://get.sdkman.io" | bash

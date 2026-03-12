@@ -13,10 +13,10 @@
         config.allowUnfree = true;
       };
 
-      # 全局 SGLang 环境路径
+      # Global SGLang environment path
       GLOBAL_SGLANG_ENV = "$HOME/.cache/nix-sglang-env";
 
-      # CUDA 运行时依赖
+      # CUDA runtime dependencies
       runtimeLibs = with pkgs; [
         cudaPackages_12.cuda_cudart
         cudaPackages_12.libcublas
@@ -30,7 +30,7 @@
       apps.${system}.sglang-serve = {
         type = "app";
         program = "${pkgs.writeShellScript "sglang-serve" ''
-          # 设置环境变量
+          # Set environment variables
           export CUDA_VISIBLE_DEVICES=0
           export HF_HOME="$HOME/.cache/huggingface"
           export HF_ENDPOINT="https://hf-mirror.com"
@@ -39,7 +39,7 @@
           export CC="${pkgs.gcc}/bin/gcc"
           export CXX="${pkgs.gcc}/bin/g++"
 
-          # 启动 SGLang 服务 - RTX 5090 优化配置
+          # Start SGLang service - RTX 5090 optimized configuration
           exec "${GLOBAL_SGLANG_ENV}/bin/python" -m sglang.launch_server \
             --model-path GadflyII/GLM-4.7-Flash-NVFP4 \
             --host 127.0.0.1 \
@@ -65,14 +65,14 @@
         ];
 
         shellHook = ''
-          # 激活全局 SGLang 虚拟环境
+          # Activate global SGLang virtual environment
           if [ -d "${GLOBAL_SGLANG_ENV}" ]; then
             export PATH="${GLOBAL_SGLANG_ENV}/bin:$PATH"
             export VIRTUAL_ENV="${GLOBAL_SGLANG_ENV}"
-            echo "✅ SGLang 环境已激活: ${GLOBAL_SGLANG_ENV}"
+            echo "✅ SGLang environment activated: ${GLOBAL_SGLANG_ENV}"
           else
-            echo "⚠️  SGLang 环境不存在，请先运行 home-manager switch"
-            echo "   或手动创建: uv venv ${GLOBAL_SGLANG_ENV} && uv pip install sglang"
+            echo "⚠️  SGLang environment does not exist, please run home-manager switch first"
+            echo "   or manually create: uv venv ${GLOBAL_SGLANG_ENV} && uv pip install sglang"
           fi
 
           # 设置环境变量
@@ -81,25 +81,25 @@
           export HF_ENDPOINT="https://hf-mirror.com"
           export CUDA_CACHE_PATH="$HOME/.cache/cuda"
 
-          # WSL2 驱动优先，Nix CUDA 作为后备
+          # WSL2 drivers priority, Nix CUDA as fallback
           export LD_LIBRARY_PATH="/usr/lib/wsl/lib:${libPath}:$LD_LIBRARY_PATH"
 
           export CC="${pkgs.gcc}/bin/gcc"
           export CXX="${pkgs.gcc}/bin/g++"
 
-          # 显示环境信息
+          # Display environment information
           echo ""
-          echo "🚀 SGLang Blackwell 开发环境"
+          echo "🚀 SGLang Blackwell Development Environment"
           echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
           echo "Python:       $(python --version 2>&1)"
           echo "CUDA Toolkit: ${pkgs.cudaPackages_12.cuda_cudart.version}"
-          echo "SGLang 环境:  ${GLOBAL_SGLANG_ENV}"
-          echo "HF 镜像:      $HF_ENDPOINT"
+          echo "SGLang Env:    ${GLOBAL_SGLANG_ENV}"
+          echo "HF Mirror:     $HF_ENDPOINT"
           echo ""
-          echo "💡 快速命令："
-          echo "  python -c 'import sglang; print(sglang.__version__)'  # 检查 SGLang 版本"
-          echo "  python -c 'import torch; print(torch.cuda.is_available())'  # 检查 CUDA"
-          echo "  nvidia-smi  # 查看 GPU 状态"
+          echo "💡 Quick Commands:"
+          echo "  python -c 'import sglang; print(sglang.__version__)'  # Check SGLang version"
+          echo "  python -c 'import torch; print(torch.cuda.is_available())'  # Check CUDA"
+          echo "  nvidia-smi  # Check GPU status"
           echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
           echo ""
         '';

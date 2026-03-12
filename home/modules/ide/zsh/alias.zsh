@@ -15,14 +15,14 @@ alias zlx='zl; zxp'
 alias cp='rsync --archive --human-readable --partial --info=progress2'
 alias rm='rm -f'
 alias mv='mv -f'
-# alias f='fasd -f'             # 文件
-# alias d='fasd -d'             # 目录
-# alias a='fasd -a'             # 任意
+# alias f='fasd -f'             # file
+# alias d='fasd -d'             # directory
+# alias a='fasd -a'             # any
 
-# alias sd='fasd -sid'          # 选择目录
-# alias sf='fasd -sif'          # 选择文件
-# alias z='fasd_cd -d'          # 跳转至目录
-# alias zz='fasd_cd -d -i'      # 选择并跳转至目录
+# alias sd='fasd -sid'          # select directory
+# alias sf='fasd -sif'          # select file
+# alias z='fasd_cd -d'          # jump to directory
+# alias zz='fasd_cd -d -i'      # select and jump to directory
 
 # # ssh
 # alias ssh-ide='ssh root@ide.soraliu.dev'
