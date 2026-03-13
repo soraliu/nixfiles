@@ -1,7 +1,8 @@
-{ pkgs, config, lib, ... }: {
-  config = {
+{ pkgs, config, lib, openclawPackage ? null, ... }: {
+  config = lib.mkMerge [
+    {
     # nix-openclaw provides openclaw package (via overlay)
-    home.packages = [ pkgs.openclaw ];
+    home.packages = lib.optional (openclawPackage != null) openclawPackage;
 
     home.sessionVariables = {
       OPENCLAW_HOME = "${config.home.homeDirectory}/.openclaw";
@@ -38,5 +39,9 @@
     #     ${pkgs.git}/bin/git -C "${config.home.homeDirectory}/.openclaw" pull --ff-only || true
     #   fi
     # '';
-  };
+    }
+    (lib.mkIf (openclawPackage != null) {
+      programs.openclaw.package = openclawPackage;
+    })
+  ];
 }
