@@ -80,11 +80,13 @@
     let
       log = v: builtins.trace v v;
       # nix-openclaw 的 openclaw-gateway 需要 fetchPnpmDeps，nixos-25.11 中已移除
-      openclawNixpkgs = import nix-openclaw.inputs.nixpkgs { inherit system; };
-      overlays = [
-        (final: prev: { inherit (openclawNixpkgs) fetchPnpmDeps; })
-        nix-openclaw.overlays.default
-      ];
+      openclawPackages =
+        if builtins.hasAttr system nix-openclaw.packages then
+          nix-openclaw.packages.${system}
+        else
+          { };
+      openclawPackage = openclawPackages.openclaw or null;
+      overlays = [ ];
       pkgs = builtins.trace system (import nixpkgs {
         inherit system;
         config.allowUnfree = true;
@@ -136,7 +138,9 @@
       # homeModules — Single Source of Truth for home profile imports
       homeModules = {
         ide = [ ./home/profiles/ide.nix nix-index-database.hmModules.nix-index ];
-        clawbot = [ ./home/profiles/clawbot.nix nix-index-database.hmModules.nix-index nix-openclaw.homeManagerModules.openclaw ];
+        clawbot =
+          [ ./home/profiles/clawbot.nix nix-index-database.hmModules.nix-index ]
+          ++ nixpkgs.lib.optional (openclawPackage != null) nix-openclaw.homeManagerModules.openclaw;
         wsl-infer = [ ./home/profiles/wsl-infer.nix nix-index-database.hmModules.nix-index ];
         vpn-server = [ ./home/profiles/vpn-server.nix ];
         drive-server = [ ./home/profiles/drive-server.nix ];
@@ -156,7 +160,7 @@
           #   which means those functions can access `useSecret` directly instead of `specialArgs.useSecret`
           #   TL;DR: https://github.com/nix-community/home-manager/blob/36f873dfc8e2b6b89936ff3e2b74803d50447e0a/modules/default.nix#L26
           extraSpecialArgs = {
-            inherit system unstablePkgs homeUser;
+            inherit system unstablePkgs homeUser openclawPackage;
           } // extraSpecialArgs;
         };
 
@@ -174,7 +178,7 @@
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
             home-manager.extraSpecialArgs = {
-              inherit system unstablePkgs homeUser;
+              inherit system unstablePkgs homeUser openclawPackage;
             } // extraSpecialArgs;
 
             home-manager.users.${homeUser} = {
@@ -202,7 +206,7 @@
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = false;
             home-manager.extraSpecialArgs = {
-              inherit system unstablePkgs homeUser;
+              inherit system unstablePkgs homeUser openclawPackage;
             } // extraSpecialArgs;
 
             # useUserPackages = false 时 home-manager 的 common.nix 会读取 config.users.users.${name}
@@ -216,7 +220,7 @@
           }
         ]);
 
-        specialArgs = { inherit unstablePkgs homeUser; };
+        specialArgs = { inherit unstablePkgs homeUser openclawPackage; };
       };
     in
     {

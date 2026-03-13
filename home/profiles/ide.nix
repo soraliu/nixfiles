@@ -35,6 +35,7 @@ in
     ../modules/lang/rust.nix
     ../modules/lang/db.nix
     ../modules/lang/just.nix
+    ../modules/lang/sol.nix
 
     ../modules/network/clash-meta
     ../modules/network/nebula
