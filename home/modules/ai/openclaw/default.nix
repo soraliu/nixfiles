@@ -41,6 +41,7 @@
     # '';
     }
     (lib.mkIf (openclawPackage != null) {
+      programs.openclaw.excludeTools = [ "bird" ];
       programs.openclaw.package = openclawPackage;
     })
   ];
