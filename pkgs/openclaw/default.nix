@@ -8,6 +8,7 @@ let
   isDarwin = pkgs.stdenv.hostPlatform.isDarwin;
   isLinux = pkgs.stdenv.hostPlatform.isLinux;
   voltaBin = "${homeDir}/.volta/bin";
+  pnpmHome = "${homeDir}/.local/share/pnpm";
 in
 {
   options.programs.openclawLocal = {
@@ -40,14 +41,17 @@ in
 
   config = lib.mkIf cfg.enable {
     home.sessionVariables.OPENCLAW_HOME = cfg.stateDir;
+    home.sessionVariables.PNPM_HOME = pnpmHome;
 
     # 通过 volta 管理的 pnpm 安装固定版本
     # 依赖 nodejs.nix 中 volta install pnpm 已完成
     # pnpm 10+ 默认阻止依赖 build scripts（供应链安全），需 approve-builds 批准
     # 否则 sharp 等原生模块不会编译，导致运行时报错
     home.activation.installOpenclaw = lib.hm.dag.entryAfter [ "initVolta" ] ''
-      export PATH="${voltaBin}:$PATH"
+      export PATH="${voltaBin}:${pnpmHome}:$PATH"
       export VOLTA_HOME="${homeDir}/.volta"
+      export PNPM_HOME="${pnpmHome}"
+      run ${lib.getExe' pkgs.coreutils "mkdir"} -p ${pnpmHome}
       run ${voltaBin}/pnpm add -g openclaw@${cfg.version}
       run ${voltaBin}/pnpm approve-builds -g --all
     '';
@@ -65,7 +69,7 @@ in
       config = {
         Label = "com.openclaw.gateway";
         ProgramArguments = [
-          "${voltaBin}/openclaw"
+          "${pnpmHome}/openclaw"
           "gateway"
           "--port"
           "${toString cfg.gatewayPort}"
@@ -78,7 +82,7 @@ in
         EnvironmentVariables = {
           HOME = homeDir;
           VOLTA_HOME = "${homeDir}/.volta";
-          PATH = "${voltaBin}:/usr/bin:/bin";
+          PATH = "${voltaBin}:${pnpmHome}:/usr/bin:/bin";
           OPENCLAW_CONFIG_PATH = cfg.configPath;
           OPENCLAW_STATE_DIR = cfg.stateDir;
           OPENCLAW_IMAGE_BACKEND = "sips";
@@ -90,14 +94,14 @@ in
     systemd.user.services."openclaw-gateway" = lib.mkIf isLinux {
       Unit.Description = "OpenClaw gateway";
       Service = {
-        ExecStart = "${voltaBin}/openclaw gateway --port ${toString cfg.gatewayPort}";
+        ExecStart = "${pnpmHome}/openclaw gateway --port ${toString cfg.gatewayPort}";
         WorkingDirectory = cfg.stateDir;
         Restart = "always";
         RestartSec = "1s";
         Environment = [
           "HOME=${homeDir}"
           "VOLTA_HOME=${homeDir}/.volta"
-          "PATH=${voltaBin}:/usr/bin:/bin"
+          "PATH=${voltaBin}:${pnpmHome}:/usr/bin:/bin"
           "OPENCLAW_CONFIG_PATH=${cfg.configPath}"
           "OPENCLAW_STATE_DIR=${cfg.stateDir}"
         ];

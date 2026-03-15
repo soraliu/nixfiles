@@ -7,7 +7,6 @@ let
   cfg = config.programs.openclawLocal;
   homeDir = config.home.homeDirectory;
   clawfilesDir = "${cfg.stateDir}";
-  clawfilesRepo = "https://github.com/soraliu/clawfiles.git";
 in
 {
   imports = [ ../../../../pkgs/openclaw ];
@@ -17,15 +16,6 @@ in
     from = "secrets/users/${secretsUser}/.config/openclaw/tg-token.enc";
     to = ".config/openclaw/tg-token";
   }];
-
-  # clone 或更新 clawfiles 配置仓库
-  home.activation.cloneClawfiles = lib.hm.dag.entryAfter [ "openclawDirs" ] ''
-    if [ ! -d "${clawfilesDir}/.git" ]; then
-      run ${lib.getExe pkgs.git} clone ${clawfilesRepo} ${clawfilesDir}
-    else
-      run ${lib.getExe pkgs.git} -C ${clawfilesDir} pull --ff-only || true
-    fi
-  '';
 
   # 配置 openclaw 包模块
   programs.openclawLocal = {
