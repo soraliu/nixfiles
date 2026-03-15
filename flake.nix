@@ -60,11 +60,6 @@
       inputs.home-manager.follows = "home-manager";
     };
 
-    nix-openclaw = {
-      url = "github:openclaw/nix-openclaw";
-    };
-    nix-openclaw-nixpkgs.follows = "nix-openclaw/nixpkgs";
-    nix-steipete-tools.follows = "nix-openclaw/nix-steipete-tools";
   };
 
   outputs =
@@ -76,60 +71,13 @@
     , home-manager
     , flake-utils
     , nix-on-droid
-    , nix-openclaw
-    , nix-openclaw-nixpkgs
-    , nix-steipete-tools
     , ...
     }: with flake-utils.lib; eachDefaultSystem (system:
     let
       log = v: builtins.trace v v;
-      # nix-openclaw 的 openclaw-gateway 需要 fetchPnpmDeps，nixos-25.11 中已移除
-      openclawPkgs = import nix-openclaw-nixpkgs {
-        inherit system;
-        config.allowUnfree = true;
-      };
-      steipetePackages =
-        if builtins.hasAttr system nix-steipete-tools.packages then
-          nix-steipete-tools.packages.${system}
-        else
-          { };
-      openclawPackages =
-        if builtins.hasAttr system nix-openclaw.packages then
-          import (nix-openclaw.outPath + "/nix/packages") {
-            pkgs = openclawPkgs;
-            steipetePkgs = steipetePackages;
-            # 排除 clawbot profile 已独立安装的工具，避免 buildEnv 路径冲突
-            # 参考: https://github.com/openclaw/nix-openclaw#tool-overrides-avoid-collisions
-            excludeToolNames = [ "bird" "python3" "go" "uv" "jq" "ripgrep" "curl" ];
-          }
-        else
-          { };
-      openclawPackage = openclawPackages.openclaw or null;
-      # nix-openclaw 的 home-manager 模块内部会引用 pkgs.openclaw / pkgs.openclawPackages，
-      # 需要通过 overlay 注入，否则 programs.openclaw.enable = true 时会报 attribute missing
-      openclawToolNames = (import (nix-openclaw.outPath + "/nix/tools/extended.nix") {
-        pkgs = openclawPkgs;
-        steipetePkgs = steipetePackages;
-        excludeToolNames = [ "bird" "python3" "go" "uv" "jq" "ripgrep" "curl" ];
-      }).toolNames;
-      overlays = [
-        (_final: _prev: {
-          openclaw = openclawPackage;
-          openclawPackages = openclawPackages // {
-            toolNames = openclawToolNames;
-            withTools = { toolNamesOverride ? null, excludeToolNames ? [] }:
-              import (nix-openclaw.outPath + "/nix/packages") {
-                pkgs = openclawPkgs;
-                steipetePkgs = steipetePackages;
-                inherit toolNamesOverride excludeToolNames;
-              };
-          };
-        })
-      ];
       pkgs = builtins.trace system (import nixpkgs {
         inherit system;
         config.allowUnfree = true;
-        overlays = overlays;
       });
       unstablePkgs = import nixpkgs-unstable {
         inherit system;
@@ -177,9 +125,7 @@
       # homeModules — Single Source of Truth for home profile imports
       homeModules = {
         ide = [ ./home/profiles/ide.nix nix-index-database.hmModules.nix-index ];
-        clawbot =
-          [ ./home/profiles/clawbot.nix nix-index-database.hmModules.nix-index ]
-          ++ nixpkgs.lib.optional (openclawPackage != null) nix-openclaw.homeManagerModules.openclaw;
+        clawbot = [ ./home/profiles/clawbot.nix nix-index-database.hmModules.nix-index ];
         wsl-infer = [ ./home/profiles/wsl-infer.nix nix-index-database.hmModules.nix-index ];
         vpn-server = [ ./home/profiles/vpn-server.nix ];
         drive-server = [ ./home/profiles/drive-server.nix ];
@@ -199,7 +145,7 @@
           #   which means those functions can access `useSecret` directly instead of `specialArgs.useSecret`
           #   TL;DR: https://github.com/nix-community/home-manager/blob/36f873dfc8e2b6b89936ff3e2b74803d50447e0a/modules/default.nix#L26
           extraSpecialArgs = {
-            inherit system unstablePkgs homeUser openclawPackage;
+            inherit system unstablePkgs homeUser;
           } // extraSpecialArgs;
         };
 
@@ -217,7 +163,7 @@
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
             home-manager.extraSpecialArgs = {
-              inherit system unstablePkgs homeUser openclawPackage;
+              inherit system unstablePkgs homeUser;
             } // extraSpecialArgs;
 
             home-manager.users.${homeUser} = {
@@ -245,7 +191,7 @@
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = false;
             home-manager.extraSpecialArgs = {
-              inherit system unstablePkgs homeUser openclawPackage;
+              inherit system unstablePkgs homeUser;
             } // extraSpecialArgs;
 
             # useUserPackages = false 时 home-manager 的 common.nix 会读取 config.users.users.${name}
@@ -259,7 +205,7 @@
           }
         ]);
 
-        specialArgs = { inherit unstablePkgs homeUser openclawPackage; };
+        specialArgs = { inherit unstablePkgs homeUser; };
       };
     in
     {

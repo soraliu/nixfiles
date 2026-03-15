@@ -1,39 +1,35 @@
-{ pkgs, config, lib, secretsUser, openclawPackage ? null, ... }: {
-  config = lib.mkMerge [
-    {
-    # nix-openclaw provides openclaw package (via overlay)
-    home.packages = lib.optional (openclawPackage != null) openclawPackage;
+# 配置层：导入 pkgs/openclaw 可复用模块，配置 clawfiles clone + 具体参数
+# pkgs/openclaw 负责 pnpm 安装 + launchd/systemd 服务
+# 本模块负责 clawfiles repo 管理 + sops 解密 + 具体配置值
+{ pkgs, config, lib, secretsUser, ... }:
 
-    home.sessionVariables = {
-      OPENCLAW_HOME = "${config.home.homeDirectory}/.openclaw";
-    };
+let
+  cfg = config.programs.openclawLocal;
+  homeDir = config.home.homeDirectory;
+  clawfilesDir = "${cfg.stateDir}";
+  clawfilesRepo = "https://github.com/soraliu/clawfiles.git";
+in
+{
+  imports = [ ../../../../pkgs/openclaw ];
 
-    # TG bot token 解密到 ~/.config/openclaw/tg-token
-    programs.sops.decryptFiles = [{
-      from = "secrets/users/${secretsUser}/.config/openclaw/tg-token.enc";
-      to = ".config/openclaw/tg-token";
-    }];
-    }
-    (lib.mkIf (openclawPackage != null) {
-      # 排除 clawbot profile 已独立安装的工具，避免 buildEnv 路径冲突
-      # git 由 nix-openclaw 在 programs.git.enable 时自动排除
-      programs.openclaw.excludeTools = [ "bird" ];
-      programs.openclaw.package = openclawPackage;
+  # TG bot token 解密到 ~/.config/openclaw/tg-token
+  programs.sops.decryptFiles = [{
+    from = "secrets/users/${secretsUser}/.config/openclaw/tg-token.enc";
+    to = ".config/openclaw/tg-token";
+  }];
 
-      # nix-openclaw service configuration — launchd/systemd managed
-      programs.openclaw.enable = true;
-      # 显式声明 default instance，绕过 nix-openclaw config.nix 中
-      # defaultInstance 手动构建时遗漏 appDefaults.nixMode 的 bug
-      programs.openclaw.instances.default = {};
-      programs.openclaw.config = {
-        gateway = {
-          mode = "local";
-        };
-        channels.telegram = {
-          tokenFile = "${config.home.homeDirectory}/.config/openclaw/tg-token";
-          allowFrom = [ 920355045 ];
-        };
-      };
-    })
-  ];
+  # clone 或更新 clawfiles 配置仓库
+  home.activation.cloneClawfiles = lib.hm.dag.entryAfter [ "openclawDirs" ] ''
+    if [ ! -d "${clawfilesDir}/.git" ]; then
+      run ${lib.getExe pkgs.git} clone ${clawfilesRepo} ${clawfilesDir}
+    else
+      run ${lib.getExe pkgs.git} -C ${clawfilesDir} pull --ff-only || true
+    fi
+  '';
+
+  # 配置 openclaw 包模块
+  programs.openclawLocal = {
+    enable = true;
+    configPath = "${clawfilesDir}/openclaw.json";
+  };
 }
