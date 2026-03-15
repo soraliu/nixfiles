@@ -16,7 +16,7 @@ in
 
     version = lib.mkOption {
       type = lib.types.str;
-      default = "2.0.0-beta5";
+      default = "2026.3.13";
       description = "固定的 openclaw 版本号，通过 pnpm add -g openclaw@version 安装。";
     };
 
@@ -48,7 +48,7 @@ in
     # pnpm 10+ 默认阻止依赖 build scripts（供应链安全），需 approve-builds 批准
     # 否则 sharp 等原生模块不会编译，导致运行时报错
     home.activation.installOpenclaw = lib.hm.dag.entryAfter [ "initVolta" ] ''
-      export PATH="${voltaBin}:${pnpmHome}:$PATH"
+      export PATH="${voltaBin}:${pnpmHome}:${lib.getBin pkgs.git}/bin:$PATH"
       export VOLTA_HOME="${homeDir}/.volta"
       export PNPM_HOME="${pnpmHome}"
       run ${lib.getExe' pkgs.coreutils "mkdir"} -p ${pnpmHome}
