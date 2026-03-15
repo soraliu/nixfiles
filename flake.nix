@@ -98,12 +98,34 @@
           import (nix-openclaw.outPath + "/nix/packages") {
             pkgs = openclawPkgs;
             steipetePkgs = steipetePackages;
-            excludeToolNames = [ "bird" ];
+            # 排除 clawbot profile 已独立安装的工具，避免 buildEnv 路径冲突
+            # 参考: https://github.com/openclaw/nix-openclaw#tool-overrides-avoid-collisions
+            excludeToolNames = [ "bird" "python3" "go" "uv" "jq" "ripgrep" "curl" ];
           }
         else
           { };
       openclawPackage = openclawPackages.openclaw or null;
-      overlays = [ ];
+      # nix-openclaw 的 home-manager 模块内部会引用 pkgs.openclaw / pkgs.openclawPackages，
+      # 需要通过 overlay 注入，否则 programs.openclaw.enable = true 时会报 attribute missing
+      openclawToolNames = (import (nix-openclaw.outPath + "/nix/tools/extended.nix") {
+        pkgs = openclawPkgs;
+        steipetePkgs = steipetePackages;
+        excludeToolNames = [ "bird" "python3" "go" "uv" "jq" "ripgrep" "curl" ];
+      }).toolNames;
+      overlays = [
+        (_final: _prev: {
+          openclaw = openclawPackage;
+          openclawPackages = openclawPackages // {
+            toolNames = openclawToolNames;
+            withTools = { toolNamesOverride ? null, excludeToolNames ? [] }:
+              import (nix-openclaw.outPath + "/nix/packages") {
+                pkgs = openclawPkgs;
+                steipetePkgs = steipetePackages;
+                inherit toolNamesOverride excludeToolNames;
+              };
+          };
+        })
+      ];
       pkgs = builtins.trace system (import nixpkgs {
         inherit system;
         config.allowUnfree = true;
