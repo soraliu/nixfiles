@@ -1,4 +1,4 @@
-{ pkgs, config, lib, openclawPackage ? null, ... }: {
+{ pkgs, config, lib, secretsUser, openclawPackage ? null, ... }: {
   config = lib.mkMerge [
     {
     # nix-openclaw provides openclaw package (via overlay)
@@ -8,41 +8,32 @@
       OPENCLAW_HOME = "${config.home.homeDirectory}/.openclaw";
     };
 
-    # nix-openclaw service configuration — enabled and managed by launchd/systemd, no longer depends on PM2
-    # User needs to add Telegram token, API key and other secrets before uncommenting
-    # programs.openclaw = {
-    #   enable = true;
-    #   config = {
-    #     gateway = {
-    #       mode = "local";
-    #       auth.token = ""; # or set OPENCLAW_GATEWAY_TOKEN environment variable
-    #     };
-    #     channels.telegram = {
-    #       tokenFile = ""; # Telegram bot token file path
-    #       allowFrom = []; # Telegram user ID
-    #     };
-    #   };
-    # };
-
-    # home.activation.initOpenclaw = lib.hm.dag.entryAfter [ "linkGeneration" ] ''
-    #   export PATH="${pkgs.git}/bin:$PATH"
-
-    #   # Clone clawfiles to ~/.openclaw (if not exists)
-    #   if [ ! -d "${config.home.homeDirectory}/.openclaw/.git" ]; then
-    #     echo "Cloning clawfiles repository..."
-    #     if [ -d "${config.home.homeDirectory}/.openclaw" ]; then
-    #       rm -rf "${config.home.homeDirectory}/.openclaw"
-    #     fi
-    #     ${pkgs.git}/bin/git clone https://github.com/soraliu/clawfiles.git "${config.home.homeDirectory}/.openclaw"
-    #   else
-    #     echo "clawfiles already cloned, pulling latest..."
-    #     ${pkgs.git}/bin/git -C "${config.home.homeDirectory}/.openclaw" pull --ff-only || true
-    #   fi
-    # '';
+    # TG bot token 解密到 ~/.config/openclaw/tg-token
+    programs.sops.decryptFiles = [{
+      from = "secrets/users/${secretsUser}/.config/openclaw/tg-token.enc";
+      to = ".config/openclaw/tg-token";
+    }];
     }
     (lib.mkIf (openclawPackage != null) {
+      # 排除 clawbot profile 已独立安装的工具，避免 buildEnv 路径冲突
+      # git 由 nix-openclaw 在 programs.git.enable 时自动排除
       programs.openclaw.excludeTools = [ "bird" ];
       programs.openclaw.package = openclawPackage;
+
+      # nix-openclaw service configuration — launchd/systemd managed
+      programs.openclaw.enable = true;
+      # 显式声明 default instance，绕过 nix-openclaw config.nix 中
+      # defaultInstance 手动构建时遗漏 appDefaults.nixMode 的 bug
+      programs.openclaw.instances.default = {};
+      programs.openclaw.config = {
+        gateway = {
+          mode = "local";
+        };
+        channels.telegram = {
+          tokenFile = "${config.home.homeDirectory}/.config/openclaw/tg-token";
+          allowFrom = [ 920355045 ];
+        };
+      };
     })
   ];
 }
