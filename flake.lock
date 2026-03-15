@@ -394,6 +394,14 @@
         "nix-index-database": "nix-index-database",
         "nix-on-droid": "nix-on-droid",
         "nix-openclaw": "nix-openclaw",
+        "nix-openclaw-nixpkgs": [
+          "nix-openclaw",
+          "nixpkgs"
+        ],
+        "nix-steipete-tools": [
+          "nix-openclaw",
+          "nix-steipete-tools"
+        ],
         "nixos-wsl": "nixos-wsl",
         "nixpkgs": "nixpkgs_3",
         "nixpkgs-unstable": "nixpkgs-unstable"

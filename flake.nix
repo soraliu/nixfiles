@@ -63,6 +63,8 @@
     nix-openclaw = {
       url = "github:openclaw/nix-openclaw";
     };
+    nix-openclaw-nixpkgs.follows = "nix-openclaw/nixpkgs";
+    nix-steipete-tools.follows = "nix-openclaw/nix-steipete-tools";
   };
 
   outputs =
@@ -75,14 +77,29 @@
     , flake-utils
     , nix-on-droid
     , nix-openclaw
+    , nix-openclaw-nixpkgs
+    , nix-steipete-tools
     , ...
     }: with flake-utils.lib; eachDefaultSystem (system:
     let
       log = v: builtins.trace v v;
       # nix-openclaw 的 openclaw-gateway 需要 fetchPnpmDeps，nixos-25.11 中已移除
+      openclawPkgs = import nix-openclaw-nixpkgs {
+        inherit system;
+        config.allowUnfree = true;
+      };
+      steipetePackages =
+        if builtins.hasAttr system nix-steipete-tools.packages then
+          nix-steipete-tools.packages.${system}
+        else
+          { };
       openclawPackages =
         if builtins.hasAttr system nix-openclaw.packages then
-          nix-openclaw.packages.${system}
+          import (nix-openclaw.outPath + "/nix/packages") {
+            pkgs = openclawPkgs;
+            steipetePkgs = steipetePackages;
+            excludeToolNames = [ "bird" ];
+          }
         else
           { };
       openclawPackage = openclawPackages.openclaw or null;
