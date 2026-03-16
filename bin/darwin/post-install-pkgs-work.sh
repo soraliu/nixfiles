@@ -25,7 +25,7 @@ install_dmg -n 'Pearcleaner.app' -u 'https://github.com/alienator88/Pearcleaner/
 install_dmg -n 'CleanShot X.app' -u 'https://drive.home.soraliu.dev/dav/software/darwin/CleanShotX/4.8.7/CleanShotX.dmg' &
 install -n 'Obsidian.app' -u 'https://github.com/obsidianmd/obsidian-releases/releases/download/v1.10.6/Obsidian-1.10.6.dmg' -t 'dmg' &
 install -n 'ClashX.Meta.app' -u 'https://github.com/MetaCubeX/ClashX.Meta/releases/download/v1.4.29/ClashX.Meta.zip' -t 'zip' &
-install -n '/Library/Input Methods/Squirrel.app' -u 'https://github.com/rime/squirrel/releases/download/1.0.3/Squirrel-1.0.3.pkg' &
+install -n '/Library/Input Methods/Squirrel.app' -u 'https://github.com/rime/squirrel/releases/download/1.1.2/Squirrel-1.1.2.pkg' &
 
 
 if $(uname -m | grep -q 'arm'); then

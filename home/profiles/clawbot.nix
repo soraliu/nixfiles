@@ -36,5 +36,7 @@ in
     ../modules/cloud/k8s
 
     (if isDarwin then ../modules/darwin/base.nix else "")
+    (if isDarwin then ../modules/darwin/apps/rime else "")
+    (if isDarwin then ../modules/darwin/apps/iterm2 else "")
   ]);
 }
