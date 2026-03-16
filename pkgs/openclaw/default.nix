@@ -22,8 +22,8 @@ in
 
     stateDir = lib.mkOption {
       type = lib.types.str;
-      default = "${homeDir}";
-      description = "OpenClaw 状态目录（日志、会话）。";
+      default = "${homeDir}/.openclaw";
+      description = "OpenClaw 状态目录（日志、会话），对应 OPENCLAW_HOME。";
     };
 
     gatewayPort = lib.mkOption {
