@@ -7,6 +7,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source $SCRIPT_DIR/install-dmg.util.sh
 source $SCRIPT_DIR/install.util.sh
 
+install_dmg -n 'Raycast.app' -u 'https://releases.raycast.com/download' -t 'dmg' &
 install_dmg -n 'Google Drive.app' -u 'https://dl.google.com/drive-file-stream/GoogleDrive.dmg'
 install_dmg -n 'Karabiner-Elements.app' -u 'https://github.com/pqrs-org/Karabiner-Elements/releases/download/v15.3.0/Karabiner-Elements-15.3.0.dmg' &
 install_dmg -n 'Caffeine.app' -u 'https://drive.home.soraliu.dev/dav/software/darwin/Caffeine/1.1.3/Caffeine.dmg' &

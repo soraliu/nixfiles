@@ -7,7 +7,6 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source $SCRIPT_DIR/install-dmg.util.sh
 source $SCRIPT_DIR/install.util.sh
 
-install_dmg -n 'Raycast.app' -u 'https://releases.raycast.com/download' -t 'dmg' &
 install_dmg -n '网易有道翻译.app' -u 'https://codown.youdao.com/cidian/download/MacDict.dmg' &
 install_dmg -n 'KeyClu.app' -u 'https://github.com/Anze/KeyCluCask/releases/download/v0.25/KeyClu_v0.25.dmg' &
 install_dmg -n 'Vysor.app' -u 'https://nuts.vysor.io/download/osx' -t 'dmg' &
