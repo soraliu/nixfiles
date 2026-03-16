@@ -9,6 +9,33 @@ let
   isLinux = pkgs.stdenv.hostPlatform.isLinux;
   voltaBin = "${homeDir}/.volta/bin";
   pnpmHome = "${homeDir}/.local/share/pnpm";
+  profileDir = config.home.profileDirectory;
+  goPath = "${homeDir}/go";
+  # PATH 与 home/modules/ide/zsh/init.zsh 保持一致（prepend 语义，优先级从高到低）
+  darwinPath = lib.concatStringsSep ":" [
+    voltaBin                              # nodejs (volta) — highest priority
+    pnpmHome                              # pnpm
+    "${homeDir}/.local/bin"               # user local binaries
+    "${goPath}/bin"                       # golang
+    "${profileDir}/bin"                   # nix home-manager profile
+    "/run/current-system/sw/bin"          # nix-darwin system
+    "/nix/var/nix/profiles/default/bin"   # nix default profile
+    "/opt/homebrew/bin"                   # macOS homebrew
+    "${homeDir}/.mint/bin"                # macOS mint
+    "/usr/bin"
+    "/bin"
+  ];
+  linuxPath = lib.concatStringsSep ":" [
+    voltaBin                              # nodejs (volta) — highest priority
+    pnpmHome                              # pnpm
+    "${homeDir}/.local/bin"               # user local binaries
+    "${goPath}/bin"                       # golang
+    "${profileDir}/bin"                   # nix home-manager profile
+    "/run/current-system/sw/bin"          # nixos system
+    "/nix/var/nix/profiles/default/bin"   # nix default profile
+    "/usr/bin"
+    "/bin"
+  ];
 in
 {
   options.programs.openclawLocal = {
@@ -82,7 +109,7 @@ in
         EnvironmentVariables = {
           HOME = homeDir;
           VOLTA_HOME = "${homeDir}/.volta";
-          PATH = "${pnpmHome}:${voltaBin}:/usr/bin:/bin";
+          PATH = darwinPath;
           NODE_EXTRA_CA_CERTS = "/etc/ssl/cert.pem";
           NODE_USE_SYSTEM_CA = "1";
           OPENCLAW_CONFIG_PATH = cfg.configPath;
@@ -108,7 +135,7 @@ in
         Environment = [
           "HOME=${homeDir}"
           "VOLTA_HOME=${homeDir}/.volta"
-          "PATH=${pnpmHome}:${voltaBin}:/usr/bin:/bin"
+          "PATH=${linuxPath}"
           "OPENCLAW_CONFIG_PATH=${cfg.configPath}"
           "OPENCLAW_STATE_DIR=${cfg.stateDir}"
           "OPENCLAW_GATEWAY_PORT=${toString cfg.gatewayPort}"
