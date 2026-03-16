@@ -69,7 +69,7 @@
             --pipeline-parallel-size 1 \
             --block-size 16 \
             --enable-auto-tool-choice \
-            --tool-call-parser glm4
+            --tool-call-parser glm47
         ''}";
       };
 
