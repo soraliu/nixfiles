@@ -22,7 +22,7 @@ in
 
     stateDir = lib.mkOption {
       type = lib.types.str;
-      default = "${homeDir}/.openclaw";
+      default = "${homeDir}";
       description = "OpenClaw 状态目录（日志、会话）。";
     };
 
