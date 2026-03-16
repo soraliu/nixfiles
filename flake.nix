@@ -235,18 +235,18 @@
 
         darwinConfigurations = {
           # soraliu dev environment: just switch-darwin
-          "darwin" = mkDarwin {
+          "soraliu" = mkDarwin {
             modules = [ ./systems/darwin.nix ];
             homeImports = homeModules.ide;
           };
-          # soraliu mirror drive: just switch-darwin darwin-mirror
-          "darwin-mirror" = mkDarwin {
+          # soraliu mirror drive: just switch-darwin soraliu-mirror
+          "soraliu-mirror" = mkDarwin {
             modules = [ ./systems/darwin.nix ];
             homeImports = homeModules.ide;
             extraSpecialArgs = mkHomeExtraSpecialArgs { useMirrorDrive = true; };
           };
-          # clawbot environment: just switch-darwin darwin-clawbot
-          "darwin-clawbot" = mkDarwin {
+          # clawbot environment: just switch-darwin clawbot
+          "clawbot" = mkDarwin {
             modules = [ ./systems/darwin.nix { ids.gids.nixbld = 350; } ];
             homeImports = homeModules.clawbot;
             homeUser = "clawbot";

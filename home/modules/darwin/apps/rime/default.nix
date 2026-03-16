@@ -1,4 +1,4 @@
-{ pkgs, config, lib, secretsUser, ... }:
+{ pkgs, config, lib, ... }:
 let
   rimeDir = config.home.homeDirectory + "/Library/Rime";
   rimeIceSrc = config.programs.rimeIce.src;
@@ -11,12 +11,12 @@ in
   config = {
     programs.rimeIce.enable = true;
 
-    # 核心用户配置：sops 解密后通过 home.file 部署为 symlink
+    # 通用 Rime 配置：sops 解密后通过 home.file 部署为 symlink
     programs.sops.decryptFiles = [
-      { from = "secrets/users/${secretsUser}/.config/rime/default.custom.yaml.enc"; to = "Library/Rime/default.custom.yaml"; }
-      { from = "secrets/users/${secretsUser}/.config/rime/rime_ice.custom.yaml.enc"; to = "Library/Rime/rime_ice.custom.yaml"; }
-      { from = "secrets/users/${secretsUser}/.config/rime/squirrel.custom.yaml.enc"; to = "Library/Rime/squirrel.custom.yaml"; }
-      { from = "secrets/users/${secretsUser}/.config/rime/custom_phrase.txt.enc"; to = "Library/Rime/custom_phrase.txt"; }
+      { from = "secrets/.config/rime/default.custom.yaml.enc"; to = "Library/Rime/default.custom.yaml"; }
+      { from = "secrets/.config/rime/rime_ice.custom.yaml.enc"; to = "Library/Rime/rime_ice.custom.yaml"; }
+      { from = "secrets/.config/rime/squirrel.custom.yaml.enc"; to = "Library/Rime/squirrel.custom.yaml"; }
+      { from = "secrets/.config/rime/custom_phrase.txt.enc"; to = "Library/Rime/custom_phrase.txt"; }
     ];
 
     # sync/ 通过 linker 指向 Google Drive（复用现有基础设施同步用户词库）

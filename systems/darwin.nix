@@ -20,13 +20,6 @@
   system.defaults.NSGlobalDomain.InitialKeyRepeat = 12;
   system.defaults.NSGlobalDomain.KeyRepeat = 2;
 
-  system.activationScripts = {
-    postActivation.text = ''
-      sudo -u ${homeUser} defaults write com.googlecode.iterm2 PrefsCustomFolder -string "/Users/${homeUser}/.config/iterm2/com.googlecode.iterm2" || \
-        echo "warning: failed to set iTerm2 default preference folder, continuing..."
-    '';
-  };
-
   fonts.packages = with unstablePkgs; [
     nerd-fonts.sauce-code-pro
   ];

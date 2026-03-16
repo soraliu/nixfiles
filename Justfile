@@ -24,6 +24,9 @@ post-init-pm2:
 post-init-zsh:
 	./bin/common/post-init-zsh.sh
 [private]
+darwin-post-install-pkgs-dev:
+	./bin/darwin/post-install-pkgs-dev.sh
+[private]
 darwin-post-install-pkgs-work:
 	./bin/darwin/post-install-pkgs-work.sh
 [private]
@@ -57,10 +60,10 @@ switch-ubuntu profile="ide":
 	nix run .#home-manager -- switch --show-trace --flake .#{{profile}} -b backup
 
 # -------------------- Darwin --------------------
-# variant: darwin, darwin-mirror, darwin-clawbot
+# user: soraliu, soraliu-mirror, clawbot
 # New nix-darwin requires root activation; env PATH preserves nix paths; --extra-experimental-features solves first-time activation chicken-egg issue
-switch-darwin variant="darwin":
-	sudo env PATH="$PATH" nix --extra-experimental-features 'nix-command flakes' run .#nix-darwin -- switch --show-trace --flake .#{{variant}}
+switch-darwin user="soraliu":
+	sudo env PATH="$PATH" nix --extra-experimental-features 'nix-command flakes' run .#nix-darwin -- switch --show-trace --flake .#{{user}}
 
 # -------------------- Android --------------------
 switch-android:
@@ -81,17 +84,19 @@ init-wsl-ubuntu: pre-init-nix pre-init-age (switch-ubuntu "ide") post-init-pm2 p
 [private]
 init-wsl-ubuntu-infer: pre-init-nix pre-init-age (switch-ubuntu "wsl-infer") post-init-pm2 post-init-zsh
 [private]
-init-ide-on-darwin-work: pre-init-nix pre-init-age (switch-darwin "darwin") darwin-post-install-pkgs-work darwin-post-restore-raycast
+init-ide-on-darwin-dev: pre-init-nix pre-init-age (switch-darwin "soraliu") darwin-post-install-pkgs-dev
+[private]
+init-ide-on-darwin-work: init-ide-on-darwin-dev darwin-post-install-pkgs-work darwin-post-restore-raycast
 [private]
 init-ide-on-darwin-personal: init-ide-on-darwin-work darwin-post-install-pkgs-personal
 [private]
-init-clawbot-on-darwin: pre-init-nix pre-init-age (switch-darwin "darwin-clawbot")
+init-clawbot-on-darwin: pre-init-nix pre-init-age (switch-darwin "clawbot")
 [private]
 init-ide-on-mobile: mobile-pre-init-nix-on-doird (switch-home "ide-mobile")
 [private]
 eject-darwin: (switch-home "eject") darwin-uninstall-pkgs
 
-# profile: vpn-server, drive-server, ide, ide-on-darwin-work, ide-on-darwin-personal, wsl-ubuntu, wsl-ubuntu-infer, clawbot-on-darwin, ide-on-mobile
+# profile: vpn-server, drive-server, ide, ide-on-darwin-dev, ide-on-darwin-work, ide-on-darwin-personal, wsl-ubuntu, wsl-ubuntu-infer, clawbot-on-darwin, ide-on-mobile
 init profile="ide":
   just init-{{profile}}
 
