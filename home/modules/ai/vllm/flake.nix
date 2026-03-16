@@ -55,7 +55,9 @@
             --max-num-batched-tokens 32768 \
             --tensor-parallel-size 1 \
             --pipeline-parallel-size 1 \
-            --block-size 16
+            --block-size 16 \
+            --enable-auto-tool-choice \
+            --tool-call-parser glm4
         ''}";
       };
 
