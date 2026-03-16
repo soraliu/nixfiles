@@ -4,6 +4,7 @@
   ];
   config.home.sessionVariables = {
     VOLTA_HOME = "$HOME/.volta";
+    PNPM_HOME = "$HOME/.local/share/pnpm";
   };
   config.programs.sops.decryptFiles = [{
     from = "secrets/users/${secretsUser}/.npmrc.enc";
@@ -19,5 +20,10 @@
     export PATH="$HOME/.volta/bin:$PATH"
     ${unstablePkgs.volta}/bin/volta install node
     ${unstablePkgs.volta}/bin/volta install pnpm
+  '';
+
+  # pnpm 全局目录初始化，确保 pnpm global bin 可用
+  config.home.activation.initPnpm = lib.hm.dag.entryAfter [ "initVolta" ] ''
+    mkdir -p $HOME/.local/share/pnpm
   '';
 }

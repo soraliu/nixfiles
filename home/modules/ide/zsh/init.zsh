@@ -25,6 +25,7 @@ PATH="/run/current-system/sw/bin:$PATH"                   # nixos system
 PATH="$HOME_PROFILE_DIRECTORY/bin:$PATH"                  # nix home-manager profile
 PATH="$GOPATH/bin:$PATH"                                  # golang
 PATH="$HOME/.local/bin:$PATH"                             # user local binaries
+PATH="$HOME/.local/share/pnpm:$PATH"                      # pnpm
 PATH="${VOLTA_HOME:-$HOME/.volta}/bin:$PATH"              # nodejs (volta) — highest priority
 export PATH
 

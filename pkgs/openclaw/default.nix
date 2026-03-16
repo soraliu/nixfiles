@@ -41,17 +41,16 @@ in
 
   config = lib.mkIf cfg.enable {
     home.sessionVariables.OPENCLAW_HOME = cfg.stateDir;
-    home.sessionVariables.PNPM_HOME = pnpmHome;
 
     # 通过 volta 管理的 pnpm 安装固定版本
     # 依赖 nodejs.nix 中 volta install pnpm 已完成
     # pnpm 10+ 默认阻止依赖 build scripts（供应链安全），需 approve-builds 批准
     # 否则 sharp 等原生模块不会编译，导致运行时报错
-    home.activation.installOpenclaw = lib.hm.dag.entryAfter [ "initVolta" ] ''
+    # 依赖 nodejs.nix 中 initPnpm 已完成 pnpm 目录初始化
+    home.activation.installOpenclaw = lib.hm.dag.entryAfter [ "initPnpm" ] ''
       export PATH="${voltaBin}:${pnpmHome}:${lib.getBin pkgs.git}/bin:$PATH"
       export VOLTA_HOME="${homeDir}/.volta"
       export PNPM_HOME="${pnpmHome}"
-      run ${lib.getExe' pkgs.coreutils "mkdir"} -p ${pnpmHome}
       run ${voltaBin}/pnpm add -g openclaw@${cfg.version}
       run ${voltaBin}/pnpm approve-builds -g --all
     '';
