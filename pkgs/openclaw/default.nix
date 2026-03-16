@@ -59,14 +59,14 @@ in
     home.activation.openclawDirs = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
       run --quiet ${lib.getExe' pkgs.coreutils "mkdir"} -p \
         ${cfg.stateDir} \
-        /tmp/openclaw
+        ${homeDir}/.openclaw/logs
     '';
 
     # macOS: launchd agent
-    launchd.agents."com.openclaw.gateway" = lib.mkIf isDarwin {
+    launchd.agents."ai.openclaw.gateway" = lib.mkIf isDarwin {
       enable = true;
       config = {
-        Label = "com.openclaw.gateway";
+        Label = "ai.openclaw.gateway";
         ProgramArguments = [
           "${pnpmHome}/openclaw"
           "gateway"
@@ -75,16 +75,24 @@ in
         ];
         RunAtLoad = true;
         KeepAlive = true;
+        ThrottleInterval = 1;
         WorkingDirectory = cfg.stateDir;
-        StandardOutPath = "/tmp/openclaw/openclaw-gateway.log";
-        StandardErrorPath = "/tmp/openclaw/openclaw-gateway.log";
+        StandardOutPath = "${homeDir}/.openclaw/logs/gateway.log";
+        StandardErrorPath = "${homeDir}/.openclaw/logs/gateway.err.log";
         EnvironmentVariables = {
           HOME = homeDir;
           VOLTA_HOME = "${homeDir}/.volta";
-          PATH = "${voltaBin}:${pnpmHome}:/usr/bin:/bin";
+          PATH = "${pnpmHome}:${voltaBin}:/usr/bin:/bin";
+          NODE_EXTRA_CA_CERTS = "/etc/ssl/cert.pem";
+          NODE_USE_SYSTEM_CA = "1";
           OPENCLAW_CONFIG_PATH = cfg.configPath;
           OPENCLAW_STATE_DIR = cfg.stateDir;
           OPENCLAW_IMAGE_BACKEND = "sips";
+          OPENCLAW_GATEWAY_PORT = toString cfg.gatewayPort;
+          OPENCLAW_LAUNCHD_LABEL = "ai.openclaw.gateway";
+          OPENCLAW_SERVICE_MARKER = "openclaw";
+          OPENCLAW_SERVICE_KIND = "gateway";
+          OPENCLAW_SERVICE_VERSION = cfg.version;
         };
       };
     };
@@ -100,12 +108,17 @@ in
         Environment = [
           "HOME=${homeDir}"
           "VOLTA_HOME=${homeDir}/.volta"
-          "PATH=${voltaBin}:${pnpmHome}:/usr/bin:/bin"
+          "PATH=${pnpmHome}:${voltaBin}:/usr/bin:/bin"
           "OPENCLAW_CONFIG_PATH=${cfg.configPath}"
           "OPENCLAW_STATE_DIR=${cfg.stateDir}"
+          "OPENCLAW_GATEWAY_PORT=${toString cfg.gatewayPort}"
+          "OPENCLAW_SYSTEMD_UNIT=openclaw-gateway.service"
+          "OPENCLAW_SERVICE_MARKER=openclaw"
+          "OPENCLAW_SERVICE_KIND=gateway"
+          "OPENCLAW_SERVICE_VERSION=${cfg.version}"
         ];
-        StandardOutput = "append:/tmp/openclaw/openclaw-gateway.log";
-        StandardError = "append:/tmp/openclaw/openclaw-gateway.log";
+        StandardOutput = "append:${homeDir}/.openclaw/logs/gateway.log";
+        StandardError = "append:${homeDir}/.openclaw/logs/gateway.err.log";
       };
     };
   };
