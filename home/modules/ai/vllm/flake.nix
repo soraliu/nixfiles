@@ -39,6 +39,18 @@
           export CC="${pkgs.gcc}/bin/gcc"
           export CXX="${pkgs.gcc}/bin/g++"
 
+          echo "启动 vLLM 服务..."
+          echo "模型加载中，服务就绪前请求会超时，请等待 ready 提示"
+
+          # 后台轮询健康检查
+          (
+            while ! ${pkgs.curl}/bin/curl -sf http://127.0.0.1:8000/health >/dev/null 2>&1; do
+              sleep 2
+            done
+            echo ""
+            echo "vLLM 服务已就绪 - http://0.0.0.0:8000"
+          ) &
+
           # 启动 vLLM 服务 - RTX 5090 优化配置
           exec "${GLOBAL_VLLM_ENV}/bin/python" -m vllm.entrypoints.openai.api_server \
             --model GadflyII/GLM-4.7-Flash-NVFP4 \
