@@ -67,7 +67,7 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    home.sessionVariables.OPENCLAW_HOME = cfg.stateDir;
+    home.sessionVariables.OPENCLAW_HOME = homeDir;
 
     # 通过 volta 管理的 pnpm 安装固定版本
     # 依赖 nodejs.nix 中 volta install pnpm 已完成
