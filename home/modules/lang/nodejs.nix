@@ -8,7 +8,7 @@
   };
   config.programs.sops.decryptFiles = [{
     from = "secrets/users/${secretsUser}/.npmrc.enc";
-    to = ".npmrc";
+    to = ".npmrc.dec";
   }];
 
   config.home.activation.initVoltaCompletion = lib.mkIf config.programs.zsh.enable (lib.hm.dag.entryAfter [ "linkGeneration" ] ''
@@ -25,5 +25,6 @@
   # pnpm 全局目录初始化，确保 pnpm global bin 可用
   config.home.activation.initPnpm = lib.hm.dag.entryAfter [ "initVolta" ] ''
     mkdir -p $HOME/.local/share/pnpm
+    cp $HOME/.npmrc.dec $HOME/.npmrc
   '';
 }
