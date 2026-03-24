@@ -23,8 +23,10 @@
   '';
 
   # pnpm 全局目录初始化，确保 pnpm global bin 可用
-  config.home.activation.initPnpm = lib.hm.dag.entryAfter [ "initVolta" ] ''
+  config.home.activation.initPnpm = lib.hm.dag.entryAfter [ "initVolta" "linkGeneration" ] ''
     mkdir -p $HOME/.local/share/pnpm
-    cp $HOME/.npmrc.dec $HOME/.npmrc
+    if [ -f $HOME/.npmrc.dec ]; then
+      cp $HOME/.npmrc.dec $HOME/.npmrc
+    fi
   '';
 }
