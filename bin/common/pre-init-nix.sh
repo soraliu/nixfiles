@@ -84,6 +84,15 @@ else
   echo "Info: trusted-public-keys already configured! Skip."
 fi
 
+# extra-sandbox-paths: 允许 Nix 沙箱访问 age 密钥目录，用于 sops 解密
+config_sandbox_paths="extra-sandbox-paths = /tmp/.age"
+if ! grep -q "^extra-sandbox-paths" $path_to_nix_config; then
+  echo "$config_sandbox_paths" >> $path_to_nix_config
+  echo "Info: extra-sandbox-paths configured: /tmp/.age"
+else
+  echo "Info: extra-sandbox-paths already configured! Skip."
+fi
+
 # trusted substituters
 trusted_settings="{\"extra-trusted-public-keys\":{\"nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs=\":true},\"substituters\":{\"${substituters}\":true}}"
 path_to_trusted_settings=$HOME/.local/share/nix/trusted-settings.json

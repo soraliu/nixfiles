@@ -226,7 +226,7 @@
           clawbot      = mkHome { modules = homeModules.clawbot; homeUser = "clawbot"; extraSpecialArgs = mkHomeExtraSpecialArgs { secretsUser = "clawbot"; }; };
 
           # servers
-          vpn-server   = mkHome { modules = homeModules.vpn-server; };
+          vpn-server   = mkHome { modules = homeModules.vpn-server; homeUser = "root"; };
           drive-server = mkHome { modules = homeModules.drive-server; };
 
           # utility
