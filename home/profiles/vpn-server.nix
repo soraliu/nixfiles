@@ -9,6 +9,8 @@
     ../modules/network/nginx
   ];
 
+  programs.bash.enable = true;
+
   home.packages = with pkgs; [
     iperf3
   ];
