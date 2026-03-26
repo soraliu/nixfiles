@@ -1,5 +1,28 @@
 {
   "nodes": {
+    "claude-code": {
+      "inputs": {
+        "flake-utils": [
+          "flake-utils"
+        ],
+        "nixpkgs": [
+          "nixpkgs-unstable"
+        ]
+      },
+      "locked": {
+        "lastModified": 1774488690,
+        "narHash": "sha256-r5yQpoa4AqDOkwKflMMFOviC39XzpqrG1D+1xejn77c=",
+        "owner": "sadjow",
+        "repo": "claude-code-nix",
+        "rev": "61d07ce0f48f63f098ed7d4e23018c416ed37b90",
+        "type": "github"
+      },
+      "original": {
+        "owner": "sadjow",
+        "repo": "claude-code-nix",
+        "type": "github"
+      }
+    },
     "flake-compat": {
       "flake": false,
       "locked": {
@@ -278,6 +301,7 @@
     },
     "root": {
       "inputs": {
+        "claude-code": "claude-code",
         "flake-utils": "flake-utils",
         "home-manager": "home-manager",
         "nix-darwin": "nix-darwin",
