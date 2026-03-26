@@ -18,9 +18,6 @@ pre-init-nix-cn:
 pre-init-age:
 	./bin/common/pre-init-age.sh
 [private]
-post-init-pm2:
-	./bin/common/post-init-pm2.sh
-[private]
 post-init-zsh:
 	./bin/common/post-init-zsh.sh
 [private]
@@ -72,13 +69,13 @@ switch-android:
 # -------------------- all-in-one command --------------------
 
 [private]
-init-vpn-server: pre-init-nix pre-init-age (switch-home "vpn-server") post-init-pm2
+init-vpn-server: pre-init-nix pre-init-age (switch-home "vpn-server")
 [private]
-init-drive-server: pre-init-nix-cn pre-init-age (switch-home "drive-server") post-init-pm2
+init-drive-server: pre-init-nix-cn pre-init-age (switch-home "drive-server")
 [private]
-init-ide: pre-init-nix pre-init-age (switch-home "ide") post-init-pm2 post-init-zsh
+init-ide: pre-init-nix pre-init-age (switch-home "ide") post-init-zsh
 [private]
-init-ide-cn: pre-init-nix-cn pre-init-age (switch-home "ide-cn") post-init-pm2 post-init-zsh
+init-ide-cn: pre-init-nix-cn pre-init-age (switch-home "ide-cn") post-init-zsh
 [private]
 init-wsl-nixos: pre-init-nix pre-init-age (switch-nixos "default") post-init-zsh
 [private]
@@ -86,9 +83,9 @@ init-wsl-nixos-ide: pre-init-nix pre-init-age (switch-nixos "ide") post-init-zsh
 [private]
 init-wsl-nixos-infer: pre-init-nix pre-init-age (switch-nixos "wsl-infer") post-init-zsh
 [private]
-init-wsl-ubuntu: pre-init-nix pre-init-age (switch-ubuntu "ide") post-init-pm2 post-init-zsh
+init-wsl-ubuntu: pre-init-nix pre-init-age (switch-ubuntu "ide") post-init-zsh
 [private]
-init-wsl-ubuntu-infer: pre-init-nix pre-init-age (switch-ubuntu "wsl-infer") post-init-pm2 post-init-zsh
+init-wsl-ubuntu-infer: pre-init-nix pre-init-age (switch-ubuntu "wsl-infer") post-init-zsh
 [private]
 init-ide-on-darwin-dev: pre-init-nix pre-init-age (switch-darwin "soraliu") darwin-post-install-pkgs-dev
 [private]
