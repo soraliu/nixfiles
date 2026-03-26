@@ -2,6 +2,9 @@
   description = "Home Manager configuration";
 
   nixConfig = {
+    # Allow sandbox to access age key for sops decryption
+    extra-sandbox-paths = [ "/tmp/.age" ];
+
     # override the default substituters
     # uncomment to use specific mirrors
     # substituters = [
