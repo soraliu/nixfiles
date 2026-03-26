@@ -41,6 +41,10 @@ let
       export CC="${pkgs.gcc}/bin/gcc"
       export CXX="${pkgs.gcc}/bin/g++"
 
+      # 禁用 inductor autotune，大幅减少启动时间（从 ~20min 降到 ~5min）
+      export VLLM_ENABLE_INDUCTOR_MAX_AUTOTUNE=0
+      export VLLM_ENABLE_INDUCTOR_COORDINATE_DESCENT_TUNING=0
+
       echo "启动 vLLM: ${modelCfg.name} (port ${toString modelCfg.port})"
 
       # 后台健康检查
