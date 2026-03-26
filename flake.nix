@@ -233,7 +233,7 @@
           ide-mirror   = mkHome { modules = homeModules.ide; extraSpecialArgs = mkHomeExtraSpecialArgs { useMirrorDrive = true; }; };
           ide-cn       = mkHome { modules = homeModules.ide; extraSpecialArgs = mkHomeExtraSpecialArgs { useProxy = true; }; };
           ide-mobile   = mkHome { modules = homeModules.ide; extraSpecialArgs = mkHomeExtraSpecialArgs { isMobile = true; useMirrorDrive = true; }; };
-          wsl-infer    = mkHome { modules = homeModules.wsl-infer; homeUser = "root" };
+          wsl-infer    = mkHome { modules = homeModules.wsl-infer; homeUser = "root"; };
 
           # clawbot — ide + openclaw, independent profile
           clawbot      = mkHome { modules = homeModules.clawbot; homeUser = "clawbot"; extraSpecialArgs = mkHomeExtraSpecialArgs { secretsUser = "clawbot"; }; };
