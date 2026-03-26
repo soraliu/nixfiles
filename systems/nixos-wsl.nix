@@ -18,9 +18,12 @@
 
   # Sync .wslconfig to Windows side on activation
   system.activationScripts.wslconfig.text = ''
-    WIN_PROFILE=$(cmd.exe /C "echo %USERPROFILE%" 2>/dev/null | tr -d '\r')
-    WSLCONFIG_PATH="$(wslpath "$WIN_PROFILE")/.wslconfig"
-    cat > "$WSLCONFIG_PATH" << 'EOF'
+    export PATH=$PATH:/run/wrappers/bin:/run/current-system/sw/bin:/mnt/c/Windows/System32
+    if command -v wslpath >/dev/null 2>&1 && command -v cmd.exe >/dev/null 2>&1; then
+      WIN_PROFILE=$(cmd.exe /C "echo %USERPROFILE%" 2>/dev/null | tr -d '\r')
+      if [ -n "$WIN_PROFILE" ]; then
+        WSLCONFIG_PATH="$(wslpath "$WIN_PROFILE")/.wslconfig"
+        cat > "$WSLCONFIG_PATH" << 'EOF'
 [wsl2]
 networkingMode=mirrored
 firewall=false
@@ -28,6 +31,10 @@ firewall=false
 [experimental]
 hostAddressLoopback=true
 EOF
+      fi
+    else
+      echo "wslpath or cmd.exe not found, skipping .wslconfig sync"
+    fi
   '';
 
   # docker support
