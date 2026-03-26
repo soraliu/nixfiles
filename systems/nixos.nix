@@ -1,4 +1,4 @@
-{ config, lib, pkgs, ... }: 
+{ config, lib, pkgs, homeUser, ... }: 
 let
   versions = import ../versions.nix;
 in
@@ -7,7 +7,10 @@ in
     ../pkgs/sops
   ];
 
-  nix.settings.experimental-features = [ "nix-command" "flakes" ];
+  nix.settings = {
+    experimental-features = [ "nix-command" "flakes" ];
+    trusted-users = [ homeUser "root" "@wheel" ];
+  };
 
 
   environment.shells = [ pkgs.zsh ];
