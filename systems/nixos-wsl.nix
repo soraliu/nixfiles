@@ -5,7 +5,7 @@
 # NixOS-WSL specific options are documented on the NixOS-WSL repository:
 # https://github.com/nix-community/NixOS-WSL
 
-{ config, lib, pkgs, nixos-wsl, ... }:
+{ config, lib, pkgs, nixos-wsl, homeUser, ... }:
 
 {
   imports = [
@@ -14,7 +14,7 @@
 
   wsl.enable = true;
   wsl.wslConf.boot.systemd = true;
-  wsl.wslConf.user.default = lib.mkForce "soraliu";
+  wsl.wslConf.user.default = lib.mkForce homeUser;
 
   # Sync .wslconfig to Windows side on activation
   system.activationScripts.wslconfig.text = ''
@@ -40,16 +40,16 @@ EOF
   ];
 
 
-  fileSystems."/mnt/nas" = {
-    device = "//192.168.31.3/personal_folder";
-    fsType = "cifs";
-    options = [ "credentials=/etc/.smbcredentials,file_mode=0777,dir_mode=0777" ];
-  };
+  # fileSystems."/mnt/nas" = {
+  #   device = "//192.168.31.3/personal_folder";
+  #   fsType = "cifs";
+  #   options = [ "credentials=/etc/.smbcredentials,file_mode=0777,dir_mode=0777" ];
+  # };
 
-  programs.sops = {
-    decryptFiles = [{
-      from = "secrets/etc/.smbcredentials.enc";
-      to = ".smbcredentials";
-    }];
-  };
+  # programs.sops = {
+  #   decryptFiles = [{
+  #     from = "secrets/etc/.smbcredentials.enc";
+  #     to = ".smbcredentials";
+  #   }];
+  # };
 }
