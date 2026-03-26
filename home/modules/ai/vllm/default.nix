@@ -42,7 +42,7 @@ in {
 
       if [ ! -d "$VLLM_ENV" ]; then
         echo "Creating vLLM environment at $VLLM_ENV..."
-        ${pkgs.uv}/bin/uv venv "$VLLM_ENV"
+        ${pkgs.uv}/bin/uv venv --python ${pkgs.python312}/bin/python "$VLLM_ENV"
         echo "Installing vLLM..."
         cd "$VLLM_ENV" && ${pkgs.uv}/bin/uv pip install vllm
       fi
