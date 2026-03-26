@@ -1,6 +1,7 @@
 { unstablePkgs, config, lib, secretsUser, ... }: {
   config.home.packages = with unstablePkgs; [
     volta # node version & binaries manager
+    bun
   ];
   config.home.sessionVariables = {
     VOLTA_HOME = "$HOME/.volta";
@@ -8,7 +9,7 @@
   };
   config.programs.sops.decryptFiles = [{
     from = "secrets/users/${secretsUser}/.npmrc.enc";
-    to = ".npmrc.dec";
+    to = ".npmrc";
   }];
 
   config.home.activation.initVoltaCompletion = lib.mkIf config.programs.zsh.enable (lib.hm.dag.entryAfter [ "linkGeneration" ] ''
@@ -25,8 +26,5 @@
   # pnpm 全局目录初始化，确保 pnpm global bin 可用
   config.home.activation.initPnpm = lib.hm.dag.entryAfter [ "initVolta" "linkGeneration" ] ''
     mkdir -p $HOME/.local/share/pnpm
-    if [ -f $HOME/.npmrc.dec ]; then
-      cp $HOME/.npmrc.dec $HOME/.npmrc
-    fi
   '';
 }
