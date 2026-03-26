@@ -138,6 +138,7 @@
         clawbot = [ ./home/profiles/clawbot.nix nix-index-database.hmModules.nix-index ];
         wsl-infer = [ ./home/profiles/wsl-infer.nix nix-index-database.hmModules.nix-index ];
         vpn-server = [ ./home/profiles/vpn-server.nix ];
+        nixos-default = [ ./home/modules/home-manager/default.nix nix-index-database.hmModules.nix-index ];
         drive-server = [ ./home/profiles/drive-server.nix ];
         eject = [ ./home/profiles/eject.nix ];
       };
@@ -269,6 +270,7 @@
         nixosConfigurations = {
           default = mkNixOS {
             modules = [ nixos-wsl.nixosModules.default ./systems/nixos-wsl.nix ];
+            homeImports = homeModules.nixos-default;
             homeUser = "soraliu";
           };
           # NixOS-WSL: just switch-nixos ide
