@@ -53,6 +53,14 @@ in
 
       $pm2_bin start ${pathToConfig}
       $pm2_bin update
+
+      # Setup PM2 to start on boot
+      if [ "$(uname)" == "Darwin" ]; then
+        mkdir -p $HOME/Library/LaunchAgents
+      fi
+
+      sudo $pm2_bin startup || true
+      $pm2_bin save || true
     '';
   };
 }

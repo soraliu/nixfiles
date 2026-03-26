@@ -80,9 +80,9 @@ init-ide: pre-init-nix pre-init-age (switch-home "ide") post-init-pm2 post-init-
 [private]
 init-ide-cn: pre-init-nix-cn pre-init-age (switch-home "ide-cn") post-init-pm2 post-init-zsh
 [private]
-init-wsl-nixos: pre-init-age (switch-ubuntu "ide") post-init-zsh
+init-wsl-nixos: pre-init-nix pre-init-age (switch-ubuntu "ide") post-init-zsh
 [private]
-init-wsl-nixos-infer: pre-init-age (switch-ubuntu "wsl-infer") post-init-zsh
+init-wsl-nixos-infer: pre-init-nix pre-init-age (switch-ubuntu "wsl-infer") post-init-zsh
 [private]
 init-wsl-ubuntu: pre-init-nix pre-init-age (switch-ubuntu "ide") post-init-pm2 post-init-zsh
 [private]

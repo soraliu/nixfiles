@@ -8,11 +8,5 @@ in
     ./ide.nix
   ] ++ (lib.optionals isLinux [
     ../modules/ai/vllm
-    ../modules/ai/sglang
   ]);
-
-  # WSL inference environment identifier
-  home.sessionVariables = {
-    WSL_INFER_ENV = "true";
-  };
 }
