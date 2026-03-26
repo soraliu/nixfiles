@@ -15,6 +15,10 @@ in
 
   environment.shells = [ pkgs.zsh ];
   users.defaultUserShell = pkgs.zsh;
+
+  # homeUser 主组设为 wheel，获得 sudo 权限 (NixOS 25.11 要求显式设置 group)
+  users.users.${homeUser}.group = "wheel";
+
   users.users.nixos.ignoreShellProgramCheck = true;
   users.users.root.ignoreShellProgramCheck = true;
 
