@@ -52,7 +52,7 @@ switch-home profile="ide":
 # -------------------- NixOS-WSL --------------------
 # profile: ide, wsl-infer
 switch-nixos profile="ide":
-  nixos-rebuild switch --show-trace --flake .#{{profile}}
+  sudo nixos-rebuild switch --show-trace --flake .#{{profile}}
 
 # -------------------- Ubuntu WSL2 --------------------
 # profile: ide, wsl-infer  (alias for switch-home)
