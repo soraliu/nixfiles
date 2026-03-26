@@ -106,7 +106,7 @@
           gitEmail = "soraliu.dev@gmail.com";
         };
         clawbot = {
-          gitName = "tigerwang000";
+          gitName = "Tiger Wang";
           gitEmail = "tigerwang.pro@gmail.com";
         };
       };
