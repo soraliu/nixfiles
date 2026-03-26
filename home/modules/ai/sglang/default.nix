@@ -1,63 +1,76 @@
-{ pkgs, config, ... }:
+{ pkgs, lib, config, ... }:
 
 let
-  # Global fixed path
   GLOBAL_SGLANG_ENV = "${config.home.homeDirectory}/.cache/nix-sglang-env";
   sglangModulePath = "${config.home.homeDirectory}/.cache/sglang-flake";
 
-  # CUDA runtime dependencies
-  runtimeLibs = with pkgs; [
-    # WSL2 drivers (highest priority)
-    # /usr/lib/wsl/lib manually added to LD_LIBRARY_PATH
+  isLinux = pkgs.stdenv.isLinux;
 
-    # Nix CUDA Toolkit (version locked)
+  # CUDA 运行时依赖
+  # TODO: 抽取到 ai/cuda-lib.nix 与 vllm 共享
+  runtimeLibs = with pkgs; [
     cudaPackages_12.cuda_cudart
     cudaPackages_12.libcublas
-
-    # System libraries
     gcc-unwrapped.lib
     stdenv.cc.cc.lib
   ];
 
-  # Build LD_LIBRARY_PATH
-  libPath = pkgs.lib.makeLibraryPath runtimeLibs;
+  libPath = lib.makeLibraryPath runtimeLibs;
 
-  # SGLang wrapper script, automatically sets LD_LIBRARY_PATH
+  # SGLang wrapper（通用 CLI 入口）
   sglangWrapper = pkgs.writeShellScriptBin "sglang" ''
     export LD_LIBRARY_PATH="/usr/lib/wsl/lib:${libPath}:$LD_LIBRARY_PATH"
     exec "${GLOBAL_SGLANG_ENV}/bin/python" -m sglang.launch_server "$@"
   '';
 
+  # SGLang 启动脚本（直接执行，不依赖 nix run）
+  sglangServeScript = pkgs.writeShellScript "sglang-serve-glm4-flash" ''
+    export CUDA_VISIBLE_DEVICES=0
+    export HF_HOME="$HOME/.cache/huggingface"
+    export HF_ENDPOINT="https://hf-mirror.com"
+    export CUDA_CACHE_PATH="$HOME/.cache/cuda"
+    export LD_LIBRARY_PATH="/usr/lib/wsl/lib:${libPath}:$LD_LIBRARY_PATH"
+    export CC="${pkgs.gcc}/bin/gcc"
+    export CXX="${pkgs.gcc}/bin/g++"
+
+    exec "${GLOBAL_SGLANG_ENV}/bin/python" -m sglang.launch_server \
+      --model-path GadflyII/GLM-4.7-Flash-NVFP4 \
+      --host 127.0.0.1 \
+      --port 8020 \
+      --tp 1 \
+      --mem-fraction-static 0.90 \
+      --max-running-requests 256 \
+      --trust-remote-code \
+      --log-level warning
+  '';
+
 in {
-  config = {
-    # Create symbolic link: link sglang module to cache directory
+  config = lib.mkIf isLinux {
+    # 顶层 symlink，用于 nix run 调试入口
     home.file."${sglangModulePath}".source = ./.;
 
-    home.packages = with pkgs; [
-      # SGLang installed via uv, add system dependencies here
-      gcc-unwrapped.lib
-      stdenv.cc.cc.lib
-      cudaPackages_12.cuda_cudart
-      cudaPackages_12.libcublas
-
-      # SGLang wrapper script
+    home.packages = runtimeLibs ++ [
       sglangWrapper
     ];
 
-    programs.pm2.services = [{
-      name = "sglang-glm4-flash";
-      interpreter = "${pkgs.bash}/bin/bash";
-      script = "${pkgs.writeShellScript "sglang-pm2-launcher" ''
-        cd "${sglangModulePath}"
-        exec ${pkgs.nix}/bin/nix run --impure .#sglang-serve
-      ''}";
-      cwd = config.home.homeDirectory;
-      exp_backoff_restart_delay = 5000;
-      max_restarts = 3;
-      min_uptime = 10000;
-    }];
+    # systemd user service（手动启动，不 autostart）
+    systemd.user.services.sglang-glm4-flash = {
+      Unit = {
+        Description = "SGLang Model Server - GLM-4.7-Flash";
+        After = [ "network.target" ];
+      };
+      Service = {
+        Type = "simple";
+        ExecStart = "${sglangServeScript}";
+        Restart = "on-failure";
+        RestartSec = 5;
+        TimeoutStartSec = 300;
+      };
+      Install = {
+        WantedBy = [];
+      };
+    };
 
-    # Initialization script (using global path)
     home.activation.initSglang = config.lib.dag.entryAfter [ "writeBoundary" ] ''
       SGLANG_ENV="${GLOBAL_SGLANG_ENV}"
 
@@ -68,7 +81,6 @@ in {
         cd "$SGLANG_ENV" && ${pkgs.uv}/bin/uv pip install sglang
       fi
 
-      # Create CUDA cache directory
       mkdir -p "${config.home.homeDirectory}/.cache/cuda"
     '';
   };

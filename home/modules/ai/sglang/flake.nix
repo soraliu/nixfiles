@@ -43,7 +43,7 @@
           exec "${GLOBAL_SGLANG_ENV}/bin/python" -m sglang.launch_server \
             --model-path GadflyII/GLM-4.7-Flash-NVFP4 \
             --host 127.0.0.1 \
-            --port 8001 \
+            --port 8020 \
             --tp 1 \
             --mem-fraction-static 0.90 \
             --max-running-requests 256 \

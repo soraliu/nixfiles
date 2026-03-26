@@ -1,60 +1,44 @@
 { pkgs, lib, config, ... }:
 
 let
-  # Global fixed path
-  GLOBAL_VLLM_ENV = "${config.home.homeDirectory}/.cache/nix-vllm-env";
-  vllmModulePath = "${config.home.homeDirectory}/.cache/vllm-flake";
-
   isLinux = pkgs.stdenv.isLinux;
 
-  # CUDA runtime dependencies
-  runtimeLibs = with pkgs; lib.optionals isLinux [
-    # WSL2 drivers (highest priority)
-    # /usr/lib/wsl/lib manually added to LD_LIBRARY_PATH
+  vllmLib = import ./lib.nix { inherit pkgs lib config; };
 
-    # Nix CUDA Toolkit (version locked)
-    cudaPackages_12.cuda_cudart
-    cudaPackages_12.libcublas
+  # 顶层 symlink，用于 nix run 调试入口
+  vllmModulePath = "${config.home.homeDirectory}/.cache/vllm-flake";
 
-    # System libraries
-    gcc-unwrapped.lib
-    stdenv.cc.cc.lib
+  # 通用 vllm CLI wrapper（不绑定特定模型）
+  vllmWrapper = pkgs.writeShellScriptBin "vllm" ''
+    export LD_LIBRARY_PATH="/usr/lib/wsl/lib:${vllmLib.libPath}:$LD_LIBRARY_PATH"
+    exec "${vllmLib.GLOBAL_VLLM_ENV}/bin/vllm" "$@"
+  '';
+
+  # 导入所有模型配置
+  models = [
+    { cfg = import ./models/glm-4.7-flash/config.nix; }
+    { cfg = import ./models/qwen3.5-chat/config.nix; }
+    { cfg = import ./models/qwen3-embedding/config.nix; }
+    # 新增模型：在此添加一行
   ];
 
-  # Build LD_LIBRARY_PATH
-  libPath = pkgs.lib.makeLibraryPath runtimeLibs;
-
-  # vLLM wrapper script, automatically sets LD_LIBRARY_PATH
-  vllmWrapper = pkgs.writeShellScriptBin "vllm" ''
-    export LD_LIBRARY_PATH="/usr/lib/wsl/lib:${libPath}:$LD_LIBRARY_PATH"
-    exec "${GLOBAL_VLLM_ENV}/bin/vllm" "$@"
-  '';
+  aggregated = vllmLib.mkModels models;
 
 in {
   config = lib.mkIf isLinux {
-    # Create symbolic link: link vllm module to cache directory
+    # 顶层 symlink，用于 cd ~/.cache/vllm-flake && nix run .#vllm-<name> 调试
     home.file."${vllmModulePath}".source = ./.;
 
-    home.packages = runtimeLibs ++ [
+    home.packages = aggregated.packages ++ aggregated.wrappers ++ [
       vllmWrapper
     ];
 
-    programs.pm2.services = [{
-      name = "vllm-glm4-flash";
-      interpreter = "${pkgs.bash}/bin/bash";
-      script = "${pkgs.writeShellScript "vllm-pm2-launcher" ''
-        cd "${vllmModulePath}"
-        exec ${pkgs.nix}/bin/nix run --impure .#vllm-serve
-      ''}";
-      cwd = config.home.homeDirectory;
-      exp_backoff_restart_delay = 5000;
-      max_restarts = 3;
-      min_uptime = 10000;
-    }];
+    # systemd user services — autostart 由各模型 config.nix 中的 autostart 字段控制
+    systemd.user.services = aggregated.systemdServices;
 
-    # 初始化脚本（使用全局路径）
+    # 初始化共享 vLLM Python 环境
     home.activation.initVllm = config.lib.dag.entryAfter [ "writeBoundary" ] ''
-      VLLM_ENV="${GLOBAL_VLLM_ENV}"
+      VLLM_ENV="${vllmLib.GLOBAL_VLLM_ENV}"
 
       if [ ! -d "$VLLM_ENV" ]; then
         echo "Creating vLLM environment at $VLLM_ENV..."
@@ -63,7 +47,6 @@ in {
         cd "$VLLM_ENV" && ${pkgs.uv}/bin/uv pip install vllm
       fi
 
-      # 创建 CUDA 缓存目录
       mkdir -p "${config.home.homeDirectory}/.cache/cuda"
     '';
   };
