@@ -16,6 +16,9 @@
   wsl.wslConf.boot.systemd = true;
   wsl.wslConf.user.default = lib.mkForce homeUser;
 
+  # NixOS-WSL main 分支可能禁用了默认 sudo wrapper，显式启用以生成 /run/wrappers/bin/sudo（带 setuid）
+  security.sudo.enable = true;
+
   # Sync .wslconfig to Windows side on activation
   system.activationScripts.wslconfig.text = ''
     cmd_exe="${config.wsl.wslConf.automount.root}/c/Windows/System32/cmd.exe"
