@@ -80,7 +80,9 @@ init-ide: pre-init-nix pre-init-age (switch-home "ide") post-init-pm2 post-init-
 [private]
 init-ide-cn: pre-init-nix-cn pre-init-age (switch-home "ide-cn") post-init-pm2 post-init-zsh
 [private]
-init-wsl-nixos: pre-init-nix pre-init-age (switch-nixos "ide") post-init-zsh
+init-wsl-nixos: pre-init-nix pre-init-age (switch-nixos "default") post-init-zsh
+[private]
+init-wsl-nixos-ide: pre-init-nix pre-init-age (switch-nixos "ide") post-init-zsh
 [private]
 init-wsl-nixos-infer: pre-init-nix pre-init-age (switch-nixos "wsl-infer") post-init-zsh
 [private]

@@ -267,6 +267,10 @@
         };
 
         nixosConfigurations = {
+          default = mkNixOS {
+            modules = [ nixos-wsl.nixosModules.default ./systems/nixos-wsl.nix ];
+            homeUser = "soraliu";
+          };
           # NixOS-WSL: just switch-nixos ide
           ide = mkNixOS {
             modules = [ nixos-wsl.nixosModules.default ./systems/nixos-wsl.nix ];
