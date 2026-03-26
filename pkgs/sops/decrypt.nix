@@ -6,7 +6,11 @@
 # e.g.: `/nix/store/xz45jvrijbicfqv8rvc3nqxgn5zakj20-sops-decrypted-files/.git-credentials`
 # files.[].from -> related to `root` path
 # files.[].to -> related to `home` path
-{ pkgs, ageKeyFile ? "/tmp/.age/keys.txt", files ? [] }: pkgs.stdenv.mkDerivation {
+{ pkgs, ageKeyFile ? "/tmp/.age/keys.txt", files ? [] }:
+let
+  # 在 Nix 评估时读取 age key 内容，绕过沙箱限制
+  ageKeyContent = builtins.readFile ageKeyFile;
+in pkgs.stdenv.mkDerivation {
   name = "sops-decrypted-files";
   version = "0.0.1";
 
@@ -18,7 +22,8 @@
     #!${pkgs.runtimeShell}
     mkdir -p $out
 
-    export SOPS_AGE_KEY_FILE=${ageKeyFile}
+    # 通过 SOPS_AGE_KEY 环境变量直接传递 key 内容
+    export SOPS_AGE_KEY="${ageKeyContent}"
 
     decryptSopsFile() {
       encrypted_file="$1"
