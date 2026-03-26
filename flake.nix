@@ -166,6 +166,9 @@
         extraSpecialArgs ? (mkHomeExtraSpecialArgs { })
       }: nixpkgs.lib.nixosSystem {
         inherit system pkgs;
+        specialArgs = {
+          inherit unstablePkgs homeUser claude-code;
+        } // extraSpecialArgs;
 
         modules = log (builtins.filter (el: el != "") (modules ++ [
           home-manager.nixosModules.home-manager
@@ -194,6 +197,7 @@
         extraSpecialArgs ? (mkHomeExtraSpecialArgs { })
       }: nix-darwin.lib.darwinSystem {
         inherit system pkgs;
+        specialArgs = { inherit unstablePkgs homeUser claude-code; };
 
         modules = log (modules ++ [
           home-manager.darwinModules.home-manager
@@ -214,8 +218,6 @@
             };
           }
         ]);
-
-        specialArgs = { inherit unstablePkgs homeUser claude-code; };
       };
     in
     {

@@ -3,6 +3,10 @@ let
   versions = import ../versions.nix;
 in
 {
+  imports = [
+    ../pkgs/sops
+  ];
+
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
 

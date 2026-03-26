@@ -10,12 +10,11 @@
 {
   imports = [
     ./nixos.nix
-    ../pkgs/sops/default-os.nix
   ];
 
   wsl.enable = true;
   wsl.wslConf.boot.systemd = true;
-  wsl.wslConf.user.default = "soraliu";
+  wsl.wslConf.user.default = lib.mkForce "soraliu";
 
   # Sync .wslconfig to Windows side on activation
   system.activationScripts.wslconfig.text = ''
@@ -41,9 +40,8 @@ EOF
   ];
 
 
-  # //192.168.31.133/personal_folder /mnt/nas cifs username=soraliu,password=Q9kEtg1h1@HGjo,iocharset=utf8,vers=3.0,uid=1000,gid=1000,dir_mode=0777,file_mode=0777,sec=ntlmssp 0 0
   fileSystems."/mnt/nas" = {
-    device = "//192.168.31.133/personal_folder";
+    device = "//192.168.31.3/personal_folder";
     fsType = "cifs";
     options = [ "credentials=/etc/.smbcredentials,file_mode=0777,dir_mode=0777" ];
   };

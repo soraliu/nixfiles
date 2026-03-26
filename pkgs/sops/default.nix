@@ -1,4 +1,4 @@
-{ pkgs, lib, config, useSecret ? false, ... }:
+{ pkgs, lib, config, options, useSecret ? true, ... }:
 let
   cfg = config.programs.sops;
   decryptFiles = cfg.decryptFiles;
@@ -6,6 +6,8 @@ let
     inherit pkgs;
     files = decryptFiles;
   };
+  
+  isHM = options ? home;
 in
 {
   options.programs.sops = {
@@ -19,18 +21,23 @@ in
       type = lib.types.listOf lib.types.attrs;
       default = [ ];
       example = [{ from = "secrets/.git-credentials.enc"; to = ".git-credentials"; }];
-      description = lib.mdDoc "The files that need to be decrypt. `to` is related to $HOME";
+      description = lib.mdDoc "The files that need to be decrypt. `to` is related to $HOME or /etc depending on environment";
     };
   };
 
-  config.home = with lib; mkIf (cfg.enable && (length decryptFiles > 0)) {
-    packages = with pkgs; [
-      age
-      sops
-    ];
-    sessionVariables = {
-      SOPS_AGE_KEY_FILE = "/tmp/.age/keys.txt";
-    };
-    file = foldl' (acc: elem: acc // { "${elem.to}".source = "${decryptedPath}/${elem.to}"; }) { } decryptFiles;
-  };
+  config = lib.mkIf (cfg.enable && (builtins.length decryptFiles > 0)) (
+    if isHM then {
+      home.packages = with pkgs; [ age sops ];
+      home.sessionVariables = {
+        SOPS_AGE_KEY_FILE = "/tmp/.age/keys.txt";
+      };
+      home.file = lib.foldl' (acc: elem: acc // { "${elem.to}".source = "${decryptedPath}/${elem.to}"; }) { } decryptFiles;
+    } else {
+      environment.systemPackages = with pkgs; [ age sops ];
+      environment.variables = {
+        SOPS_AGE_KEY_FILE = "/tmp/.age/keys.txt";
+      };
+      environment.etc = lib.foldl' (acc: elem: acc // { "${elem.to}".source = "${decryptedPath}/${elem.to}"; }) { } decryptFiles;
+    }
+  );
 }
