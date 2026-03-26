@@ -269,7 +269,7 @@
 
         nixosConfigurations = {
           default = mkNixOS {
-            modules = [ nixos-wsl.nixosModules.default ./systems/nixos-wsl.nix ];
+            modules = [ nixos-wsl.nixosModules.default ./systems/nixos.nix ];
             homeImports = homeModules.nixos-default;
             homeUser = "soraliu";
           };
