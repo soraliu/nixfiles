@@ -3,8 +3,9 @@
   name = "vllm-glm4-flash";
   model = "GadflyII/GLM-4.7-Flash-NVFP4";
   port = 8000;
+  socat-port = 18000;
   autostart = false;
-  gpu-memory-utilization = 0.45;
+  gpu-memory-utilization = 0.85;
   max-model-len = 32768;
   max-num-seqs = 256;
   extraArgs = [

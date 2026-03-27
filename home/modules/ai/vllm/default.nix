@@ -29,7 +29,7 @@ in {
     # 顶层 symlink，用于 cd ~/.cache/vllm-flake && nix run .#vllm-<name> 调试
     home.file."${vllmModulePath}".source = ./.;
 
-    home.packages = aggregated.packages ++ aggregated.wrappers ++ [
+    home.packages = aggregated.packages ++ aggregated.wrappers ++ aggregated.serveScripts ++ aggregated.socatScripts ++ [
       vllmWrapper
     ];
 
