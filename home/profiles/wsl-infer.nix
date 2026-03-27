@@ -7,6 +7,7 @@ in
   imports = [
     ./ide.nix
   ] ++ (lib.optionals isLinux [
+    ../modules/lang/gcc.nix
     ../modules/ai/vllm
   ]);
 }
