@@ -37,7 +37,7 @@
       defaultArgs = [
         "--host 0.0.0.0"
         "--trust-remote-code"
-        "--disable-log-requests"
+        "--no-enable-log-requests"
         "--kv-cache-dtype auto"
         "--tensor-parallel-size 1"
         "--pipeline-parallel-size 1"

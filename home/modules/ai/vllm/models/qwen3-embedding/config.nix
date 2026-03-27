@@ -8,6 +8,6 @@
   max-model-len = 8192;
   max-num-seqs = 128;
   extraArgs = [
-    "--task embedding"
+    "--runner pooling"
   ];
 }

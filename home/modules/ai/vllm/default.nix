@@ -39,12 +39,25 @@ in {
     # 初始化共享 vLLM Python 环境
     home.activation.initVllm = config.lib.dag.entryAfter [ "writeBoundary" ] ''
       VLLM_ENV="${vllmLib.GLOBAL_VLLM_ENV}"
+      PYTHON="$VLLM_ENV/bin/python"
+      EXPECTED_PYTHON_VERSION="3.12"
 
-      if [ ! -d "$VLLM_ENV" ]; then
+      if [ -x "$PYTHON" ]; then
+        CURRENT_PYTHON_VERSION="$($PYTHON -c 'import sys; print(f"{sys.version_info.major}.{sys.version_info.minor}")' 2>/dev/null || true)"
+        if [ "$CURRENT_PYTHON_VERSION" != "$EXPECTED_PYTHON_VERSION" ]; then
+          echo "Recreating vLLM environment at $VLLM_ENV with Python ${pkgs.python312.version}..."
+          rm -rf "$VLLM_ENV"
+        fi
+      fi
+
+      if [ ! -x "$PYTHON" ]; then
         echo "Creating vLLM environment at $VLLM_ENV..."
         ${pkgs.uv}/bin/uv venv --python ${pkgs.python312}/bin/python "$VLLM_ENV"
+      fi
+
+      if ! "$PYTHON" -c "import vllm" >/dev/null 2>&1; then
         echo "Installing vLLM..."
-        cd "$VLLM_ENV" && ${pkgs.uv}/bin/uv pip install vllm
+        ${pkgs.uv}/bin/uv pip install --python "$PYTHON" --upgrade vllm
       fi
 
       mkdir -p "${config.home.homeDirectory}/.cache/cuda"
