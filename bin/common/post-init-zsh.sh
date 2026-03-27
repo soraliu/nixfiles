@@ -4,10 +4,22 @@
 
 set -e
 
-path_to_zsh="$(readlink -f $HOME_PROFILE_DIRECTORY/bin/zsh 2>/dev/null)"
+path_to_zsh=""
+for candidate in \
+  "$HOME_PROFILE_DIRECTORY/bin/zsh" \
+  "$HOME/.nix-profile/bin/zsh" \
+  "/nix/var/nix/profiles/default/bin/zsh" \
+  "/run/current-system/sw/bin/zsh" \
+  "$(command -v zsh 2>/dev/null)"
+do
+  if [ -n "$candidate" ] && [ -x "$candidate" ]; then
+    path_to_zsh="$(readlink -f "$candidate" 2>/dev/null || printf '%s' "$candidate")"
+    break
+  fi
+done
 path_to_config=/etc/shells
 
-if [ ! -f "$path_to_zsh" ]; then
+if [ -z "$path_to_zsh" ] || [ ! -f "$path_to_zsh" ]; then
   echo "zsh has not been installed. Skip!"
 else
   if [ ! -f "$path_to_config" ] || ! grep -q "$path_to_zsh" $path_to_config; then
