@@ -5,12 +5,13 @@
   port = 8001;
   socat-port = 18001;
   autostart = true;
-  # RTX 5090 32GB，embedding + chat 双模型运行，适度留显存
-  gpu-memory-utilization = 0.50;
+  # RTX 5090 32GB: 60% 给 chat + 20% 给 embedding，保留安全余量
+  gpu-memory-utilization = 0.60;
   max-model-len = 32768;
   max-num-seqs = 256;
   extraArgs = [
     "--enable-prefix-caching"
     "--enable-chunked-prefill"
+    "--disable-log-requests"
   ];
 }

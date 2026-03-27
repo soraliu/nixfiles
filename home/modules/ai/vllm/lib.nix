@@ -22,13 +22,15 @@ let
   defaultArgs = [
     "--host 0.0.0.0"
     "--trust-remote-code"
-    "--no-enable-log-requests"
     "--kv-cache-dtype auto"
     "--tensor-parallel-size 1"
     "--pipeline-parallel-size 1"
     "--block-size 16"
     # 禁用前端多进程，规避 WSL 兼容性异常
     "--disable-frontend-multiprocessing"
+    # Blackwell (SM_120) 稳定性优化
+    "--enforce-eager"
+    "--num-revision 1"
   ];
 
   # 从 config.nix 生成完整的 vLLM 启动脚本
