@@ -4,9 +4,11 @@
   model = "GadflyII/GLM-4.7-Flash-NVFP4";
   port = 8000;
   socat-port = 18000;
-  autostart = false;
-  gpu-memory-utilization = 0.85;
+  autostart = true;
+  gpu-memory-utilization = 0.75;
+  # 最大上下文长度
   max-model-len = 32768;
+  # 最大并发
   max-num-seqs = 256;
   extraArgs = [
     "--enable-auto-tool-choice"

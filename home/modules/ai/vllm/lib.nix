@@ -22,9 +22,12 @@ let
   defaultArgs = [
     "--host 0.0.0.0"
     "--trust-remote-code"
-    "--kv-cache-dtype auto"
+    # 可考虑 auto, 但是 fp8 性能更好
+    "--kv-cache-dtype fp8"
+    # 单卡默认设置1
     "--tensor-parallel-size 1"
     "--pipeline-parallel-size 1"
+    # 每一个物理块中可以存放多少个 Token 的 KV 数据
     "--block-size 16"
     # 禁用前端多进程，规避 WSL 兼容性异常
     "--disable-frontend-multiprocessing"

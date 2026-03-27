@@ -16,9 +16,9 @@ let
 
   # 导入所有模型配置
   models = [
-    # { cfg = import ./models/glm-4.7-flash/config.nix; }
-    { cfg = import ./models/qwen3.5-chat/config.nix; }
-    { cfg = import ./models/qwen3-embedding/config.nix; }
+    { cfg = import ./models/glm-4.7-flash/config.nix; }
+    # { cfg = import ./models/qwen3.5-chat/config.nix; }
+    # { cfg = import ./models/qwen3-embedding-4b/config.nix; }
     # 新增模型：在此添加一行
   ];
 

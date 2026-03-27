@@ -80,8 +80,8 @@ set wildmenu wildmode=full                                  " set display buffer
 " Copy current file path to clipboard
 set clipboard=unnamedplus                                   " system clipboard
 
-" WSL: use win32yank.exe for clipboard
-if executable('win32yank.exe')
+" WSL: use win32yank.exe for clipboard (check /mnt/c first for Git Bash/WSL2 path)
+if executable('win32yank.exe') || executable('/mnt/c/Windows/System32/win32yank.exe')
   let g:clipboard = {
     \   'name': 'win32yank',
     \   'copy': {
@@ -96,10 +96,26 @@ if executable('win32yank.exe')
     \ }
   nmap <Leader>c :call system("win32yank.exe -i --crlf", expand("%:p"))<CR>
   nmap <Leader>cd :call system("win32yank.exe -i --crlf", expand("%:p:h"))<CR>
-" Linux: use xclip
-elseif executable('xclip')
+" Linux with X11: use xclip (skip if Wayland is detected and wl-copy is unavailable)
+elseif executable('xclip') && empty($WAYLAND_DISPLAY)
   nmap <Leader>c :call system("xclip -i -selection c", expand("%:p"))<CR>
   nmap <Leader>cd :call system("xclip -i -selection c", expand("%:p:h"))<CR>
+" Linux with Wayland: use wl-clipboard (graceful fallback if compositor doesn't support primary selection)
+elseif executable('wl-copy')
+  let g:clipboard = {
+    \   'name': 'wl-clipboard',
+    \   'copy': {
+    \      '+': 'wl-copy',
+    \      '*': 'wl-copy --primary',
+    \    },
+    \   'paste': {
+    \      '+': 'wl-paste',
+    \      '*': 'wl-paste --primary',
+    \   },
+    \   'cache_enabled': 0,
+    \ }
+  nmap <Leader>c :call system("wl-copy", expand("%:p"))<CR>
+  nmap <Leader>cd :call system("wl-copy", expand("%:p:h"))<CR>
 " macOS: use pbcopy
 else
   set clipboard=unnamed
