@@ -138,4 +138,4 @@ update-unstable-pkg:
 
 # -------------------- ai --------------------
 vllm-serve:
-    cd home/modules/ai/vllm && nix run .#vllm-serve
+    cd home/modules/ai/vllm/models && nix run .#vllm-glm4-flash

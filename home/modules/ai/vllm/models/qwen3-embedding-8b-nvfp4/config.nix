@@ -5,11 +5,10 @@
   port = 8011;
   socat-port = 18011;
   autostart = true;
-  gpu-memory-utilization = 0.20;
+  gpu-memory-utilization = 0.3;
   max-model-len = 8192;
-  max-num-seqs = 128;
+  max-num-seqs = 64;
   extraArgs = [
-    "--task embed"
-    "--quantization compressed-tensors"
+    "--runner pooling"
   ];
 }

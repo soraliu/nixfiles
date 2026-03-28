@@ -85,8 +85,8 @@ if executable('win32yank.exe') || executable('/mnt/c/Windows/System32/win32yank.
   let g:clipboard = {
     \   'name': 'win32yank',
     \   'copy': {
-    \      '+': 'win32yank.exe -i --crlf',
-    \      '*': 'win32yank.exe -i --crlf',
+    \      '+': 'win32yank.exe -i',
+    \      '*': 'win32yank.exe -i',
     \    },
     \   'paste': {
     \      '+': 'win32yank.exe -o --lf',

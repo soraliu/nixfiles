@@ -5,14 +5,18 @@
   port = 8000;
   socat-port = 18000;
   autostart = true;
-  gpu-memory-utilization = 0.75;
+  gpu-memory-utilization = 0.8;
   # 最大上下文长度
   max-model-len = 32768;
   # 最大并发
-  max-num-seqs = 256;
+  max-num-seqs = 12;
   extraArgs = [
     "--enable-auto-tool-choice"
     "--tool-call-parser glm47"
-    # 注意：CPU 后端不支持 --max-num-batched-tokens（触发 chunked prefill），否则与 FP8 KV cache 不兼容
+    "--reasoning-parser glm45"
+    "--enable-prefix-caching"
+    "--enable-chunked-prefill"
+    "--max-num-batched-tokens 32768"
+    "--kv-cache-dtype fp8"
   ];
 }
