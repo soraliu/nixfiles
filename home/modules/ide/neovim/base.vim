@@ -80,22 +80,22 @@ set wildmenu wildmode=full                                  " set display buffer
 " Copy current file path to clipboard
 set clipboard=unnamedplus                                   " system clipboard
 
-" WSL: use win32yank.exe for clipboard (check /mnt/c first for Git Bash/WSL2 path)
-if executable('win32yank.exe') || executable('/mnt/c/Windows/System32/win32yank.exe')
+" WSL: use PowerShell for clipboard
+if executable('powershell.exe')
   let g:clipboard = {
-    \   'name': 'win32yank',
+    \   'name': 'powershell',
     \   'copy': {
-    \      '+': 'win32yank.exe -i',
-    \      '*': 'win32yank.exe -i',
+    \      '+': 'clip.exe',
+    \      '*': 'clip.exe',
     \    },
     \   'paste': {
-    \      '+': 'win32yank.exe -o --lf',
-    \      '*': 'win32yank.exe -o --lf',
+    \      '+': 'powershell.exe -NoProfile -Command [Console]::Out.Write($(Get-Clipboard -Raw).ToString())',
+    \      '*': 'powershell.exe -NoProfile -Command [Console]::Out.Write($(Get-Clipboard -Raw).ToString())',
     \   },
-    \   'cache_enabled': 0,
+    \   'cache_enabled': 1,
     \ }
-  nmap <Leader>c :call system("win32yank.exe -i --crlf", expand("%:p"))<CR>
-  nmap <Leader>cd :call system("win32yank.exe -i --crlf", expand("%:p:h"))<CR>
+  nmap <Leader>c :call system("clip.exe", expand("%:p"))<CR>
+  nmap <Leader>cd :call system("clip.exe", expand("%:p:h"))<CR>
 " Linux with X11: use xclip (skip if Wayland is detected and wl-copy is unavailable)
 elseif executable('xclip') && empty($WAYLAND_DISPLAY)
   nmap <Leader>c :call system("xclip -i -selection c", expand("%:p"))<CR>
