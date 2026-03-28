@@ -86,7 +86,7 @@ in
     home.activation.openclawDirs = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
       run --quiet ${lib.getExe' pkgs.coreutils "mkdir"} -p \
         ${cfg.stateDir} \
-        ${homeDir}/.openclaw/logs
+        ${cfg.stateDir}/logs
     '';
 
     # macOS: launchd agent
