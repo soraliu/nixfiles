@@ -4,7 +4,6 @@
 table.insert(plugins, {
   {
     'nvim-telescope/telescope.nvim',
-    tag = '0.1.8',
     dependencies = {
       'nvim-lua/plenary.nvim',
       'fdschmidt93/telescope-egrepify.nvim',

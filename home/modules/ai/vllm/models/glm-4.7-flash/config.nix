@@ -13,8 +13,6 @@
   extraArgs = [
     "--enable-auto-tool-choice"
     "--tool-call-parser glm47"
-    "--enable-prefix-caching"
-    "--enable-chunked-prefill"
-    "--max-num-batched-tokens 32768"
+    # 注意：CPU 后端不支持 --max-num-batched-tokens（触发 chunked prefill），否则与 FP8 KV cache 不兼容
   ];
 }

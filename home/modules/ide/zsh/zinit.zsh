@@ -49,5 +49,8 @@ ZSH_AUTOSUGGEST_STRATEGY=(history completion)
 zinit lucid wait atload"!_zsh_autosuggest_start" for zsh-users/zsh-autosuggestions
 
 # Initialize completion
+# Add system vendor-completions to fpath for systemctl and other systemd commands
+fpath=(/usr/share/zsh/vendor-completions $fpath)
+
 autoload -Uz compinit
 compinit

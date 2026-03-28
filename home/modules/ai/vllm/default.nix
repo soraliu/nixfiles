@@ -1,4 +1,4 @@
-{ pkgs, lib, config, ... }:
+{ pkgs, lib, config, inputs, ... }:
 
 let
   isLinux = pkgs.stdenv.isLinux;
@@ -8,10 +8,10 @@ let
   # 顶层 symlink，用于 nix run 调试入口
   vllmModulePath = "${config.home.homeDirectory}/.cache/vllm-flake";
 
-  # 通用 vllm CLI wrapper（不绑定特定模型）
+  # 通用 vllm CLI wrapper（不绑定特定模型，使用 nix 的 python 环境）
   vllmWrapper = pkgs.writeShellScriptBin "vllm" ''
     export LD_LIBRARY_PATH="/usr/lib/wsl/lib:${vllmLib.libPath}:$LD_LIBRARY_PATH"
-    exec "${vllmLib.GLOBAL_VLLM_ENV}/bin/vllm" "$@"
+    exec ${vllmLib.vllmPython}/bin/python -m vllm.entrypoints.openai.api_server "$@"
   '';
 
   # 导入所有模型配置
@@ -25,42 +25,22 @@ let
   aggregated = vllmLib.mkModels models;
 
 in {
+  imports = [
+    ../../../../pkgs/pm2
+  ];
+
   config = lib.mkIf isLinux {
     # 顶层 symlink，用于 cd ~/.cache/vllm-flake && nix run .#vllm-<name> 调试
     home.file."${vllmModulePath}".source = ./.;
 
-    home.packages = aggregated.packages ++ aggregated.wrappers ++ aggregated.serveScripts ++ aggregated.socatScripts ++ [
+    home.packages = aggregated.packages ++ aggregated.wrappers ++ aggregated.socatScripts ++ [
       vllmWrapper
     ];
 
-    # systemd user services — autostart 由各模型 config.nix 中的 autostart 字段控制
-    systemd.user.services = aggregated.systemdServices;
-
-    # 初始化共享 vLLM Python 环境
-    home.activation.initVllm = config.lib.dag.entryAfter [ "writeBoundary" ] ''
-      VLLM_ENV="${vllmLib.GLOBAL_VLLM_ENV}"
-      PYTHON="$VLLM_ENV/bin/python"
-      EXPECTED_PYTHON_VERSION="3.12"
-
-      if [ -x "$PYTHON" ]; then
-        CURRENT_PYTHON_VERSION="$($PYTHON -c 'import sys; print(f"{sys.version_info.major}.{sys.version_info.minor}")' 2>/dev/null || true)"
-        if [ "$CURRENT_PYTHON_VERSION" != "$EXPECTED_PYTHON_VERSION" ]; then
-          echo "Recreating vLLM environment at $VLLM_ENV with Python ${pkgs.python312.version}..."
-          rm -rf "$VLLM_ENV"
-        fi
-      fi
-
-      if [ ! -x "$PYTHON" ]; then
-        echo "Creating vLLM environment at $VLLM_ENV..."
-        ${pkgs.uv}/bin/uv venv --python ${pkgs.python312}/bin/python "$VLLM_ENV"
-      fi
-
-      if ! "$PYTHON" -c "import vllm" >/dev/null 2>&1; then
-        echo "Installing vLLM..."
-        ${pkgs.uv}/bin/uv pip install --python "$PYTHON" --upgrade vllm
-      fi
-
-      mkdir -p "${config.home.homeDirectory}/.cache/cuda"
-    '';
+    # pm2 服务配置 — 统一由 pm2 管理进程生命周期
+    programs.pm2 = {
+      enable = true;
+      services = aggregated.pm2Services;
+    };
   };
 }

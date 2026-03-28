@@ -95,12 +95,12 @@ table.insert(plugins, {
               ['il'] = '@loop.inner',
             },
             selection_modes = {
-              ['@class.outer'] = '<c-v>', -- blockwise
-              ['@parameter.outer'] = 'v', -- charwise
-              ['@function.outer'] = 'V', -- linewise
-              ['@block.outer'] = 'V', -- linewise
+              ['@class.outer'] = '<c-v>',   -- blockwise
+              ['@parameter.outer'] = 'v',   -- charwise
+              ['@function.outer'] = 'V',    -- linewise
+              ['@block.outer'] = 'V',       -- linewise
               ['@conditional.outer'] = 'V', -- linewise
-              ['@loop.outer'] = 'V', -- linewise
+              ['@loop.outer'] = 'V',        -- linewise
             },
           },
           move = {

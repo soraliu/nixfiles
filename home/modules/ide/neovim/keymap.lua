@@ -347,7 +347,12 @@ end
 
 function keysRegisterTSMove()
   local wk = require('which-key')
-  local ts_repeat_move = require('nvim-treesitter.textobjects.repeatable_move')
+  local ts_repeat_move_ok, ts_repeat_move = pcall(require, 'nvim-treesitter.textobjects.repeatable_move')
+
+  if not ts_repeat_move_ok then
+    return
+  end
+
   local gs = require('gitsigns')
   local url = require('urlview.jump')
   local grapple = require('grapple')
@@ -377,7 +382,7 @@ function keysRegisterTSMove()
     { ']',  group = 'Move Next' },
     { ']v', next_hunk_repeat,                         desc = 'Goto next hunk' },
     { ']u', next_url_repeat,                          desc = 'Goto next URL' },
-    { ']d', next_diagnostic_repeat,                   desc = 'Goto next Diagnostic' },
+    { ']d', next_diagnostic_repeat,                    desc = 'Goto next Diagnostic' },
     { ']m', next_mark_repeat,                         desc = 'Goto next Mark' },
   })
 end
