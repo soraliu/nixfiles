@@ -89,8 +89,8 @@ if executable('powershell.exe')
     \      '*': 'clip.exe',
     \    },
     \   'paste': {
-    \      '+': 'powershell.exe -NoProfile -Command [Console]::Out.Write($(Get-Clipboard -Raw).ToString())',
-    \      '*': 'powershell.exe -NoProfile -Command [Console]::Out.Write($(Get-Clipboard -Raw).ToString())',
+    \      '+': 'powershell.exe -NoProfile -Command [Console]::Out.Write($(Get-Clipboard -Raw).ToString() -replace "`r", "")',
+    \      '*': 'powershell.exe -NoProfile -Command [Console]::Out.Write($(Get-Clipboard -Raw).ToString() -replace "`r", "")',
     \   },
     \   'cache_enabled': 1,
     \ }

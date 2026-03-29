@@ -5,11 +5,11 @@
   port = 8000;
   socat-port = 18000;
   autostart = true;
-  gpu-memory-utilization = 0.8;
+  gpu-memory-utilization = 0.78;
   # 最大上下文长度
   max-model-len = 32768;
   # 最大并发
-  max-num-seqs = 12;
+  max-num-seqs = 64;
   extraArgs = [
     "--enable-auto-tool-choice"
     "--tool-call-parser glm47"

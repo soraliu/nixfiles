@@ -29,6 +29,7 @@
       # 导入所有模型配置
       modelConfigs = [
         (import ./glm-4.7-flash/config.nix)
+        (import ./qwen3-embedding-0.6b/config.nix)
         (import ./qwen3-vl-embedding-2b/config.nix)
         (import ./qwen3-vl-embedding-8b/config.nix)
 
