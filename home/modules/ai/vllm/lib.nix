@@ -55,15 +55,6 @@ let
     in
       lib.groupBy (m: m.venvConfig.venvPath) modelsWithVenv;
 
-  # CUDA 运行时依赖（用于 mkWrapper）
-  runtimeLibs = with pkgs; [
-    cudaPackages_12.cuda_cudart
-    cudaPackages_12.libcublas
-    gcc-unwrapped.lib
-    stdenv.cc.cc.lib
-  ];
-
-  libPath = lib.makeLibraryPath runtimeLibs;
 
   # 从 config.nix 生成 pm2 服务配置（通过 nix run 调用 flake.nix）
   mkPm2Service = modelCfg:
@@ -86,16 +77,10 @@ let
       interpreter = "none";
       cwd = vllmModulePath;
       autorestart = true;
-      restart_delay = 5000;
-      max_restarts = 3;
+      min_uptime = 300000;       # 应用需运行 5m 才算稳定启动
+      restart_delay = 15000;     # 重启前等待 15 秒
+      max_restarts = 3;          # 最多 3 次不稳定重启
       kill_timeout = 600000;
-      env = {
-        CUDA_VISIBLE_DEVICES = "0";
-        HF_HOME = "$HOME/.cache/huggingface";
-        HF_ENDPOINT = "https://hf-mirror.com";
-        CUDA_CACHE_PATH = "$HOME/.cache/cuda";
-        CC = "${pkgs.gcc}/bin/gcc";
-      };
     };
 
   # 从 config.nix 生成 socat 转发脚本
@@ -123,10 +108,9 @@ let
     pm2Services = map (m: mkPm2Service m.cfg) models ++
                   map (m: mkSocatPm2Service m.cfg) models;
     socatScripts = map (m: mkSocatScript m.cfg) models;
-    packages = runtimeLibs;
   };
 
 in {
-  inherit mkPm2Service mkSocatPm2Service mkModels runtimeLibs libPath;
+  inherit mkPm2Service mkSocatPm2Service mkModels;
   inherit mkVersionString mkVenvHash mkOverrideContent getVenvConfig groupModelsByVenv;
 }

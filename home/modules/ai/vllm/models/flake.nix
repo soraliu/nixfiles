@@ -13,13 +13,11 @@
         config.allowUnfree = true;
       };
 
-      # 导入统一配置
-      vllmConfig = import ./config.nix;
-
       # CUDA 运行时依赖（nix 管理系统库）
       runtimeLibs = with pkgs; [
-        cudaPackages_12.cuda_cudart
-        cudaPackages_12.libcublas
+        cudaPackages.cuda_cudart
+        cudaPackages.libcublas
+        cudaPackages.cuda_nvcc
         gcc-unwrapped.lib
         stdenv.cc.cc.lib
       ];
@@ -76,9 +74,14 @@
           export HF_HOME="$HOME/.cache/huggingface"
           export HF_ENDPOINT="https://hf-mirror.com"
           export CUDA_CACHE_PATH="$HOME/.cache/cuda"
-          export LD_LIBRARY_PATH="/usr/lib/wsl/lib:${libPath}''${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
+          export LD_LIBRARY_PATH="/usr/lib/wsl/lib:${libPath}:''${LD_LIBRARY_PATH:-}"
           export LD_PRELOAD="/usr/lib/wsl/lib/libcuda.so"
-          export PATH="/usr/lib/wsl/lib:$PATH"
+          export PATH="/usr/lib/wsl/lib:/usr/bin:$PATH"
+
+          # 使用 Nix 提供的 CUDA_HOME
+          if [ -z "''${CUDA_HOME:-}" ]; then
+            export CUDA_HOME="${pkgs.cudaPackages.cuda_nvcc}"
+          fi
 
           # vLLM 优化
           export VLLM_ENABLE_INDUCTOR_MAX_AUTOTUNE=0
@@ -130,7 +133,10 @@
         ] ++ runtimeLibs;
 
         shellHook = ''
-          export LD_LIBRARY_PATH="/usr/lib/wsl/lib:${libPath}''${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
+          export LD_LIBRARY_PATH="/usr/lib/wsl/lib:${libPath}:''${LD_LIBRARY_PATH:-}"
+
+          # 使用 Nix CUDA
+          export CUDA_HOME="${pkgs.cudaPackages.cuda_nvcc}"
 
           echo ""
           echo "vLLM + uv 开发环境"

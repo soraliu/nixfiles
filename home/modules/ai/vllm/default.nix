@@ -20,7 +20,7 @@ let
     # { cfg = import ./models/glm-4.7-flash/config.nix; }
     { cfg = import ./models/qwen3.5-35b-a3b-nvfp4/config.nix; }
     # { cfg = import ./models/qwen3-embedding-0.6b/config.nix; }
-    { cfg = import ./models/qwen3-vl-embedding-2b/config.nix; }
+    # { cfg = import ./models/qwen3-vl-embedding-2b/config.nix; }
     # { cfg = import ./models/qwen3-vl-embedding-8b/config.nix; }
     # { cfg = import ./models/qwen3.5-chat/config.nix; }
     # { cfg = import ./models/qwen3-embedding-4b/config.nix; }
@@ -36,8 +36,9 @@ in {
 
   config = lib.mkIf isLinux {
     # Home Manager activation script - 自动初始化 uv 环境
-    # 必须在 pm2 之前执行，确保 venv 存在
-    home.activation.vllmSetup = lib.hm.dag.entryBefore ["initPm2"] ''
+    # 在 pm2 之后执行（如果存在），否则在 writeBoundary 之后执行
+    home.activation.vllmSetup = lib.hm.dag.entryBefore ["initPm2"]
+      ''
       echo "初始化 vLLM uv 环境..."
 
       # 创建 cache 目录
@@ -88,7 +89,7 @@ in {
     # 顶层 symlink，用于 cd ~/.cache/vllm-flake && nix run .#vllm-<name> 调试
     home.file."${vllmModuleRelPath}".source = ./models;
 
-    home.packages = aggregated.packages ++ aggregated.socatScripts;
+    home.packages = aggregated.socatScripts;
 
     # pm2 服务配置 — 统一由 pm2 管理进程生命周期
     programs.pm2 = {

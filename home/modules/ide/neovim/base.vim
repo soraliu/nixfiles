@@ -80,19 +80,36 @@ set wildmenu wildmode=full                                  " set display buffer
 " Copy current file path to clipboard
 set clipboard=unnamedplus                                   " system clipboard
 
-" WSL: use PowerShell for clipboard
-if executable('powershell.exe')
+" WSL: use win32yank.exe for clipboard
+if executable($HOME . '/.local/bin/win32yank.exe')
   let g:clipboard = {
-    \   'name': 'powershell',
+    \   'name': 'win32yank',
     \   'copy': {
-    \      '+': 'clip.exe',
-    \      '*': 'clip.exe',
+    \      '+': [$HOME . '/.local/bin/win32yank.exe', '-i', '--crlf'],
+    \      '*': [$HOME . '/.local/bin/win32yank.exe', '-i', '--crlf'],
     \    },
     \   'paste': {
-    \      '+': 'powershell.exe -NoProfile -Command [Console]::Out.Write($(Get-Clipboard -Raw).ToString() -replace "`r", "")',
-    \      '*': 'powershell.exe -NoProfile -Command [Console]::Out.Write($(Get-Clipboard -Raw).ToString() -replace "`r", "")',
+    \      '+': [$HOME . '/.local/bin/win32yank.exe', '-o', '--lf'],
+    \      '*': [$HOME . '/.local/bin/win32yank.exe', '-o', '--lf'],
     \   },
-    \   'cache_enabled': 1,
+    \   'cache_enabled': 0,
+    \ }
+  let s:win32yank = $HOME . '/.local/bin/win32yank.exe'
+  execute 'nmap <Leader>c :call system("' . s:win32yank . ' -i --crlf", expand("%:p"))<CR>'
+  execute 'nmap <Leader>cd :call system("' . s:win32yank . ' -i --crlf", expand("%:p:h"))<CR>'
+" WSL: use PowerShell for clipboard
+elseif executable('powershell.exe')
+  let g:clipboard = {
+    \   'name': 'WslClipboard',
+    \   'copy': {
+    \      '+': ['clip.exe'],
+    \      '*': ['clip.exe'],
+    \    },
+    \   'paste': {
+    \      '+': ['/mnt/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe', '-c', '[Console]::Out.Write($(Get-Clipboard -Raw).tostring().replace("`r", ""))'],
+    \      '*': ['/mnt/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe', '-c', '[Console]::Out.Write($(Get-Clipboard -Raw).tostring().replace("`r", ""))'],
+    \   },
+    \   'cache_enabled': 0,
     \ }
   nmap <Leader>c :call system("clip.exe", expand("%:p"))<CR>
   nmap <Leader>cd :call system("clip.exe", expand("%:p:h"))<CR>

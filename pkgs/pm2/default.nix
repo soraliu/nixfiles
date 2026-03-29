@@ -47,12 +47,21 @@ in
 
       pm2_bin=~/.volta/bin/pm2
 
-      set +e
-      $pm2_bin delete all 2>/dev/null
-      set -e
+      # 获取配置中的服务名列表
+      config_services=$(node -e "console.log(require('${pathToConfig}').apps.map(a => a.name).join(' '))")
 
-      $pm2_bin start ${pathToConfig}
-      $pm2_bin update
+      # 获取当前运行的服务名列表
+      running_services=$($pm2_bin jlist 2>/dev/null | node -e "try { const list = JSON.parse(require('fs').readFileSync(0, 'utf-8')); console.log(list.map(p => p.name).join(' ')); } catch(e) { }" || echo "")
+
+      # 删除不在配置中的服务
+      for svc in $running_services; do
+        if ! echo "$config_services" | grep -qw "$svc"; then
+          $pm2_bin delete "$svc" 2>/dev/null || true
+        fi
+      done
+
+      # 启动或重启配置中的服务（应用最新配置）
+      $pm2_bin startOrRestart ${pathToConfig}
 
       # Setup PM2 to start on boot
       if [ "$(uname)" == "Darwin" ]; then
@@ -60,7 +69,7 @@ in
       fi
 
       sudo $pm2_bin startup || true
-      $pm2_bin save || true
+      $pm2_bin save --force  # 保存当前状态（已精确清理后的服务列表）
     '';
   };
 }

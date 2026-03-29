@@ -63,4 +63,22 @@
       cp ${src} ${target}
       chmod +w ${target}
     '';
+
+  home.activation.installWin32yank = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+    if [[ -f /proc/sys/fs/binfmt_misc/WSLInterop ]]; then
+      WIN32YANK_DIR="$HOME/.local/bin"
+      WIN32YANK_PATH="$WIN32YANK_DIR/win32yank.exe"
+
+      if [[ ! -f "$WIN32YANK_PATH" ]]; then
+        echo "Installing win32yank.exe for WSL clipboard support..."
+        mkdir -p "$WIN32YANK_DIR"
+        ${pkgs.curl}/bin/curl -sLo /tmp/win32yank.zip https://github.com/equalsraf/win32yank/releases/download/v0.1.1/win32yank-x64.zip
+        ${pkgs.unzip}/bin/unzip -o /tmp/win32yank.zip -d /tmp/
+        mv /tmp/win32yank.exe "$WIN32YANK_PATH"
+        chmod +x "$WIN32YANK_PATH"
+        rm -f /tmp/win32yank.zip /tmp/LICENSE /tmp/README.md
+        echo "win32yank.exe installed to $WIN32YANK_PATH"
+      fi
+    fi
+  '';
 }
