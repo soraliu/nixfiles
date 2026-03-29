@@ -8,6 +8,53 @@ let
   # 展开 ~ 为实际路径
   vllmModulePath = builtins.replaceStrings ["~"] ["${config.home.homeDirectory}"] vllmConfig.vllmModulePath;
 
+  # ========== 版本管理函数 ==========
+
+  # 生成版本字符串用于 hash（只包含指定的版本）
+  mkVersionString = pythonDeps:
+    let
+      vllm = pythonDeps.vllm or "latest";
+      parts = [ "vllm-${vllm}" ]
+        ++ lib.optional (pythonDeps ? torch) "torch-${pythonDeps.torch}"
+        ++ lib.optional (pythonDeps ? transformers) "transformers-${pythonDeps.transformers}";
+    in lib.concatStringsSep "-" parts;
+
+  # 生成 venv hash（SHA256 前 8 位）
+  mkVenvHash = pythonDeps:
+    builtins.substring 0 8 (builtins.hashString "sha256" (mkVersionString pythonDeps));
+
+  # 生成 override 文件内容
+  mkOverrideContent = pythonDeps:
+    let
+      lines = []
+        ++ lib.optional (pythonDeps ? torch) "torch==${pythonDeps.torch}"
+        ++ lib.optional (pythonDeps ? transformers) "transformers==${pythonDeps.transformers}";
+    in lib.concatStringsSep "\n" lines;
+
+  # 获取模型的 venv 配置
+  getVenvConfig = baseDir: modelCfg:
+    let
+      pythonDeps = modelCfg.pythonDeps or {};
+      hash = mkVenvHash pythonDeps;
+      venvPath = "${baseDir}/vllm-venv-${hash}";
+      overrideContent = mkOverrideContent pythonDeps;
+    in {
+      inherit venvPath pythonDeps;
+      venvHash = hash;
+      overrideContent = overrideContent;
+      hasOverride = overrideContent != "";
+    };
+
+  # 按 venv 分组模型
+  groupModelsByVenv = baseDir: models:
+    let
+      addVenvConfig = m: m // {
+        venvConfig = getVenvConfig baseDir m.cfg;
+      };
+      modelsWithVenv = map addVenvConfig models;
+    in
+      lib.groupBy (m: m.venvConfig.venvPath) modelsWithVenv;
+
   # CUDA 运行时依赖（用于 mkWrapper）
   runtimeLibs = with pkgs; [
     cudaPackages_12.cuda_cudart
@@ -19,27 +66,37 @@ let
   libPath = lib.makeLibraryPath runtimeLibs;
 
   # 从 config.nix 生成 pm2 服务配置（通过 nix run 调用 flake.nix）
-  mkPm2Service = modelCfg: {
-    name = modelCfg.name;
-    script = "${pkgs.writeShellScript "pm2-${modelCfg.name}" ''
-      exec ${pkgs.nix}/bin/nix run --impure ${vllmModulePath}#${modelCfg.name}
-    ''}";
-    interpreter = "none";
-    cwd = vllmModulePath;
-    autorestart = true;
-    restart_delay = 5000;
-    max_restarts = 3;
-    # 注意：移除 wait_ready，因为 CPU 加载模型需要较长时间（可能超过 5 分钟）
-    # 模型就绪由 flake.nix 中的健康检查循环保证
-    kill_timeout = 600000;
-    env = {
-      CUDA_VISIBLE_DEVICES = "0";
-      HF_HOME = "$HOME/.cache/huggingface";
-      HF_ENDPOINT = "https://hf-mirror.com";
-      CUDA_CACHE_PATH = "$HOME/.cache/cuda";
-      CC = "${pkgs.gcc}/bin/gcc";
+  mkPm2Service = modelCfg:
+    let
+      delaySeconds = if modelCfg ? delay then (modelCfg.delay / 1000) else 0;
+    in {
+      name = modelCfg.name;
+      script = "${pkgs.writeShellScript "pm2-${modelCfg.name}" ''
+        ${if modelCfg ? delay then ''
+          remaining=${toString delaySeconds}
+          while [ $remaining -gt 0 ]; do
+            echo "[${modelCfg.name}] 延迟启动倒计时: $remaining 秒"
+            sleep 3
+            remaining=$((remaining - 3))
+          done
+          echo "[${modelCfg.name}] 开始启动模型..."
+        '' else ""}
+        exec ${pkgs.nix}/bin/nix run --impure ${vllmModulePath}#${modelCfg.name}
+      ''}";
+      interpreter = "none";
+      cwd = vllmModulePath;
+      autorestart = true;
+      restart_delay = 5000;
+      max_restarts = 3;
+      kill_timeout = 600000;
+      env = {
+        CUDA_VISIBLE_DEVICES = "0";
+        HF_HOME = "$HOME/.cache/huggingface";
+        HF_ENDPOINT = "https://hf-mirror.com";
+        CUDA_CACHE_PATH = "$HOME/.cache/cuda";
+        CC = "${pkgs.gcc}/bin/gcc";
+      };
     };
-  };
 
   # 从 config.nix 生成 socat 转发脚本
   # socat 绑定到 0.0.0.0，允许内网其他节点访问
@@ -71,4 +128,5 @@ let
 
 in {
   inherit mkPm2Service mkSocatPm2Service mkModels runtimeLibs libPath;
+  inherit mkVersionString mkVenvHash mkOverrideContent getVenvConfig groupModelsByVenv;
 }

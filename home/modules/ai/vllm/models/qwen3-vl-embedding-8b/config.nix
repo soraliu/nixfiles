@@ -2,8 +2,8 @@
 {
   name = "vllm-qwen3-vl-embedding-8b";
   model = "Qwen/Qwen3-VL-Embedding-8B";
-  port = 8013;
-  socat-port = 18013;
+  port = 8010;
+  socat-port = 18010;
   autostart = false;
   gpu-memory-utilization = 0.7;
   max-model-len = 16384;

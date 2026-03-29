@@ -9,17 +9,18 @@ let
   # 导入统一配置
   vllmConfig = import ./models/config.nix;
 
-  # 从 config.nix 读取 venv 路径并展开 ~
-  venvPath = builtins.replaceStrings ["~"] ["${config.home.homeDirectory}"] vllmConfig.venvPath;
+  # 从 config.nix 读取 venv 基础目录并展开 ~
+  venvBaseDir = builtins.replaceStrings ["~"] ["${config.home.homeDirectory}"] vllmConfig.venvBaseDir;
 
   # home.file 需要相对路径（从 config.nix 读取并去掉 ~ 前缀）
   vllmModuleRelPath = builtins.replaceStrings ["~/"] [""] vllmConfig.vllmModulePath;
 
   # 导入所有模型配置
   models = [
-    { cfg = import ./models/glm-4.7-flash/config.nix; }
-    { cfg = import ./models/qwen3-embedding-0.6b/config.nix; }
-    # { cfg = import ./models/qwen3-vl-embedding-2b/config.nix; }
+    # { cfg = import ./models/glm-4.7-flash/config.nix; }
+    { cfg = import ./models/qwen3.5-35b-a3b-nvfp4/config.nix; }
+    # { cfg = import ./models/qwen3-embedding-0.6b/config.nix; }
+    { cfg = import ./models/qwen3-vl-embedding-2b/config.nix; }
     # { cfg = import ./models/qwen3-vl-embedding-8b/config.nix; }
     # { cfg = import ./models/qwen3.5-chat/config.nix; }
     # { cfg = import ./models/qwen3-embedding-4b/config.nix; }
@@ -35,40 +36,53 @@ in {
 
   config = lib.mkIf isLinux {
     # Home Manager activation script - 自动初始化 uv 环境
-    home.activation.vllmSetup = lib.hm.dag.entryAfter ["writeBoundary"] ''
+    # 必须在 pm2 之前执行，确保 venv 存在
+    home.activation.vllmSetup = lib.hm.dag.entryBefore ["initPm2"] ''
       echo "初始化 vLLM uv 环境..."
 
       # 创建 cache 目录
       mkdir -p "${config.home.homeDirectory}/.cache"
 
-      # 清理损坏的环境
-      if [ -d "${venvPath}" ]; then
-        if [ ! -f "${venvPath}/bin/activate" ]; then
-          echo "清理损坏的虚拟环境..."
-          rm -rf "${venvPath}"
-        elif [ -x "${venvPath}/bin/python" ] && ! "${venvPath}/bin/python" -c 'import sys; raise SystemExit(0 if sys.version_info[:2] == (3, 13) else 1)'; then
-          echo "清理不兼容的虚拟环境（需要 Python 3.13）..."
-          rm -rf "${venvPath}"
-        fi
-      fi
+      # 按 venv 分组模型并创建环境
+      ${lib.concatStringsSep "\n" (lib.mapAttrsToList (venvPath: models:
+        let
+          firstModel = builtins.head models;
+          venvConfig = firstModel.venvConfig;
+          pythonDeps = venvConfig.pythonDeps;
+          # 默认 0.18.0 版本
+          vllmVer = pythonDeps.vllm or "0.18.0";
 
-      # 创建虚拟环境
-      if [ ! -d "${venvPath}" ]; then
-        echo "创建 uv 虚拟环境: ${venvPath}"
-        ${pkgs.uv}/bin/uv venv --python ${venvPython} "${venvPath}"
-      fi
+          vllmSpec = if vllmVer == "latest" then "vllm" else "vllm==${vllmVer}";
 
-      # 安装依赖（使用 override 文件覆盖 transformers 版本）
-      echo "安装 vLLM 依赖..."
-      source "${venvPath}/bin/activate"
-      ${pkgs.uv}/bin/uv pip install \
-        --index-strategy unsafe-best-match \
-        --index-url https://pypi.tuna.tsinghua.edu.cn/simple \
-        --extra-index-url https://download.pytorch.org/whl/cu121 \
-        --override ${./models/overrides.txt} \
-        vllm==0.18.0 \
-        "torch==2.10.0" \
-        --no-cache-dir
+          # 生成临时 override 文件
+          overrideFile = if venvConfig.hasOverride
+            then pkgs.writeText "override-${venvConfig.venvHash}.txt" venvConfig.overrideContent
+            else null;
+
+          overrideArg = if venvConfig.hasOverride
+            then "--override ${overrideFile}"
+            else "";
+        in ''
+          # 创建 venv: ${venvPath}
+          if [ ! -d "${venvPath}" ]; then
+            echo "创建 venv: ${venvPath} (vllm=${vllmVer}${
+              lib.optionalString (pythonDeps ? torch) ", torch=${pythonDeps.torch}"
+            }${
+              lib.optionalString (pythonDeps ? transformers) ", transformers=${pythonDeps.transformers}"
+            })"
+
+            ${pkgs.uv}/bin/uv venv --python ${venvPython} "${venvPath}"
+
+            source "${venvPath}/bin/activate"
+            ${pkgs.uv}/bin/uv pip install \
+              --index-strategy unsafe-best-match \
+              --index-url https://pypi.tuna.tsinghua.edu.cn/simple \
+              --extra-index-url https://download.pytorch.org/whl/cu121 \
+              ${overrideArg} \
+              ${vllmSpec}
+          fi
+        ''
+      ) (vllmLib.groupModelsByVenv venvBaseDir models))}
     '';
 
     # 顶层 symlink，用于 cd ~/.cache/vllm-flake && nix run .#vllm-<name> 调试

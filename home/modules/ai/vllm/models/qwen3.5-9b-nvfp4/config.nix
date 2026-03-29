@@ -2,8 +2,8 @@
 {
   name = "vllm-qwen35-chat";
   model = "AxionML/Qwen3.5-9B-NVFP4";
-  port = 8001;
-  socat-port = 18001;
+  port = 8000;
+  socat-port = 18000;
   autostart = true;
   gpu-memory-utilization = 0.60;
   max-model-len = 32768;

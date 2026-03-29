@@ -2,8 +2,8 @@
 {
   name = "vllm-qwen3-vl-embedding-2b";
   model =  "alexliap/Qwen3-VL-Embedding-2B-FP8-DYNAMIC";
-  port = 8012;
-  socat-port = 18012;
+  port = 8010;
+  socat-port = 18010;
   autostart = true;
   gpu-memory-utilization = 0.2;
   max-model-len = 4096;

@@ -6,10 +6,15 @@
   socat-port = 18000;
   autostart = true;
   gpu-memory-utilization = 0.78;
-  # 最大上下文长度
   max-model-len = 32768;
-  # 最大并发
   max-num-seqs = 64;
+
+  # Python 依赖版本配置
+  pythonDeps = {
+    vllm = "0.18.0";
+    transformers = "5.4.0";  # 通过 override 强制版本
+  };
+
   extraArgs = [
     "--enable-auto-tool-choice"
     "--tool-call-parser glm47"

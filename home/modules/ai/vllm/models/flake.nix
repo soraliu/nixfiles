@@ -29,6 +29,7 @@
       # 导入所有模型配置
       modelConfigs = [
         (import ./glm-4.7-flash/config.nix)
+        (import ./qwen3.5-35b-a3b-nvfp4/config.nix)
         (import ./qwen3-embedding-0.6b/config.nix)
         (import ./qwen3-vl-embedding-2b/config.nix)
         (import ./qwen3-vl-embedding-8b/config.nix)
@@ -46,13 +47,22 @@
       # 生成调用 uv 环境的启动脚本
       mkVllmRunner = cfg:
         let
+          pythonDeps = cfg.pythonDeps or {};
+
+          # 计算 venv hash（与 lib.nix 保持一致）
+          vllm = pythonDeps.vllm or "latest";
+          versionParts = [ "vllm-${vllm}" ]
+            ++ pkgs.lib.optional (pythonDeps ? torch) "torch-${pythonDeps.torch}"
+            ++ pkgs.lib.optional (pythonDeps ? transformers) "transformers-${pythonDeps.transformers}";
+          versionString = pkgs.lib.concatStringsSep "-" versionParts;
+          venvHash = builtins.substring 0 8 (builtins.hashString "sha256" versionString);
+
+          venvPath = "$HOME/.cache/vllm-venv-${venvHash}";
           allArgs = defaultArgs ++ (cfg.extraArgs or []);
         in pkgs.writeShellScript "vllm-run-${cfg.name}" ''
           set -euo pipefail
 
-          # 使用固定的 venv 路径
-          VENV_PATH="${vllmConfig.venvPath}"
-          VENV_PATH="''${VENV_PATH/#\~/$HOME}"
+          VENV_PATH="${venvPath}"
 
           if [ ! -d "$VENV_PATH" ]; then
             echo "错误: venv 不存在: $VENV_PATH"
@@ -82,7 +92,7 @@
 
           source "$VENV_PATH/bin/activate"
 
-          echo "启动 vLLM: ${cfg.name} (port ${toString cfg.port})"
+          echo "启动 vLLM: ${cfg.name} (port ${toString cfg.port}, venv: ${venvHash})"
 
           # 启动 vLLM
           exec python -m vllm.entrypoints.openai.api_server \
@@ -125,7 +135,7 @@
           echo ""
           echo "vLLM + uv 开发环境"
           echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-          echo "venv 路径: ${vllmConfig.venvPath}"
+          echo "venv 基础目录: ~/.cache/vllm-venv-*"
           echo "初始化: home-manager switch (自动)"
           echo "验证:   scripts/verify.sh"
           echo ""
