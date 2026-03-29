@@ -5,8 +5,8 @@
   port = 8000;
   socat-port = 18000;
   autostart = true;
-  gpu-memory-utilization = 0.76;
-  max-model-len = 16384;
+  gpu-memory-utilization = 0.8;
+  max-model-len = 32768;
   max-num-seqs = 64;
 
   # Python 依赖版本配置
@@ -15,12 +15,13 @@
   };
 
   extraArgs = [
+    "--quantization modelopt_fp4"
+    "--kv-cache-dtype fp8_e4m3"
     "--enable-auto-tool-choice"
     "--tool-call-parser qwen3_coder"
     "--reasoning-parser qwen3"
     "--enable-prefix-caching"
     "--enable-chunked-prefill"
     "--max-num-batched-tokens 16384"
-    "--kv-cache-dtype fp8"
   ];
 }

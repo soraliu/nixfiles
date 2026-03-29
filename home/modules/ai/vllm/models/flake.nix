@@ -48,7 +48,7 @@
           pythonDeps = cfg.pythonDeps or {};
 
           # 计算 venv hash（与 lib.nix 保持一致）
-          vllm = pythonDeps.vllm or "latest";
+          vllm = pythonDeps.vllm or "0.18.0";
           versionParts = [ "vllm-${vllm}" ]
             ++ pkgs.lib.optional (pythonDeps ? torch) "torch-${pythonDeps.torch}"
             ++ pkgs.lib.optional (pythonDeps ? transformers) "transformers-${pythonDeps.transformers}";
@@ -76,22 +76,23 @@
           export CUDA_CACHE_PATH="$HOME/.cache/cuda"
           export LD_LIBRARY_PATH="/usr/lib/wsl/lib:${libPath}:''${LD_LIBRARY_PATH:-}"
           export LD_PRELOAD="/usr/lib/wsl/lib/libcuda.so"
+          export CC="${pkgs.gcc}/bin/gcc";
           export PATH="/usr/lib/wsl/lib:/usr/bin:$PATH"
+
 
           # 使用 Nix 提供的 CUDA_HOME
           if [ -z "''${CUDA_HOME:-}" ]; then
             export CUDA_HOME="${pkgs.cudaPackages.cuda_nvcc}"
           fi
+          export TRITON_PTXAS_PATH="$CUDA_HOME/ptxas"
 
           # vLLM 优化
           export VLLM_ENABLE_INDUCTOR_MAX_AUTOTUNE=0
           export VLLM_ENABLE_INDUCTOR_COORDINATE_DESCENT_TUNING=0
           export PYTORCH_ALLOC_CONF=expandable_segments:True
 
-          # Triton 优化
-          if command -v nvcc &>/dev/null; then
-            export TRITON_PTXAS_PATH="$(dirname $(command -v nvcc))/ptxas"
-          fi
+          # FlashInfer FP4 MoE 内核（Blackwell 优化）
+          # export VLLM_USE_FLASHINFER_MOE_FP4=1
 
           source "$VENV_PATH/bin/activate"
 
@@ -128,7 +129,6 @@
         buildInputs = with pkgs; [
           uv
           curl
-          socat
           gcc
         ] ++ runtimeLibs;
 
