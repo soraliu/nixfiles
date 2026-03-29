@@ -76,7 +76,7 @@ let
       ''}";
       interpreter = "none";
       cwd = vllmModulePath;
-      autorestart = true;
+      autorestart = false;
       min_uptime = 300000;       # 应用需运行 5m 才算稳定启动
       restart_delay = 15000;     # 重启前等待 15 秒
       max_restarts = 3;          # 最多 3 次不稳定重启
