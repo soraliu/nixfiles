@@ -1,10 +1,10 @@
-{ pkgs, ... }: {
+{ pkgs, config, ... }: {
   config.home.packages = with pkgs; [
     go
     postgresql
   ];
 
   config.home.sessionVariables = {
-    GOPATH = "$HOME/go";
+    GOPATH = "${config.home.homeDirectory}/go";
   };
 }

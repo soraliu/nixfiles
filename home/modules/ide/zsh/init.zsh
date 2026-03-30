@@ -18,16 +18,6 @@ ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=6'
 
 # set path (Single Source of Truth)
 # prepend semantics: last executed has highest priority, so arrange from low to high priority
-[ -d "$HOME/.mint/bin" ] && PATH="$HOME/.mint/bin:$PATH"  # macOS mint
-[ "$(uname)" = "Darwin" ] && PATH="/opt/homebrew/bin:$PATH" # macOS homebrew
-PATH="/nix/var/nix/profiles/default/bin:$PATH"            # nix default profile
-PATH="/run/current-system/sw/bin:$PATH"                   # nixos system
-PATH="$HOME_PROFILE_DIRECTORY/bin:$PATH"                  # nix home-manager profile
-PATH="$GOPATH/bin:$PATH"                                  # golang
-PATH="$HOME/.local/bin:$PATH"                             # user local binaries
-PATH="$HOME/.local/share/pnpm:$PATH"                      # pnpm
-PATH="${VOLTA_HOME:-$HOME/.volta}/bin:$PATH"              # nodejs (volta) — highest priority
-export PATH
 
 # install sdkman: curl -s "https://get.sdkman.io" | bash
 #   sdk install java 17.0.11-zulu

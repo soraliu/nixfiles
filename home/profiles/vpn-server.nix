@@ -1,4 +1,4 @@
-{ pkgs, ... }: {
+{ pkgs, config, ... }: {
   imports = [
     ../core/base.nix
     
@@ -16,7 +16,7 @@
   ];
 
   home.sessionPath = [
-    "$HOME/.volta/bin"
+    "${config.home.homeDirectory}/.volta/bin"
     "$GOPATH/bin"
   ];
 }
