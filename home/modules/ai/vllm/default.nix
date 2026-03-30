@@ -4,7 +4,7 @@ let
   isLinux = pkgs.stdenv.isLinux;
   venvPython = "${pkgs.python313}/bin/python";
 
-  vllmLib = import ./lib.nix { inherit pkgs lib config; };
+  vllmLib = import ./models/lib.nix { inherit pkgs lib; };
 
   # 导入统一配置
   vllmConfig = import ./models/config.nix;
@@ -28,7 +28,7 @@ let
     # 新增模型：在此添加一行
   ];
 
-  aggregated = vllmLib.mkModels models;
+  aggregated = vllmLib.mkModels vllmLib.vllmModulePath models;
 
 in {
   imports = [
