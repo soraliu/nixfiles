@@ -28,6 +28,7 @@
       modelConfigs = [
         (import ./glm-4.7-flash/config.nix)
         (import ./qwen3.5-35b-a3b-nvfp4/config.nix)
+        (import ./qwen3-vl-8b-instruct/config.nix)
         (import ./qwen3-embedding-0.6b/config.nix)
         (import ./qwen3-vl-embedding-2b/config.nix)
         (import ./qwen3-vl-embedding-8b/config.nix)
@@ -93,6 +94,7 @@
 
           # FlashInfer FP4 MoE 内核（Blackwell 优化）
           # export VLLM_USE_FLASHINFER_MOE_FP4=1
+          export CPLUS_INCLUDE_PATH="${pkgs.cudaPackages.cuda_cudart.dev}/include:$CPLUS_INCLUDE_PATH"
 
           source "$VENV_PATH/bin/activate"
 

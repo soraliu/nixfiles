@@ -11,6 +11,5 @@
   extraArgs = [
     "--enable-prefix-caching"
     "--enable-chunked-prefill"
-    "--disable-log-requests"
   ];
 }
