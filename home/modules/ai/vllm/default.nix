@@ -21,7 +21,7 @@ let
     #{ cfg = import ./models/qwen3.5-35b-a3b-nvfp4/config.nix; }
     { cfg = import ./models/qwen3-vl-8b-instruct/config.nix; }
     # { cfg = import ./models/qwen3-embedding-0.6b/config.nix; }
-    # { cfg = import ./models/qwen3-vl-embedding-2b/config.nix; }
+    { cfg = import ./models/qwen3-vl-embedding-2b/config.nix; }
     # { cfg = import ./models/qwen3-vl-embedding-8b/config.nix; }
     # { cfg = import ./models/qwen3.5-chat/config.nix; }
     # { cfg = import ./models/qwen3-embedding-4b/config.nix; }

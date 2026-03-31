@@ -28,7 +28,10 @@
     libPath = pkgs.lib.makeLibraryPath [
       cuda.cuda_cudart
       cuda.libcublas
+      pkgs.gcc13.cc
       pkgs.gcc13.cc.lib
+      pkgs.glibc
+      pkgs.glibc.dev
     ];
 
     # 导入所有模型配置
@@ -91,6 +94,11 @@
         venvHash = vllmLib.mkVenvHash pythonDeps;  # 引用 lib.nix
         venvPath = "$HOME/.cache/vllm-venv-${venvHash}";
         allArgs = defaultArgs ++ (cfg.extraArgs or []);
+
+        # 提取额外环境变量
+        extraEnv = cfg.extraEnv or {};
+        extraEnvExports = pkgs.lib.concatStringsSep "\n        "
+          (pkgs.lib.mapAttrsToList (name: value: "export ${name}=\"${toString value}\"") extraEnv);
       in pkgs.writeShellScript "vllm-run-${cfg.name}" ''
         set -euo pipefail
 
@@ -103,11 +111,12 @@
         fi
 
         # 环境变量
-        export CUDA_VISIBLE_DEVICES=0
-        export CUDA_MODULE_LOADING=LAZY
         export HF_HOME="$HOME/.cache/huggingface"
         export HF_ENDPOINT="https://hf-mirror.com"
+        export CUDA_VISIBLE_DEVICES=0
+        export CUDA_MODULE_LOADING=LAZY
         export CUDA_CACHE_PATH="$HOME/.cache/cuda"
+        export CPLUS_INCLUDE_PATH="${cuda.cudatoolkit}/include"
         export LD_LIBRARY_PATH="/usr/lib/wsl/lib:${libPath}:''${LD_LIBRARY_PATH:-}"
         export LD_PRELOAD="/usr/lib/wsl/lib/libcuda.so"
         export LIBRARY_PATH="${libPath}"
@@ -121,17 +130,22 @@
         export TRITON_PTXAS_PATH="$CUDA_HOME/ptxas"
 
         # vLLM 优化
+        # 允许 PyTorch 的缓存分配器在遇到碎片时，动态扩展虚拟内存段，而不是简单粗暴地报错。它能极大地减少显存碎片导致的 OOM。
+        export PYTORCH_ALLOC_CONF=expandable_segments:True
+        # 使用默认的启发式规则快速编译即可，不去穷举微调, 牺牲 1% 性能
         export VLLM_ENABLE_INDUCTOR_MAX_AUTOTUNE=0
         export VLLM_ENABLE_INDUCTOR_COORDINATE_DESCENT_TUNING=0
-        export PYTORCH_ALLOC_CONF=expandable_segments:True
 
-        export VLLM_USE_FLASHINFER_MOE_FP4=1
-        export VLLM_ATTENTION_BACKEND=TORCH_ATTN
-        export CPLUS_INCLUDE_PATH="${cuda.cudatoolkit}/include"
+        # 模型特定的环境变量（可覆盖默认值）
+        ${extraEnvExports}
 
         source "$VENV_PATH/bin/activate"
 
         echo "启动 vLLM: ${cfg.name} (port ${toString cfg.port}, venv: ${venvHash})"
+
+        echo "------------------------- env -------------------------"
+        env
+        echo "------------------------- env -------------------------"
 
         exec python -m vllm.entrypoints.openai.api_server \
           --model ${cfg.model} \
