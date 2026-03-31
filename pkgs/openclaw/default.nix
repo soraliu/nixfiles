@@ -89,6 +89,25 @@ in
         ${cfg.stateDir}/logs
     '';
 
+    # zsh 补全
+    home.activation.openclawCompletion = lib.mkIf config.programs.zsh.enable (lib.hm.dag.entryAfter [ "installOpenclaw" ] ''
+      export PATH="${voltaBin}:${pnpmHome}:$PATH"
+      run mkdir -p ${config.programs.zsh.completionsDir}
+
+      # 生成补全并移除末尾 compdef
+      ${pnpmHome}/openclaw completion -s zsh | head -n -2 > /tmp/openclaw_comp_temp.zsh
+
+      # 重组：_openclaw 包装函数在前，辅助函数在后
+      cat > ${config.programs.zsh.completionsDir}/_openclaw << 'EOF'
+#compdef openclaw
+
+_openclaw() { _openclaw_root_completion "$@"; }
+
+EOF
+      tail -n +3 /tmp/openclaw_comp_temp.zsh >> ${config.programs.zsh.completionsDir}/_openclaw
+      rm /tmp/openclaw_comp_temp.zsh
+    '');
+
     # macOS: launchd agent
     launchd.agents."ai.openclaw.gateway" = lib.mkIf isDarwin {
       enable = true;
