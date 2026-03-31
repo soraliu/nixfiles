@@ -36,6 +36,7 @@
       (import ./qwen3-embedding-0.6b/config.nix)
       (import ./qwen3-vl-embedding-2b/config.nix)
       (import ./qwen3-vl-embedding-8b/config.nix)
+      (import ./qwen3-reranker-0.6b/config.nix)
     ];
 
     # vLLM 默认启动参数
@@ -81,19 +82,18 @@
       runScript = "bash";
     };
 
-    # ========== 启动脚本生成 ==========
-    mkVllmRunner = cfg:
+    # ========== 为每个模型创建启动脚本(不使用 FHS 环境) ==========
+    mkModelRunner = cfg:
       let
         pythonDeps = cfg.pythonDeps or {};
-        venvHash = vllmLib.mkVenvHash pythonDeps;  # 引用 lib.nix
+        venvHash = vllmLib.mkVenvHash pythonDeps;
         venvPath = "$HOME/.cache/vllm-venv-${venvHash}";
         allArgs = defaultArgs ++ (cfg.extraArgs or []);
 
-        # 提取额外环境变量
         extraEnv = cfg.extraEnv or {};
-        extraEnvExports = pkgs.lib.concatStringsSep "\n        "
+        extraEnvExports = pkgs.lib.concatStringsSep "\n"
           (pkgs.lib.mapAttrsToList (name: value: "export ${name}=\"${toString value}\"") extraEnv);
-      in pkgs.writeShellScript "vllm-run-${cfg.name}" ''
+      in pkgs.writeShellScriptBin cfg.name ''
         set -euo pipefail
 
         VENV_PATH="${venvPath}"
@@ -104,41 +104,24 @@
           exit 1
         fi
 
-        # 环境变量
+        source "$VENV_PATH/bin/activate"
+
         export HF_HOME="$HOME/.cache/huggingface"
         export HF_ENDPOINT="https://hf-mirror.com"
         export CUDA_VISIBLE_DEVICES=0
-        export CUDA_MODULE_LOADING=LAZY
-        export CUDA_CACHE_PATH="$HOME/.cache/cuda"
-        export CPLUS_INCLUDE_PATH="${cuda.cudatoolkit}/include"
-        export LD_LIBRARY_PATH="/usr/lib/wsl/lib:${libPath}:''${LD_LIBRARY_PATH:-}"
-        export LD_PRELOAD="/usr/lib/wsl/lib/libcuda.so"
-        export LIBRARY_PATH="${libPath}"
+        export CUDA_HOME="${cuda.cudatoolkit}"
         export CC="${pkgs.gcc13.cc}/bin/gcc"
+        export LD_LIBRARY_PATH="/usr/lib/wsl/lib:${pkgs.gcc13.cc.lib}/lib:''${LD_LIBRARY_PATH:-}"
         export PATH="/usr/lib/wsl/lib:/usr/bin:$PATH"
 
-        # CUDA_HOME
-        if [ -z "''${CUDA_HOME:-}" ]; then
-          export CUDA_HOME="${cuda.cudatoolkit}"
-        fi
-        export TRITON_PTXAS_PATH="$CUDA_HOME/ptxas"
-
         # vLLM 优化
-        # 允许 PyTorch 的缓存分配器在遇到碎片时，动态扩展虚拟内存段，而不是简单粗暴地报错。它能极大地减少显存碎片导致的 OOM。
-        export PYTORCH_ALLOC_CONF=expandable_segments:True
         # 使用默认的启发式规则快速编译即可，不去穷举微调, 牺牲 1% 性能
         export VLLM_ENABLE_INDUCTOR_MAX_AUTOTUNE=0
         export VLLM_ENABLE_INDUCTOR_COORDINATE_DESCENT_TUNING=0
 
-        # 模型特定的环境变量（可覆盖默认值）
         ${extraEnvExports}
 
-        source "$VENV_PATH/bin/activate"
-
-        # 重新设置 LD_LIBRARY_PATH（activate 会清空）
-        export LD_LIBRARY_PATH="/usr/lib/wsl/lib:${libPath}:''${LD_LIBRARY_PATH:-}"
-
-        echo "启动 vLLM: ${cfg.name} (port ${toString cfg.port}, venv: ${venvHash})"
+        echo "启动 vLLM: ${cfg.name} (port ${toString cfg.port})"
 
         exec python -m vllm.entrypoints.openai.api_server \
           --model ${cfg.model} \
@@ -146,18 +129,16 @@
           --max-num-seqs ${toString (cfg.max-num-seqs or 256)} \
           --max-model-len ${toString cfg.max-model-len} \
           --gpu-memory-utilization ${toString cfg.gpu-memory-utilization} \
-          ${pkgs.lib.concatStringsSep " \\\n            " allArgs}
+          ${pkgs.lib.concatStringsSep " \\\n          " allArgs}
       '';
 
     # ========== 生成 apps ==========
-    mkApp = cfg: {
-      type = "app";
-      program = "${mkVllmRunner cfg}";
-    };
-
     modelApps = builtins.listToAttrs (map (cfg: {
       name = cfg.name;
-      value = mkApp cfg;
+      value = {
+        type = "app";
+        program = "${mkModelRunner cfg}/bin/${cfg.name}";
+      };
     }) modelConfigs);
 
   in {

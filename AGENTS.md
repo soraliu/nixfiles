@@ -35,7 +35,15 @@ This approach ensures:
 - Native shell features and completion
 - Reduced overhead from WSL context switching
 
-## vLLM JIT Cache Cleanup Rule
+## vLLM Configuration
+
+### Quick Reference
+
+For detailed vLLM configuration guidelines, troubleshooting, and best practices in WSL Ubuntu environment, see:
+
+**📖 [WSL Ubuntu vLLM Configuration Guide](./docs/agents/wsl-ubuntu-vllm.md)**
+
+### JIT Cache Cleanup Rule
 
 When vLLM model startup fails in `@home/modules/ai/vllm/models/flake.nix`:
 

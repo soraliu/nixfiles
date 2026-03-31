@@ -26,6 +26,7 @@ let
     # { cfg = import ./models/qwen3.5-chat/config.nix; }
     # { cfg = import ./models/qwen3-embedding-4b/config.nix; }
     # 新增模型：在此添加一行
+    { cfg = import ./models/qwen3-reranker-0.6b/config.nix; }
   ];
 
   aggregated = vllmLib.mkModels vllmLib.vllmModulePath models;

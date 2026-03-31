@@ -55,10 +55,10 @@ let
           done
           echo "[${modelCfg.name}] 开始启动模型..."
         '' else ""}
-        exec ${pkgs.nix}/bin/nix run --impure --accept-flake-config --no-sandbox ${vllmModulePath}#${modelCfg.name}
+        exec ${pkgs.nix}/bin/nix run --impure --no-sandbox ${vllmModulePath}#${modelCfg.name}
       ''}";
       interpreter = "none";
-      autorestart = false;
+      autorestart = true;
       min_uptime = 300000;
       restart_delay = 15000;
       max_restarts = 3;
