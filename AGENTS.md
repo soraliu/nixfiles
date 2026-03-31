@@ -34,3 +34,17 @@ This approach ensures:
 - Correct path resolution
 - Native shell features and completion
 - Reduced overhead from WSL context switching
+
+## vLLM JIT Cache Cleanup Rule
+
+When vLLM model startup fails in `@home/modules/ai/vllm/models/flake.nix`:
+
+- **Automatically clean JIT cache directories**:
+  - `~/.cache/flashinfer`
+  - `~/.cache/vllm/torch_compile_cache`
+
+- **Cleanup command**: `rm -rf ~/.cache/flashinfer ~/.cache/vllm/torch_compile_cache`
+
+- **When to apply**: Execute cleanup immediately after model startup failure before retry
+
+This resolves Triton JIT compilation errors and stale cache issues.

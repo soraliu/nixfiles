@@ -47,13 +47,10 @@ in
 
       pm2_bin=~/.volta/bin/pm2
 
-      # 获取配置中的服务名列表
-      config_services=$(node -e "console.log(require('${pathToConfig}').apps.map(a => a.name).join(' '))")
-
-      $pm2_bin delete all
+      $pm2_bin delete all 2>&1 || true
 
       # 启动或重启配置中的服务（应用最新配置）
-      $pm2_bin startOrRestart ${pathToConfig}
+      $pm2_bin start ${pathToConfig}
 
       # Setup PM2 to start on boot
       if [ "$(uname)" == "Darwin" ]; then

@@ -5,13 +5,6 @@
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
   };
 
-  nixConfig = {
-    extra-substituters = [ "https://cache.nixos-cuda.org" ];
-    extra-trusted-public-keys = [
-      "cache.nixos-cuda.org:74DUi4Ye579gUqzH4ziL9IyiJBlDpMRn9MBN8oNan9M="
-    ];
-  };
-
   outputs = { self, nixpkgs }: let
     system = "x86_64-linux";
     pkgs = import nixpkgs {
@@ -24,12 +17,13 @@
     vllmLib = import ./lib.nix { inherit pkgs; lib = pkgs.lib; };
     vllmConfig = vllmLib.vllmConfig;
 
-    # CUDA 库路径
+    # CUDA 库路径, makeLibraryPath 会自动添加 /lib 后缀
     libPath = pkgs.lib.makeLibraryPath [
       cuda.cuda_cudart
       cuda.libcublas
-      pkgs.gcc13.cc
+      # pkgs.gcc13.cc
       pkgs.gcc13.cc.lib
+      #pkgs.zlib
       pkgs.glibc
       pkgs.glibc.dev
     ];
@@ -141,11 +135,10 @@
 
         source "$VENV_PATH/bin/activate"
 
-        echo "启动 vLLM: ${cfg.name} (port ${toString cfg.port}, venv: ${venvHash})"
+        # 重新设置 LD_LIBRARY_PATH（activate 会清空）
+        export LD_LIBRARY_PATH="/usr/lib/wsl/lib:${libPath}:''${LD_LIBRARY_PATH:-}"
 
-        echo "------------------------- env -------------------------"
-        env
-        echo "------------------------- env -------------------------"
+        echo "启动 vLLM: ${cfg.name} (port ${toString cfg.port}, venv: ${venvHash})"
 
         exec python -m vllm.entrypoints.openai.api_server \
           --model ${cfg.model} \
