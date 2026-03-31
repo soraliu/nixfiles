@@ -11,5 +11,6 @@
   # Qwen3-Reranker 是纯文本模型，不需要额外参数
   extraArgs = [
     "--enable-prefix-caching"
+    '' --hf_overrides '{"architectures": ["Qwen3ForSequenceClassification"], "classifier_from_token": ["no", "yes"], "is_original_qwen3_reranker": true}' ''
   ];
 }
