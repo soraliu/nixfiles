@@ -264,6 +264,20 @@ python -c "import torch; print(torch.cuda.is_available())"
 ldd $(which python) | grep -E "(cuda|nvidia)"
 ```
 
+### JIT 缓存清理规则
+
+当 `@home/modules/ai/vllm/models/flake.nix` 中的 vLLM 模型启动失败时：
+
+- **自动清理 JIT（Just-In-Time）缓存目录**：
+  - `~/.cache/flashinfer`
+  - `~/.cache/vllm/torch_compile_cache`
+
+- **清理命令**：`rm -rf ~/.cache/flashinfer ~/.cache/vllm/torch_compile_cache`
+
+- **适用时机**：在模型启动失败后、重试之前立即执行清理
+
+这样可以解决 Triton 的 JIT 编译错误和旧缓存残留问题。
+
 ## 参考资料
 
 - [vLLM 官方文档](https://docs.vllm.ai/)
