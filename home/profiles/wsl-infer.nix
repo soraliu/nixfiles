@@ -10,5 +10,6 @@ in
     ../modules/lang/gcc.nix
     ../modules/ai/vllm
     ../modules/ai/ov
+    ../modules/network/ssh
   ]);
 }
