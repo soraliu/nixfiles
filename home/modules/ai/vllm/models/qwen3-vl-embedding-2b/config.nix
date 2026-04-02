@@ -5,7 +5,7 @@
   port = 8010;
   socat-port = 18010;
   autostart = true;
-  gpu-memory-utilization = 0.20;
+  gpu-memory-utilization = 0.25;
   max-model-len = 4096;
   max-num-seqs = 64;
   extraArgs = [

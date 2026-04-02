@@ -61,7 +61,7 @@ let
       autorestart = true;
       min_uptime = 300000;
       restart_delay = 15000;
-      max_restarts = 3;
+      max_restarts = 5;
       kill_timeout = 600000;
     };
 
