@@ -1,4 +1,6 @@
-{ pkgs, config, ... }: {
+{ pkgs, config, lib, ... }: let
+  isDarwin = pkgs.stdenv.hostPlatform.isDarwin;
+in {
   config = {
     home = {
       packages = with pkgs; [
@@ -13,7 +15,8 @@
           to = ".config/dnsmasq/dnsmasq.conf";
         }];
       };
-      pm2 = {
+      # Darwin 由 launchd.daemons（systems/darwin.nix）以 root 管理，无需 pm2
+      pm2 = lib.mkIf (!isDarwin) {
         services = [{
           name = "dnsmasq";
           script = "${pkgs.dnsmasq}/bin/dnsmasq";

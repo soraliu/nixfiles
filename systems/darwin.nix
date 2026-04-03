@@ -20,11 +20,27 @@
   system.defaults.NSGlobalDomain.InitialKeyRepeat = 12;
   system.defaults.NSGlobalDomain.KeyRepeat = 2;
 
-  # macOS per-domain DNS resolver：仅 *.soraliu.dev 走本地 dnsmasq (port 5353)
+  # macOS per-domain DNS resolver：仅 *.soraliu.dev 走本地 dnsmasq
   environment.etc."resolver/soraliu.dev".text = ''
     nameserver 127.0.0.1
-    port 5353
   '';
+
+  # dnsmasq 以 root 运行才能绑定 53 端口
+  launchd.daemons.dnsmasq = {
+    serviceConfig = {
+      Label = "dev.soraliu.dnsmasq";
+      ProgramArguments = [
+        "${pkgs.dnsmasq}/bin/dnsmasq"
+        "--keep-in-foreground"
+        "-C"
+        "/Users/${homeUser}/.config/dnsmasq/dnsmasq.conf"
+      ];
+      RunAtLoad = true;
+      KeepAlive = true;
+      StandardOutPath = "/tmp/dnsmasq.log";
+      StandardErrorPath = "/tmp/dnsmasq.err.log";
+    };
+  };
 
   fonts.packages = with unstablePkgs; [
     nerd-fonts.sauce-code-pro
