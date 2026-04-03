@@ -2,7 +2,10 @@
   caddyDir = "${config.home.homeDirectory}/.config/caddy";
   curl = "${pkgs.curl}/bin/curl";
   grep = "${pkgs.gnugrep}/bin/grep";
-  # 用 nix 完整路径替换 curl/grep，确保在纯净 PATH 环境下可用
+  head = "${pkgs.coreutils}/bin/head";
+  sort = "${pkgs.coreutils}/bin/sort";
+  cat = "${pkgs.coreutils}/bin/cat";
+  # 所有外部命令使用 nix store 完整路径，确保在纯净 PATH 环境下可用
   syncDnsScript = pkgs.writeShellScript "sync-dns.sh" ''
     set -euo pipefail
 
@@ -19,7 +22,7 @@
       exit 1
     fi
 
-    CF_API_TOKEN=$(cat "$TOKEN_FILE")
+    CF_API_TOKEN=$(${cat} "$TOKEN_FILE")
 
     PUBLIC_IP=$(${curl} -s https://api.ipify.org || ${curl} -s https://ifconfig.me)
     if [ -z "$PUBLIC_IP" ]; then
@@ -28,7 +31,7 @@
     fi
     echo "[sync-dns] 本机公网 IP: $PUBLIC_IP"
 
-    DOMAINS=$(${grep} -oP '^[a-zA-Z0-9._-]+\.soraliu\.dev' "$CADDYFILE" | sort -u)
+    DOMAINS=$(${grep} -oP '^[a-zA-Z0-9._-]+\.soraliu\.dev' "$CADDYFILE" | ${sort} -u)
     if [ -z "$DOMAINS" ]; then
       echo "[sync-dns] 未在 Caddyfile 中发现 *.soraliu.dev 域名"
       exit 0
@@ -36,7 +39,7 @@
 
     ZONE_ID=$(${curl} -s -X GET "https://api.cloudflare.com/client/v4/zones?name=soraliu.dev" \
       -H "Authorization: Bearer $CF_API_TOKEN" \
-      -H "Content-Type: application/json" | ${grep} -oP '"id"\s*:\s*"\K[a-f0-9]+' | head -1)
+      -H "Content-Type: application/json" | ${grep} -oP '"id"\s*:\s*"\K[a-f0-9]+' | ${head} -1)
 
     if [ -z "$ZONE_ID" ]; then
       echo "[sync-dns] 无法获取 soraliu.dev 的 Zone ID"
@@ -52,8 +55,8 @@
         -H "Authorization: Bearer $CF_API_TOKEN" \
         -H "Content-Type: application/json")
 
-      RECORD_ID=$(echo "$RECORD_JSON" | ${grep} -oP '"id"\s*:\s*"\K[a-f0-9]+' | head -1)
-      CURRENT_IP=$(echo "$RECORD_JSON" | ${grep} -oP '"content"\s*:\s*"\K[0-9.]+' | head -1)
+      RECORD_ID=$(echo "$RECORD_JSON" | ${grep} -oP '"id"\s*:\s*"\K[a-f0-9]+' | ${head} -1)
+      CURRENT_IP=$(echo "$RECORD_JSON" | ${grep} -oP '"content"\s*:\s*"\K[0-9.]+' | ${head} -1)
 
       if [ -n "$RECORD_ID" ]; then
         if [ "$CURRENT_IP" = "$PUBLIC_IP" ]; then
@@ -64,14 +67,14 @@
           "https://api.cloudflare.com/client/v4/zones/$ZONE_ID/dns_records/$RECORD_ID" \
           -H "Authorization: Bearer $CF_API_TOKEN" \
           -H "Content-Type: application/json" \
-          --data "{\"type\":\"A\",\"name\":\"$DOMAIN\",\"content\":\"$PUBLIC_IP\",\"ttl\":300,\"proxied\":false}" > /dev/null
+          --data "{\"type\":\"A\",\"name\":\"$DOMAIN\",\"content\":\"$PUBLIC_IP\",\"ttl\":300,\"proxied\":false}"
         echo "[sync-dns]   已更新: $CURRENT_IP → $PUBLIC_IP"
       else
         ${curl} -s -X POST \
           "https://api.cloudflare.com/client/v4/zones/$ZONE_ID/dns_records" \
           -H "Authorization: Bearer $CF_API_TOKEN" \
           -H "Content-Type: application/json" \
-          --data "{\"type\":\"A\",\"name\":\"$DOMAIN\",\"content\":\"$PUBLIC_IP\",\"ttl\":300,\"proxied\":false}" > /dev/null
+          --data "{\"type\":\"A\",\"name\":\"$DOMAIN\",\"content\":\"$PUBLIC_IP\",\"ttl\":300,\"proxied\":false}"
         echo "[sync-dns]   已创建: $PUBLIC_IP"
       fi
     done
