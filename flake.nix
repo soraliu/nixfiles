@@ -249,12 +249,12 @@
         darwinConfigurations = {
           # soraliu dev environment: just switch-darwin
           "soraliu" = mkDarwin {
-            modules = [ ./systems/darwin.nix ];
+            modules = [ ./systems/darwin.nix { ids.gids.nixbld = 350; } ];
             homeImports = homeModules.ide;
           };
           # soraliu mirror drive: just switch-darwin soraliu-mirror
           "soraliu-mirror" = mkDarwin {
-            modules = [ ./systems/darwin.nix ];
+            modules = [ ./systems/darwin.nix { ids.gids.nixbld = 350; } ];
             homeImports = homeModules.ide;
             extraSpecialArgs = mkHomeExtraSpecialArgs { useMirrorDrive = true; };
           };
