@@ -38,6 +38,8 @@ in
     ../modules/lang/just.nix
     ../modules/lang/sol.nix
 
+    ../modules/network/caddy
+    ../modules/network/caddy/dnsmasq.nix
     ../modules/network/clash-meta
     ../modules/network/nebula
 

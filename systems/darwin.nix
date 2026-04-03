@@ -20,6 +20,12 @@
   system.defaults.NSGlobalDomain.InitialKeyRepeat = 12;
   system.defaults.NSGlobalDomain.KeyRepeat = 2;
 
+  # macOS per-domain DNS resolver：仅 *.soraliu.dev 走本地 dnsmasq (port 5353)
+  environment.etc."resolver/soraliu.dev".text = ''
+    nameserver 127.0.0.1
+    port 5353
+  '';
+
   fonts.packages = with unstablePkgs; [
     nerd-fonts.sauce-code-pro
   ];

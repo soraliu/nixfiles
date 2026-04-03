@@ -138,6 +138,7 @@
         clawbot = [ ./home/profiles/clawbot.nix nix-index-database.hmModules.nix-index ];
         wsl-infer = [ ./home/profiles/wsl-infer.nix nix-index-database.hmModules.nix-index ];
         vpn-server = [ ./home/profiles/vpn-server.nix ];
+        vpn-relayer = [ ./home/profiles/vpn-relayer.nix ];
         nixos-default = [ ./home/modules/home-manager/default.nix nix-index-database.hmModules.nix-index ];
         drive-server = [ ./home/profiles/drive-server.nix ];
         eject = [ ./home/profiles/eject.nix ];
@@ -240,6 +241,7 @@
 
           # servers
           vpn-server   = mkHome { modules = homeModules.vpn-server; homeUser = "root"; };
+          vpn-relayer  = mkHome { modules = homeModules.vpn-relayer; homeUser = "root"; };
           drive-server = mkHome { modules = homeModules.drive-server; };
 
           # utility
