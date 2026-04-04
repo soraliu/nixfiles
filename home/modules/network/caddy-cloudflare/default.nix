@@ -55,8 +55,8 @@
         -H "Authorization: Bearer $CF_API_TOKEN" \
         -H "Content-Type: application/json")
 
-      RECORD_ID=$(echo "$RECORD_JSON" | ${grep} -oP '"id"\s*:\s*"\K[a-f0-9]+' | ${head} -1)
-      CURRENT_IP=$(echo "$RECORD_JSON" | ${grep} -oP '"content"\s*:\s*"\K[0-9.]+' | ${head} -1)
+      RECORD_ID=$(echo "$RECORD_JSON" | ${grep} -oP '"id"\s*:\s*"\K[a-f0-9]+' | ${head} -1 || true)
+      CURRENT_IP=$(echo "$RECORD_JSON" | ${grep} -oP '"content"\s*:\s*"\K[0-9.]+' | ${head} -1 || true)
 
       if [ -n "$RECORD_ID" ]; then
         if [ "$CURRENT_IP" = "$PUBLIC_IP" ]; then
