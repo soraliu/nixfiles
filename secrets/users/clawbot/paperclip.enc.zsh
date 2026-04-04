@@ -1,0 +1,15 @@
+{
+	"data": "ENC[AES256_GCM,data:PE3pjjO7ZOSVmmUtzWjnRJTppk5p3YgmxMbKE3K0F2Le5GCkU0hBvzol3bxSCJKIYz+yRWO2IhMMqTe/yljiXifBvXe2Uh7wjiwv4tepMJr9uUCXuIY5gREHf6uDbIYkzwfk34NNolZ6Jqs0MfL6ikLNSsQv9E3PrhZJzk1+3fU/JQrQzghIjM31MB6za90TU+f/60btVes9ujrwBFj3zP53FWAo+ER6zyMUhYOy0L3EZGn+hC5aScOm1LdjFoHVl/456RrGDpwcLMw0IyObbGkt/VcUPZQ5SwO77r5w+zgxjU6NRbfEyy0Lzb46dOqTeGqVYjkiXd3gL6PK/tnqJWWpZwEXnT0fT3X8o++fKw1oVbRi2IziJHj4R7EvN0Zf9qgPLQDmP4ieczUrU3eEY1/KSDdn9HR0taGGt0Xj7AQz+IWLIDKTCmzB3wlxVqrTo1/MFjvFuD0nOssRRzXUuTqr4h9J9s+3sCAzwscYHM7C3Dc7VvoOBj6dHSrHBT5Z0SnW1C0E0GexRlh4QRPSj5xb/8At05UOD9a+3HRcR15luIFjesI95q1MxkTQyHHephddZWqfBmn7smk6Qa3BYlqnwd7GKm1pDTMxHxhWQxxsEmpE0oUExBNAx8x7L/yFextXPn8uCyshb8xwz1Xt4yjzUd0KdzJD/59PCLYH6EnQJIreW+xnWjggkepyLkI3enRpsemsBPjwGVWvnppjZWAUwuZT4GSfFpRHWq/oel1f+55YkCjKAz94bpN3J6sas/Y7wsFt9dXJyuThrvz1mgLma3lIc0riE35/xBzGwrq5Tee3I8P/C37PSgOWcQgQKC6arBDQT5MHOJdS7/omTJtoeJpUgndK+dWIdAKtm++b5uTryanVRQasafR3UQZ+YZ6ftlEo5FapmBk8kXFqXCJ+fLDjkXm1JGBL7rc4IUqMPE4NICubKqTODT2fBBDlXibw5hzAGX02n3weiJ0578p9/bHDFSZLqTH8qt2Tj2paW7UxudfvsdtG5HS1C9JlABqQnv3YyQQO4+fmhRBcI0ZlWe1EAuiecdXpi1QHe1kGIXgFUHLDmY+pWO8zTrOKmRymKsHwYR+Ic384P18K5Y5q5QOrce6mfTEwx6dii7/FSPM+YTdh1PfRvMCsp8UKro0gNHy8VVAOxlP2fUpHlnz74WGqOJuFboGIh0PIzuHuo1429x/OZiNYfWk9cdW02hI501BIz9D6kJZqEeJctAjCUpz15a54ekYU/pL7CFb1zZyTetIFqJEuTCDzWEckuhbFx8zyVjEiektM/JwS7KS/o10ZZBybJrSlhq/Z+75nSyzj,iv:qQMriydhdLdyBLbWVVoukdNUOwU4nnyb55Gzhwzrowc=,tag:oXThciz/yJBMYkh+zbPEtw==,type:str]",
+	"sops": {
+		"age": [
+			{
+				"recipient": "age1gnuydcffmwalyeqr7pmgp26nnwg4smwum05atpunh3xnfz0a5cnsc6erzf",
+				"enc": "-----BEGIN AGE ENCRYPTED FILE-----\nYWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBsZjgyZjhJR2loK1VLL0Ju\nQ1FFUklpdU1kM0VWRWRiTVdQWUYzZmpzbEI0CnM4TTdFbU1HY3VLWDFDWUtIOGZr\nNmprVGVSLzFFNi9XZ3N2NHI3emxwMlkKLS0tIFFxb25Ua2o5RitqSGxJRWRKbE5M\ndVJwM2xPaUlLMUlhYStGTmI2b0dxZG8Kkstk+Sqn7ovTyiyAn/ArFU8/GivmMOpP\nJh2B29RItisXYvjL3h3Rg9GJsFhwUWZLPRy7Dp/sONXsKNECMNFMKw==\n-----END AGE ENCRYPTED FILE-----\n"
+			}
+		],
+		"lastmodified": "2026-04-02T06:30:19Z",
+		"mac": "ENC[AES256_GCM,data:hSjlLrbIXsaSE8oP/xBTJkNypCH9KFrSZ92+PqRgoVJngxBnPymbpUnppxq1qAkJBgsvpPnzyLvY4YT0JFPyuDbr4J+KdNyKPQkwDpm2YQvZKbwWgvMsJEDqYG50sUwBWIxF/zBDChwkvyOG/+R4pmYglynIUlRN1Cd9AsxVBb0=,iv:cREGKALRKAyTquVHY0cFmJT7KAbRcGBPgVjjfb9Nyrs=,tag:n9QoFykYgbst8NUYwF2b3w==,type:str]",
+		"unencrypted_suffix": "_unencrypted",
+		"version": "3.11.0"
+	}
+}

@@ -29,6 +29,9 @@ in
     ../modules/lang/go.nix
     ../modules/lang/db.nix
 
+    # Paperclip pm2 service module
+    ../modules/sys/pm2/paperclip.nix
+
     (if isDarwin then ../modules/darwin/base.nix else "")
     (if isDarwin then ../modules/darwin/apps/rime else "")
     (if isDarwin then ../modules/darwin/apps/iterm2 else "")
