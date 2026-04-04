@@ -43,7 +43,7 @@ in
 
     version = lib.mkOption {
       type = lib.types.str;
-      default = "2026.3.24";
+      default = "2026.4.2";
       description = "固定的 openclaw 版本号，通过 pnpm add -g openclaw@version 安装。";
     };
 
