@@ -31,12 +31,10 @@ in {
         ${pkgs.uv}/bin/uv venv --python ${venvPython} "${venvPath}"
       fi
 
-      # 安装 OpenViking 0.2.13
-      echo "安装 OpenViking 0.2.13..."
       source "${venvPath}/bin/activate"
       ${pkgs.uv}/bin/uv pip install \
         --index-url https://pypi.tuna.tsinghua.edu.cn/simple \
-        openviking==0.2.13
+        openviking==0.3.3
     '';
 
     # sops 解密配置文件
