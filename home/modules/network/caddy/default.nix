@@ -1,4 +1,4 @@
-{ pkgs, config, ... }: let
+{ pkgs, config, lib, ... }: let
   caddyDir = "${config.home.homeDirectory}/.config/caddy";
   # 启动脚本：拼接 local_certs 全局选项 + 共享 Caddyfile，使用自签证书
   script = pkgs.writeText "caddy-local-start.sh" ''
@@ -31,5 +31,6 @@ in {
         }];
       };
     };
+
   };
 }

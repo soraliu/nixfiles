@@ -52,12 +52,6 @@ in
       # 启动或重启配置中的服务（应用最新配置）
       $pm2_bin start ${pathToConfig}
 
-      # Setup PM2 to start on boot
-      if [ "$(uname)" == "Darwin" ]; then
-        mkdir -p $HOME/Library/LaunchAgents
-      fi
-
-      sudo $pm2_bin startup || true
       $pm2_bin save --force  # 保存当前状态（已精确清理后的服务列表）
     '';
   };

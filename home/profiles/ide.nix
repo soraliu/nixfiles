@@ -39,7 +39,6 @@ in
     ../modules/lang/sol.nix
 
     ../modules/network/caddy
-    ../modules/network/caddy/dnsmasq.nix
     ../modules/network/clash-meta
     ../modules/network/nebula
 
