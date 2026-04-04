@@ -33,7 +33,7 @@ OpenViking 服务端运行在：
 curl http://10.1.1.3:1933/health
 
 # 预期输出
-{"status":"ok","healthy":true,"version":"0.2.13"}
+{"status":"ok","healthy":true,"version":"0.3.3"}
 ```
 
 ## 服务管理
