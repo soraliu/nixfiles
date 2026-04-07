@@ -54,7 +54,7 @@
             PAPERCLIP_HOME = "${config.home.homeDirectory}/.paperclip";
             PAPERCLIP_DEPLOYMENT_MODE = "authenticated";
             PAPERCLIP_DEPLOYMENT_EXPOSURE = "private";
-            PAPERCLIP_PUBLIC_URL = "http://localhost:3100";
+            BETTER_AUTH_BASE_URL = "http://localhost:3100";
             PORT = "3100";
           };
         }
