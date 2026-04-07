@@ -94,8 +94,9 @@ in
       export PATH="${voltaBin}:${pnpmHome}:$PATH"
       run mkdir -p ${config.programs.zsh.completionsDir}
 
-      # 生成补全并移除末尾 compdef
-      ${pnpmHome}/openclaw completion -s zsh | head -n -2 > /tmp/openclaw_comp_temp.zsh
+      # 生成补全，移除开头的 #compdef 行和自注册块（末尾的 _openclaw_register_completion 函数 + if 块）
+      # 使用 sed 精确删除：第1行(#compdef)、第2行(空行)、以及从 '_openclaw_register_completion()' 到文件末尾
+      ${pnpmHome}/openclaw completion -s zsh 2>/dev/null | sed -e '1,2d' -e '/^_openclaw_register_completion()/,$d' > /tmp/openclaw_comp_temp.zsh
 
       # 重组：_openclaw 包装函数在前，辅助函数在后
       cat > ${config.programs.zsh.completionsDir}/_openclaw << 'EOF'
@@ -104,7 +105,7 @@ in
 _openclaw() { _openclaw_root_completion "$@"; }
 
 EOF
-      tail -n +3 /tmp/openclaw_comp_temp.zsh >> ${config.programs.zsh.completionsDir}/_openclaw
+      cat /tmp/openclaw_comp_temp.zsh >> ${config.programs.zsh.completionsDir}/_openclaw
       rm /tmp/openclaw_comp_temp.zsh
     '');
 
