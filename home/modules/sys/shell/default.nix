@@ -23,6 +23,7 @@
 
   home.sessionPath = [
     "${config.home.homeDirectory}/.volta/bin"
+    "${config.home.homeDirectory}/.bun/bin"
     "${config.home.homeDirectory}/.local/share/pnpm"
     "${config.home.homeDirectory}/.local/bin"
     "$GOPATH/bin"
