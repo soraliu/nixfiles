@@ -1,12 +1,11 @@
 { pkgs, config, ... }: {
   imports = [
-    ../core/base.nix
-    
-    ../modules/sys/network
+    ../../pkgs/sops
+    ../../pkgs/pm2
 
+    ../modules/home-manager
+    ../modules/sys/network
     ../modules/network/hysteria
-    ../modules/network/frp
-    ../modules/network/nginx
   ];
 
   programs.bash.enable = true;
