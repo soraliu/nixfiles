@@ -81,6 +81,8 @@ switch-android:
 [private]
 init-vpn-server: pre-init-nix pre-init-age (switch-home "vpn-server")
 [private]
+init-vpn-relayer: pre-init-nix pre-init-age (switch-home "vpn-relayer")
+[private]
 init-drive-server: pre-init-nix-cn pre-init-age (switch-home "drive-server")
 [private]
 init-ide: pre-init-nix pre-init-age (switch-home "ide") post-init-zsh
