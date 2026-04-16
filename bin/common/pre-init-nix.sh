@@ -85,10 +85,12 @@ else
 fi
 
 # extra-sandbox-paths: 允许 Nix 沙箱访问 age 密钥目录，用于 sops 解密
-config_sandbox_paths="extra-sandbox-paths = /tmp/.age"
+age_path="/tmp/.age"
+config_sandbox_paths="extra-sandbox-paths = $age_path"
 if ! grep -q "^extra-sandbox-paths" $path_to_nix_config; then
+  mkdir -p $age_path
   echo "$config_sandbox_paths" >> $path_to_nix_config
-  echo "Info: extra-sandbox-paths configured: /tmp/.age"
+  echo "Info: extra-sandbox-paths configured: $age_path"
 else
   echo "Info: extra-sandbox-paths already configured! Skip."
 fi
