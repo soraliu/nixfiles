@@ -69,6 +69,12 @@
       inputs.flake-utils.follows = "flake-utils";
     };
 
+    codex-cli = {
+      url = "github:sadjow/codex-cli-nix";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+      inputs.flake-utils.follows = "flake-utils";
+    };
+
   };
 
   outputs =
@@ -81,6 +87,7 @@
     , flake-utils
     , nix-on-droid
     , claude-code
+    , codex-cli
     , ...
     }: with flake-utils.lib; eachDefaultSystem (system:
     let
@@ -157,7 +164,7 @@
           #   which means those functions can access `useSecret` directly instead of `specialArgs.useSecret`
           #   TL;DR: https://github.com/nix-community/home-manager/blob/36f873dfc8e2b6b89936ff3e2b74803d50447e0a/modules/default.nix#L26
           extraSpecialArgs = {
-            inherit system unstablePkgs homeUser claude-code;
+            inherit system unstablePkgs homeUser claude-code codex-cli;
           } // extraSpecialArgs;
         };
 
@@ -169,7 +176,7 @@
       }: nixpkgs.lib.nixosSystem {
         inherit system pkgs;
         specialArgs = {
-          inherit unstablePkgs homeUser claude-code;
+          inherit unstablePkgs homeUser claude-code codex-cli;
         } // extraSpecialArgs;
 
         modules = log (builtins.filter (el: el != "") (modules ++ [
@@ -178,7 +185,7 @@
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
             home-manager.extraSpecialArgs = {
-              inherit system unstablePkgs homeUser claude-code;
+              inherit system unstablePkgs homeUser claude-code codex-cli;
             } // extraSpecialArgs;
 
             home-manager.users.${homeUser} = {
@@ -199,7 +206,7 @@
         extraSpecialArgs ? (mkHomeExtraSpecialArgs { })
       }: nix-darwin.lib.darwinSystem {
         inherit system pkgs;
-        specialArgs = { inherit unstablePkgs homeUser claude-code; };
+        specialArgs = { inherit unstablePkgs homeUser claude-code codex-cli; };
 
         modules = log (modules ++ [
           home-manager.darwinModules.home-manager
@@ -207,7 +214,7 @@
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = false;
             home-manager.extraSpecialArgs = {
-              inherit system unstablePkgs homeUser claude-code;
+              inherit system unstablePkgs homeUser claude-code codex-cli;
             } // extraSpecialArgs;
 
             # useUserPackages = false 时 home-manager 的 common.nix 会读取 config.users.users.${name}

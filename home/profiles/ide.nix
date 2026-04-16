@@ -18,6 +18,7 @@ in
     ../modules/ai/huggingface
     ../modules/ai/shell-gpt
     ../modules/ai/cc
+    ../modules/ai/codex
     ../modules/ai/context7
 
     ../modules/ide/git

@@ -231,6 +231,22 @@ table.insert(plugins, {
       })
     end,
   },
+  {
+    'ellisonleao/glow.nvim',
+    lazy = true,
+    cmd = { 'Glow' },
+    keys = {
+      { '<leader>sp', '<cmd>Glow<cr>', desc = 'Preview Markdown with Glow' },
+    },
+    config = function()
+      require('glow').setup({
+        glow_path = vim.g.glow_binary_path,
+        border = 'rounded',
+        style = 'dark',
+        width = 120,
+      })
+    end,
+  },
 })
 
 -- ------------------------------------------------------------------------------------------------------------------------------

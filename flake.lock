@@ -10,16 +10,39 @@
         ]
       },
       "locked": {
-        "lastModified": 1774488690,
-        "narHash": "sha256-r5yQpoa4AqDOkwKflMMFOviC39XzpqrG1D+1xejn77c=",
+        "lastModified": 1776225939,
+        "narHash": "sha256-u/9MUPeJKgp94UlTniH4wGkwcWylyyTWtcnKeIVlVto=",
         "owner": "sadjow",
         "repo": "claude-code-nix",
-        "rev": "61d07ce0f48f63f098ed7d4e23018c416ed37b90",
+        "rev": "9dc007803e0661cf32db77e0c50e219c08b1eeb0",
         "type": "github"
       },
       "original": {
         "owner": "sadjow",
         "repo": "claude-code-nix",
+        "type": "github"
+      }
+    },
+    "codex-cli": {
+      "inputs": {
+        "flake-utils": [
+          "flake-utils"
+        ],
+        "nixpkgs": [
+          "nixpkgs-unstable"
+        ]
+      },
+      "locked": {
+        "lastModified": 1776288174,
+        "narHash": "sha256-kCvsC6JxJtcpLLPrrjptgmBlV7Zmz0NWdLfoP15+jOc=",
+        "owner": "sadjow",
+        "repo": "codex-cli-nix",
+        "rev": "7c050fa951b5ca20a4754b42ec5242231edda35f",
+        "type": "github"
+      },
+      "original": {
+        "owner": "sadjow",
+        "repo": "codex-cli-nix",
         "type": "github"
       }
     },
@@ -302,6 +325,7 @@
     "root": {
       "inputs": {
         "claude-code": "claude-code",
+        "codex-cli": "codex-cli",
         "flake-utils": "flake-utils",
         "home-manager": "home-manager",
         "nix-darwin": "nix-darwin",

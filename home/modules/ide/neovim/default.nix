@@ -4,6 +4,8 @@
     ../search/ripgrep
   ];
 
+  home.packages = [ pkgs.glow ];
+
   programs.neovim = {
     enable = true;
     package = pkgs.neovim-unwrapped;
@@ -24,6 +26,8 @@
         vim.cmd([[
           let g:sqlite_clib_path = '${pkgs.sqlite.out}/lib/${if pkgs.stdenv.isDarwin then "libsqlite3.dylib" else "libsqlite3.so"}'
         ]])
+        -- glow binary path for glow.nvim
+        vim.g.glow_binary_path = '${lib.getExe pkgs.glow}'
       ''
 
 
