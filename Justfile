@@ -21,6 +21,9 @@ pre-init-age:
 post-init-zsh:
 	./bin/common/post-init-zsh.sh
 [private]
+post-init-pm2:
+	./bin/common/post-init-pm2.sh
+[private]
 darwin-post-install-pkgs-dev:
 	./bin/darwin/post-install-pkgs-dev.sh
 [private]
@@ -79,9 +82,9 @@ switch-android:
 # -------------------- all-in-one command --------------------
 
 [private]
-init-vpn-server: pre-init-nix pre-init-age (switch-home "vpn-server")
+init-vpn-server: pre-init-nix pre-init-age (switch-home "vpn-server") post-init-pm2
 [private]
-init-vpn-relayer: pre-init-nix pre-init-age (switch-home "vpn-relayer")
+init-vpn-relayer: pre-init-nix pre-init-age (switch-home "vpn-relayer") post-init-pm2
 [private]
 init-drive-server: pre-init-nix-cn pre-init-age (switch-home "drive-server")
 [private]
