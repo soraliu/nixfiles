@@ -55,11 +55,21 @@ switch-home profile="ide":
 	just record-switch "just switch-home {{profile}}"
 	nix run .#home-manager -- switch --show-trace --flake .#{{profile}} -b backup
 
+# 推荐路径: nh home switch (含 diff/build tree/confirm); 需 nh 已装
+switch-home-nh profile="ide":
+	just record-switch "just switch-home-nh {{profile}}"
+	nh home switch . -c {{profile}}
+
 # -------------------- NixOS-WSL --------------------
 # profile: ide, wsl-infer
 switch-nixos profile="ide":
 	just record-switch "just switch-nixos {{profile}}"
 	sudo nixos-rebuild switch --show-trace --flake .#{{profile}}
+
+# 推荐路径: nh os switch (含 diff/build tree/confirm); 需 nh 已装
+switch-nixos-nh profile="ide":
+	just record-switch "just switch-nixos-nh {{profile}}"
+	nh os switch . -H {{profile}}
 
 # -------------------- Ubuntu WSL2 --------------------
 # profile: ide, wsl-infer  (alias for switch-home)
@@ -69,10 +79,16 @@ switch-ubuntu profile="ide":
 
 # -------------------- Darwin --------------------
 # user: soraliu, soraliu-mirror, clawbot
-# New nix-darwin requires root activation; env PATH preserves nix paths; --extra-experimental-features solves first-time activation chicken-egg issue
+# 第一次升级到 Determinate Nix 后推荐走 switch-darwin-nh (更好的 diff/UI)
+# switch-darwin: 兜底路径, upstream→Determinate 过渡期可用, env PATH preserves nix paths, --extra-experimental-features 解决鸡蛋问题
 switch-darwin user="soraliu":
 	just record-switch "just switch-darwin {{user}}"
 	sudo env PATH="$PATH" nix --extra-experimental-features 'nix-command flakes' run .#nix-darwin -- switch --show-trace --flake .#{{user}}
+
+# 推荐路径: nh darwin switch (含 diff、build tree、confirm); 需 nh 已装 (home-manager 首次 switch 后自然具备)
+switch-darwin-nh user="soraliu":
+	just record-switch "just switch-darwin-nh {{user}}"
+	nh darwin switch . -H {{user}}
 
 # -------------------- Android --------------------
 switch-android:

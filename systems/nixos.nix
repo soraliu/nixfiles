@@ -7,10 +7,8 @@ in
     ../pkgs/sops
   ];
 
-  nix.settings = {
-    experimental-features = [ "nix-command" "flakes" ];
-    trusted-users = [ homeUser "root" "@wheel" ];
-  };
+  # 注: experimental-features / trusted-users 已迁到 pkgs/determinate 的 customSettings
+  # determinateNix.enable = true 会自动设置 nix.enable = false, nix.settings.* 不再起作用
 
 
   environment.shells = [ pkgs.zsh ];

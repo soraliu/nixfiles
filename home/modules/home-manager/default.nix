@@ -4,6 +4,10 @@ let
   isDarwin = builtins.match ".*-darwin" system != null;
 in
 {
+  imports = [
+    ../sys/nix-hygiene
+  ];
+
   # Let Home Manager install and manage itself.
   programs.home-manager.enable = true;
   home.stateVersion = versions.version;

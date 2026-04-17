@@ -10,7 +10,23 @@
   name = "sops-decrypted-files";
   version = "0.0.1";
 
-  src = ../..;
+  # 仅把 secrets/ 子树作为 src, 避免整个仓库被复制到 store
+  # 并消除 Determinate Nix lazy-trees 的 "inefficient double copy" 警告
+  src = builtins.path {
+    path = ../..;
+    name = "nixfiles-secrets";
+    filter = path: _type:
+      let
+        rootPath = toString ../..;
+        pathStr = toString path;
+        relPath = pkgs.lib.removePrefix (rootPath + "/") pathStr;
+      in
+        # 保留根目录本身 (不加上会直接被 filter 拒绝)
+        pathStr == rootPath
+        # 保留 secrets 目录和其下所有内容
+        || relPath == "secrets"
+        || pkgs.lib.hasPrefix "secrets/" relPath;
+  };
 
   buildInputs = with pkgs; [ age sops ];
 

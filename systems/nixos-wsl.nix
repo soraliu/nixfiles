@@ -10,6 +10,9 @@
 {
   imports = [
     ./nixos-wsl-base.nix
+    ../pkgs/nix-store/optimise.nix
+    # Determinate Nix 3.x: lazy-trees + parallel-eval + customSettings
+    ../pkgs/determinate
   ];
 
   # 解决 extra-sandbox-paths 的权限问题, 是个鸡蛋问题, 必须先执行 nixos-wsl-base 声明当前用户为 trusted user, 然后才能访问 /tmp/.age

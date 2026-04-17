@@ -75,6 +75,12 @@
       inputs.flake-utils.follows = "flake-utils";
     };
 
+    # Determinate Nix 3.x (lazy-trees + parallel-eval)
+    # 官方建议 NOT to set inputs.nixpkgs.follows — 会触发 FlakeHub cache miss
+    determinate = {
+      url = "https://flakehub.com/f/DeterminateSystems/determinate/3";
+    };
+
   };
 
   outputs =
@@ -88,6 +94,7 @@
     , nix-on-droid
     , claude-code
     , codex-cli
+    , determinate
     , ...
     }: with flake-utils.lib; eachDefaultSystem (system:
     let
@@ -181,6 +188,9 @@
         specialArgs = (mkSharedArgs homeUser) // extraSpecialArgs;
 
         modules = log (builtins.filter (el: el != "") (modules ++ [
+          # Determinate Nix 3.x runtime (lazy-trees + parallel-eval)
+          # 配套 pkgs/determinate 模块启用 determinateNix.enable
+          determinate.nixosModules.default
           home-manager.nixosModules.home-manager
           {
             home-manager.useGlobalPkgs = true;
@@ -208,6 +218,9 @@
         specialArgs = mkSharedArgs homeUser;
 
         modules = log (modules ++ [
+          # Determinate Nix 3.x runtime (lazy-trees + parallel-eval)
+          # 配套 pkgs/determinate 模块启用 determinateNix.enable
+          determinate.darwinModules.default
           home-manager.darwinModules.home-manager
           {
             home-manager.useGlobalPkgs = true;
