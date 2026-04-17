@@ -1,3 +1,3 @@
 if [[ "$WINDSURF_CASCADE_TERMINAL" == "1" ]]; then
-  exec bash
+  typeset -g POWERLEVEL9K_INSTANT_PROMPT=off
 fi

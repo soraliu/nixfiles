@@ -14,7 +14,6 @@
       };
 
       initContent = builtins.concatStringsSep "\n\n\n" [
-        (builtins.readFile ./ai-ide.zsh)
         (builtins.readFile ./init.zsh)
         (builtins.readFile ./fn.zsh)
         (builtins.readFile ./bind-keys.zsh)
@@ -28,6 +27,7 @@
 
         (builtins.readFile ./zinit.zsh)
         (builtins.readFile ./alias.zsh)
+        (builtins.readFile ./ai-ide.zsh)
       ];
     };
 
