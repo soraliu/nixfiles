@@ -21,17 +21,11 @@ done
 
 case $region in
   global)
-    # global
     download_url="https://releases.nixos.org/nix/nix-2.28.2/install"
-    nix_version_25=https://nixos.org/channels/nixos-25.11
-    nix_version_unstable=https://nixos.org/channels/nixos-unstable
     substituters="https://cache.nixos.org https://nix-community.cachix.org"
     ;;
   cn)
-    # cn
     download_url="https://mirrors.tuna.tsinghua.edu.cn/nix/latest/install"
-    nix_version_25=https://mirrors.tuna.tsinghua.edu.cn/nix-channels/nixos-25.11
-    nix_version_unstable=https://mirrors.tuna.tsinghua.edu.cn/nix-channels/nixos-unstable
     substituters="https://mirrors.tuna.tsinghua.edu.cn/nix-channels/store https://mirror.sjtu.edu.cn/nix-channels/store https://cache.nixos.org https://nix-community.cachix.org"
     ;;
   *)
@@ -95,36 +89,9 @@ else
   echo "Info: extra-sandbox-paths already configured! Skip."
 fi
 
-# trusted substituters
-trusted_settings="{\"extra-trusted-public-keys\":{\"nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs=\":true},\"substituters\":{\"${substituters}\":true}}"
-path_to_trusted_settings=$HOME/.local/share/nix/trusted-settings.json
-if [ ! -f "$path_to_trusted_settings" ]; then
-  mkdir -p $(dirname $path_to_trusted_settings)
-  echo "$trusted_settings" >> $path_to_trusted_settings
-else
-  echo "Info: ${path_to_trusted_settings} has already existed! Skip."
-fi
-
-# Specify the version of nixpkgs
-nix_bin=$([ -z "$(command -v nix-channel)" ] && echo "/nix/var/nix/profiles/default/bin/nix-channel" || echo "nix-channel")
-function set_nix_channel() {
-  local channel_name=$1
-  local channel_url=$2
-
-  if [[ "$(${nix_bin} --list | grep "$channel_name" | cut -d ' ' -f 2)" == "$channel_url" ]]; then
-    echo "Info: ${channel_name} ${channel_url} already exists! Skip."
-  else
-    echo "Info: ${channel_name} ${channel_url} does not exist! Updating..."
-    ${nix_bin} --remove "$channel_name"
-    ${nix_bin} --add "$channel_url" "$channel_name"
-    ${nix_bin} --update
-  fi
-}
-set_nix_channel "nixos-25.11" $nix_version_25
-set_nix_channel nixpkgs $nix_version_unstable
-
+# Link nix to /usr/local/bin for scripts that depend on this path
 path_to_nix_link=/usr/local/bin
-if [ ! -d /usr/local/bin ]; then
+if [ ! -d "$path_to_nix_link" ]; then
   path_to_nix_link=/usr/bin
 fi
 

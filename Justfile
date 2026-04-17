@@ -134,23 +134,19 @@ nix-hash url:
 	@nix-hash --type sha256 --to-sri $(nix-prefetch-url "{{url}}" 2>/dev/null | tail -n1) 2>/dev/null
 
 # -------------------- bin --------------------
-[private]
-sops file args:
-  sops -d {{file}} | bash -s -- {{args}}
-
 # init linux bbr/bbrplus + fq/cake
 bin-bbr:
 	./bin/vpn-server/bbr.sh
 
+[private]
+sops file args:
+  sops -d {{file}} | bash -s -- {{args}}
+
 # @params: ["frpc", "frpc-drive"], rebuild frpc docker image & restart frpc on remote server
+# @deprecated: use vpn mesh instead
 bin-restart-frpc frpc="frpc":
   @just sops ./secrets/bin/x86_64-linux/frp/restart-frpc.enc.sh "{{frpc}}"
 
 # -------------------- flake --------------------
 update-unstable-pkg:
   nix flake update nixpkgs-unstable
-
-
-# -------------------- ai --------------------
-vllm-serve:
-    cd home/modules/ai/vllm/models && nix run .#vllm-glm4-flash
