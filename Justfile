@@ -9,11 +9,8 @@ default:
 # -------------------- pre & post scripts --------------------
 
 [private]
-pre-init-nix:
-	./bin/common/pre-init-nix.sh
-[private]
-pre-init-nix-cn:
-	./bin/common/pre-init-nix.sh -r cn
+pre-init-nix region="":
+	./bin/common/pre-init-nix.sh {{ if region != "" { "-r " + region } else { "" } }}
 [private]
 pre-init-age:
 	./bin/common/pre-init-age.sh
@@ -42,8 +39,6 @@ darwin-uninstall-pkgs:
 mobile-pre-init-nix-on-doird:
 	./bin/android/pre-init-nix-on-droid.sh
 
-
-
 # -------------------- home-manager - standalone --------------------
 # profile: ide, ide-mirror, ide-cn, ide-mobile, wsl-infer, clawbot, vpn-server, drive-server, eject
 [private]
@@ -71,12 +66,6 @@ switch-nixos-nh profile="ide":
 	just record-switch "just switch-nixos-nh {{profile}}"
 	nh os switch . -H {{profile}}
 
-# -------------------- Ubuntu WSL2 --------------------
-# profile: ide, wsl-infer  (alias for switch-home)
-switch-ubuntu profile="ide":
-	just record-switch "just switch-ubuntu {{profile}}"
-	nix run .#home-manager -- switch --show-trace --flake .#{{profile}} -b backup
-
 # -------------------- Darwin --------------------
 # user: soraliu, soraliu-mirror, clawbot
 # 第一次升级到 Determinate Nix 后推荐走 switch-darwin-nh (更好的 diff/UI)
@@ -102,11 +91,11 @@ init-vpn-server: pre-init-nix pre-init-age (switch-home "vpn-server") post-init-
 [private]
 init-vpn-relayer: pre-init-nix pre-init-age (switch-home "vpn-relayer") post-init-pm2
 [private]
-init-drive-server: pre-init-nix-cn pre-init-age (switch-home "drive-server")
+init-drive-server: (pre-init-nix "cn") pre-init-age (switch-home "drive-server")
 [private]
 init-ide: pre-init-nix pre-init-age (switch-home "ide") post-init-zsh
 [private]
-init-ide-cn: pre-init-nix-cn pre-init-age (switch-home "ide-cn") post-init-zsh
+init-ide-cn: (pre-init-nix "cn") pre-init-age (switch-home "ide-cn") post-init-zsh
 [private]
 init-wsl-nixos: pre-init-nix pre-init-age (switch-nixos "default") post-init-zsh
 [private]
@@ -114,9 +103,9 @@ init-wsl-nixos-ide: pre-init-nix pre-init-age (switch-nixos "ide") post-init-zsh
 [private]
 init-wsl-nixos-infer: pre-init-nix pre-init-age (switch-nixos "wsl-infer") post-init-zsh
 [private]
-init-wsl-ubuntu: pre-init-nix pre-init-age (switch-ubuntu "ide") post-init-zsh
+init-wsl-ubuntu: pre-init-nix pre-init-age (switch-home "ide") post-init-zsh
 [private]
-init-wsl-ubuntu-infer: pre-init-nix pre-init-age (switch-ubuntu "wsl-infer") post-init-zsh
+init-wsl-ubuntu-infer: pre-init-nix pre-init-age (switch-home "wsl-infer") post-init-zsh
 [private]
 init-ide-on-darwin-dev: pre-init-nix pre-init-age (switch-darwin "soraliu") darwin-post-install-pkgs-dev
 [private]
@@ -144,7 +133,7 @@ eject os="darwin":
 nixd:
 	nix eval --json --file .nixd.nix > .nixd.json
 
-# e.g. $ make nix-hash url=https://github.com/soraliu/clash_singbox-tools/raw/main/ClashPremium-release/clashpremium-linux-amd64
+# e.g. $ just nix-hash url=https://github.com/soraliu/clash_singbox-tools/raw/main/ClashPremium-release/clashpremium-linux-amd64
 [private]
 nix-hash url:
 	@nix-hash --type sha256 --to-sri $(nix-prefetch-url "{{url}}" 2>/dev/null | tail -n1) 2>/dev/null
