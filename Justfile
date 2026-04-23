@@ -55,6 +55,16 @@ switch-home-nh profile="ide":
 	just record-switch "just switch-home-nh {{profile}}"
 	nh home switch . -c {{profile}}
 
+# 本地构建 + 远程执行 home-manager switch
+# 用法: just switch-home-remote vpn-relayer root@1.2.3.4
+switch-home-remote profile host:
+	just record-switch "just switch-home-remote {{profile}} {{host}}"
+	nix run -L .#home-manager -- switch \
+		--flake .#{{profile}} \
+		--target-host {{host}} \
+		--use-remote-sudo \
+		-b backup
+
 # -------------------- NixOS-WSL --------------------
 # profile: ide, wsl-infer
 switch-nixos profile="ide":
@@ -142,6 +152,9 @@ nix-hash url:
 # init linux bbr/bbrplus + fq/cake
 bin-bbr:
 	./bin/vpn-server/bbr.sh
+
+bin-init-ssh host="root@10.1.1.1":
+	./bin/common/init-ssh.sh {{host}}
 
 [private]
 sops file args:

@@ -29,6 +29,7 @@
     curl      # curl
     grpcurl   # grpcurl
     iperf3    # speed bandwidth test
+    sshpass   # non-interactive SSH password auth (init-ssh.sh)
 
     # makefile
     gnumake   # provide make
