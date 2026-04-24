@@ -55,8 +55,9 @@
   };
 
   # Determinate Nixd 的 JSON 配置 (/etc/determinate/config.json)
-  # - garbageCollector.strategy = "disabled": 交给 nh clean 管, 避免双重 GC
-  environment.etc."determinate/config.json".text = builtins.toJSON {
+  # 使用官方 determinateNixd API 生成完整 config.json (包含 builder + garbageCollector)
+  # 避免用 environment.etc 覆写导致与 installer 生成的 builder 字段冲突
+  determinateNix.determinateNixd = {
     garbageCollector.strategy = "disabled";
   };
 }
