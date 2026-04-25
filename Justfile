@@ -55,15 +55,21 @@ switch-home-nh profile="ide":
 	just record-switch "just switch-home-nh {{profile}}"
 	nh home switch . -c {{profile}}
 
-# 本地构建 + 远程执行 home-manager switch
+# 本地构建 + nix copy 到远端 + 远程执行 activationPackage/activate
 # 用法: just switch-home-remote vpn-relayer root@1.2.3.4
 switch-home-remote profile host:
 	just record-switch "just switch-home-remote {{profile}} {{host}}"
-	nix run -L .#home-manager -- switch \
-		--flake .#{{profile}} \
-		--target-host {{host}} \
-		--use-remote-sudo \
-		-b backup
+	local_system="$(nix eval --raw --impure --expr builtins.currentSystem)"; \
+		remote_system="$(ssh {{host}} nix eval --raw --impure --expr builtins.currentSystem)"; \
+		if [ "$local_system" != "$remote_system" ]; then \
+			echo "local system ($local_system) != remote system ($remote_system)" >&2; \
+			echo "refuse to build locally for a different remote architecture" >&2; \
+			exit 1; \
+		fi; \
+		nix build -L ".#packages.$local_system.homeConfigurations.{{profile}}.activationPackage"; \
+		store_path="$(nix path-info ./result)"; \
+		nix copy --to "ssh-ng://{{host}}" "$store_path"; \
+		ssh {{host}} "$store_path/activate"
 
 # -------------------- NixOS-WSL --------------------
 # profile: ide, wsl-infer
