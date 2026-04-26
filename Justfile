@@ -70,7 +70,7 @@ switch-home-remote profile host:
 		nix build -L ".#packages.$local_system.homeConfigurations.{{profile}}.activationPackage"; \
 		store_path="$(nix path-info ./result)"; \
 		nix copy --no-check-sigs --to "ssh-ng://{{host}}" "$store_path"; \
-		ssh {{host}} "$store_path/activate"
+		ssh {{host}} "HOME_MANAGER_BACKUP_EXT=backup $store_path/activate"
 
 # -------------------- NixOS-WSL --------------------
 # profile: ide, wsl-infer

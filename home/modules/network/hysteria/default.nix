@@ -1,10 +1,19 @@
-{ unstablePkgs, config, ... }: let
+{ pkgs, unstablePkgs, lib, config, ... }: let
 in {
   config = {
     home = {
       packages = with unstablePkgs; [
         hysteria
       ];
+
+      activation.tuneHysteriaUdpBuffers = lib.hm.dag.entryBefore [ "initPm2" ] ''
+        ${pkgs.procps}/bin/sysctl -w \
+          net.core.rmem_max=67108864 \
+          net.core.wmem_max=67108864 \
+          net.core.rmem_default=67108864 \
+          net.core.wmem_default=67108864 \
+          >/dev/null || true
+      '';
     };
 
     programs = {
@@ -20,6 +29,7 @@ in {
           to = ".config/hysteria/bing.com.key";
         }];
       };
+
       pm2 = {
         services = [{
           name = "hysteria";
