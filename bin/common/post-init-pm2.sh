@@ -14,3 +14,6 @@ fi
 
 echo "[post-init-pm2] Running: sudo $PM2_BIN startup"
 sudo "$PM2_BIN" startup
+
+echo "[post-init-pm2] Running: $PM2_BIN save"
+"$PM2_BIN" save

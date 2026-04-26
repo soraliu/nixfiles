@@ -59,6 +59,7 @@ switch-home-nh profile="ide":
 # 用法: just switch-home-remote vpn-relayer root@1.2.3.4
 switch-home-remote profile host:
 	just record-switch "just switch-home-remote {{profile}} {{host}}"
+	set -e; \
 	local_system="$(nix eval --raw --impure --expr builtins.currentSystem)"; \
 		remote_system="$(ssh {{host}} nix eval --raw --impure --expr builtins.currentSystem)"; \
 		if [ "$local_system" != "$remote_system" ]; then \
@@ -68,7 +69,7 @@ switch-home-remote profile host:
 		fi; \
 		nix build -L ".#packages.$local_system.homeConfigurations.{{profile}}.activationPackage"; \
 		store_path="$(nix path-info ./result)"; \
-		nix copy --to "ssh-ng://{{host}}" "$store_path"; \
+		nix copy --no-check-sigs --to "ssh-ng://{{host}}" "$store_path"; \
 		ssh {{host}} "$store_path/activate"
 
 # -------------------- NixOS-WSL --------------------
