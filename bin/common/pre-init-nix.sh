@@ -29,7 +29,38 @@
 #   ./bin/common/pre-init-nix.sh                # 默认 region=global
 #   ./bin/common/pre-init-nix.sh --region cn    # 加中国镜像 (清华/交大/USTC)
 
-set -e
+set -euo pipefail
+
+run_as_root() {
+  if [ "${EUID:-$(id -u)}" -eq 0 ]; then
+    "$@"
+  else
+    sudo "$@"
+  fi
+}
+
+ensure_curl() {
+  if command -v curl >/dev/null 2>&1; then
+    return 0
+  fi
+
+  echo "Info: curl 未安装，尝试用系统包管理器安装"
+  if command -v apt-get >/dev/null 2>&1; then
+    run_as_root apt-get update
+    run_as_root apt-get install -y curl ca-certificates
+  elif command -v dnf >/dev/null 2>&1; then
+    run_as_root dnf install -y curl ca-certificates
+  elif command -v yum >/dev/null 2>&1; then
+    run_as_root yum install -y curl ca-certificates
+  elif command -v zypper >/dev/null 2>&1; then
+    run_as_root zypper --non-interactive install curl ca-certificates
+  elif command -v pacman >/dev/null 2>&1; then
+    run_as_root pacman -Sy --noconfirm curl ca-certificates
+  else
+    echo "Error: curl 未安装，且未找到支持的包管理器；请先手动安装 curl 和 ca-certificates" >&2
+    exit 1
+  fi
+}
 
 # ---------- args ----------
 region=global
@@ -80,11 +111,13 @@ else
   case "$os_type" in
     Darwin)
       echo "Info: macOS — 使用 Determinate.pkg (官方推荐路径)"
+      ensure_curl
       curl -fsSL -o /tmp/Determinate.pkg "https://install.determinate.systems/determinate-pkg/stable/Universal"
-      sudo installer -pkg /tmp/Determinate.pkg -target /
+      run_as_root installer -pkg /tmp/Determinate.pkg -target /
       ;;
     Linux)
       echo "Info: Linux — 使用 Determinate 一键安装器"
+      ensure_curl
       curl -fsSL https://install.determinate.systems/nix | sh -s -- install --no-confirm
       ;;
   esac
@@ -104,11 +137,15 @@ write_user_nix_conf() {
   local target_path="$1"
   local use_sudo="$2"  # "sudo" or ""
 
-  local runner=""
-  [ "$use_sudo" = "sudo" ] && runner="sudo"
+  if [ "$use_sudo" = "sudo" ]; then
+    run_as_root mkdir -p "$(dirname "$target_path")"
+    write_cmd=(run_as_root tee "$target_path")
+  else
+    mkdir -p "$(dirname "$target_path")"
+    write_cmd=(tee "$target_path")
+  fi
 
-  $runner mkdir -p "$(dirname "$target_path")"
-  $runner tee "$target_path" > /dev/null <<EOF
+  "${write_cmd[@]}" > /dev/null <<EOF
 # Managed by bin/common/pre-init-nix.sh (region=$region)
 # 每次运行本脚本会完整覆盖此文件. 手动修改会被下次运行覆盖.
 #
@@ -150,7 +187,8 @@ fi
 if [ "$needs_vps_bootstrap" = "yes" ]; then
   echo "Info: 纯 Linux VPS (无 NixOS) — 写 /etc/nix/nix.custom.conf 补 sandbox + pubkey"
 
-  sudo tee /etc/nix/nix.custom.conf > /dev/null <<'EOF'
+  run_as_root mkdir -p /etc/nix
+  run_as_root tee /etc/nix/nix.custom.conf > /dev/null <<'EOF'
 # Managed by bin/common/pre-init-nix.sh (pure Linux VPS fallback)
 # Darwin / NixOS 场景不会执行此写入, 由 pkgs/determinate/default.nix 的 customSettings 管理.
 #
@@ -164,7 +202,7 @@ EOF
 
   # Determinate 的 /etc/nix/nix.conf 默认 !include nix.custom.conf, 改完需重启 daemon
   echo "Info: 重启 nix-daemon 让 extra-sandbox-paths 对 build sandbox 生效"
-  if sudo systemctl restart nix-daemon 2>/dev/null; then
+  if run_as_root systemctl restart nix-daemon 2>/dev/null; then
     echo "Info: systemctl restart nix-daemon 成功"
   else
     echo "Warn: systemctl 不可用或服务名不匹配, 请手动重启 nix-daemon"
@@ -186,7 +224,7 @@ else
     /run/current-system/sw/bin
   do
     if [ -e "$candidate/nix" ]; then
-      sudo ln -sf "$candidate/nix" "${path_to_nix_link}/nix"
+      run_as_root ln -sf "$candidate/nix" "${path_to_nix_link}/nix"
       echo "Info: linked $candidate/nix → ${path_to_nix_link}/nix"
       break
     fi
