@@ -14,13 +14,23 @@ let
   #               之前的 "switch 后 VM 损坏" 事故就是因为重复触发 start 中断了 ignition first-boot)
   #
   # timeout 15 防止 machine list 因残留 socket/lock 卡死时传导到 launchd.
+  # 注意:
+  # - list 失败不能当成 machine 不存在, 否则会在已有 VM 上误跑 init, 导致自启动失败。
+  # - podman 会把默认 machine 的 .Name 渲染成 podman-machine-default*, 解析时要兼容这个选中标记。
   podmanMachineUp = pkgs.writeShellScript "podman-machine-up" ''
     set -u
     export PATH="${lib.makeBinPath (with pkgs; [ openssh podman coreutils ])}:$PATH"
 
     # 用 Name|Running 格式一次性拿到存在性+运行状态
-    state=$(timeout 15 ${podmanBin} machine list --format '{{.Name}}|{{.Running}}' 2>/dev/null \
-              | grep '^podman-machine-default|' || true)
+    list_output=$(timeout 15 ${podmanBin} machine list --format '{{.Name}}|{{.Running}}' 2>&1)
+    list_status=$?
+    if [ "$list_status" -ne 0 ]; then
+      echo "[podman-machine-up] machine list 失败, 不执行 init 避免破坏已有 VM" >&2
+      echo "$list_output" >&2
+      exit "$list_status"
+    fi
+
+    state=$(printf '%s\n' "$list_output" | grep -E '^podman-machine-default\*?\|' || true)
 
     if [ -z "$state" ]; then
       echo "[podman-machine-up] machine 不存在, init + start" >&2
@@ -66,14 +76,18 @@ in
     fi
   '';
 
-  # 登录时确保 podman machine 已初始化并启动
-  # KeepAlive = false: `machine start` 成功后会正常退出, 若 KeepAlive=true 会被 launchd 紧循环重启.
+  # 登录时确保 podman machine 已初始化并启动。
+  # AbandonProcessGroup=true: `podman machine start` 会派生 vfkit/gvproxy 后退出；
+  # 若 launchd 回收整个进程组, VM 会在 start 显示成功后立刻被杀掉。
+  # KeepAlive SuccessfulExit=false: 启动成功后正常退出不重启；临时失败时交给 launchd 低频重试。
   launchd.agents.podman-machine-start = {
     enable = true;
     config = {
+      AbandonProcessGroup = true;
       ProgramArguments = [ "${podmanMachineUp}" ];
       RunAtLoad = true;
-      KeepAlive = false;
+      KeepAlive = { SuccessfulExit = false; };
+      ThrottleInterval = 30;
       StandardOutPath = "/tmp/podman-machine-start.out.log";
       StandardErrorPath = "/tmp/podman-machine-start.err.log";
     };
