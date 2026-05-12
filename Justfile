@@ -163,7 +163,6 @@ bin-bbr:
 bin-init-ssh host="root@10.1.1.1":
 	./bin/common/init-ssh.sh {{host}}
 
-[private]
 sops file args:
   sops -d {{file}} | bash -s -- {{args}}
 
