@@ -54,7 +54,7 @@
         start_suspended true
       }
     }
-    pane command="htop" size="40%" focus=true {}
+    pane command="btop" size="40%" focus=true {}
   '';
   codingLayout = ''
     layout {
