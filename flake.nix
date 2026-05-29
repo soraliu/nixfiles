@@ -244,6 +244,7 @@
         home-manager = home-manager.packages.${system}.default;
         nix-darwin = nix-darwin.packages.${system}.default;
         nix-on-droid = nix-on-droid.packages.${system};
+        nh = pkgs.nh;
 
         homeConfigurations = {
           # soraliu — default user

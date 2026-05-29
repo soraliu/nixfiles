@@ -233,4 +233,4 @@ fi
 
 echo
 echo "Info: pre-init-nix.sh 完成 (region=$region)"
-echo "      新开 shell 后可 just switch-darwin <user> / just switch-home <profile>"
+echo "      可通过 just switch-darwin <user> / just switch-home <profile> 运行 pinned nh switch"
