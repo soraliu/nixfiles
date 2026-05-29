@@ -281,7 +281,6 @@
           "clawbot" = mkDarwin {
             modules = [ ./systems/darwin.nix { ids.gids.nixbld = 350; } ];
             homeImports = homeModules.clawbot;
-            homeUser = "clawbot";
             extraSpecialArgs = mkHomeExtraSpecialArgs { secretsUser = "clawbot"; };
           };
         };

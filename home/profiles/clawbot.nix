@@ -13,8 +13,8 @@ in
     ../modules/sys/container
     ../modules/sys/shell
 
-    ../modules/ai/openclaw
     ../modules/ai/cc
+    ../modules/ai/codex
 
     ../modules/ide/git
     ../modules/ide/zsh
