@@ -295,4 +295,4 @@ fi
 
 echo
 echo "Info: pre-init-nix.sh 完成 (region=$region)"
-echo "      可通过 just switch-darwin <user> / just switch-home <profile> 运行 pinned nh switch"
+echo "      可通过 just switch-darwin <configuration> / just switch-home <profile> 运行 pinned nh switch"

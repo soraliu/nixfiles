@@ -20,7 +20,7 @@
 #   1) ./bin/common/nix-migrate.sh      # 本脚本
 #   2) 新开 shell
 #   3) ./bin/common/pre-init-nix.sh     # 写 bootstrap ~/.config/nix/nix.conf
-#   4) just switch-darwin <user>        # 或 switch-nixos <profile> / switch-ubuntu <profile>
+#   4) just switch-darwin <configuration> # 或 switch-nixos <profile> / switch-ubuntu <profile>
 
 set -e
 
