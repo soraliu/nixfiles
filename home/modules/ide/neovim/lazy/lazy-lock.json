@@ -283,7 +283,10 @@
     "branch": "main",
     "commit": "928d0c2dc9606e01e2cc547196f48d2eaecf58e5"
   },
-  "telescope.nvim": null,
+  "telescope.nvim": {
+    "branch": "master",
+    "commit": "a0bbec21143c7bc5f8bb02e0005fa0b982edc026"
+  },
   "tint.nvim": {
     "branch": "master",
     "commit": "586e87f00c8b0f5e857cefe10839e41f3e8c6d01"
