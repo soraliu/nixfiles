@@ -74,10 +74,10 @@ switch-nixos profile="ide":
 	nix run .#nh -- os switch . -H {{profile}}
 
 # -------------------- Darwin --------------------
-# user: soraliu, soraliu-mirror, clawbot
-switch-darwin user="soraliu":
-	just record-switch "just switch-darwin {{user}}"
-	nix run .#nh -- darwin switch . -H {{user}}
+# configuration: soraliu, soraliu-mirror, clawbot
+switch-darwin configuration="soraliu":
+	just record-switch "just switch-darwin {{configuration}}"
+	nix run .#nh -- darwin switch . -H {{configuration}}
 
 # -------------------- Android --------------------
 switch-android:
