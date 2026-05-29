@@ -195,6 +195,7 @@
           {
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
+            home-manager.backupFileExtension = "backup";
             home-manager.extraSpecialArgs = (mkSharedArgs homeUser) // { inherit system; } // extraSpecialArgs;
 
             home-manager.users.${homeUser} = {
@@ -225,6 +226,7 @@
           {
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = false;
+            home-manager.backupFileExtension = "backup";
             home-manager.extraSpecialArgs = (mkSharedArgs homeUser) // { inherit system; } // extraSpecialArgs;
 
             # useUserPackages = false 时 home-manager 的 common.nix 会读取 config.users.users.${name}
