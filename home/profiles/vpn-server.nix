@@ -6,6 +6,7 @@
     ../modules/sys/network
 
     ../modules/network/hysteria
+    ../modules/network/xray
   ];
 
   programs.bash.enable = true;
