@@ -72,6 +72,7 @@ RUN opkg install nikki luci-app-nikki luci-i18n-nikki-zh-cn
 # Configure Nikki proxy mode and access control
 RUN uci set nikki.proxy.tcp_mode='tproxy' && \
     uci set nikki.proxy.udp_mode='tproxy' && \
+    uci set nikki.proxy.bypass_china_mainland_ip='1' && \
     uci set nikki.mixin.ipv6='0' && \
     uci set nikki.mixin.dns_ipv6='0' && \
     uci set nikki.@authentication[0].enabled='0' && \
