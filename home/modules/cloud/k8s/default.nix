@@ -14,6 +14,7 @@
         k9s
         yq-go
         minio-client
+        doctl
       ]) ++ (with unstablePkgs; [
         fluxcd
         kubectl-cnpg
