@@ -2,11 +2,6 @@
   config = {
     home = {
       packages = (with pkgs; [
-        kubectl
-        kubectl-explore
-        kubectl-node-shell
-        kubectl-ktop
-        kubernetes-helm
         awscli2
         redis
         istioctl
@@ -14,10 +9,16 @@
         k9s
         yq-go
         minio-client
-        doctl
       ]) ++ (with unstablePkgs; [
         fluxcd
+        kubectl
+        kubectl-explore
+        kubectl-node-shell
+        kubectl-view-allocations
+        kubectl-ktop
+        kubernetes-helm
         kubectl-cnpg
+        doctl
       ]);
     };
   };
