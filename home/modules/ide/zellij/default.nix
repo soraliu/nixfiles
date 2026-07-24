@@ -66,6 +66,21 @@
       }
     }
   '';
+  agentLayout = ''
+    layout {
+      tab hide_floating_panes=true {
+        pane split_direction="vertical" {
+          pane size="50%" command="$HOME_PROFILE_DIRECTORY/bin/nvim" focus=true {}
+          pane size="50%" split_direction="horizontal" {
+            pane size="50%" {}
+            pane size="50%" {}
+          }
+        }
+
+        ${pluginTpl}
+      }
+    }
+  '';
   metricsLayout = ''
     layout {
       tab cwd="~" name="Metrics" hide_floating_panes=true {
@@ -101,6 +116,7 @@ in {
   home = {
     file = {
       ".config/zellij/config.kdl".source              = ./config.kdl;
+      ".config/zellij/layouts/agent.kdl".text         = agentLayout;
       ".config/zellij/layouts/default.kdl".text       = defaultLayout;
       ".config/zellij/layouts/coding.kdl".text        = codingLayout;
       ".config/zellij/layouts/metrics.kdl".text       = metricsLayout;

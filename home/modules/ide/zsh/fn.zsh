@@ -6,6 +6,12 @@ zellij-layout-coding() {
   zellij action new-tab --layout coding --name "$(basename ${path_to_cwd})" --cwd="${path_to_cwd}"
 }
 
+zellij-layout-agent() {
+  local path_to_cwd=${1:-$PWD}
+  zellij action rename-tab "$(basename "${path_to_cwd}")"
+  (cd -- "${path_to_cwd}" && zellij action override-layout --apply-only-to-active-tab "$ZELLIJ_CONFIG_DIR/layouts/agent.kdl")
+}
+
 proxy_on() {
   export http_proxy=http://127.0.0.1:7890
   export https_proxy=http://127.0.0.1:7890
