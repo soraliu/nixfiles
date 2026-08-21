@@ -1,0 +1,4 @@
+interface:
+  display_name: "升级 Nix Input"
+  short_description: "升级指定 flake input，并总结核心新功能与解决的问题"
+  default_prompt: "使用 $upgrade-nix-input 升级 codex-cli，并说明核心新功能、升级原因和解决的问题。"
