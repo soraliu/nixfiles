@@ -1,6 +1,6 @@
 ---
 name: upgrade-nix-input
-description: 升级本项目一个或多个指定的 Nix flake input，并验证受影响配置，基于上游官方发布说明总结升级后的核心新功能、升级原因和解决的问题。用户要求更新、升级或检查 codex、codex-cli、Claude Code、claude-code 或其他 flake input 时使用。
+description: 升级本项目一个或多个指定的 Nix flake input，并验证受影响配置，基于上游官方发布说明总结升级后的核心新功能、升级原因和解决的问题，将报告保存到 docs/nix-upgrade。用户要求更新、升级或检查 codex、codex-cli、Claude Code、claude-code 或其他 flake input 时使用。
 ---
 
 # 升级 Nix input
@@ -80,12 +80,26 @@ nix build '.#homeConfigurations.ide.activationPackage' --no-link
 - 没有值得称为核心新功能的版本时如实写“本次主要是修复或维护更新”，列出最重要的修复，不凑功能数量。
 - 同时检查 breaking changes（破坏性变更）、迁移要求和已知限制。
 
-## 提交与交付
+## 生成升级报告
 
-验证通过后按根 `AGENTS.md` 完成提交与交付。PR 和最终回复包含：
+仅在目标 input 的 lock 确实变化且验证通过后，为每个完成升级的 input 生成一份报告；input 已是最新或验证失败时不生成：
+
+```text
+docs/nix-upgrade/{input-name}-{new-version}.md
+```
+
+- `input-name` 使用 `flake.nix` 中的真实 input 名。
+- `new-version` 优先使用升级后的实际应用或包版本；无法取得时使用新锁定 revision 的前 12 位。将版本中不属于 `[A-Za-z0-9._+-]` 的字符替换为 `-`。
+- 将报告与 `flake.lock` 放在同一个升级提交和 PR 中。
+
+报告包含：
 
 1. 升级结果：input、锁定 revision、实际应用版本的旧值和新值。
-2. 核心新功能：每项给出为什么需要、解决的问题和官方来源。
-3. 变更范围：实际变化的文件和传递 lock 节点。
-4. 验证证据：执行的命令及结果。
-5. PR 链接，以及未执行的激活或 live 验证。
+2. 升级原因和核心新功能：每项说明为什么需要、解决的问题和官方来源。
+3. 兼容性：breaking changes（破坏性变更）、迁移要求和已知限制。
+4. 变更范围：实际变化的文件和传递 lock 节点。
+5. 验证证据：执行的命令及结果，以及未执行的激活或 live 验证。
+
+## 提交与交付
+
+生成升级报告后按根 `AGENTS.md` 完成提交与交付。PR 和最终回复简要说明升级结果，并提供报告路径和 PR 链接；详细内容引用报告，不重复复制。
