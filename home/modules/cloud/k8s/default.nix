@@ -10,6 +10,7 @@
         yq-go
         minio-client
       ]) ++ (with unstablePkgs; [
+        prometheus
         fluxcd
         kubectl
         kubectl-explore
