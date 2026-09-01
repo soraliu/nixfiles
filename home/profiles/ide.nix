@@ -19,6 +19,7 @@ in
     ../modules/ai/shell-gpt
     ../modules/ai/cc
     ../modules/ai/codex
+    ../modules/ai/pi
     ../modules/ai/context7
 
     ../modules/ide/git
