@@ -21,6 +21,13 @@
         kubectl-cnpg
         doctl
       ]);
+
+      file.".config/k9s/config.yaml" = {
+        source = ./config.yaml;
+        force = true;
+      };
+
+      sessionVariables.K9S_CONFIG_DIR = "${config.home.homeDirectory}/.config/k9s";
     };
   };
 }
