@@ -27,6 +27,11 @@
         force = true;
       };
 
+      file.".config/k9s/skins/dracula.yaml" = {
+        source = "${pkgs.k9s}/share/k9s/skins/dracula.yaml";
+        force = true;
+      };
+
       sessionVariables.K9S_CONFIG_DIR = "${config.home.homeDirectory}/.config/k9s";
     };
   };
