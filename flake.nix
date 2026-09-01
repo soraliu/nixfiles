@@ -75,6 +75,11 @@
       inputs.flake-utils.follows = "flake-utils";
     };
 
+    pi = {
+      url = "github:lukasl-dev/pi.nix";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+    };
+
     # Determinate Nix 3.x (lazy-trees + parallel-eval)
     # 官方建议 NOT to set inputs.nixpkgs.follows — 会触发 FlakeHub cache miss
     determinate = {
@@ -94,6 +99,7 @@
     , nix-on-droid
     , claude-code
     , codex-cli
+    , pi
     , determinate
     , ...
     }: with flake-utils.lib; eachDefaultSystem (system:
@@ -137,7 +143,7 @@
 
       # flake inputs + 共享变量，传递给各工厂函数的 specialArgs / extraSpecialArgs
       mkSharedArgs = homeUser: {
-        inherit unstablePkgs homeUser claude-code codex-cli;
+        inherit unstablePkgs homeUser claude-code codex-cli pi;
       };
 
       mkHomeExtraSpecialArgs =
