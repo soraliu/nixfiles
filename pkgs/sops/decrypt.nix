@@ -52,7 +52,7 @@
 
     echo "🟡🟡🟡 Start to decrypt files..."
 
-    ${builtins.concatStringsSep "\n\n" (map ({from, to}: "decryptSopsFile $src/${from} ${to}") files)}
+    ${builtins.concatStringsSep "\n\n" (map ({from, to, ...}: "decryptSopsFile $src/${from} ${to}") files)}
   '';
 
   installPhase = ''
