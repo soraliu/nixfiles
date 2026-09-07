@@ -171,3 +171,9 @@ tabs = "alt"                                               # → Alt+1..9 切标
 - **前向兼容**:将来升级 flake input 到含 herdr ≥0.8 的 nixpkgs,herdr 会默认 `swap_pane_*=prefix+shift+h/j/k/l`,与分屏键 `prefix+shift+l/j` 冲突。升级前需显式重设 swap_pane_* 或把分屏键改回 `prefix+v`/`prefix+minus`。
 - **`hv` 重建**:依赖 `herdr tab create` / `pane split` 的 JSON 字段(`.result.root_pane.pane_id`、`.result.pane.pane_id`)与 `--ratio` 语义。函数已做防御(`// empty` + 非空校验),首次用前建议先跑一次 `herdr tab create --cwd /tmp --label tmp` 观察真实 JSON 再微调 `jq` 路径。
 - **本机活体验证**:`just switch-home ide` 并非本机当前切换路径(最近一次为 nix-darwin `just switch-darwin soraliu`)。走 `just switch-darwin soraliu`(需 sudo,重建系统)激活时方写入 `~/.config/herdr/config.toml` 与 `_herdr` 补全;交互式逐键/`hv`/`hko` 验证由用户在真实终端完成。
+
+## 后续修订（合并到 main 之上,#19 已合并后的补丁）
+
+- **直达层补 `alt+q`/`alt+x`**:#19 合并版 `close_pane`/`close_tab` 只绑前缀键,漏了 zellij `shared` 的 `Alt q`/`Alt x`,致 `Alt q` 不退 pane。改为数组 `close_pane=["prefix+q","alt+q"]`、`close_tab=["prefix+x","alt+x"]`,直达层对齐 zellij。
+- **开启 agent 完成通知**:herdr `ui.toast.delivery` 默认 `off`,致 pi/agent 完成无 toast。设 `[ui.toast] delivery = "herdr"`(后台 workspace 的 agent 完成/需输入时弹 in-app toast;`ui.sound.enabled` 默认开)。系统级横幅改 `"system"`(macOS 优先 `terminal-notifier`);pi 检测走 herdr 内置屏幕 manifest,更稳可一次性 `herdr integration install pi`。
+- **新增 `alt+g` → 可搜索 workspace 导航**:`goto = ["prefix+g", "alt+g"]`,`Alt+g` 直接打开 herdr Session Navigator(可输入搜索 workspace/tab)。本改动不覆盖 herdr 默认(仅追加直达和弦)。
