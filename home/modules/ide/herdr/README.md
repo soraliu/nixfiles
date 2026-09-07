@@ -78,6 +78,13 @@ hko        # 关停除 default/当前外的 herdr session
 - `ToggleTab`(zellij `Ctrl a`):无对应,以 `prefix+[`/`prefix+]` 翻页近似。
 - 终端态半页滚动(`Ctrl u/d`):仅 copy mode 内有;终端态用 copy mode 或鼠标。
 
+## 通知（pi / agent 完成）
+
+- 本模块已设 `ui.toast.delivery = "herdr"`:后台 workspace 的 agent(pi 等)**完成或需输入**时在 herdr 内弹 toast;`ui.sound.enabled` 默认开 → 同场景也提示音。
+- 想要 herdr 之外的 macOS 系统横幅:把 `ui.toast.delivery` 改 `"system"`(优先 `terminal-notifier`;未装时用 osascript 免底),可选后续在 `home.packages` 加 `pkgs.terminal-notifier`。
+- pi 检测:herdr 内置 pi 屏幕检测,自动分类 idle/working/blocked/done。为更稳状态上报 + 重启后恢复原生会话,可一次性执行 `herdr integration install pi`(写 pi 配置,幂等)。
+- 注意:herdr 对处于「当前聚焦 tab」的 agent抑制 toast;把 pi 放后台 tab 才会弹通知。
+
 ## 注意 / 前向兼容
 
 - **herdr 版本**:本机走项目当前 pin 的 `nixos-unstable`(herdr **0.7.5**)。将来升级 flake input 到含 herdr ≥0.8 的 nixpkgs 时,herdr 会新增默认 `swap_pane_*=prefix+shift+h/j/k/l`,与本模块 `split_vertical=prefix+shift+l` / `split_horizontal=prefix+shift+j` **冲突**,启动会报 `config diagnostic: ... disabled keys.split_*`(分屏被废)。届时需显式重设 `swap_pane_*`、或把分屏键改回 herdr 默认(`prefix+v`/`prefix+minus`)。升级前先核对。

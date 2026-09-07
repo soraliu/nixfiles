@@ -16,8 +16,8 @@
 
       # 会话/关闭(zellij d=detach / q=close focus / x=close tab)
       detach      = "prefix+d";
-      close_pane  = "prefix+q";
-      close_tab   = "prefix+x";
+      close_pane  = [ "prefix+q" "alt+q" ];   # zellij q / Alt q (CloseFocus)
+      close_tab   = [ "prefix+x" "alt+x" ];   # zellij x / Alt x (CloseTab)
 
       # 标签(zellij c/x/,/[/]/1-9 + Alt t/x/[ /])
       new_tab       = [ "prefix+c" "alt+t" ];
@@ -52,6 +52,11 @@
       # 索引跳转:Alt+1..9 切标签(对齐 zellij Alt 1-9 → GoToTab)
       indexed = { tabs = "alt"; };
     };
+
+    # 通知:herdr 默认 ui.toast.delivery=off → pi/agent 完成不提示。开 in-app toast,
+    # 在「后台 workspace 的 agent 完成/需输入」时弹;想收到 herdr 之外的系统横幅改 "system"
+    # (macOS 上 system 优先 terminal-notifier,可后续在 home.packages 加 pkgs.terminal-notifier)
+    ui.toast.delivery = "herdr";
   };
 in {
   home.packages = [ unstablePkgs.herdr ];
