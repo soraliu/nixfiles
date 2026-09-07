@@ -56,6 +56,12 @@ copy_mode        = ["prefix+[", "prefix+/"]                 # zellij /(进 copy 
 # resize_mode     默认 prefix+r 与 zellij 一致;进去后 h/j/k/l 持久调整
 # edit_scrollback 默认 prefix+e 与 zellij 一致
 
+# workspace(herdr 特有,Alt 直达;zellij 无对应概念,见修订附录)
+previous_workspace = "alt+-"
+next_workspace    = "alt+="
+new_workspace     = ["prefix+shift+n", "alt+w"]   # 保留默认 + Alt+w 直达
+close_workspace  = ["prefix+shift+d", "alt+d"]   # 保留默认 + Alt+d 直达(默认带确认提示)
+
 # 以下 zellij 概念 herdr 无对应,取舍见下「无法还原」:
 #   w 浮动 pane / s 同步 tab / b BreakPane / m 移动模式 / Ctrl a ToggleTab / Ctrl u-d 半页滚动
 
@@ -80,7 +86,7 @@ tabs = "alt"                                               # → Alt+1..9 切标
 | zoom | prefix+z, alt+m | z, Alt m |
 | switch_tab | prefix+1..9 + alt(1..9) | 1-9, Alt 1-9 |
 
-舍弃:`Alt + / Alt -`(无 herdr 全局增减动作)→ 用 resize mode 内 `+/-`;`Alt w`(浮动)→ herdr 默认 `prefix+w`=workspace_picker(导航面);`Alt m` 已映射 zoom。
+~~舍弃~~ → **改用为 workspace 直达和弦**(见修订附录):`Alt w` 新建 workspace;`Alt -`/`Alt =` 上/下个 workspace;`Alt d` 关闭 workspace(均直达无需前缀);`Alt w` 不再让给 `prefix+w`=workspace_picker,但 `prefix+w` 默认仍在。`Alt +` 仍仅在 resize mode 内调窗格;`Alt m` 已映射 zoom。
 
 ### 无法 1:1 还原项(取舍)
 
@@ -182,6 +188,12 @@ tabs = "alt"                                               # → Alt+1..9 切标
 
 - **新增 agent 焦点直按**:`previous_agent = "alt+,"`、`next_agent = "alt+."` —— `Alt+,` / `Alt+.` 在侧栏 agent 面板内切上/下一个 agent(herdr 默认未绑)。直达和弦,无需前缀。
 - **`Ctrl b + Ctrl b` → 最近 tab 未实现**:herdr 保留前缀键(单击进前缀、双击向 pane 发字面前缀),`prefix+ctrl+b` 与直达 `ctrl+b` 均被禁用(`reserved keybinding`),且无配置项关闭;此外 herdr 无「切到最近活跃 tab」的 action(tab 仅 previous/next/switch by order)。切上一个 tab 仍用既有的 `prefix+[` / `alt+[`。
+
+- **新增 workspace 直达和弦**(alt+w/d/-/=):沿现有键位设计原则(Alt 直达和弦),给 herdr 特有的 workspace 动作补直达绑定,无需前缀:
+  - `previous_workspace = "alt+-"`、`next_workspace = "alt+="`(默认未绑,照搬 NA 件下原本被弃的 `Alt -`)
+  - `new_workspace = ["prefix+shift+n", "alt+w"]`、`close_workspace = ["prefix+shift+d", "alt+d"]`(保留 herdr 默认的 `prefix+shift+n/d` + 补 `Alt+w/d` 直达,对齐 `new_tab`/`goto` 的 prefix+alt 模式)
+  - 无冲突:`alt+w`/`alt+d`/`alt+-`/`alt+=` 均未与既有 `alt+*` 绑定重叠(`detach=prefix+d` 与 `close_workspace` 的 `prefix+shift+d`/`alt+d` 区分于 shift/alt 键位)。
+  - 验证:`nix build .#homeConfigurations.ide.activationPackage` 通过;生成 config.toml 含四键;隔离 herdr server 诊断无 unknown/conflict/reserved;用 `herdr-palette --debug-keys` 读同一 key 模型确认 `alt+-.→Previous/a..=→Next/alt+d→Close/alt+w→New workspace`(prefix+shift+n/d 默认仍占)。
 
 - **`alt+p` → 打开 Herdr Palette**(替代 `Ctrl b Ctrl b`,且不与既有 `alt+[` 重复绑 previous_tab):`alt+p` 不再绑 previous_tab(回到 `["prefix+[","alt+["]`);改为 `[[keys.command]]` 直达绑定 `key="alt+p" type="plugin_action" command="ramarivera.palette.open"`,打开 **Herdr Palette**(Raycast/Linear 风模糊命令面板,可搜 workspace/tab/命令)。插件 id `ramarivera.palette`、action `open`、min_herdr_version `0.7.0`、平台 linux/macos。**需先一次性安装**(cargo 编译;ide profile 已带 Rust): `herdr plugin install ramarivera/herdr-palette`(幂等)。另记:`Ctrl b Ctrl b` 不可(双击前缀被 herdr 保留为发字面前缀、无配置项关闭),0.7.5 无「上次活跃 tab」动作,切上一个 tab 仍用 `prefix+[`/`alt+[`(by order)。
 

@@ -46,6 +46,14 @@
       # workspace 导航:Alt+g 直接打开可搜索的 session/goto 导航(搜 workspace/tab;等同 prefix+g)
       goto = [ "prefix+g" "alt+g" ];
 
+      # workspace 切换(herdr 特有):Alt+- 上一个 / Alt+= 下一个 / Alt+w 新建 / Alt+d 关闭(直达,无需前缀)
+      # previous_workspace / next_workspace 默认未绑;new_workspace 默认 prefix+shift+n、close_workspace 默认 prefix+shift+d,下均补 alt 直达
+      # (对齐 new_tab/goto 的「prefix + alt 直达」模式;alt+w / alt+d 不与既有绑定冲突)
+      previous_workspace = "alt+-";
+      next_workspace    = "alt+=";
+      new_workspace     = [ "prefix+shift+n" "alt+w" ];
+      close_workspace  = [ "prefix+shift+d" "alt+d" ];   # 关闭/删除当前 workspace(默认带确认提示)
+
       # agent 焦点(侧栏 agent 面板):Alt+, 上一个 / Alt+. 下一个
       previous_agent = "alt+,";
       next_agent    = "alt+.";
