@@ -91,4 +91,17 @@ in {
       cp -f "$src" "$HOME/.local/share/zinit/completions/_herdr" 2>/dev/null || true
     fi
   '';
+
+  # 一次性安装 Herdr Palette 插件(幂等:已装跳过,避免每次 switch 重新 cargo 编译)。
+  # 需 cargo(ide profile 的 rust 模块已带)+ 联网(插件 cargo 拉依赖)。失败不阻断 switch;
+  # 也可手动 `herdr plugin install ramarivera/herdr-palette`。
+  home.activation.installHerdrPalettePlugin = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+    _herdr="${unstablePkgs.herdr}/bin/herdr"
+    export PATH="''${HOME_PROFILE_DIRECTORY:-$HOME/.nix-profile}/bin:$PATH"
+    if "$_herdr" plugin list 2>/dev/null | grep -q "ramarivera.palette"; then
+      :  # 已安装,跳过
+    else
+      "$_herdr" plugin install ramarivera/herdr-palette --yes >/dev/null 2>&1 || true
+    fi
+  '';
 }
