@@ -43,13 +43,17 @@ herdr 是一个常驻后台的终端 workspace 运行时,契约如 zellij/tmux �
 | 上/下个 tab | `Alt [` / `Alt ]` |
 | 全屏 | `Alt m` |
 | 切 tab 1-9 | `Alt 1..9` |
+| 新 / 关 workspace | `Alt w` / `Alt d` |
+| 上/下个 workspace | `Alt -` / `Alt =` |
 
 ### herdr 特有(保留默认,常用)
 
 | 动作 | 绑定 |
 |---|---|
 | workspace 导航面 | `prefix+w` |
-| 新 / 重命名 / 关 workspace | `prefix+shift+n` / `prefix+shift+w` / `prefix+shift+d` |
+| 新 / 关 workspace | `prefix+shift+n` + `Alt+w` / `prefix+shift+d` + `Alt+d`(Alt 直达)
+| 重命名 workspace | `prefix+shift+w` |
+| 上/下个 workspace | `Alt -` / `Alt =`(直达;默认未绑) |
 | 可搜索 workspace 导航(Session Navigator) | `prefix+g` / `Alt+g`(直达,可搜 workspace/tab) |
 | 新 worktree | `prefix+shift+g` |
 | 切换侧栏 | `prefix+b` |
