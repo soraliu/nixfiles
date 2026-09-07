@@ -61,10 +61,12 @@ herdr 是一个常驻后台的终端 workspace 运行时,契约如 zellij/tmux �
 
 ## 插件(Herdr Palette,`alt+p`)
 
-- **自动安装**:本模块在 `switch` 后的 activation 里幂等安装(`home.activation.installHerdrPalettePlugin`)。
-  - 幂等判定基于「二进制是否已构建」(检查 `~/.config/herdr/plugins/github/ramarivera.palette-*/target/release/herdr-palette`),而非「插件是否已链入」——这能自愈「manifest 已装但 cargo build 未完成」的坏状态:发现二进制缺失就自动重装(重克隆 + 重建),下次 switch 即恢复。
-  - 安装用 `--yes </dev/null`:把 stdin 置为非 tty,herdr 走 `--yes` 路径,**不会弹 `Install this plugin? [y/N]`**;首次 `switch-darwin soraliu` 会联网 cargo 编译(可能几分钟),之后命中跳过、近乎瞬时。
-  - 需 cargo(ide profile 的 rust 模块已带)+ 联网;失败不阻断 switch;手动排查可运行 `herdr plugin install ramarivera/herdr-palette --yes` 查看 cargo 输出。
+- **自动安装并暴露二进制**:本模块在 `switch` 后的 activation 里做三件事(`installHerdrPalettePlugin`):
+  1. **构建二进制**(`herdr plugin install ramarivera/herdr-palette --yes </dev/null`):缺才重装(重克隆 + 重建),已构建则跳过;`</dev/null` 强制非交互 stdin → `--yes` 生效,不弹 `Install this plugin? [y/N]`。
+  2. **链接 cargo 子 manifest**(`herdr plugin link <plugin_root>/cargo`):覆盖 herdr 默认注册的「根 manifest」。因为根 manifest 的 pane 命令是相对路径 `target/release/herdr-palette`,而 pane 由 herdr 服务器用「服务器自己的 PATH」spawn,相对路径文件名含 `/`,PATH 搜索永远找不到 → `alt+p` 会报 `Unable to spawn target/release/herdr-palette ... No viable candidates found in PATH`。cargo 子 manifest 的 pane 命令是**裸** `herdr-palette`(靠 PATH 找)。
+  3. **软链二进制到 `~/.local/bin/herdr-palette`**(`ln -sfn`):`~/.local/bin` 在交互 / 服务器 PATH 上,herdr 服务器 spawn 时才能找到 `herdr-palette`。
+  - 自愈:旧坏态(根 manifest 注册、相对路径 spawn 失败)merge 后一次 `switch-darwin soraliu` 即修复 —— 2/3 步每次 switch 都刷新。
+  - 需 cargo(ide profile 的 rust 模块已带)+ 联网;首次构建分钟级,之后瞬时;失败不阻断 switch;手动排查见 `home/modules/ide/herdr/default.nix` 注释。
 - 装好后 `alt+p`(直达,无需前缀)打开 **Herdr Palette** —— Raycast/Linear 风模糊命令面板,可搜 workspace/tab/命令;`alt+g` 仍是 herdr 自带的可搜索 Session Navigator。
 
 ## zsh 入口
