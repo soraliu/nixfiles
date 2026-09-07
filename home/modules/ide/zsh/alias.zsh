@@ -6,12 +6,13 @@ alias sc='sgpt --repl temp --no-cache'
 alias ss='sgpt --repl temp --no-cache --describe-shell'
 
 alias z='zellij'
-alias zx='zellij action close-tab'
-alias zxp='z action go-to-previous-tab && zellij action close-tab'
-alias zko='z list-sessions | grep -v EXI | grep -v current | awk "{print \$1}" | sed "s/\x1B\[[0-9;]*[JKmsu]//g" | xargs -I {} bash -c "zellij kill-session {}"'
-alias zl='zellij-layout-coding'
-alias zlx='zl; zxp'
-alias zv='zellij-layout-agent'
+
+# herdr (与 zellij 并存;日常动作键迁移到 h 前缀,详见 home/modules/ide/herdr/README.md)
+alias h='herdr'
+alias hx='herdr tab close "$HERDR_TAB_ID"'
+alias hxp='herdr tab close "$HERDR_TAB_ID"'   # herdr 关闭当前 tab 后自动聚焦其它 tab,等同于 zellij 的 go-prev+close
+alias hko='herdr-kill-sessions'
+alias hv='herdr-layout-agent'
 
 alias cp='rsync --archive --human-readable --partial --info=progress2'
 alias rm='rm -f'

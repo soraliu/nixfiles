@@ -1,0 +1,84 @@
+# herdr
+
+## 介绍
+
+- [herdr.dev](https://herdr.dev)
+- [官方文档](https://herdr.dev/docs/):[Keyboard](https://herdr.dev/docs/keyboard/) · [Configuration](https://herdr.dev/docs/configuration/) · [Config reference](https://herdr.dev/docs/config-reference/) · [CLI reference](https://herdr.dev/docs/cli-reference/)
+
+herdr 是一个常驻后台的终端 workspace 运行时,契约如 zellij/tmux 的前缀键模型;键位配置由本 Nix 模块用 `pkgs.formats.toml` 生成 `~/.config/herdr/config.toml`,只覆盖与 zellij 概念重叠的动作键,其余沿用 herdr 默认。完整设计与实施期修订见 `docs/herdr-integration.md`。
+
+## 安装方式
+
+本模块从项目的 `nixpkgs-unstable` 取 `herdr`;当前 pin 的 rev 处为 **0.7.5**(仅 unstable,未进 nixos-25.11 stable)。0.7.5 默认无 `swap_pane_*` 绑定——见末段前向兼容说明。
+
+## 键位速查(本模块覆盖项)
+
+- 前缀:`Ctrl b`(herdr 社区默认);**前缀是单次的**,每个动作后都要重按一次。
+- 在 zellij 里「按一次进模式后连按多键」的体验,改用 herdr 持久模式:
+  - `prefix+g` navigate mode(连按 `h/j/k/l` 切 pane)
+  - `prefix+r` resize mode
+  - `prefix+[` copy mode(内含 `/ ?` 搜索、`n N`、`v/Space` 选择、`y/Enter` 复制、`q/esc` 退出)
+
+### 前缀层(对齐 zellij pane 模式)
+
+| 动作 | 绑定 |
+|---|---|
+| 分屏(右/下) | `prefix+shift+l` / `prefix+shift+j`(zellij `L`/`J`) |
+| 关 pane / 关 tab / detach | `prefix+q` / `prefix+x` / `prefix+d` |
+| 移动焦点 | `prefix+h/j/k/l` |
+| 全屏 | `prefix+z` |
+| 新/上/下个/重命名 tab | `prefix+c` / `prefix+[` / `prefix+]` / `prefix+,` |
+| 切 tab 1-9 | `prefix+1..9` |
+| 复制/搜索 | `prefix+/`(进 copy mode 再 `/` 或 `?` 搜) |
+| 编辑 scrollback | `prefix+e` |
+
+### 直达层(无需前缀,移植 zellij `shared` 的 Alt-* )
+
+| 动作 | 绑定 |
+|---|---|
+| 新 tab | `Alt t`  |
+| 焦点移动 | `Alt h/j/k/l` |
+| 分屏 右/下 | `Alt Right` / `Alt Down` / `Alt n` |
+| 关 pane/tab | `Alt q` / `Alt x` |
+| 上/下个 tab | `Alt [` / `Alt ]` |
+| 全屏 | `Alt m` |
+| 切 tab 1-9 | `Alt 1..9` |
+
+### herdr 特有(保留默认,常用)
+
+| 动作 | 绑定 |
+|---|---|
+| workspace 导航面 | `prefix+w` |
+| 新 / 重命名 / 关 workspace | `prefix+shift+n` / `prefix+shift+w` / `prefix+shift+d` |
+| navigate mode | `prefix+g` |
+| 新 worktree | `prefix+shift+g` |
+| 切换侧栏 | `prefix+b` |
+| 设置 / 帮助 / 重载配置 | `prefix+s` / `prefix+?` / `prefix+shift+r` |
+| 聚焦通知来源 | `prefix+o` |
+
+按 `prefix+?` 可随时查看当前生效的全部绑定(可 `/` 过滤)。
+
+## zsh 入口
+
+见 `home/modules/ide/zsh/{alias,fn}.zsh:`
+
+```sh
+h          # herdr
+hv <dir>   # 在 cwd 建 agent 布局(左 nvim + 右上下两 shell)
+hx         # herdr tab close "$HERDR_TAB_ID"
+hxp        # 同上(关当前 tab)
+hko        # 关停除 default/当前外的 herdr session
+```
+
+## 无法从 zellij 1:1 还原
+
+- 浮动 pane(`ToggleFloatingPanes / EmbedOrFloating`)、标签同步(`ToggleSyncTab`):herdr 无,舍。
+- `BreakPane`:改用 CLI `herdr pane move <id> --new-tab`。
+- Move 模式(zellij `m`):herdr 0.7.5 无默认 swap 绑定,故暂不映射;可用 CLI `herdr pane swap --direction ...` 或日后自行补设 `swap_pane_*`。
+- `ToggleTab`(zellij `Ctrl a`):无对应,以 `prefix+[`/`prefix+]` 翻页近似。
+- 终端态半页滚动(`Ctrl u/d`):仅 copy mode 内有;终端态用 copy mode 或鼠标。
+
+## 注意 / 前向兼容
+
+- **herdr 版本**:本机走项目当前 pin 的 `nixos-unstable`(herdr **0.7.5**)。将来升级 flake input 到含 herdr ≥0.8 的 nixpkgs 时,herdr 会新增默认 `swap_pane_*=prefix+shift+h/j/k/l`,与本模块 `split_vertical=prefix+shift+l` / `split_horizontal=prefix+shift+j` **冲突**,启动会报 `config diagnostic: ... disabled keys.split_*`(分屏被废)。届时需显式重设 `swap_pane_*`、或把分屏键改回 herdr 默认(`prefix+v`/`prefix+minus`)。升级前先核对。
+- **`hv` 重建布局**:依赖 `herdr tab create` / `pane split` 的 JSON 字段(`.result.root_pane.pane_id`、`.result.pane.pane_id`)与 `--ratio` 语义;首次用前先跑 `herdr tab create --cwd /tmp --label tmp` 观察真实 JSON,必要时微调 `fn.zsh` 里的 `jq` 路径。

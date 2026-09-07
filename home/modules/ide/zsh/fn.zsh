@@ -1,15 +1,39 @@
 # -------------------------------------------------------------------------------------------------------------------------------
 # functions
 # -------------------------------------------------------------------------------------------------------------------------------
-zellij-layout-coding() {
-  path_to_cwd=${1:-$(pwd)}
-  zellij action new-tab --layout coding --name "$(basename ${path_to_cwd})" --cwd="${path_to_cwd}"
+herdr-layout-agent() {
+  local path_to_cwd=${1:-$PWD}
+  local label="$(basename "${path_to_cwd}")"
+  local nvim="$HOME_PROFILE_DIRECTORY/bin/nvim"
+  # 须在 herdr 会话内运行(HERDR_TAB_ID 由 pane 导出);否则先 'h' 进入
+  if [ -z "${HERDR_TAB_ID:-}" ]; then
+    echo "[!] not inside herdr; run 'h' first" >&2
+    return 1
+  fi
+  local resp left right right2
+  resp=$(herdr tab create --cwd "$path_to_cwd" --label "$label" --focus) || { echo "$resp" >&2; return 1; }
+  left=$(printf '%s' "$resp" | jq -r '.result.root_pane.pane_id // empty')
+  [ -z "$left" ] && { echo "[!] no root_pane.pane_id: $resp" >&2; return 1; }
+  # 复刻 zellij agent 布局:左 50% nvim + 右上下各 25% shell
+  right=$(herdr pane split "$left"  --direction right --ratio 0.5 --no-focus | jq -r '.result.pane.pane_id // empty')
+  right2=$(herdr pane split "$right" --direction down  --ratio 0.5 --no-focus | jq -r '.result.pane.pane_id // empty')
+  herdr pane run   "$left" "$nvim" >/dev/null 2>&1 || true
+  herdr pane focus "$left"        >/dev/null 2>&1 || true
 }
 
-zellij-layout-agent() {
-  local path_to_cwd=${1:-$PWD}
-  zellij action rename-tab "$(basename "${path_to_cwd}")"
-  (cd -- "${path_to_cwd}" && zellij action override-layout --apply-only-to-active-tab "$ZELLIJ_CONFIG_DIR/layouts/agent.kdl")
+herdr-kill-sessions() {
+  # 关停除 default 外的 herdr session(类比 zellij zko)
+  # 注:JSON 路径 .result.sessions 以 `herdr session list --json` 实际输出为准,运行时核对
+  local cur="${HERDR_SESSION:-default}"
+  herdr session list --json 2>/dev/null \
+    | jq -r '(.result.sessions // .sessions // [] | .[] | .name) // empty' 2>/dev/null \
+    | sort -u \
+    | while read -r name; do
+        [ -n "$name" ] || continue
+        [ "$name" != "default" ] || continue
+        [ "$name" != "$cur" ] || continue
+        herdr session stop "$name" >/dev/null 2>&1 || true
+      done
 }
 
 proxy_on() {
