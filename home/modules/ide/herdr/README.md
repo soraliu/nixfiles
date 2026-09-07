@@ -15,7 +15,7 @@ herdr 是一个常驻后台的终端 workspace 运行时,契约如 zellij/tmux �
 
 - 前缀:`Ctrl b`(herdr 社区默认);**前缀是单次的**,每个动作后都要重按一次。
 - 在 zellij 里「按一次进模式后连按多键」的体验,改用 herdr 持久模式:
-  - `prefix+g` navigate mode(连按 `h/j/k/l` 切 pane)
+  - `prefix+g` / `Alt+g` navigate mode(连按 `h/j/k/l` 切 pane;内可输入搜索 workspace/tab)
   - `prefix+r` resize mode
   - `prefix+[` copy mode(内含 `/ ?` 搜索、`n N`、`v/Space` 选择、`y/Enter` 复制、`q/esc` 退出)
 
@@ -50,7 +50,7 @@ herdr 是一个常驻后台的终端 workspace 运行时,契约如 zellij/tmux �
 |---|---|
 | workspace 导航面 | `prefix+w` |
 | 新 / 重命名 / 关 workspace | `prefix+shift+n` / `prefix+shift+w` / `prefix+shift+d` |
-| navigate mode | `prefix+g` |
+| 可搜索 workspace 导航(Session Navigator) | `prefix+g` / `Alt+g`(直达,可搜 workspace/tab) |
 | 新 worktree | `prefix+shift+g` |
 | 切换侧栏 | `prefix+b` |
 | 设置 / 帮助 / 重载配置 | `prefix+s` / `prefix+?` / `prefix+shift+r` |
@@ -77,6 +77,13 @@ hko        # 关停除 default/当前外的 herdr session
 - Move 模式(zellij `m`):herdr 0.7.5 无默认 swap 绑定,故暂不映射;可用 CLI `herdr pane swap --direction ...` 或日后自行补设 `swap_pane_*`。
 - `ToggleTab`(zellij `Ctrl a`):无对应,以 `prefix+[`/`prefix+]` 翻页近似。
 - 终端态半页滚动(`Ctrl u/d`):仅 copy mode 内有;终端态用 copy mode 或鼠标。
+
+## 通知（pi / agent 完成）
+
+- 本模块已设 `ui.toast.delivery = "herdr"`:后台 workspace 的 agent(pi 等)**完成或需输入**时在 herdr 内弹 toast;`ui.sound.enabled` 默认开 → 同场景也提示音。
+- 想要 herdr 之外的 macOS 系统横幅:把 `ui.toast.delivery` 改 `"system"`(优先 `terminal-notifier`;未装时用 osascript 兜底),可选后续在 `home.packages` 加 `pkgs.terminal-notifier`。
+- pi 检测:herdr 内置 pi 屏幕检测,自动分类 idle/working/blocked/done。为更稳状态上报 + 重启后恢复原生会话,可一次性执行 `herdr integration install pi`(写 pi 配置,幂等)。
+- 注意:herdr 对处于「当前聚焦 tab」的 agent抑制 toast;把 pi 放后台 tab 才会弹通知。
 
 ## 注意 / 前向兼容
 
