@@ -92,16 +92,19 @@ in {
     fi
   '';
 
-  # 一次性安装 Herdr Palette 插件(幂等:已装跳过,避免每次 switch 重新 cargo 编译)。
-  # 需 cargo(ide profile 的 rust 模块已带)+ 联网(插件 cargo 拉依赖)。失败不阻断 switch;
-  # 也可手动 `herdr plugin install ramarivera/herdr-palette`。
+  # 一次性安装 Herdr Palette 插件。
+  # 幂等判定基于「二进制是否已构建」而非「插件是否已链入」,从而自愈「manifest 已装但 cargo
+  # build 未完成(被 trust prompt 打断 / 联网失败)」的坏状态:缺二进制 → 重新 install(重克隆+重建)。
+  # `</dev/null` 把 stdin 置为非 tty → herdr 走 `--yes` 路径,不再弹 "Install this plugin? [y/N]"。
+  # 需 cargo(ide profile 的 rust 模块已带)+ 联网(插件 cargo 拉依赖)。失败不阻断 switch;也可手动
+  # 运行 `herdr plugin install ramarivera/herdr-palette --yes` 查看 cargo 输出排查。
   home.activation.installHerdrPalettePlugin = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
     _herdr="${unstablePkgs.herdr}/bin/herdr"
     export PATH="''${HOME_PROFILE_DIRECTORY:-$HOME/.nix-profile}/bin:$PATH"
-    if "$_herdr" plugin list 2>/dev/null | grep -q "ramarivera.palette"; then
-      :  # 已安装,跳过
+    if ls "$HOME"/.config/herdr/plugins/github/ramarivera.palette-*/target/release/herdr-palette >/dev/null 2>&1; then
+      :  # 二进制已构建,跳过
     else
-      "$_herdr" plugin install ramarivera/herdr-palette --yes >/dev/null 2>&1 || true
+      "$_herdr" plugin install ramarivera/herdr-palette --yes </dev/null >/dev/null 2>&1 || true
     fi
   '';
 }
