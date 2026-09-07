@@ -177,3 +177,10 @@ tabs = "alt"                                               # → Alt+1..9 切标
 - **直达层补 `alt+q`/`alt+x`**:#19 合并版 `close_pane`/`close_tab` 只绑前缀键,漏了 zellij `shared` 的 `Alt q`/`Alt x`,致 `Alt q` 不退 pane。改为数组 `close_pane=["prefix+q","alt+q"]`、`close_tab=["prefix+x","alt+x"]`,直达层对齐 zellij。
 - **开启 agent 完成通知**:herdr `ui.toast.delivery` 默认 `off`,致 pi/agent 完成无 toast。设 `[ui.toast] delivery = "herdr"`(后台 workspace 的 agent 完成/需输入时弹 in-app toast;`ui.sound.enabled` 默认开)。系统级横幅改 `"system"`(macOS 优先 `terminal-notifier`);pi 检测走 herdr 内置屏幕 manifest,更稳可一次性 `herdr integration install pi`。
 - **新增 `alt+g` → 可搜索 workspace 导航**:`goto = ["prefix+g", "alt+g"]`,`Alt+g` 直接打开 herdr Session Navigator(可输入搜索 workspace/tab)。本改动不覆盖 herdr 默认(仅追加直达和弦)。
+
+## 后续修订（agent 焦点快捷键）
+
+- **新增 agent 焦点直按**:`previous_agent = "alt+,"`、`next_agent = "alt+."` —— `Alt+,` / `Alt+.` 在侧栏 agent 面板内切上/下一个 agent(herdr 默认未绑)。直达和弦,无需前缀。
+- **`Ctrl b + Ctrl b` → 最近 tab 未实现**:herdr 保留前缀键(单击进前缀、双击向 pane 发字面前缀),`prefix+ctrl+b` 与直达 `ctrl+b` 均被禁用(`reserved keybinding`),且无配置项关闭;此外 herdr 无「切到最近活跃 tab」的 action(tab 仅 previous/next/switch by order)。切上一个 tab 仍用既有的 `prefix+[` / `alt+[`。
+
+- **`alt+p` → 打开 Herdr Palette**(替代 `Ctrl b Ctrl b`,且不与既有 `alt+[` 重复绑 previous_tab):`alt+p` 不再绑 previous_tab(回到 `["prefix+[","alt+["]`);改为 `[[keys.command]]` 直达绑定 `key="alt+p" type="plugin_action" command="ramarivera.palette.open"`,打开 **Herdr Palette**(Raycast/Linear 风模糊命令面板,可搜 workspace/tab/命令)。插件 id `ramarivera.palette`、action `open`、min_herdr_version `0.7.0`、平台 linux/macos。**需先一次性安装**(cargo 编译;ide profile 已带 Rust): `herdr plugin install ramarivera/herdr-palette`(幂等)。另记:`Ctrl b Ctrl b` 不可(双击前缀被 herdr 保留为发字面前缀、无配置项关闭),0.7.5 无「上次活跃 tab」动作,切上一个 tab 仍用 `prefix+[`/`alt+[`(by order)。
