@@ -27,6 +27,7 @@ in
     ../modules/ide/zsh
     ../modules/ide/neovim
     ../modules/ide/zellij
+    ../modules/ide/herdr
     ../modules/ide/search
     ../modules/ide/copilot.nix
     ../modules/ide/iac.nix
