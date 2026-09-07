@@ -61,9 +61,10 @@ herdr 是一个常驻后台的终端 workspace 运行时,契约如 zellij/tmux �
 
 ## 插件(Herdr Palette,`alt+p`)
 
-- **自动安装**:本模块在 `switch` 后的 activation 里幂等安装(`home.activation.installHerdrPalettePlugin`)——已装则跳过,未装则 `herdr plugin install ramarivera/herdr-palette --yes`。
-  - 首次 `switch-darwin soraliu` 会联网 cargo 编译(可能几分钟);之后每次 switch 几乎瞬时(命中跳过)。
-  - 需 cargo(ide profile 的 rust 模块已带)+ 联网;失败不阻断 switch,也可手动补装 `herdr plugin install ramarivera/herdr-palette`。
+- **自动安装**:本模块在 `switch` 后的 activation 里幂等安装(`home.activation.installHerdrPalettePlugin`)。
+  - 幂等判定基于「二进制是否已构建」(检查 `~/.config/herdr/plugins/github/ramarivera.palette-*/target/release/herdr-palette`),而非「插件是否已链入」——这能自愈「manifest 已装但 cargo build 未完成」的坏状态:发现二进制缺失就自动重装(重克隆 + 重建),下次 switch 即恢复。
+  - 安装用 `--yes </dev/null`:把 stdin 置为非 tty,herdr 走 `--yes` 路径,**不会弹 `Install this plugin? [y/N]`**;首次 `switch-darwin soraliu` 会联网 cargo 编译(可能几分钟),之后命中跳过、近乎瞬时。
+  - 需 cargo(ide profile 的 rust 模块已带)+ 联网;失败不阻断 switch;手动排查可运行 `herdr plugin install ramarivera/herdr-palette --yes` 查看 cargo 输出。
 - 装好后 `alt+p`(直达,无需前缀)打开 **Herdr Palette** —— Raycast/Linear 风模糊命令面板,可搜 workspace/tab/命令;`alt+g` 仍是 herdr 自带的可搜索 Session Navigator。
 
 ## zsh 入口
