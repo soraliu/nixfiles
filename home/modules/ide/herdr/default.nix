@@ -21,7 +21,7 @@
 
       # 标签(zellij c/x/,/[/]/1-9 + Alt t/x/[ /])
       new_tab       = [ "prefix+c" "alt+t" ];
-      previous_tab  = [ "prefix+[" "alt+[" ];
+      previous_tab = [ "prefix+[" "alt+[" ];   # 上一个 tab(by order;herdr 0.7.5 无「上次活跃 tab」动作)
       next_tab      = [ "prefix+]" "alt+]" ];
       rename_tab    = "prefix+comma";
       # switch_tab 默认 "prefix+1..9";Alt+1..9 经下面 [keys.indexed] tabs = "alt" 叠加
@@ -46,6 +46,10 @@
       # workspace 导航:Alt+g 直接打开可搜索的 session/goto 导航(搜 workspace/tab;等同 prefix+g)
       goto = [ "prefix+g" "alt+g" ];
 
+      # agent 焦点(侧栏 agent 面板):Alt+, 上一个 / Alt+. 下一个
+      previous_agent = "alt+,";
+      next_agent    = "alt+.";
+
       # 以下保留 herdr 默认(不覆盖):
       #   resize_mode  = "prefix+r"        # 进去持久调整(对齐 zellij r)
       #   edit_scrollback = "prefix+e"     # 对齐 zellij e
@@ -54,6 +58,17 @@
 
       # 索引跳转:Alt+1..9 切标签(对齐 zellij Alt 1-9 → GoToTab)
       indexed = { tabs = "alt"; };
+
+      # Herdr Palette 插件(Raycast 风 fuzzy 命令/goto 面板):Alt+p 直达打开。
+      # 需先一次性安装:herdr plugin install ramarivera/herdr-palette(cargo 编译;ide profile 已带 Rust)
+      command = [
+        {
+          key = "alt+p";
+          type = "plugin_action";
+          command = "ramarivera.palette.open";
+          description = "Open Herdr Palette";
+        }
+      ];
     };
 
     # 通知:herdr 默认 ui.toast.delivery=off → pi/agent 完成不提示。开 in-app toast,
@@ -74,6 +89,19 @@ in {
     if [ -f "$src" ]; then
       mkdir -p "$HOME/.local/share/zinit/completions" 2>/dev/null || true
       cp -f "$src" "$HOME/.local/share/zinit/completions/_herdr" 2>/dev/null || true
+    fi
+  '';
+
+  # 一次性安装 Herdr Palette 插件(幂等:已装跳过,避免每次 switch 重新 cargo 编译)。
+  # 需 cargo(ide profile 的 rust 模块已带)+ 联网(插件 cargo 拉依赖)。失败不阻断 switch;
+  # 也可手动 `herdr plugin install ramarivera/herdr-palette`。
+  home.activation.installHerdrPalettePlugin = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+    _herdr="${unstablePkgs.herdr}/bin/herdr"
+    export PATH="''${HOME_PROFILE_DIRECTORY:-$HOME/.nix-profile}/bin:$PATH"
+    if "$_herdr" plugin list 2>/dev/null | grep -q "ramarivera.palette"; then
+      :  # 已安装,跳过
+    else
+      "$_herdr" plugin install ramarivera/herdr-palette --yes >/dev/null 2>&1 || true
     fi
   '';
 }

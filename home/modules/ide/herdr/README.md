@@ -55,8 +55,16 @@ herdr 是一个常驻后台的终端 workspace 运行时,契约如 zellij/tmux �
 | 切换侧栏 | `prefix+b` |
 | 设置 / 帮助 / 重载配置 | `prefix+s` / `prefix+?` / `prefix+shift+r` |
 | 聚焦通知来源 | `prefix+o` |
+| 上/下个 agent | `Alt+,` / `Alt+.` |
 
 按 `prefix+?` 可随时查看当前生效的全部绑定(可 `/` 过滤)。
+
+## 插件(Herdr Palette,`alt+p`)
+
+- **自动安装**:本模块在 `switch` 后的 activation 里幂等安装(`home.activation.installHerdrPalettePlugin`)——已装则跳过,未装则 `herdr plugin install ramarivera/herdr-palette --yes`。
+  - 首次 `switch-darwin soraliu` 会联网 cargo 编译(可能几分钟);之后每次 switch 几乎瞬时(命中跳过)。
+  - 需 cargo(ide profile 的 rust 模块已带)+ 联网;失败不阻断 switch,也可手动补装 `herdr plugin install ramarivera/herdr-palette`。
+- 装好后 `alt+p`(直达,无需前缀)打开 **Herdr Palette** —— Raycast/Linear 风模糊命令面板,可搜 workspace/tab/命令;`alt+g` 仍是 herdr 自带的可搜索 Session Navigator。
 
 ## zsh 入口
 
@@ -75,7 +83,7 @@ hko        # 关停除 default/当前外的 herdr session
 - 浮动 pane(`ToggleFloatingPanes / EmbedOrFloating`)、标签同步(`ToggleSyncTab`):herdr 无,舍。
 - `BreakPane`:改用 CLI `herdr pane move <id> --new-tab`。
 - Move 模式(zellij `m`):herdr 0.7.5 无默认 swap 绑定,故暂不映射;可用 CLI `herdr pane swap --direction ...` 或日后自行补设 `swap_pane_*`。
-- `ToggleTab`(zellij `Ctrl a`):无对应,以 `prefix+[`/`prefix+]` 翻页近似。
+- `ToggleTab`(zellij `Ctrl a`+`Ctrl a`):herdr 保留「双击前缀 = 发字面前缀」,`Ctrl b`+`Ctrl b`(及直达 `Ctrl b`)均被禁用,无配置项关闭;且 0.7.5 无显式「上次活跃 tab」动作。切上一个 tab 用 `prefix+[`/`alt+[`(previous_tab,by order);`alt+p` 改用于打开 Herdr Palette 插件(见下)。
 - 终端态半页滚动(`Ctrl u/d`):仅 copy mode 内有;终端态用 copy mode 或鼠标。
 
 ## 通知（pi / agent 完成）
