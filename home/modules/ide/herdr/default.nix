@@ -92,19 +92,33 @@ in {
     fi
   '';
 
-  # 一次性安装 Herdr Palette 插件。
-  # 幂等判定基于「二进制是否已构建」而非「插件是否已链入」,从而自愈「manifest 已装但 cargo
-  # build 未完成(被 trust prompt 打断 / 联网失败)」的坏状态:缺二进制 → 重新 install(重克隆+重建)。
-  # `</dev/null` 把 stdin 置为非 tty → herdr 走 `--yes` 路径,不再弹 "Install this plugin? [y/N]"。
-  # 需 cargo(ide profile 的 rust 模块已带)+ 联网(插件 cargo 拉依赖)。失败不阻断 switch;也可手动
-  # 运行 `herdr plugin install ramarivera/herdr-palette --yes` 查看 cargo 输出排查。
+  # 安装并暴露 Herdr Palette 插件二进制。
+  # herdr 0.7.5 的 GitHub 流程 `plugin install` 会注册「根 manifest」,其 pane 命令是相对路径
+  # `target/release/herdr-palette`;而 pane 由 herdr 服务器用「服务器进程自己的 PATH」解析 spawn ——
+  # 相对路径文件名含 `/`,PATH 搜索永远找不到,`alt+p` 报 "No viable candidates found in PATH"。
+  # 改用仓库自带的「cargo 子 manifest」(<plugin_root>/cargo/herdr-plugin.toml,pane 命令为「裸
+  # `herdr-palette``),用 `plugin link` 覆盖根 manifest;再把构建好的二进制软链到 ~/.local/bin
+  # (交互/服务器 PATH) → 服务器 spawn 能找到 `herdr-palette`。
+  # 幂等:缺二进制 → 重装(重克隆+重建)自愈;已构建 → 跳过重建,并刷新 link + 软链。
+  # `</dev/null` 强制非交互 stdin → `--yes` 生效,不弹 "Install this plugin?"。
+  # 需 cargo(ide profile 的 rust 模块已带)+ 联网;失败不阻断 switch;排查可手动:
+  #   herdr plugin install ramarivera/herdr-palette --yes  # 看 cargo 输出
+  #   herdr plugin link ~/.config/herdr/plugins/github/ramarivera.palette-*/cargo
+  #   ln -sfn .../target/release/herdr-palette ~/.local/bin/herdr-palette
   home.activation.installHerdrPalettePlugin = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
     _herdr="${unstablePkgs.herdr}/bin/herdr"
     export PATH="''${HOME_PROFILE_DIRECTORY:-$HOME/.nix-profile}/bin:$PATH"
-    if ls "$HOME"/.config/herdr/plugins/github/ramarivera.palette-*/target/release/herdr-palette >/dev/null 2>&1; then
-      :  # 二进制已构建,跳过
-    else
+    # 1) 确保二进制已构建(缺则重装)
+    if ! ls "$HOME"/.config/herdr/plugins/github/ramarivera.palette-*/target/release/herdr-palette >/dev/null 2>&1; then
       "$_herdr" plugin install ramarivera/herdr-palette --yes </dev/null >/dev/null 2>&1 || true
+    fi
+    # 2) 链接 cargo 子 manifest(裸命令)覆盖根 manifest(相对路径),并软链二进制到 ~/.local/bin
+    _bin="$(ls "$HOME"/.config/herdr/plugins/github/ramarivera.palette-*/target/release/herdr-palette 2>/dev/null | head -1)"
+    if [ -n "$_bin" ] && [ -x "$_bin" ]; then
+      _root="$(dirname "$(dirname "$(dirname "$_bin")")")"
+      "$_herdr" plugin link "$_root/cargo" >/dev/null 2>&1 || true
+      mkdir -p "$HOME/.local/bin" 2>/dev/null || true
+      ln -sfn "$_bin" "$HOME/.local/bin/herdr-palette" 2>/dev/null || true
     fi
   '';
 }
