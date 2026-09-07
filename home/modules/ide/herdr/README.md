@@ -61,7 +61,9 @@ herdr 是一个常驻后台的终端 workspace 运行时,契约如 zellij/tmux �
 
 ## 插件(Herdr Palette,`alt+p`)
 
-- 一次性安装(用 cargo 编译;ide profile 已带 Rust):`herdr plugin install ramarivera/herdr-palette`(幂等)。
+- **自动安装**:本模块在 `switch` 后的 activation 里幂等安装(`home.activation.installHerdrPalettePlugin`)——已装则跳过,未装则 `herdr plugin install ramarivera/herdr-palette --yes`。
+  - 首次 `switch-darwin soraliu` 会联网 cargo 编译(可能几分钟);之后每次 switch 几乎瞬时(命中跳过)。
+  - 需 cargo(ide profile 的 rust 模块已带)+ 联网;失败不阻断 switch,也可手动补装 `herdr plugin install ramarivera/herdr-palette`。
 - 装好后 `alt+p`(直达,无需前缀)打开 **Herdr Palette** —— Raycast/Linear 风模糊命令面板,可搜 workspace/tab/命令;`alt+g` 仍是 herdr 自带的可搜索 Session Navigator。
 
 ## zsh 入口
