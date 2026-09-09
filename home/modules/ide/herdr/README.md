@@ -95,8 +95,9 @@ hko        # 关停除 default/当前外的 herdr session
 
 ## 通知（pi / agent 完成）
 
-- 本模块已设 `ui.toast.delivery = "herdr"`:后台 workspace 的 agent(pi 等)**完成或需输入**时在 herdr 内弹 toast;`ui.sound.enabled` 默认开 → 同场景也提示音。
-- 想要 herdr 之外的 macOS 系统横幅:把 `ui.toast.delivery` 改 `"system"`(优先 `terminal-notifier`;未装时用 osascript 兜底),可选后续在 `home.packages` 加 `pkgs.terminal-notifier`。
+- 本模块已设 `ui.toast.delivery = "system"`:后台 workspace 的 agent(pi 等)**完成或需输入**时走 **macOS 系统通知**横幅(`terminal-notifier`,已在本模块 `home.packages` 装 — darwin only,非 darwin 跳过以免求值失败;未装时 herdr 用 osascript 兜底);`ui.sound.enabled` 默认开 → 同场景也提示音。
+- 备选:`"herdr"`(in-app toast)、`"off"`(关)、`"terminal"`(让外层终端弹通知)。
+- pane 边框:`ui.show_agent_labels_on_pane_borders = true`(默认 false)→ 分屏 pane 边框在无手动 pane 名时显示检测到的 agent 标签。
 - pi 检测:herdr 内置 pi 屏幕检测,自动分类 idle/working/blocked/done。为更稳状态上报 + 重启后恢复原生会话,可一次性执行 `herdr integration install pi`(写 pi 配置,幂等)。
 - 注意:herdr 对处于「当前聚焦 tab」的 agent抑制 toast;把 pi 放后台 tab 才会弹通知。
 

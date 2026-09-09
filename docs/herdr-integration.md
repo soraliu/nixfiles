@@ -181,7 +181,8 @@ tabs = "alt"                                               # → Alt+1..9 切标
 ## 后续修订（合并到 main 之上,#19 已合并后的补丁）
 
 - **直达层补 `alt+q`/`alt+x`**:#19 合并版 `close_pane`/`close_tab` 只绑前缀键,漏了 zellij `shared` 的 `Alt q`/`Alt x`,致 `Alt q` 不退 pane。改为数组 `close_pane=["prefix+q","alt+q"]`、`close_tab=["prefix+x","alt+x"]`,直达层对齐 zellij。
-- **开启 agent 完成通知**:herdr `ui.toast.delivery` 默认 `off`,致 pi/agent 完成无 toast。设 `[ui.toast] delivery = "herdr"`(后台 workspace 的 agent 完成/需输入时弹 in-app toast;`ui.sound.enabled` 默认开)。系统级横幅改 `"system"`(macOS 优先 `terminal-notifier`);pi 检测走 herdr 内置屏幕 manifest,更稳可一次性 `herdr integration install pi`。
+- **agent 完成通知改走系统横幅 + 装通知器**:herdr `ui.toast.delivery` 默认 `off`。先前设 `"herdr"`(in-app toast);现改为 `"system"` —— 经 macOS 系统通知横幅,`terminal-notifier` 已在 `home.packages` 装(`lib.optionals stdenv.hostPlatform.isDarwin [ unstablePkgs.terminal-notifier ]`,非 darwin 跳过以免求值失败;`terminal-notifier` 位于 darwin-only `nixpkgs-unstable` 的 `pkgs/by-name/te/terminal-notifier`)。`ui.sound.enabled` 默认开同场景提示音。备选 `"herdr"`/`"off"`/`"terminal"`;pi 检测走 herdr 内置屏幕 manifest,更稳可一次性 `herdr integration install pi`。
+- **pane 边框显示 agent 标签**:`ui.show_agent_labels_on_pane_borders = true`(默认 `false`)→ 分屏 pane 边框在无手动 pane 名时显示检测到的 agent 标签;由本次改动随 UI 一并加入 `[ui]` 段(注意 toml 须写点号前缀 `ui.xxx`,否则会落到根级被当未知键忽略)。
 - **新增 `alt+g` → 可搜索 workspace 导航**:`goto = ["prefix+g", "alt+g"]`,`Alt+g` 直接打开 herdr Session Navigator(可输入搜索 workspace/tab)。本改动不覆盖 herdr 默认(仅追加直达和弦)。
 
 ## 后续修订（agent 焦点快捷键）
