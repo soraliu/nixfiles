@@ -159,6 +159,21 @@ table.insert(plugins, {
         root_markers = { '*.xcodeproj', '*.xcworkspace', '.git' },
       })
 
+      -- yaml
+      -- yamlls 内置了基于 prettier 的 format 能力(默认开启),而 none-ls 的 prettierd
+      -- 也注册了 yaml 格式化。两个 formatter 会被 vim.lsp.buf.format() 同时应用,
+      -- 格式化结果互相打架,导致每次 ":w" 后文件都被再次改动,陷入"保存即变化"的循环。
+      -- 这里关闭 yamlls 的 format,yaml 格式化统一交给 prettierd。
+      vim.lsp.config('yamlls', {
+        settings = {
+          yaml = {
+            format = {
+              enable = false,
+            },
+          },
+        },
+      })
+
       -- Golang
       vim.lsp.config('gopls', {
         settings = {
@@ -566,19 +581,15 @@ table.insert(plugins, {
                   return
                 end
 
-                -- Determine if we should use async based on file size
+                -- 根据 buffer 行数放宽同步 format 的超时时间。
+                -- 注意:BufWritePre 里不能用 async format —— 异步 edits 在写盘之后才应用，
+                -- 会导致 ":w" 后 buffer 又被改动(再次 modified)，陷入"保存 - 变动"循环。
                 local line_count = vim.api.nvim_buf_line_count(bufnr)
-                local use_async = line_count > 1000
 
                 vim.lsp.buf.format({
-                  async = use_async,
-                  timeout_ms = use_async and 10000 or 5000,
+                  async = false,
+                  timeout_ms = line_count > 1000 and 10000 or 5000,
                 })
-
-                -- Show notification for async formatting
-                if use_async then
-                  vim.notify('Formatting in background...', vim.log.levels.INFO, { timeout = 1000 })
-                end
               end,
             })
           end
