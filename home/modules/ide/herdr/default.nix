@@ -34,7 +34,7 @@
 
       # 分屏(zellij L=right/J=down 即 shift+l/j;herdr split_vertical=并排 / split_horizontal=堆叠)
       split_vertical   = [ "prefix+shift+l" "alt+right" ];
-      split_horizontal = [ "prefix+shift+j" "alt+down" "alt+n" ];
+      split_horizontal = [ "prefix+shift+j" "alt+down" ];   # alt+n 让给 new_worktree(下)
 
       # 全屏(zellij z + Alt m)
       zoom = [ "prefix+z" "alt+m" ];
@@ -53,6 +53,10 @@
       next_workspace    = "alt+=";
       new_workspace     = [ "prefix+shift+n" "alt+w" ];
       close_workspace  = [ "prefix+shift+d" "alt+d" ];   # 关闭/删除当前 workspace(默认带确认提示)
+
+      # 新 worktree(herdr 特有:git worktree 绑新 workspace):Alt+n 直达,保留默认 prefix+shift+g
+      # (alt+n 原属 split_horizontal,現调拨给更常用的「开新 worktree」)
+      new_worktree     = [ "prefix+shift+g" "alt+n" ];
 
       # agent 焦点(侧栏 agent 面板):Alt+, 上一个 / Alt+. 下一个
       previous_agent = "alt+,";

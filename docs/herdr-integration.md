@@ -50,7 +50,8 @@ focus_pane_down   = ["prefix+j", "alt+j"]
 focus_pane_up     = ["prefix+k", "alt+k"]
 focus_pane_right  = ["prefix+l", "alt+l"]
 split_vertical   = ["prefix+L", "alt+right"]                # zellij L / Alt Right(并排)
-split_horizontal = ["prefix+J", "alt+down", "alt+n"]        # zellij J / Alt Down / Alt n(堆叠)
+split_horizontal = ["prefix+J", "alt+down"]             # zellij J / Alt Down(堆叠;alt+n 让给 new_worktree)
+new_worktree    = ["prefix+shift+g", "alt+n"]          # herdr 特有 git worktree,保留默认 + Alt+n 直达
 zoom             = ["prefix+z", "alt+m"]                    # zellij z / Alt m
 copy_mode        = ["prefix+[", "prefix+/"]                 # zellij /(进 copy mode 再 / 搜)
 # resize_mode     默认 prefix+r 与 zellij 一致;进去后 h/j/k/l 持久调整
@@ -78,7 +79,8 @@ tabs = "alt"                                               # → Alt+1..9 切标
 |---|---|---|
 | new_tab | prefix+c, alt+t | Alt t |
 | split_vertical | prefix+L, alt+right | L, Alt Right |
-| split_horizontal | prefix+J, alt+down, alt+n | J, Alt Down, Alt n |
+| split_horizontal | prefix+J, alt+down | J, Alt Down |
+| new_worktree | prefix+shift+g, alt+n | (herdr 特有) |
 | focus_pane_* | prefix+*, alt+h/j/k/l | h/j/k/l, Alt h/j/k/l |
 | close_pane | prefix+q, alt+q | q, Alt q |
 | close_tab | prefix+x, alt+x | x, Alt x |
@@ -164,7 +166,7 @@ tabs = "alt"                                               # → Alt+1..9 切标
 - [ ] 本地 `herdr --default-config` + 启动日志核对键名可用性(prefix=ctrl+b、`[`/`]`、`comma`、alt 和弦、indexed tabs=alt);必要时回退键名
 - [ ] **Verification**:
   - `nh home switch`(或 darwin/nixos 对应切换)生成 `~/.config/herdr/config.toml`;`herdr --default-config` 与之对照无类型/语法报错
-  - `h` 进 herdr;逐键验:Ctrl b 前缀、Alt h/j/k/l、Alt 1-9 切标签、Alt [/]、prefix+q 关 pane、prefix+d detach、prefix+c/x、prefix+r 持久 resize、prefix+[ 持久 copy/(搜索、Alt+right/down/n 分屏、Alt+m zoom)。确认前缀改动没误伤
+  - `h` 进 herdr;逐键验:Ctrl b 前缀、Alt h/j/k/l、Alt 1-9 切标签、Alt [/]、prefix+q 关 pane、prefix+d detach、prefix+c/x、prefix+r 持久 resize、prefix+[ 持久 copy/(搜索、Alt+right/down 分屏、Alt+n 新 worktree、Alt+m zoom)。确认前缀改动没误伤
   - `hv <dir>` 重建出左 nvim + 右上下两 shell 结构;`hx`/`hxp` 关 tab;`hko` 关其它 session
   - catppuccin 默认主题与侧栏显示正常(Q5 默认,不强行复刻 zjstatus)
 - [ ] worktree 内 commit+push;开 PR(不自行合并);删 worktree
@@ -182,7 +184,8 @@ tabs = "alt"                                               # → Alt+1..9 切标
 
 - **直达层补 `alt+q`/`alt+x`**:#19 合并版 `close_pane`/`close_tab` 只绑前缀键,漏了 zellij `shared` 的 `Alt q`/`Alt x`,致 `Alt q` 不退 pane。改为数组 `close_pane=["prefix+q","alt+q"]`、`close_tab=["prefix+x","alt+x"]`,直达层对齐 zellij。
 - **agent 完成通知改走系统横幅 + 装通知器**:herdr `ui.toast.delivery` 默认 `off`。先前设 `"herdr"`(in-app toast);现改为 `"system"` —— 经 macOS 系统通知横幅,`terminal-notifier` 已在 `home.packages` 装(`lib.optionals stdenv.hostPlatform.isDarwin [ unstablePkgs.terminal-notifier ]`,非 darwin 跳过以免求值失败;`terminal-notifier` 位于 darwin-only `nixpkgs-unstable` 的 `pkgs/by-name/te/terminal-notifier`)。`ui.sound.enabled` 默认开同场景提示音。备选 `"herdr"`/`"off"`/`"terminal"`;pi 检测走 herdr 内置屏幕 manifest,更稳可一次性 `herdr integration install pi`。
-- **pane 边框显示 agent 标签**:`ui.show_agent_labels_on_pane_borders = true`(默认 `false`)→ 分屏 pane 边框在无手动 pane 名时显示检测到的 agent 标签;由本次改动随 UI 一并加入 `[ui]` 段(注意 toml 须写点号前缀 `ui.xxx`,否则会落到根级被当未知键忽略)。
+- **pane 边框显示 agent 标签**:`ui.show_agent_labels_on_pane_borders = true`(默认 `false`)→ 分屏 pane 边框在无手动 pane 名时显示检测到的 agent 标签;由本次改动随 UI 一并加入 `[ui]` 段(注意 toml 须写点号前缀 `ui.xxx`,否则会落到根级被当未知键忽略).
+- **`alt+n` 改绑 `new_worktree`**:`alt+n` 原属 `split_horizontal`(zellij `Alt Down/n` 堆叠),现调拨给更常用的 herdr 特有「开新 worktree」.`split_horizontal` 去掉 `alt+n`(留 `prefix+shift+j` / `alt+down`);`new_worktree = ["prefix+shift+g", "alt+n"]`(保留 herdr 默认 `prefix+shift+g` + 补 `alt+n` 直达)。无冲突(alt+n 移走后不与任何绑定重叠)。验证:`herdr-palette --debug-keys` 显示 `alt+n → New worktree`、`prefix+shift+g → New worktree`、`alt+down → Split horizontal`;服务端诊断干净。
 - **新增 `alt+g` → 可搜索 workspace 导航**:`goto = ["prefix+g", "alt+g"]`,`Alt+g` 直接打开 herdr Session Navigator(可输入搜索 workspace/tab)。本改动不覆盖 herdr 默认(仅追加直达和弦)。
 
 ## 后续修订（agent 焦点快捷键）
