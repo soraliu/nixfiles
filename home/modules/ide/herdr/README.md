@@ -38,7 +38,8 @@ herdr 是一个常驻后台的终端 workspace 运行时,契约如 zellij/tmux �
 |---|---|
 | 新 tab | `Alt t`  |
 | 焦点移动 | `Alt h/j/k/l` |
-| 分屏 右/下 | `Alt Right` / `Alt Down` / `Alt n` |
+| 分屏 右/下 | `Alt Right` / `Alt Down` |
+| 新 worktree | `Alt n` |
 | 关 pane/tab | `Alt q` / `Alt x` |
 | 上/下个 tab | `Alt [` / `Alt ]` |
 | 全屏 | `Alt m` |
@@ -55,7 +56,7 @@ herdr 是一个常驻后台的终端 workspace 运行时,契约如 zellij/tmux �
 | 重命名 workspace | `prefix+shift+w` |
 | 上/下个 workspace | `Alt -` / `Alt =`(直达;默认未绑) |
 | 可搜索 workspace 导航(Session Navigator) | `prefix+g` / `Alt+g`(直达,可搜 workspace/tab) |
-| 新 worktree | `prefix+shift+g` |
+| 新 worktree | `prefix+shift+g` + `Alt+n`(直达) |
 | 切换侧栏 | `prefix+b` |
 | 设置 / 帮助 / 重载配置 | `prefix+s` / `prefix+?` / `prefix+shift+r` |
 | 聚焦通知来源 | `prefix+o` |
