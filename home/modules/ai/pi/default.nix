@@ -48,4 +48,8 @@ in
   # 冷启动场景免去 server spawn 后最多 10s 的 mDNS advertise 等待
   # (直接连配置端口)。多机使用 dashboard 时删除此项即可恢复发现能力。
   config.home.sessionVariables.PI_DASHBOARD_NO_MDNS = "1";
+
+  # pi-session-context 扩展的 worktree base，与 AGENTS.md「代码修改流程」中
+  # ~/.pi/worktree/<repo>/<branch> 的统一 base 保持一致
+  config.home.sessionVariables.PI_WORKTREE_BASE = "$HOME/.pi/worktree";
 }
