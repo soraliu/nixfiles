@@ -52,4 +52,9 @@ in
   # pi-session-context 扩展的 worktree base，与 AGENTS.md「代码修改流程」中
   # ~/.pi/worktree/<repo>/<branch> 的统一 base 保持一致
   config.home.sessionVariables.PI_WORKTREE_BASE = "$HOME/.pi/worktree";
+
+  # pi-background-tasks 扩展（fork: soraliu/pi-background-tasks）的运行时产物根。
+  # 默认写到项目目录下的 .pi/tasks|fusion|delegate，弄脏 git 且频繁变化；
+  # 设置后统一落到 ~/.pi 下，项目目录不再出现 .pi
+  config.home.sessionVariables.PI_BG_RUNTIME_ROOT = "$HOME/.pi";
 }
