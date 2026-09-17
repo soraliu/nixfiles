@@ -62,6 +62,7 @@
       previous_agent = "alt+,";
       next_agent    = "alt+.";
 
+
       # 以下保留 herdr 默认(不覆盖):
       #   resize_mode  = "prefix+r"        # 进去持久调整(对齐 zellij r)
       #   edit_scrollback = "prefix+e"     # 对齐 zellij e
@@ -85,6 +86,7 @@
 
     # 分屏 pane 边框显示检测到的 agent 标签(无手动 pane 名时);默认 false —— 置 [ui]
     ui.show_agent_labels_on_pane_borders = true;
+    ui.status_indicators = "symbols";
 
     # 通知:用「系统通知服务」(macOS 经 terminal-notifier 横幅),后台 workspace 的 agent
     # 完成/需输入时弹系统横幅;terminal-notifier 见下方 home.packages(darwin only)。
