@@ -3,7 +3,7 @@
     go
     postgresql
   ]) ++ (with unstablePkgs; [
-    lazysql
+    rainfrog
   ]);
 
   config.home.sessionVariables = {
