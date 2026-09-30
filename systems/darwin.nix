@@ -28,6 +28,12 @@
   system.defaults.NSGlobalDomain.InitialKeyRepeat = 12;
   system.defaults.NSGlobalDomain.KeyRepeat = 2;
 
+  # 「自动切换到文稿的输入法」的底层键：每个输入上下文记忆各自输入源，
+  # 否则浏览器等无文本聚焦场景会把全局输入源带成 ABC
+  system.defaults.CustomUserPreferences."com.apple.HIToolbox" = {
+    AppleGlobalTextInputProperties.TextInputGlobalPropertyPerContextInput = true;
+  };
+
   fonts.packages = with unstablePkgs; [
     nerd-fonts.sauce-code-pro
   ];
