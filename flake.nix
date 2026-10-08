@@ -76,7 +76,9 @@
     };
 
     pi = {
-      url = "github:lukasl-dev/pi.nix";
+      # 官方 flake(v1.0.1 起):直接从 git tag 源码构建,替代第三方打包仓库 lukasl-dev/pi.nix
+      # stable ref 跟踪最新发布(官方 quickstart 的安装渠道)
+      url = "github:earendil-works/pi/stable";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
 

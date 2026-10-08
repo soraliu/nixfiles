@@ -4,13 +4,13 @@
 
 | 项目 | 更新前 | 更新后 |
 | --- | --- | --- |
-| Nix input | `pi` → `github:lukasl-dev/pi.nix` | `pi` → `github:lukasl-dev/pi.nix` |
-| 封装锁定 revision | `b900956ae011e532cd66930b83a7add1cdeb3c3f` | `2a1f1ddf5f7da2ee0c7ed3e51a2c5f5fbb70c439` |
+| Nix input | `pi` → `github:lukasl-dev/pi.nix` | `pi` → `github:earendil-works/pi/stable`（上游官方 flake） |
+| 封装锁定 revision | `b900956ae011e532cd66930b83a7add1cdeb3c3f` | `abe508e1b89912adde45528136c3221eb69acdd7` |
 | 封装锁定时间 | 2026-09-16 | 2026-10-07 |
-| 实际应用版本 | `pi-coding-agent-0.85.1` | `pi-coding-agent-1.1.0` |
+| 实际应用版本 | `pi-coding-agent-0.85.1` | `pi-1.1.0` |
 | 上游 Pi release | [`v0.85.1`](https://github.com/earendil-works/pi/releases/tag/v0.85.1) | [`v1.1.0`](https://github.com/earendil-works/pi/releases/tag/v1.1.0) |
 
-`pi` 通过 [`lukasl-dev/pi.nix`](https://github.com/lukasl-dev/pi.nix) 的锁定包加入 `ide` profile。本次仅用 `nix flake update pi` 把封装跟踪到上游 Pi `1.1.0`，并重新求值和构建 `ide` activation package。
+本次共两步：先用 `nix flake update pi` 把原第三方打包仓库 [`lukasl-dev/pi.nix`](https://github.com/lukasl-dev/pi.nix) 跟踪到上游 Pi `1.1.0`；随后把 input 直接切换到上游官方 flake [`github:earendil-works/pi/stable`](https://github.com/earendil-works/pi)（`v1.0.1` 起提供，官方 quickstart 的安装渠道），`pi` 包改由官方 flake 直接从 git tag 源码构建，不再经过第三方打包仓库。`stable` ref 跟踪最新发布，当前解析到 v1.1.0 的 `abe508e`。
 
 版本区间 `(0.85.1, 1.1.0]`，覆盖 12 个官方发布：`v0.86.0`、`v0.86.1`、`v0.87.0`、`v0.87.1`、`v0.99.0`、`v0.99.1`、`v0.99.2`、`v1.0.0`、`v1.0.1`、`v1.0.3`、`v1.0.4`、`v1.1.0`（2026-09-19 → 2026-10-07）。`v1.0.2` 仅有 git tag、无 GitHub Release 说明，其内容并入相邻版本考察。`v1.0.0` 是上游首个稳定大版本，版本序列从 `0.87.x` 直接跳到 `0.99` 再进入 `1.0`。
 
@@ -78,8 +78,9 @@
 ### 9. 官方 Nix flake（1.0.1）
 
 - **新功能**：上游 pi 自带官方 flake：`nix run github:earendil-works/pi/stable` 直接运行最新发布版。
-- **为什么需要**：官方 quickstart 提供的安装路径。据此推断：降低 Nix 用户安装门槛；对本仓库而言，未来若想切换到上游官方 flake 或对比版本，多了一条受支持的来源（当前继续用 `lukasl-dev/pi.nix` 打包，不受影响）。
-- **官方来源**：[`v1.0.1` release notes](https://github.com/earendil-works/pi/releases/tag/v1.0.1)、[`quickstart.md#1-install-pi`](https://github.com/earendil-works/pi/blob/v1.0.1/packages/coding-agent/docs/quickstart.md#1-install-pi)。
+- **为什么需要**：官方 quickstart 提供的安装路径。据此推断：降低 Nix 用户安装门槛；对本仓库而言，官方 flake 提供了比第三方打包仓库更短的分发路径（少一跳 VERSION.json 同步，直接从 git tag 构建）。
+- **实际应用**：**本次升级已将 `pi` input 从第三方打包仓库 `lukasl-dev/pi.nix` 切换到 `github:earendil-works/pi/stable`**，锁定 `abe508e`（v1.1.0），macOS/WSL/服务器等全部消费此 input 的 profile 同步切换。
+- **官方来源**：[`v1.0.1` release notes](https://github.com/earendil-works/pi/releases/tag/v1.0.1)、[`quickstart.md#1-install-pi`](https://github.com/earendil-works/pi/blob/v1.0.1/packages/coding-agent/docs/quickstart.md#1-install-pi)、[上游 README](https://github.com/earendil-works/pi#readme)（`stable` ref 声明）。
 
 ### 10. 新模型与启动性能（0.86.1 / 0.87.1 / 0.99.1 / 1.1.0）
 
@@ -118,18 +119,10 @@
 
 ## 变更范围
 
-- `flake.lock`：仅 `pi` node 自身的 `lastModified` / `narHash` / `rev` 三个字段变化（`b900956` → `2a1f1dd`），共 3 行增 3 行减；未触及任何无关根 input 或传递依赖节点。
-- 无 `flake.nix` 或其他文件改动。
-
-本次变化的 lock 节点：
-
-```text
-pi/locked.lastModified: 1789594051 -> 1791414984
-pi/locked.narHash:      sha256-Tog4wJ0fhcy08bwx+KA537GJY0f/X1lyz+n98YQaFws=
-                        -> sha256-1b10xGX9RH2uwPbWC4ZKUPN40LMbRNXdO6mexnU8rNk=
-pi/locked.rev:          b900956ae011e532cd66930b83a7add1cdeb3c3f
-                        -> 2a1f1ddf5f7da2ee0c7ed3e51a2c5f5fbb70c439
-```
+- `flake.nix`：`pi` input 的 `url` 从 `github:lukasl-dev/pi.nix` 改为 `github:earendil-works/pi/stable`（`inputs.nixpkgs.follows = "nixpkgs-unstable"` 保持不变），新增一行来源说明注释。
+- `home/modules/ai/pi/default.nix`：包引用从 `pi.packages.${system}.coding-agent`（第三方打包仓库的 output 名）改为 `pi.packages.${system}.pi`（官方 flake 的 output 名），并更新注释。
+- `home/modules/ide/herdr/default.nix`：`ui.toast.delivery` 从 `"system"` 改为 `"herdr"`（agent 完成/需输入通知改为 herdr 应用内 toast，不再弹 macOS 系统横幅），同步移除 `terminal-notifier` 依赖（仅作系统横幅用途）。
+- `flake.lock`：`pi` 节点从第三方打包仓库切到官方 flake，其旧传递依赖（`bun2nix`、`bun2nix-x86_64-darwin`、`flake-parts`、`jail-nix`、`nixpkgs-x86_64-darwin`、`treefmt-nix` 以及各台 nixpkgs pin 等）整体移除，新增官方 flake 自带的 `pi/nixpkgs-darwin-x64`（nixpkgs-26.05-darwin，仅 x86_64-darwin 使用，本机 aarch64-darwin 不参与构建）。未触及任何无关根 input。
 
 ## 验证证据
 
@@ -141,23 +134,26 @@ jq -e --arg input "pi" '.nodes.root.inputs[$input] as $node | {input, node, lock
 nix eval --json '.#homeConfigurations.ide.config.home.packages' \
   --apply 'map (p: p.name + "-" + (p.version or "?"))' \
   | jq -r '.[] | select(test("coding-agent"; "i"))'                                                                    # 升级前版本
-nix flake update pi
-git diff -- flake.lock
-git diff --check
-nix build '.#homeConfigurations.ide.activationPackage' --no-link
-nix build '.#homeConfigurations.ide.activationPackage' --no-link --print-out-paths
-# 构建后复跑版本查询
+nix flake update pi          # 第一步:跟进到 lukasl-dev/pi.nix v1.1.0
+# 第二步:flake.nix 中 pi.url 改为 github:earendil-works/pi/stable
+# home/modules/ai/pi/default.nix 包路径 .coding-agent -> .pi
+# home/modules/ide/herdr/default.nix toast delivery "system" -> "herdr" 并移除 terminal-notifier
+nix flake update pi          # 注意: url 变化后刷新 lock 到官方 flake abe508e
 nix eval --json '.#homeConfigurations.ide.config.home.packages' \
   --apply 'map (p: p.name + "-" + (p.version or "?"))' \
-  | jq -r '.[] | select(test("coding-agent"; "i"))'
+  | jq -r '.[] | select(test("coding-agent|^pi-"; "i"))'                                                               # 升级后版本
+nix eval --json '.#darwinConfigurations.soraliu.config.home-manager.users.soraliu.home.packages' \
+  --apply 'map (p: p.name)' | jq -r '.[] | select(test("^pi-"))'                                                      # darwin 配置回规
+nix build '.#homeConfigurations.ide.activationPackage' --no-link
+# 检查生成的 herdr config.toml 中 [ui.toast] delivery = "herdr"
 ```
 
 结果：
 
-- 升级前版本查询：`pi-coding-agent-0.85.1-0.85.1`；升级后：`pi-coding-agent-1.1.0-1.1.0`。
-- `git diff -- flake.lock`：仅 `pi` 节点 3 字段变化，`git diff --check` 通过，无空白错误。
-- `nix build '.#homeConfigurations.ide.activationPackage' --no-link` 成功构建，实际构建 derivation 包括 `pi-coding-agent-1.1.0` 与其 npm deps fetch（`-earendil-works-pi-coding-agent-install-1.1.0-sources`）。
-- activation package 输出路径：`/nix/store/mrbvngqim4yi21fyxr304x9xx913422y-home-manager-generation`。
-- 构建后版本复核仍为 `pi-coding-agent-1.1.0-1.1.0`。
+- 升级前版本查询：`pi-coding-agent-0.85.1-0.85.1`；切换官方 flake 后：`pi-1.1.0-1.1.0`（包名随官方 flake 变为 `pi`）。
+- `git diff --check` 通过，无空白错误；lock 变化全部落在 `pi` 依赖闭包内部。
+- `nix build '.#homeConfigurations.ide.activationPackage' --no-link` 先后两次成功：第一次（第三方打包仓库，`pi-coding-agent-1.1.0`）与切换官方 flake 后（`pi-1.1.0`）。
+- `darwinConfigurations.soraliu` 求值验证：home 包列表中含 `pi-1.1.0`。
+- herdr config 生成验证：activation package 内 `~/.config/herdr/config.toml` 含 `[ui.toast] delivery = "herdr"`；包列表中已无 `terminal-notifier`。
 
 未执行：`home-manager switch`、`darwin-rebuild switch`、`pi` 实际启动 / provider 登录 / 扩展回归（含 `pi-background-tasks`、`PI_DASHBOARD_NO_MDNS`、`PI_BG_RUNTIME_ROOT` 行为观察）等 live 验证。本次只构建 `ide` profile（当前系统 `aarch64-darwin`），不修改 `~/.pi/agent` 运行时配置或 provider 凭据。
