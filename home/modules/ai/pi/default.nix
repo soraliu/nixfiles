@@ -1,6 +1,8 @@
 { pi, system, ... }: {
+  # v1.0.1 起改用上游官方 flake(github:earendil-works/pi/stable),
+  # 包 output 为 packages.<system>.pi(原 lukasl-dev/pi.nix 打包仓库为 .coding-agent)
   config.home.packages = [
-    pi.packages.${system}.coding-agent
+    pi.packages.${system}.pi
   ];
 
   # 单机使用 dashboard (localhost:8000), mDNS 多机发现无用;
