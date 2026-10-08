@@ -88,15 +88,14 @@
     ui.show_agent_labels_on_pane_borders = true;
     ui.status_indicators = "symbols";
 
-    # 通知:用「系统通知服务」(macOS 经 terminal-notifier 横幅),后台 workspace 的 agent
-    # 完成/需输入时弹系统横幅;terminal-notifier 见下方 home.packages(darwin only)。
-    # 备选:<"herdr"> in-app toast,或 <"off"> 关闭("terminal" 让外层终端弹通知)。
-    ui.toast.delivery = "system";
+    # 通知:in-app toast 显示在 herdr 内部，后台 workspace 的 agent 完成/需输入时
+    # 在 herdr 界面浮动提示(默认 top-left)，不弹 macOS 系统横幅，不依赖 terminal-notifier。
+    # 备选:<"system"> 经 terminal-notifier 弹系统横幅,<"terminal"> 让外层终端弹通知,<"off"> 关闭。
+    ui.toast.delivery = "herdr";
   };
 in {
-  # herdr 主体 + 系统通知依赖(macOS 经 terminal-notifier 弹横幅;非 darwin 跳过以免求值失败)
-  home.packages = [ unstablePkgs.herdr ]
-    ++ lib.optionals pkgs.stdenv.hostPlatform.isDarwin [ unstablePkgs.terminal-notifier ];
+  # herdr 主体(通知已在上方改为 herdr 内部 toast,不再需要 terminal-notifier)
+  home.packages = [ unstablePkgs.herdr ];
 
   home.file.".config/herdr/config.toml".source =
     tomlFormat.generate "config.toml" herdrConfig;
