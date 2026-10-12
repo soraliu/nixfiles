@@ -1,0 +1,202 @@
+########## vpn_primary (45.202.255.241) ##########
+=== sysctl ===
+net.core.rmem_max = 67108864
+net.core.wmem_max = 67108864
+
+=== default route exit interface ===
+1.1.1.1 via 45.202.254.1 dev eth0 src 45.202.255.241 uid 0 
+2: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq state UP mode DEFAULT group default qlen 1000\    link/ether bc:24:11:ce:6e:bb brd ff:ff:ff:ff:ff:ff\    altname enp0s18\    altname ens18
+
+=== listeners (udp+tcp) ===
+UNCONN 0      0                  *:20000            *:*    users:(("hysteria",pid=206268,fd=3))     
+LISTEN 0      4096                     *:8443             *:*    users:(("xray",pid=35263,fd=3))          
+
+=== hysteria quic-related config fields (whitelist) ===
+22:udpIdleTimeout: 90s
+23:ignoreClientBandwidth: true
+
+=== hysteria config top-level keys ===
+listen: tls: obfs: auth: masquerade: udpIdleTimeout: ignoreClientBandwidth: 
+
+=== xray transport proto ===
+      1 "network": "tcp
+      1 "port": 8443
+      1 "security": "reality
+
+=== hysteria version ===
+Version:	v2.13.0
+
+=== mss clamp check (nft) ===
+0
+
+########## vpn_premium (103.112.1.197) ##########
+=== sysctl ===
+net.core.rmem_max = 67108864
+net.core.wmem_max = 67108864
+
+=== default route exit interface ===
+1.1.1.1 via 103.112.1.1 dev ens3 src 103.112.1.197 uid 0 
+2: ens3: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc mq state UP mode DEFAULT group default qlen 1000\    link/ether 00:ba:ac:28:b1:40 brd ff:ff:ff:ff:ff:ff\    altname enp0s3
+4: cilium_net@cilium_host: <BROADCAST,MULTICAST,NOARP,UP,LOWER_UP> mtu 1400 qdisc noqueue state UP mode DEFAULT group default \    link/ether 86:34:90:7a:1c:6c brd ff:ff:ff:ff:ff:ff
+5: cilium_host@cilium_net: <BROADCAST,MULTICAST,NOARP,UP,LOWER_UP> mtu 1400 qdisc noqueue state UP mode DEFAULT group default qlen 1000\    link/ether 3a:c1:e6:40:e8:24 brd ff:ff:ff:ff:ff:ff
+99: nebula1: <POINTOPOINT,MULTICAST,NOARP,UP,LOWER_UP> mtu 1400 qdisc fq_codel state UNKNOWN mode DEFAULT group default qlen 500\    link/none 
+
+=== listeners (udp+tcp) ===
+UNCONN 0      0                  *:33110            *:*    users:(("hysteria",pid=2967531,fd=132))      
+UNCONN 0      0                  *:4443             *:*    users:(("hysteria",pid=2020321,fd=4))        
+UNCONN 0      0                  *:46429            *:*    users:(("xray",pid=2968099,fd=275))          
+UNCONN 0      0                  *:50538            *:*    users:(("xray",pid=2968099,fd=150))          
+UNCONN 0      0                  *:51566            *:*    users:(("hysteria",pid=2967531,fd=143))      
+UNCONN 0      0                  *:47484            *:*    users:(("xray",pid=2968099,fd=369))          
+UNCONN 0      0                  *:47488            *:*    users:(("hysteria",pid=2967531,fd=122))      
+UNCONN 0      0                  *:37251            *:*    users:(("hysteria",pid=2967531,fd=205))      
+UNCONN 0      0                  *:45451            *:*    users:(("hysteria",pid=2967531,fd=176))      
+UNCONN 0      0                  *:51630            *:*    users:(("hysteria",pid=2967531,fd=162))      
+UNCONN 0      0                  *:46512            *:*    users:(("xray",pid=2968099,fd=200))          
+UNCONN 0      0                  *:55736            *:*    users:(("hysteria",pid=2967531,fd=70))       
+UNCONN 0      0                  *:42431            *:*    users:(("xray",pid=2968099,fd=487))          
+UNCONN 0      0                  *:35268            *:*    users:(("hysteria",pid=2967531,fd=204))      
+UNCONN 0      0                  *:55753            *:*    users:(("xray",pid=2968099,fd=387))          
+UNCONN 0      0                  *:40403            *:*    users:(("hysteria",pid=2967531,fd=178))      
+UNCONN 0      0                  *:50654            *:*    users:(("hysteria",pid=2967531,fd=129))      
+UNCONN 0      0                  *:43488            *:*    users:(("xray",pid=2968099,fd=290))          
+UNCONN 0      0                  *:44544            *:*    users:(("hysteria",pid=2967531,fd=52))       
+UNCONN 0      0                  *:38404            *:*    users:(("xray",pid=2968099,fd=545))          
+UNCONN 0      0                  *:53788            *:*    users:(("hysteria",pid=2967531,fd=134))      
+UNCONN 0      0                  *:20000            *:*    users:(("hysteria",pid=2967531,fd=4))        
+UNCONN 0      0                  *:39463            *:*    users:(("hysteria",pid=2967531,fd=11))       
+UNCONN 0      0                  *:52788            *:*    users:(("hysteria",pid=2967531,fd=166))      
+UNCONN 0      0                  *:37436            *:*    users:(("hysteria",pid=2967531,fd=213))      
+UNCONN 0      0                  *:41536            *:*    users:(("hysteria",pid=2967531,fd=64))       
+UNCONN 0      0                  *:50758            *:*    users:(("hysteria",pid=2967531,fd=16))       
+UNCONN 0      0                  *:46664            *:*    users:(("xray",pid=2968099,fd=250))          
+UNCONN 0      0                  *:38477            *:*    users:(("hysteria",pid=2967531,fd=102))      
+UNCONN 0      0                  *:35440            *:*    users:(("xray",pid=2968099,fd=415))          
+UNCONN 0      0                  *:42648            *:*    users:(("xray",pid=2968099,fd=157))          
+UNCONN 0      0                  *:53920            *:*    users:(("xray",pid=2968099,fd=424))          
+UNCONN 0      0                  *:43701            *:*    users:(("hysteria",pid=2967531,fd=46))       
+UNCONN 0      0                  *:34492            *:*    users:(("hysteria",pid=2967531,fd=167))      
+UNCONN 0      0                  *:37567            *:*    users:(("hysteria",pid=2967531,fd=43))       
+UNCONN 0      0                  *:35567            *:*    users:(("xray",pid=2968099,fd=152))          
+UNCONN 0      0                  *:60154            *:*    users:(("hysteria",pid=2967531,fd=185))      
+UNCONN 0      0                  *:50948            *:*    users:(("hysteria",pid=2967531,fd=60))       
+UNCONN 0      0                  *:43799            *:*    users:(("hysteria",pid=2967531,fd=74))       
+UNCONN 0      0                  *:37663            *:*    users:(("hysteria",pid=2967531,fd=86))       
+UNCONN 0      0                  *:46912            *:*    users:(("xray",pid=2968099,fd=408))          
+UNCONN 0      0                  *:54090            *:*    users:(("hysteria",pid=2967531,fd=113))      
+UNCONN 0      0                  *:56139            *:*    users:(("hysteria",pid=2967531,fd=72))       
+UNCONN 0      0                  *:37752            *:*    users:(("hysteria",pid=2967531,fd=168))      
+UNCONN 0      0                  *:34681            *:*    users:(("hysteria",pid=2967531,fd=173))      
+UNCONN 0      0                  *:57235            *:*    users:(("hysteria",pid=2967531,fd=195))      
+UNCONN 0      0                  *:40885            *:*    users:(("hysteria",pid=2967531,fd=180))      
+UNCONN 0      0                  *:55222            *:*    users:(("hysteria",pid=2967531,fd=157))      
+UNCONN 0      0                  *:48098            *:*    users:(("hysteria",pid=2967531,fd=218))      
+UNCONN 0      0                  *:55281            *:*    users:(("hysteria",pid=2967531,fd=259))      
+UNCONN 0      0                  *:32769            *:*    users:(("hysteria",pid=2967531,fd=88))       
+UNCONN 0      0                  *:45066            *:*    users:(("xray",pid=2968099,fd=469))          
+UNCONN 0      0                  *:34838            *:*    users:(("hysteria",pid=2967531,fd=251))      
+UNCONN 0      0                  *:44056            *:*    users:(("hysteria",pid=2967531,fd=112))      
+UNCONN 0      0                  *:53279            *:*    users:(("hysteria",pid=2967531,fd=165))      
+UNCONN 0      0                  *:55342            *:*    users:(("hysteria",pid=2967531,fd=120))      
+UNCONN 0      0                  *:40024            *:*    users:(("hysteria",pid=2967531,fd=80))       
+UNCONN 0      0                  *:48249            *:*    users:(("hysteria",pid=2967531,fd=141))      
+UNCONN 0      0                  *:60563            *:*    users:(("hysteria",pid=2967531,fd=135))      
+UNCONN 0      0                  *:46227            *:*    users:(("hysteria",pid=2967531,fd=49))       
+UNCONN 0      0                  *:33957            *:*    users:(("hysteria",pid=2967531,fd=171))      
+UNCONN 0      0                  *:32953            *:*    users:(("hysteria",pid=2967531,fd=244))      
+UNCONN 0      0                  *:47294            *:*    users:(("hysteria",pid=2967531,fd=179))      
+UNCONN 0      0                  *:47320            *:*    users:(("hysteria",pid=2967531,fd=147))      
+UNCONN 0      0                  *:41202            *:*    users:(("hysteria",pid=2967531,fd=216))      
+UNCONN 0      0                  *:49404            *:*    users:(("hysteria",pid=2967531,fd=235))      
+UNCONN 0      0                  *:35076            *:*    users:(("hysteria",pid=2967531,fd=194))      
+UNCONN 0      0                  *:47370            *:*    users:(("hysteria",pid=2967531,fd=146))      
+UNCONN 0      0                  *:55571            *:*    users:(("xray",pid=2968099,fd=460))          
+UNCONN 0      0                  *:51486            *:*    users:(("hysteria",pid=2967531,fd=9))        
+UNCONN 0      0                  *:39207            *:*    users:(("hysteria",pid=2967531,fd=236))      
+UNCONN 0      0                  *:53548            *:*    users:(("hysteria",pid=2967531,fd=79))       
+UNCONN 0      0                  *:44333            *:*    users:(("hysteria",pid=2967531,fd=250))      
+UNCONN 0      0                  *:56624            *:*    users:(("xray",pid=2968099,fd=134))          
+UNCONN 0      0                  *:43333            *:*    users:(("hysteria",pid=2967531,fd=57))       
+UNCONN 0      0                  *:49492            *:*    users:(("hysteria",pid=2967531,fd=117))      
+LISTEN 0      4096               *:8443             *:*    users:(("xray",pid=2968099,fd=4))                         
+
+=== hysteria quic-related config fields (whitelist) ===
+22:udpIdleTimeout: 90s
+23:ignoreClientBandwidth: true
+
+=== hysteria config top-level keys ===
+listen: tls: obfs: auth: masquerade: udpIdleTimeout: ignoreClientBandwidth: 
+
+=== xray transport proto ===
+      1 "network": "tcp
+      1 "port": 8443
+      1 "security": "reality
+
+=== hysteria version ===
+Version:	v2.13.0
+
+=== mss clamp check (nft) ===
+0
+
+########## vpn_secondary (179.255.150.220) ##########
+=== sysctl ===
+net.core.rmem_max = 67108864
+net.core.wmem_max = 67108864
+
+=== default route exit interface ===
+1.1.1.1 via 193.41.250.250 dev eth0 src 179.255.150.220 uid 0 
+2: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc mq state UP mode DEFAULT group default qlen 1000\    link/ether bc:24:11:8c:90:51 brd ff:ff:ff:ff:ff:ff
+
+=== listeners (udp+tcp) ===
+UNCONN 0      0                  *:20000            *:*    users:(("hysteria",pid=545794,fd=4))        
+LISTEN 0      4096                     *:8443             *:*    users:(("xray",pid=545823,fd=4))                     
+
+=== hysteria quic-related config fields (whitelist) ===
+22:udpIdleTimeout: 90s
+23:ignoreClientBandwidth: true
+
+=== hysteria config top-level keys ===
+listen: tls: obfs: auth: masquerade: udpIdleTimeout: ignoreClientBandwidth: 
+
+=== xray transport proto ===
+      1 "network": "tcp
+      1 "port": 8443
+      1 "security": "reality
+
+=== hysteria version ===
+Version:	v2.13.0
+
+=== mss clamp check (nft) ===
+0
+
+########## vpn_hangzhou (47.98.202.4) ##########
+=== sysctl ===
+net.core.rmem_max = 67108864
+net.core.wmem_max = 67108864
+
+=== default route exit interface ===
+1.1.1.1 via 172.29.207.253 dev eth0 src 172.29.207.217 uid 0 
+2: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel state UP mode DEFAULT group default qlen 1000\    link/ether 00:16:3e:42:fb:75 brd ff:ff:ff:ff:ff:ff\    altname enp0s5\    altname ens5
+
+=== listeners (udp+tcp) ===
+UNCONN 0      0                        *:20000            *:*    users:(("hysteria",pid=1344751,fd=3))        
+LISTEN 0      4096                     *:8443             *:*    users:(("xray",pid=1344784,fd=3))                       
+
+=== hysteria quic-related config fields (whitelist) ===
+22:udpIdleTimeout: 90s
+23:ignoreClientBandwidth: true
+
+=== hysteria config top-level keys ===
+listen: tls: obfs: auth: masquerade: udpIdleTimeout: ignoreClientBandwidth: 
+
+=== xray transport proto ===
+      1 "network": "tcp
+      1 "port": 8443
+      1 "security": "reality
+
+=== hysteria version ===
+Version:	v2.13.0
+
+=== mss clamp check (nft) ===
+0
+

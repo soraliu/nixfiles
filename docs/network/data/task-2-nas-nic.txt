@@ -1,0 +1,23 @@
+** WARNING: connection is not using a post-quantum key exchange algorithm.
+** This session may be vulnerable to "store now, decrypt later" attacks.
+** The server may need to be upgraded. See https://openssh.com/pq.html
+=== ethtool -i eth0 ===
+driver: atlantic
+version: 6.12.30+
+firmware-version: 1.3.31
+expansion-rom-version: 
+bus-info: 0000:03:00.0
+
+=== ethtool eth0 speed ===
+	Supported link modes:   10baseT/Full
+	Advertised link modes:  10baseT/Full
+	Link partner advertised link modes:  10baseT/Half 10baseT/Full
+	Link partner advertised pause frame use: No
+	Link partner advertised auto-negotiation: No
+	Link partner advertised FEC modes: Not reported
+	Speed: 10000Mb/s
+	Duplex: Full
+                               drv link
+	Link detected: yes
+
+=== lspci ethernet fallback ===

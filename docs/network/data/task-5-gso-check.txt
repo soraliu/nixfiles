@@ -1,0 +1,16 @@
+** WARNING: connection is not using a post-quantum key exchange algorithm.
+** This session may be vulnerable to "store now, decrypt later" attacks.
+** The server may need to be upgraded. See https://openssh.com/pq.html
+==== Task 5 B4: GSO 生效确认（NAS 宿主 eth0 / atlantic AQC113）====
+driver: atlantic
+version: 6.12.30+
+firmware-version: 1.3.31
+expansion-rom-version: 
+rx-checksumming: on
+tx-checksumming: on
+generic-segmentation-offload: on
+--- 容器内 ethtool（macvlan offload 从属宿主内核）---
+tx-checksumming: on
+--- macvlan 设备 offload 实测（宿主侧 ip -d link 确认 macvlan eth0） ---
+3: eth0: <BROADCAST,MULTICAST,PROMISC,UP,LOWER_UP> mtu 1500 qdisc mq state UP mode DEFAULT group default qlen 1000
+    link/ether 6c:1f:f7:55:f6:8d brd ff:ff:ff:ff:ff:ff promiscuity 2  allmulti 1 minmtu 68 maxmtu 16334 addrgenmode stable_secret numtxqueues 32 numrxqueues 32 gso_max_size 65536 gso_max_segs 65535 tso_max_size 65536 tso_max_segs 65535 gro_max_size 65536 parentbus pci parentdev 0000:03:00.0 

@@ -1,0 +1,131 @@
+=== curl -sI --max-time 5 http://192.168.31.1 2026-10-12 08:48:31 ===
+HTTP/1.1 200 OK
+Server: nginx
+Date: Mon, 12 Oct 2026 00:48:31 GMT
+Content-Type: text/html; charset=UTF-8
+Content-Length: 1770
+Last-Modified: Wed, 14 May 2025 05:21:42 GMT
+Connection: keep-alive
+ETag: "68242866-6ea"
+Expires: Thu, 01 Jan 1970 00:00:01 GMT
+Cache-Control: no-cache
+Accept-Ranges: bytes
+
+
+=== curl body head -50 ===
+<!DOCTYPE html>
+<!--[if lt IE 7]><html class="ie6 oldie" lang="zh"><![endif]-->
+<!--[if IE 7]><html class="ie7 oldie" lang="zh"><![endif]-->
+<!--[if IE 8]><html class="ie8 oldie" lang="zh"><![endif]-->
+<!--[if gt IE 8]><!--> <html lang="zh"> <!--<![endif]-->
+<head>
+<meta http-equiv="x-ua-compatible" content="IE=9" />
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>小米路由器</title>
+<noscript>
+<meta http-equiv="refresh" content="0; url=/cgi-bin/luci/web" />
+</noscript>
+</head>
+<body>
+<script>
+function isIE(v){
+    var v = v || "",
+    tester = document.createElement('div');
+    tester.innerHTML = '<!--[if IE ' + v + ']><i></i><![endif]-->';
+    return !!tester.getElementsByTagName('i')[0];
+}
+var isMobile = {
+    Android: function() {
+        return navigator.userAgent.match(/Android/i);
+    },
+    BlackBerry: function() {
+        return navigator.userAgent.match(/BlackBerry/i);
+    },
+    iOS: function() {
+        return navigator.userAgent.match(/iPhone|iPad|iPod/i);
+    },
+    Opera: function() {
+        return navigator.userAgent.match(/Opera Mini/i);
+    },
+    Windows: function() {
+        return navigator.userAgent.match(/IEMobile/i);
+    },
+    any: function() {
+        return (isMobile.Android() || isMobile.BlackBerry() || isMobile.iOS() || isMobile.Opera() || isMobile.Windows());
+    }
+};
+if ( isIE(6) ) {
+    window.location.href="/cgi-bin/luci/web/ieblock";
+}else{
+    if(isMobile.Android()){
+        window.location.href="/cgi-bin/luci/web";
+    } else {
+        if (isMobile.any()) {
+            //mobile not android
+            window.location.href="/cgi-bin/luci/web";
+
+=== arp for .1 after probe ===
+=== route get 192.168.31.1 2026-10-12 08:53:25 ===
+   route to: 192.168.31.1
+destination: 192.168.31.1
+  interface: en11
+      flags: <UP,HOST,DONE,LLINFO,WASCLONED,IFSCOPE,IFREF>
+ recvpipe  sendpipe  ssthresh  rtt,msec    rttvar  hopcount      mtu     expire
+       0         0         0         0         0         0      1500      1134 
+
+=== arp full after pings ===
+23
+? (192.168.31.1) at 58:ea:1f:7d:4c:29 on en11 ifscope [ethernet]
+? (192.168.31.103) at bc:24:11:7b:c0:70 on en11 ifscope [ethernet]
+? (192.168.31.104) at bc:24:11:e4:1b:52 on en11 ifscope [ethernet]
+? (192.168.31.120) at 90:e3:ba:3:40:d1 on en11 ifscope permanent [ethernet]
+? (192.168.31.144) at d4:f0:ea:4a:59:18 on en11 ifscope [ethernet]
+? (192.168.31.150) at e8:4a:54:9d:9d:5 on en11 ifscope [ethernet]
+? (192.168.31.156) at a4:2a:26:21:9c:78 on en11 ifscope [ethernet]
+? (192.168.31.170) at 7c:c2:94:ca:20:13 on en11 ifscope [ethernet]
+? (192.168.31.175) at d8:d2:61:aa:f:54 on en11 ifscope [ethernet]
+? (192.168.31.187) at 70:3a:2d:4d:cf:f on en11 ifscope [ethernet]
+? (192.168.31.196) at 84:46:93:c8:57:49 on en11 ifscope [ethernet]
+
+=== en11 direct subnet route ===
+Destination        Gateway            Flags               Netif Expire
+default            192.168.31.2       UGScg                en11       
+192.168.31         link#23            UCS                  en11      !
+192.168.31.1       58:ea:1f:7d:4c:29  UHLWI                en11   1124
+192.168.31.2/32    link#23            UCS                  en11      !
+192.168.31.2       2:42:c0:a8:1f:2    UHLWIir              en11   1157
+192.168.31.3       6c:1f:f7:55:f6:8d  UHLWI                en11   1124
+192.168.31.4       90:e3:ba:3:40:b3   UHLWI                en11    789
+192.168.31.32      1c:f6:4c:62:fa:4d  UHLWI                en11    789
+192.168.31.103     bc:24:11:7b:c0:70  UHLWIi               en11   1087
+192.168.31.104     bc:24:11:e4:1b:52  UHLWIi               en11   1066
+192.168.31.120/32  link#23            UCS                  en11      !
+192.168.31.120     90:e3:ba:3:40:d1   UHLWI                 lo0       
+192.168.31.144     d4:f0:ea:4a:59:18  UHLWI                en11   1178
+192.168.31.150     e8:4a:54:9d:9d:5   UHLWI                en11   1187
+192.168.31.156     a4:2a:26:21:9c:78  UHLWI                en11      !
+192.168.31.170     7c:c2:94:ca:20:13  UHLWI                en11   1142
+192.168.31.175     d8:d2:61:aa:f:54   UHLWI                en11   1198
+192.168.31.187     70:3a:2d:4d:cf:f   UHLWI                en11   1154
+192.168.31.196     84:46:93:c8:57:49  UHLWI                en11   1171
+192.168.31.224     a:de:81:9:23:58    UHLWI                en11    576
+192.168.31.225     cc:4d:75:94:56:60  UHLWI                en11   1173
+192.168.31.226     e0:b5:5f:f2:c9:95  UHLWI                en11    443
+192.168.31.228     be:3d:28:d3:fb:ee  UHLWI                en11      !
+192.168.31.229     cc:4d:75:94:64:2   UHLWI                en11   1147
+192.168.31.232     dc:ed:83:2b:fa:56  UHLWI                en11   1155
+192.168.31.250     9a:98:f4:9:bf:de   UHLWI                en11    907
+192.168.31.255     ff:ff:ff:ff:ff:ff  UHLWbI               en11      !
+
+=== retry: ping .1 then immediately arp ===
+? (192.168.31.1) at 58:ea:1f:7d:4c:29 on en11 ifscope [ethernet]
+? (192.168.31.103) at bc:24:11:7b:c0:70 on en11 ifscope [ethernet]
+? (192.168.31.104) at bc:24:11:e4:1b:52 on en11 ifscope [ethernet]
+? (192.168.31.120) at 90:e3:ba:3:40:d1 on en11 ifscope permanent [ethernet]
+? (192.168.31.144) at d4:f0:ea:4a:59:18 on en11 ifscope [ethernet]
+? (192.168.31.150) at e8:4a:54:9d:9d:5 on en11 ifscope [ethernet]
+? (192.168.31.156) at a4:2a:26:21:9c:78 on en11 ifscope [ethernet]
+? (192.168.31.170) at 7c:c2:94:ca:20:13 on en11 ifscope [ethernet]
+? (192.168.31.175) at d8:d2:61:aa:f:54 on en11 ifscope [ethernet]
+? (192.168.31.187) at 70:3a:2d:4d:cf:f on en11 ifscope [ethernet]
+? (192.168.31.196) at 84:46:93:c8:57:49 on en11 ifscope [ethernet]

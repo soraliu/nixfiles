@@ -1,0 +1,31 @@
+Ethernet:
+
+    USB 10/100/1000 LAN:
+
+      Bus: USB
+      Vendor Name: Realtek
+      Product Name: USB 10/100/1000 LAN
+      Vendor ID: 0x0bda
+      Product ID: 0x8153
+      USB Link Speed: Up to 5 Gb/s
+      Driver: com.apple.DriverKit.AppleUserECM
+      BSD Device Name: en7
+      MAC Address: 00:e0:4c:6d:a6:43
+      AVB Support: No
+
+    Intel(R) PRO/10GbE PCI-Express Network Driver:
+
+      Bus: PCI
+      Vendor ID: 0x8086
+      Device ID: 0x10fb
+      Subsystem Vendor ID: 0x8086
+      Subsystem ID: 0x0006
+      Revision ID: 0x0001
+      PCIe Link Speed: 5.0 GT/s
+      PCIe Link Width: x4
+      PCIe Slot: Thunderbolt@67,0,0
+      Driver: com.apple.DriverKit-AppleEthernetIXGBE
+      BSD Device Name: en11
+      MAC Address: 90:e3:ba:03:40:d1
+      AVB Support: No
+

@@ -1,0 +1,26 @@
+=== networksetup -getInfo en11 ===
+en11 is not a recognized network service.
+** Error: The parameters were not valid.
+=== networksetup -getMTU en11 ===
+Active MTU: 1500 (Current Setting: 1500)
+=== networksetup -listvalidMTURange en11 ===
+Valid MTU Range: 1280-2034
+=== networksetup -getMedia en11 ===
+Current: autoselect
+Active: 10Gbase-Twinax <full-duplex flow-control>
+=== networksetup -getMTU en7 ===
+Active MTU: 1500 (Current Setting: 1500)
+=== networksetup -listvalidMTURange en7 ===
+Valid MTU Range: 1280-1500
+=== networksetup -getMedia en7 ===
+Current: autoselect
+Active: none
+=== networksetup -listallnetworkservices ===
+An asterisk (*) denotes that a network service is disabled.
+Thunderbolt Ethernet Slot 3
+Thunderbolt Bridge
+Wi-Fi
+USB 10/100/1000 LAN
+USB 10/100/1G/2.5G LAN
+Thunderbolt Ethernet Slot 0
+Tailscale

@@ -1,0 +1,27 @@
+=== sysctl ===
+net.core.rmem_max = 67108864
+net.core.wmem_max = 67108864
+
+=== exit interfaces MTU ===
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN mode DEFAULT group default qlen 1000\    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+2: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq state UP mode DEFAULT group default qlen 1000\    link/ether bc:24:11:ce:6e:bb brd ff:ff:ff:ff:ff:ff\    altname enp0s18\    altname ens18
+3: cni-podman0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP mode DEFAULT group default qlen 1000\    link/ether ea:6c:5b:b2:ec:a1 brd ff:ff:ff:ff:ff:ff
+5: vethc95aae7d@if3: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue master cni-podman0 state UP mode DEFAULT group default \    link/ether ce:8c:47:2d:af:b1 brd ff:ff:ff:ff:ff:ff link-netns cni-7c2f2294-f565-8e29-6bef-bb7637772200
+11: tailscale0: <POINTOPOINT,MULTICAST,NOARP,UP,LOWER_UP> mtu 1280 qdisc fq state UNKNOWN mode DEFAULT group default qlen 500\    link/none 
+
+=== udp listeners ===
+UNCONN 0      0                  *:20000            *:*    users:(("hysteria",pid=206268,fd=3))     
+
+=== hysteria service ===
+● hysteria.service - Hysteria 2 VPN server
+     Loaded: loaded (/etc/systemd/system/hysteria.service; enabled; vendor preset: enabled)
+     Active: active (running) since Sun 2026-10-11 08:15:40 UTC; 16h ago
+   Main PID: 206268 (hysteria)
+      Tasks: 9 (limit: 2302)
+     Memory: 9.1M
+        CPU: 1min 43.083s
+     CGroup: /system.slice/hysteria.service
+             └─206268 /usr/local/bin/hysteria server -c /root/.config/hysteria/config.yaml
+
+Oct 11 09:25:44 jph3-20260716040720c8ebed hysteria[206268]: 2026-10-11T09:25:44Z        WARN        TCP error        {"addr": "183.227.x.x:28126", "id": "user", "reqAddr": "192.178.230.188:5228", "error": "readfrom tcp4 45.202.255.241:55924->192.178.230.188:5228: timeout: no recent network activity"}
+Oct 11 09:25:44 jph3-20260716040720c8ebed hysteria[206268]: 2026-10-11T09:25:44Z        WARN        TCP error        {"addr": "183.227.x.x:28126", "id": "user", "reqAddr": "cmp2-sgp1.steamserver.net:443", "error": "readfrom tcp4 45.202.255.241:53910->103.10.124.5:443: timeout: no recent network activity"}

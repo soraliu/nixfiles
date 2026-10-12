@@ -1,0 +1,40 @@
+** WARNING: connection is not using a post-quantum key exchange algorithm.
+** This session may be vulnerable to "store now, decrypt later" attacks.
+** The server may need to be upgraded. See https://openssh.com/pq.html
+=== nft ruleset grep mss/mtu ===
+
+=== nft zone count check: which zone is zone[1] ===
+firewall.@zone[1]=zone
+firewall.@zone[1].name='wan'
+firewall.@zone[1].network='wan' 'wan6'
+firewall.@zone[1].input='REJECT'
+firewall.@zone[1].output='ACCEPT'
+firewall.@zone[1].forward='REJECT'
+firewall.@zone[1].masq='1'
+firewall.@zone[1].mtu_fix='1'
+
+=== iptables-save grep TCPMSS/mtu ===
+(iptables match above)
+** WARNING: connection is not using a post-quantum key exchange algorithm.
+** This session may be vulnerable to "store now, decrypt later" attacks.
+** The server may need to be upgraded. See https://openssh.com/pq.html
+=== nft list ruleset line count + mss lines with context ===
+3994
+0
+
+=== nft mss context grep ===
+
+=== iptables availability ===
+/usr/sbin/nft
+
+=== firewall version ===
+firewall4 - 2024.12.18~18fc0ead-r1
+luci-app-firewall - 25.300.72106~0418b54
+luci-app-nikki - 1.26.0-r1
+luci-i18n-firewall-zh-cn - 25.300.72106~0418b54
+luci-i18n-nikki-zh-cn - 26.101.24687~d2b405f
+mihomo-meta - 1.19.23
+nikki - 2026.04.08-r1
+
+=== fw4 service ===
+active with no instances

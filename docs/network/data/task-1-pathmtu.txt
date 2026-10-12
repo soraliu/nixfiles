@@ -1,0 +1,56 @@
+# path-MTU DF 探测 2026-10-12 08:49:59 (macOS /sbin/ping)
+# 命令: /sbin/ping -D -s <SIZE> -c 3 -t 3 <IP> ; 可用 MTU = 最大成功 SIZE + 28
+# 注意: 本机 en11 接口 MTU 当前 1500, 超过 1472 的包若报 'Message too long' 是本机接口限制, 非远端路径限制
+
+===== TARGET 192.168.31.1 =====
+SIZE=8972 FAIL  [ping: sendto: Message too long]
+SIZE=4472 FAIL  [ping: sendto: Message too long]
+SIZE=2006 FAIL  [ping: sendto: Message too long]
+SIZE=1472 PASS  round-trip min/avg/max/stddev = 0.665/0.731/0.837/0.076 ms
+SIZE=1473 FAIL  [ping: sendto: Message too long]
+SIZE=1468 PASS  round-trip min/avg/max/stddev = 0.724/0.755/0.818/0.044 ms
+SIZE=1396 PASS  round-trip min/avg/max/stddev = 0.669/0.686/0.701/0.013 ms
+
+===== TARGET 192.168.31.2 =====
+SIZE=8972 FAIL  [ping: sendto: Message too long]
+SIZE=4472 FAIL  [ping: sendto: Message too long]
+SIZE=2006 FAIL  [ping: sendto: Message too long]
+SIZE=1472 PASS  round-trip min/avg/max/stddev = 0.330/0.484/0.593/0.112 ms
+SIZE=1473 FAIL  [ping: sendto: Message too long]
+SIZE=1468 PASS  round-trip min/avg/max/stddev = 0.344/0.443/0.573/0.096 ms
+SIZE=1396 PASS  round-trip min/avg/max/stddev = 0.406/0.523/0.639/0.095 ms
+
+===== TARGET 192.168.31.3 =====
+SIZE=8972 FAIL  [ping: sendto: Message too long]
+SIZE=4472 FAIL  [ping: sendto: Message too long]
+SIZE=2006 FAIL  [ping: sendto: Message too long]
+SIZE=1472 PASS  round-trip min/avg/max/stddev = 0.534/0.569/0.614/0.033 ms
+SIZE=1473 FAIL  [ping: sendto: Message too long]
+SIZE=1468 PASS  round-trip min/avg/max/stddev = 0.504/0.587/0.660/0.064 ms
+SIZE=1396 PASS  round-trip min/avg/max/stddev = 0.466/0.518/0.608/0.064 ms
+
+===== TARGET 45.202.255.241 =====
+SIZE=8972 FAIL  [ping: sendto: Message too long]
+SIZE=4472 FAIL  [ping: sendto: Message too long]
+SIZE=2006 FAIL  [ping: sendto: Message too long]
+SIZE=1472 FAIL  [no reply]
+SIZE=1473 FAIL  [ping: sendto: Message too long]
+SIZE=1468 FAIL  [no reply]
+SIZE=1396 PASS  round-trip min/avg/max/stddev = 197.031/197.267/197.546/0.212 ms
+
+===== TARGET 45.202.255.241 binary search (1396 PASS .. 1468 FAIL) =====
+SIZE=1464 FAIL  [no reply]
+SIZE=1460 FAIL  [no reply]
+SIZE=1456 FAIL  [no reply]
+SIZE=1452 PASS  round-trip min/avg/max/stddev = 197.588/197.767/198.038/0.195 ms
+SIZE=1448 PASS  round-trip min/avg/max/stddev = 197.393/197.475/197.549/0.064 ms
+SIZE=1444 PASS  round-trip min/avg/max/stddev = 197.377/197.491/197.614/0.097 ms
+SIZE=1440 PASS  round-trip min/avg/max/stddev = 197.135/197.356/197.620/0.200 ms
+SIZE=1436 PASS  round-trip min/avg/max/stddev = 197.311/197.641/198.164/0.374 ms
+SIZE=1432 PASS  round-trip min/avg/max/stddev = 197.265/197.731/198.415/0.494 ms
+SIZE=1453 FAIL  [no reply]
+SIZE=1454 FAIL  [no reply]
+SIZE=1455 FAIL  [no reply]
+# 复核: 1452 再测 5 包 / 1456 再测 5 包
+SIZE=1452 x5 PASS  round-trip min/avg/max/stddev = 197.132/197.415/197.670/0.196 ms
+SIZE=1456 x5 FAIL  [no reply]

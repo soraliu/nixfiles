@@ -1,0 +1,82 @@
+# netstat 接口包计数 + TCP 统计 2026-10-12 08:54:27
+
+=== netstat -I en11 ===
+Name       Mtu   Network       Address            Ipkts Ierrs    Opkts Oerrs  Coll
+en11       1500  <Link#23>   90:e3:ba:03:40:d1 13828231     0  8436716     0     0
+en11       1500  m3-5.local  fe80:17::1c8f:155 13828231     -  8436716     -     -
+en11       1500  192.168.31    192.168.31.120  13828231     -  8436716     -     -
+
+=== netstat -s -p tcp | head -60 ===
+tcp:
+	0 packet sent
+		0 data packet (0 byte)
+		0 data packet (0 byte) retransmitted
+		0 resend initiated by MTU discovery
+		0 ack-only packet (0 delayed)
+		0 URG only packet
+		0 window probe packet
+		0 window update packet
+		0 control packet
+		0 data packet sent after flow control
+		0 challenge ACK sent due to unexpected SYN
+		0 challenge ACK sent due to unexpected RST
+		0 challenge ACK sent due to unexpected RST
+		0 checksummed in software
+			0 segment (0 byte) over IPv4
+			0 segment (0 byte) over IPv6
+	0 packet received
+		0 ack (for 0 byte)
+		0 duplicate ack
+		0 ack for unsent data
+		0 packet (0 byte) received in-sequence
+		0 completely duplicate packet (0 byte)
+		0 old duplicate packet
+		0 received packet dropped due to low memory
+		0 packet with some dup. data (0 byte duped)
+		0 out-of-order packet (0 byte)
+		0 packet (0 byte) of data after window
+		0 window probe
+		0 window update packet
+		0 packet recovered after loss
+		0 packet received after close
+		0 bad reset
+		0 discarded for bad checksum
+		0 checksummed in software
+			0 segment (0 byte) over IPv4
+			0 segment (0 byte) over IPv6
+		0 discarded for bad header offset field
+		0 discarded because packet too short
+	0 connection request
+	0 connection accept
+	0 bad connection attempt
+	0 listen queue overflow
+	0 connection established (including accepts)
+	0 connection closed (including 0 drop)
+		0 connection updated cached RTT on close
+		0 connection updated cached RTT variance on close
+		0 connection updated cached ssthresh on close
+		0 connection initialized RTT from route cache
+		0 connection initialized RTT variance from route cache
+		0 connection initialized ssthresh from route cache
+	0 embryonic connection dropped
+	0 segment updated rtt (of 0 attempt)
+	0 retransmit timeout
+		0 connection dropped by rexmit timeout
+		0 connection dropped after retransmitting FIN
+		0 unnecessary packet retransmissions
+	0 persist timeout
+		0 connection dropped by persist timeout
+	0 keepalive timeout
+
+=== netstat -I en7 (USB Realtek, 基线) ===
+Name       Mtu   Network       Address            Ipkts Ierrs    Opkts Oerrs  Coll
+en7        1500  <Link#19>   00:e0:4c:6d:a6:43        0     0        1     0     0
+
+=== ss 檢查 ===
+macOS 无 ss 命令（iTunes… 属 Linux 工具），跳过 per-socket MSS 观测；用 netstat -I 计数作为链路层基线代替
+# TCP MSS 相关 sysctl 2026-10-12 08:54:49
+net.inet.tcp.mssdflt: 512
+net.inet.tcp.v6mssdflt: 1024
+net.inet.tcp.sendspace: 131072
+net.inet.tcp.recvspace: 131072
+sysctl: unknown oid 'net.inet.tcp.autosendbuf'

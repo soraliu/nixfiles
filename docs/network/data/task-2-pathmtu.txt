@@ -1,0 +1,88 @@
+** WARNING: connection is not using a post-quantum key exchange algorithm.
+** This session may be vulnerable to "store now, decrypt later" attacks.
+** The server may need to be upgraded. See https://openssh.com/pq.html
+0
+=== NAS-origin path-MTU tests ===
+--- size=1472 to=45.202.255.241 ---
+3 packets transmitted, 0 received, +2 errors, 100% packet loss, time 2000ms
+
+--- size=1472 to=103.112.1.197 ---
+3 packets transmitted, 0 received, +2 errors, 100% packet loss, time 2000ms
+
+--- size=1473 to=45.202.255.241 ---
+3 packets transmitted, 0 received, +3 errors, 100% packet loss, time 2000ms
+
+--- size=1473 to=103.112.1.197 ---
+3 packets transmitted, 0 received, +3 errors, 100% packet loss, time 2002ms
+
+--- size=8972 to=45.202.255.241 ---
+3 packets transmitted, 0 received, +3 errors, 100% packet loss, time 2002ms
+
+--- size=8972 to=103.112.1.197 ---
+3 packets transmitted, 0 received, +3 errors, 100% packet loss, time 2015ms
+
+** WARNING: connection is not using a post-quantum key exchange algorithm.
+** This session may be vulnerable to "store now, decrypt later" attacks.
+** The server may need to be upgraded. See https://openssh.com/pq.html
+=== baseline ping 56 (no do) ===
+3 packets transmitted, 3 received, 0% packet loss, time 2001ms
+rtt min/avg/max/mdev = 196.943/197.136/197.338/0.161 ms
+
+=== ping -M do small size 100 ===
+3 packets transmitted, 3 received, 0% packet loss, time 2001ms
+rtt min/avg/max/mdev = 196.968/197.241/197.504/0.218 ms
+
+=== ping -M do 1400 ===
+3 packets transmitted, 3 received, 0% packet loss, time 2001ms
+rtt min/avg/max/mdev = 197.229/197.308/197.407/0.073 ms
+
+=== ping -M do 1460 ===
+3 packets transmitted, 0 received, +3 errors, 100% packet loss, time 2000ms
+
+
+=== ping -M do 1470 ===
+3 packets transmitted, 0 received, +3 errors, 100% packet loss, time 2025ms
+
+
+=== ping with errors verbose (1472, 1 pkt) ===
+PING 45.202.255.241 (45.202.255.241) 1472(1500) bytes of data.
+ping: local error: message too long, mtu=1480
+
+--- 45.202.255.241 ping statistics ---
+1 packets transmitted, 0 received, +1 errors, 100% packet loss, time 0ms
+
+
+=== local gateway / lan sanity ===
+2 packets transmitted, 2 received, 0% packet loss, time 1001ms
+rtt min/avg/max/mdev = 0.518/0.537/0.557/0.019 ms
+** WARNING: connection is not using a post-quantum key exchange algorithm.
+** This session may be vulnerable to "store now, decrypt later" attacks.
+** The server may need to be upgraded. See https://openssh.com/pq.html
+--- size=1452 to=45.202.255.241 ---
+3 packets transmitted, 3 received, 0% packet loss, time 2002ms
+rtt min/avg/max/mdev = 197.239/197.353/197.461/0.090 ms
+--- size=1452 to=103.112.1.197 ---
+3 packets transmitted, 3 received, 0% packet loss, time 2002ms
+rtt min/avg/max/mdev = 64.666/64.827/65.101/0.194 ms
+--- size=1453 to=45.202.255.241 ---
+3 packets transmitted, 0 received, +3 errors, 100% packet loss, time 2000ms
+
+--- size=1453 to=103.112.1.197 ---
+3 packets transmitted, 0 received, +3 errors, 100% packet loss, time 2021ms
+
+
+=== verbose single 1453 error message ===
+PING 103.112.1.197 (103.112.1.197) 1453(1481) bytes of data.
+ping: local error: message too long, mtu=1480
+
+--- 103.112.1.197 ping statistics ---
+1 packets transmitted, 0 received, +1 errors, 100% packet loss, time 0ms
+
+
+=== verbose single 1460 error message ===
+PING 45.202.255.241 (45.202.255.241) 1460(1488) bytes of data.
+ping: local error: message too long, mtu=1480
+
+--- 45.202.255.241 ping statistics ---
+1 packets transmitted, 0 received, +1 errors, 100% packet loss, time 0ms
+

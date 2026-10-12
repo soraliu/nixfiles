@@ -1,0 +1,37 @@
+** WARNING: connection is not using a post-quantum key exchange algorithm.
+** This session may be vulnerable to "store now, decrypt later" attacks.
+** The server may need to be upgraded. See https://openssh.com/pq.html
+=== mihomo process & binary version ===
+496779 root     1430m S    /usr/bin/mihomo -d /etc/nikki/run
+Mihomo Meta v1.19.32 linux amd64 with go1.26.8 Wed Sep 30 16:55:13 UTC 2026
+Use tags: with_gvisor
+
+=== nft tproxy rules ===
+	chain router_tproxy {
+	chain lan_tproxy {
+		meta nfproto @proxy_nfproto meta l4proto { tcp, udp } meta mark set meta mark & 0xffffff80 | 0x00000080 tproxy to :7892 counter packets 2322158 bytes 1306129779 accept
+		meta l4proto vmap { tcp : jump router_tproxy, udp : jump router_tproxy }
+		iifname "lo" meta l4proto { tcp, udp } meta mark & 0x000000ff == 0x00000080 tproxy to :7892 counter packets 5591 bytes 287756 accept
+		iifname @lan_inbound_device meta l4proto vmap { tcp : jump lan_tproxy, udp : jump lan_tproxy }
+
+=== nft mangle/mark chains summary ===
+7
+
+=== mihomo listeners (tproxy/dns ports) ===
+udp        0      0 :::58327                :::*                                496779/mihomo
+udp        0      0 :::58366                :::*                                496779/mihomo
+udp        0      0 :::59471                :::*                                496779/mihomo
+udp        0      0 :::44293                :::*                                496779/mihomo
+udp        0      0 :::44599                :::*                                496779/mihomo
+udp        0      0 :::1053                 :::*                                496779/mihomo
+udp        0      0 :::1080                 :::*                                496779/mihomo
+udp        0      0 :::53572                :::*                                496779/mihomo
+udp        0      0 :::55399                :::*                                496779/mihomo
+udp        0      0 :::7890                 :::*                                496779/mihomo
+tcp        0      0 :::9090                 :::*                    LISTEN      496779/mihomo
+tcp        0      0 :::8080                 :::*                    LISTEN      496779/mihomo
+tcp        0      0 :::7892                 :::*                    LISTEN      496779/mihomo
+tcp        0      0 :::7890                 :::*                    LISTEN      496779/mihomo
+tcp        0      0 :::7891                 :::*                    LISTEN      496779/mihomo
+tcp        0      0 :::1053                 :::*                    LISTEN      496779/mihomo
+tcp        0      0 :::1080                 :::*                    LISTEN      496779/mihomo

@@ -1,0 +1,151 @@
+** WARNING: connection is not using a post-quantum key exchange algorithm.
+** This session may be vulnerable to "store now, decrypt later" attacks.
+** The server may need to be upgraded. See https://openssh.com/pq.html
+=== docker network inspect macnet ===
+[
+    {
+        "Name": "macnet",
+        "Id": "bed90615b0f09646c776bf1ef1e281b905775fd367b68f9ef499709b6a5b5f26",
+        "Created": "2026-01-23T14:16:47.590805747+08:00",
+        "Scope": "local",
+        "Driver": "macvlan",
+        "EnableIPv6": false,
+        "IPAM": {
+            "Driver": "default",
+            "Options": {},
+            "Config": [
+                {
+                    "Subnet": "192.168.31.0/24",
+                    "Gateway": "192.168.31.1"
+                }
+            ]
+        },
+        "Internal": false,
+        "Attachable": false,
+        "Ingress": false,
+        "ConfigFrom": {
+            "Network": ""
+        },
+        "ConfigOnly": false,
+        "Containers": {
+            "dd17586e9b7689bd27d79455bcbd0179a6d4b3054de8fb8a2e2057f7f3cc0ba4": {
+                "Name": "immortalwrt",
+                "EndpointID": "1c8c7888b470d2a902df57084712f537b322a7a5c1ced26e87626c99793ddcd7",
+                "MacAddress": "02:42:c0:a8:1f:02",
+                "IPv4Address": "192.168.31.2/24",
+                "IPv6Address": ""
+            }
+        },
+        "Options": {
+            "parent": "eth0"
+        },
+        "Labels": {}
+    }
+]
+
+=== docker inspect immortalwrt (filtered) ===
+{
+    "Binds": null,
+    "ContainerIDFile": "",
+    "LogConfig": {
+        "Type": "json-file",
+        "Config": {}
+    },
+    "NetworkMode": "macnet",
+    "PortBindings": {},
+    "RestartPolicy": {
+        "Name": "always",
+        "MaximumRetryCount": 0
+    },
+    "AutoRemove": false,
+    "VolumeDriver": "",
+    "VolumesFrom": null,
+    "ConsoleSize": [
+        44,
+        184
+    ],
+    "CapAdd": null,
+    "CapDrop": null,
+    "CgroupnsMode": "private",
+    "Dns": [],
+    "DnsOptions": [],
+    "DnsSearch": [],
+    "ExtraHosts": null,
+    "GroupAdd": null,
+    "IpcMode": "private",
+    "Cgroup": "",
+    "Links": null,
+    "OomScoreAdj": 0,
+    "PidMode": "",
+    "Privileged": true,
+    "PublishAllPorts": false,
+    "ReadonlyRootfs": false,
+    "SecurityOpt": [
+        "label=disable"
+    ],
+    "UTSMode": "",
+    "UsernsMode": "",
+    "ShmSize": 67108864,
+    "Runtime": "runc",
+    "Isolation": "",
+    "CpuShares": 0,
+    "Memory": 0,
+    "NanoCpus": 0,
+    "CgroupParent": "",
+    "BlkioWeight": 0,
+    "BlkioWeightDevice": [],
+    "BlkioDeviceReadBps": [],
+    "BlkioDeviceWriteBps": [],
+    "BlkioDeviceReadIOps": [],
+    "BlkioDeviceWriteIOps": [],
+    "CpuPeriod": 0,
+    "CpuQuota": 0,
+    "CpuRealtimePeriod": 0,
+    "CpuRealtimeRuntime": 0,
+    "CpusetCpus": "",
+    "CpusetMems": "",
+    "Devices": [],
+    "DeviceCgroupRules": null,
+    "DeviceRequests": null,
+    "MemoryReservation": 0,
+    "MemorySwap": 0,
+    "MemorySwappiness": null,
+    "OomKillDisable": null,
+    "PidsLimit": null,
+    "Ulimits": [],
+    "CpuCount": 0,
+    "CpuPercent": 0,
+    "IOMaximumIOps": 0,
+    "IOMaximumBandwidth": 0,
+    "MaskedPaths": null,
+    "ReadonlyPaths": null
+}
+
+=== container networks ===
+{
+    "macnet": {
+        "IPAMConfig": null,
+        "Links": null,
+        "Aliases": null,
+        "MacAddress": "02:42:c0:a8:1f:02",
+        "NetworkID": "bed90615b0f09646c776bf1ef1e281b905775fd367b68f9ef499709b6a5b5f26",
+        "EndpointID": "1c8c7888b470d2a902df57084712f537b322a7a5c1ced26e87626c99793ddcd7",
+        "Gateway": "192.168.31.1",
+        "IPAddress": "192.168.31.2",
+        "IPPrefixLen": 24,
+        "IPv6Gateway": "",
+        "GlobalIPv6Address": "",
+        "GlobalIPv6PrefixLen": 0,
+        "DriverOpts": null,
+        "DNSNames": [
+            "immortalwrt",
+            "dd17586e9b76"
+        ]
+    }
+}
+
+=== container mounts ===
+[]
+
+=== container state ===
+running started=2026-08-05T10:23:34.547347536Z image=immortalwrt
