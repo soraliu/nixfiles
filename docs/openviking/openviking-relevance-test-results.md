@@ -1,3 +1,5 @@
+> **注**: OV_API_KEY 为内部密钥,原明文值已于历史重写时脱敏(openviking 已弃用)
+
 # OpenViking 语义检索相关性测试结果
 
 ## 测试执行时间
@@ -400,31 +402,31 @@ OpenViking 的基础架构和 API 功能正常，但**语义检索的相关性�
 ```bash
 # 测试 1: 今天的活动
 curl -X POST http://10.1.1.3:1933/api/v1/search/find \
-  -H "X-API-Key: 0ccb638a296acc17e483240555e18621e4f7705c1023ff7cd8b89fcd28a935bb" \
+  -H "X-API-Key: $OV_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{"query":"今天做了什么？当前日期是 2026-03-31","target_uri":"viking://resources/activities","limit":3}'
 
 # 测试 2: 昨天的活动
 curl -X POST http://10.1.1.3:1933/api/v1/search/find \
-  -H "X-API-Key: 0ccb638a296acc17e483240555e18621e4f7705c1023ff7cd8b89fcd28a935bb" \
+  -H "X-API-Key: $OV_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{"query":"昨天做了什么？当前日期是 2026-03-31，昨天是 2026-03-30","target_uri":"viking://resources/activities","limit":3}'
 
 # 测试 3: Python 异步编程
 curl -X POST http://10.1.1.3:1933/api/v1/search/find \
-  -H "X-API-Key: 0ccb638a296acc17e483240555e18621e4f7705c1023ff7cd8b89fcd28a935bb" \
+  -H "X-API-Key: $OV_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{"query":"如何在 Python 中进行异步编程？","target_uri":"viking://resources/tech","limit":3}'
 
 # 测试 4: 混合查询
 curl -X POST http://10.1.1.3:1933/api/v1/search/find \
-  -H "X-API-Key: 0ccb638a296acc17e483240555e18621e4f7705c1023ff7cd8b89fcd28a935bb" \
+  -H "X-API-Key: $OV_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{"query":"今天（2026-03-31）做了哪些 OpenViking 相关的工作？","limit":5}'
 
 # 测试 5: 否定查询
 curl -X POST http://10.1.1.3:1933/api/v1/search/find \
-  -H "X-API-Key: 0ccb638a296acc17e483240555e18621e4f7705c1023ff7cd8b89fcd28a935bb" \
+  -H "X-API-Key: $OV_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{"query":"编程语言相关的笔记，但不要 Python 的","target_uri":"viking://resources/tech","limit":3}'
 ```

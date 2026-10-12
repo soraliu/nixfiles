@@ -10,7 +10,7 @@
 |---|---|
 | obfs | **开 Salamander**（免疫解密式封锁；证书沿用 bing.com 自签，客户端 skip-cert-verify 不变） |
 | 版本 | hysteria 2.7.1 → **2.13.0**；xray 26.2.6 → **26.3.27**（stable） |
-| 范围 | **4 台** VPS（vpn_premium 103.112.1.197 / vpn_primary 45.202.255.241 / vpn_secondary 179.255.150.220 / vpn_hangzhou 47.98.202.4，全部在 `vpn_nodes` group）+ 两类客户端；vpn_premium 同时承担 tailnet DERP/relay，hy2 升级不影响其余服务（仅 restart hysteria/xray） |
+| 范围 | **4 台** VPS（vpn_premium <vpn_premium_ip> / vpn_primary <vpn_primary_ip> / vpn_secondary <vpn_secondary_ip> / vpn_hangzhou <vpn_hangzhou_ip>，全部在 `vpn_nodes` group）+ 两类客户端；vpn_premium 同时承担 tailnet DERP/relay，hy2 升级不影响其余服务（仅 restart hysteria/xray） |
 | 端口池 | **UDP 20000-30000**，系统防火墙由 Ansible 管理 |
 | Nix 系 profile（vpn-server/vpn-relayer） | 不动（unstable 已 2.12.3，仅同步思路待其追平） |
 
@@ -19,7 +19,7 @@
 | 组件 | 位置 | 现状 |
 |---|---|---|
 | Ansible 服务端 | `~/Github/personal-k3s-ops` 的 `ansible/roles/vpn_server/` | hysteria 2.7.1 + xray 26.2.6；binary 从 GitHub release 下载，checksum 硬编码于 `ansible/roles/vpn_server/defaults/main.yml`（下载基址仍是旧名 `apernet/hysteria`，已改名 `HyNetworks/hysteria`） |
-| 部署入口 | `ansible/playbooks/edge/vpn.yml` → group `vpn_nodes`，共 4 台（vpn_premium 103.112.1.197 / vpn_primary 45.202.255.241 / vpn_secondary 179.255.150.220 / vpn_hangzhou 47.98.202.4） | sops secrets 经 `community.sops.load_vars` 注入 |
+| 部署入口 | `ansible/playbooks/edge/vpn.yml` → group `vpn_nodes`，共 4 台（vpn_premium <vpn_premium_ip> / vpn_primary <vpn_primary_ip> / vpn_secondary <vpn_secondary_ip> / vpn_hangzhou <vpn_hangzhou_ip>） | sops secrets 经 `community.sops.load_vars` 注入 |
 | hysteria 配置 | `ansible/secrets.yaml`: `VPN_HYSTERIA_CONFIG_YAML` + bing.com crt/key（sops 密文） | 现有字段待执行时解密确认（无 port hopping/obfs） |
 | 旁路由客户端 | `~/.nixfiles/docker/immortalwrt/`（Dockerfile + default.nix） | ImmortalWrt 24.10.4 容器 @192.168.31.2，nikki + mihomo **v1.19.27**（✅ 支持 ports/hop-interval/obfs，内核无需动）；tproxy 模式 |
 | 桌面客户端 | `~/.nixfiles/home/modules/network/clash-meta/default.nix` | mihomo from unstablePkgs（同参数支持） |
