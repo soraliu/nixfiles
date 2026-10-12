@@ -60,6 +60,7 @@ RUN LAN_ID=$(uci show firewall | grep "\.name='lan'" | awk -F. '{print $2}' | he
     uci set firewall.lan.input='ACCEPT' && \
     uci set firewall.lan.output='ACCEPT' && \
     uci set firewall.lan.forward='ACCEPT' && \
+    uci set firewall.lan.mtu_fix='1' && \
     uci set firewall.lan.masq='1'
 
 # ============================================================
