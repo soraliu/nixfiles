@@ -1,0 +1,42 @@
+# A1·回滚 + 终验 — 2026-10-12T12:51:02
+$ ssh root@192.168.31.3 "ip link set eth0 mtu 1500"
+ROLLBACK_OK
+
+$ ssh root@192.168.31.3 "ip -d link show eth0 | grep -o \"mtu [0-9]*\" | head -1; ip -s link show eth0 | head -4"
+mtu 1500
+
+# 连通三项 (回滚后):
+$ ping -c 3 192.168.31.3
+PING 192.168.31.3 (192.168.31.3): 56 data bytes
+64 bytes from 192.168.31.3: icmp_seq=0 ttl=64 time=0.477 ms
+64 bytes from 192.168.31.3: icmp_seq=1 ttl=64 time=0.437 ms
+64 bytes from 192.168.31.3: icmp_seq=2 ttl=64 time=0.419 ms
+--- 192.168.31.3 ping statistics ---
+3 packets transmitted, 3 packets received, 0% packet loss
+round-trip min/avg/max/stddev = 0.419/0.444/0.477/0.024 ms
+
+$ curl -m 8 -s -o /dev/null -w '%{http_code}' https://www.apple.com
+200
+curl_exit=0
+
+$ ssh root@192.168.31.3 "echo ssh_alive"
+ssh_alive
+
+# 阳性复验: 1400 大流量 (回滚态 = 帧最大 1518 内不涉 jumbo)
+20 packets transmitted, 20 received, 0% packet loss, time 19115ms
+rtt min/avg/max/mdev = 0.243/0.409/0.558/0.079 ms
+ΔIpkts(1464x20 轮)=2505
+
+# 生产容器无损检查: .2 可达 + docker ps
+sing-box Up 7 weeks
+firefox-app-1 Up 4 months
+frpc-drive Up 8 seconds
+qbittorrent-app-1 Up 4 months
+immortalwrt Up 2 months
+frpc Up 2 seconds
+uptime-kuma Up 4 months (healthy)
+taosync-app-1 Up 4 months
+alist-app-1 Up 4 months
+
+# Mac 对照 (全程未动):
+en11: flags=8863<UP,BROADCAST,SMART,RUNNING,SIMPLEX,MULTICAST> mtu 1500

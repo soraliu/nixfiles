@@ -1,0 +1,11 @@
+# A1·大信号透传轮 — 2026-10-12T12:40:13
+# 设计: 信号 = 5000 包×2006B DF @2ms 间隔 (10s 窗, ~10.17MB IP 层) vs idle 10s 窗
+# 背景实测 ~50KB/s (上轮), 信噪比 ≈ 20:1 — 判据: ping 窗 ΔIpkts≈5000 / ΔIbytes≈10.2MB (透传) 或 ≈idle (不透传)
+| # | type | ΔIpkts | ΔIbytes | NAS_OutPΔ | NAS_OutOctΔ |
+|---|------|-------|---------|-----------|------------|
+| 1 | idle10s | 615 | 452143 | - | - |
+| 1 | ping5000 | 3460 | 2956969 | 94125 | 81702790 |
+  ping tail: 5000 packets transmitted, 0 received, 100% packet loss, time 50699ms 
+| 2 | idle10s | 643 | 566265 | - | - |
+| 2 | ping5000 | 4254 | 3700310 | 165113 | 159276300 |
+  ping tail: 5000 packets transmitted, 0 received, 100% packet loss, time 50778ms 

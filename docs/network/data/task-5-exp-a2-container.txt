@@ -1,0 +1,50 @@
+# A2·临时副本容器 mihomo-gso-off 起停全程 — 2026-10-12T12:54:01
+
+## 1. 生产配置打包 (容器内 tar 只读, 经宿主中转)
+Error response from daemon: Could not find the file /tmp/e2cfg.tgz in container immortalwrt
+
+## 2. 网络配置改写 (static .2 → .251, 宿主侧 sed)
+4:	option ipaddr '127.0.0.1'
+16:	option ipaddr '192.168.31.251'
+## 1b. 重新打包 (修正路径: /etc/config/nikki /etc/nikki 全目录除 run)
+tar: unrecognized option: exclude
+BusyBox v1.36.1 (2025-10-27 14:10:17 UTC) multi-call binary.
+
+Usage: tar c|x|t [-zahvokO] [-f TARFILE] [-C DIR] [-T FILE] [-X FILE] [FILE]...
+
+Error response from daemon: Could not find the file /tmp/e2cfg.tgz in container immortalwrt
+## 1c. busybox tar 无 --exclude → 打包全 /etc/nikki + /etc/config/nikki, 副本里删 run
+Error response from daemon: Could not find the file /tmp/e2cfg.tgz in container immortalwrt
+## 2. 生产配置出容器 (tar 含 /etc/nikki 全套 + /etc/config/nikki)
+Error response from daemon: Could not find the file /tmp/e2cfg.tgz in container immortalwrt
+ls: cannot access '/tmp/e2cfg.tgz': No such file or directory
+
+## 3. docker create 副本 (未 start, 不产生 .2 ARP 冲突)
+298e522ec576cca541a99c2d485c9a6119edf415a6c1b7e750139cb11e7c9f79
+
+## 4. 配置注入: 网络(.251版) + mihomo 配置包
+lstat /tmp/e2cfg.tgz: no such file or directory
+
+## 5. 副本内装配 (network 覆盖 + nikki 配置解包 + 预启动 hook)
+   注: docker create 的容器未运行, 用 image 创建的临时容器方式注入开机前动作不可行;
+   改为: start 后 10s 内立刻 docker exec 覆盖配置 + 重启网络/nikki (脚本 predifined, 快速执行)
+mihomo-gso-off
+
+## 6. 副本网络状态检查 (关键: 是否 br-lan 拿了 .251 而非 .2)
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+    inet 127.0.0.1/8 scope host lo
+26: eth0@if3: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP group default 
+    inet 192.168.31.251/24 brd 192.168.31.255 scope global eth0
+    inet 192.168.1.1/24 brd 192.168.1.255 scope global eth0
+
+## 生产 .2 ARP 完整性检查 (Mac 视角)
+? (192.168.31.2) at 2:42:c0:a8:1f:2 on en11 ifscope [ethernet]
+? (192.168.31.216) at 70:c9:12:fe:5a:25 on en11 ifscope [ethernet]
+? (192.168.31.225) at cc:4d:75:94:56:60 on en11 ifscope [ethernet]
+? (192.168.31.226) at e0:b5:5f:f2:c9:95 on en11 ifscope [ethernet]
+? (192.168.31.228) at be:3d:28:d3:fb:ee on en11 ifscope [ethernet]
+? (192.168.31.229) at cc:4d:75:94:64:2 on en11 ifscope [ethernet]
+? (192.168.31.232) at dc:ed:83:2b:fa:56 on en11 ifscope [ethernet]
+? (192.168.31.234) at 28:e6:a9:db:a5:a0 on en11 ifscope [ethernet]
+? (192.168.31.250) at 9a:98:f4:9:bf:de on en11 ifscope [ethernet]
+? (192.168.31.255) at ff:ff:ff:ff:ff:ff on en11 ifscope [ethernet]

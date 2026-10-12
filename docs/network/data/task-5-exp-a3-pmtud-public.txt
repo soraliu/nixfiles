@@ -1,0 +1,27 @@
+# A3b 复测·完整输出 (NAS 2034 → 公网 DF 1800) — 2026-10-12T12:49:58
+$ ip route show default
+default via 192.168.31.1 dev eth0 
+
+$ ping -n -M do -s 1800 -c 5 223.5.5.5   # -n 免DNS, 完整输出
+PING 223.5.5.5 (223.5.5.5) 1800(1828) bytes of data.
+ping: local error: message too long, mtu=1500
+ping: local error: message too long, mtu=1500
+ping: local error: message too long, mtu=1500
+ping: local error: message too long, mtu=1500
+ping: local error: message too long, mtu=1500
+
+--- 223.5.5.5 ping statistics ---
+5 packets transmitted, 0 received, +5 errors, 100% packet loss, time 4003ms
+
+
+# 对比: 不带 DF 同尺寸 (看是否分片通过) —— 谨慎: 分片会打到公网, 用 -c 3 短测
+1456 bytes from 223.5.5.5: icmp_seq=2 ttl=52 (truncated)
+1456 bytes from 223.5.5.5: icmp_seq=3 ttl=52 (truncated)
+
+--- 223.5.5.5 ping statistics ---
+3 packets transmitted, 2 received, 33.3333% packet loss, time 2020ms
+rtt min/avg/max/mdev = 30.723/30.740/30.757/0.017 ms
+
+# 网关 MAC 解析 (谁在回 ICMP)
+192.168.31.1 dev eth0 lladdr 58:ea:1f:7d:4c:29 REACHABLE 
+192.168.31.2 dev macvlan-shim lladdr 02:42:c0:a8:1f:02 STALE 

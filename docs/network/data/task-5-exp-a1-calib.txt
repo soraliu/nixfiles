@@ -1,0 +1,66 @@
+# A1·差分校准轮 — 2026-10-12 12:34:23
+# 问题: 2006 轮 ΔIpkts=2543 >> 100, 疑背景流量混杂 → 本轮做 idle 窗基线 + 1464 阳性对照 + 2006 复测
+
+## 轮1 idle 窗 (6.0s, 无动作): ΔIpkts = 291    [38245290 -> 38245581]
+
+## 轮2 idle 窗 (6.0s, 无动作): ΔIpkts = 276    [38245581 -> 38245857]
+
+## 轮3 阳性对照 1464B (1500 MTU 正常档, 预期 NAS 100 received)
+$ ssh root@192.168.31.3 "ping -M do -s 1464 -c 100 -i 0.05 192.168.31.120"
+--- 192.168.31.120 ping statistics ---
+100 packets transmitted, 100 received, 0% packet loss, time 5644ms
+rtt min/avg/max/mdev = 0.208/0.414/0.713/0.104 ms
+ΔIpkts(1464轮) = 574    ICMP echo reply(output hist): echo
+echo -> echo
+echo
+
+## 轮4 2006B 复测
+$ ssh root@192.168.31.3 "ping -M do -s 2006 -c 100 -i 0.05 192.168.31.120"
+--- 192.168.31.120 ping statistics ---
+100 packets transmitted, 0 received, 100% packet loss, time 5639ms
+
+ΔIpkts(2006轮) = 674    ICMP echo reply(output hist): echo
+echo -> echo
+echo
+
+## netstat -s -p ip 关键计数全文 (for diff 语义确认)
+ip:
+	16084278 total packets received
+		0 bad header checksum
+		2926312 headers (58531160 bytes) checksummed in software
+		0 with size smaller than minimum
+		0 with data size < data length
+		101585 with data size > data length
+			0 packet forced to software checksum
+		0 with ip length > max ip packet size
+		0 with header length < data size
+		0 with data length < header length
+		0 with bad options
+		0 with incorrect version number
+		0 fragment received
+			0 dropped (dup or out of space)
+			0 dropped after timeout
+			0 reassembled ok
+		16085490 packets for this host
+		2883 packets for unknown/unsupported protocol
+		0 packet forwarded (0 packet fast forwarded)
+		0 packet not forwardable
+		3 packets received for unknown multicast group
+		0 redirect sent
+		38559 input packets not chained due to collision
+		16038738 input packets processed in a chain
+		5703 input packets unable to chain
+		1082891 input packet chains processed with length greater than 2
+		157451 input packet chains processed with length greater than 4
+		0 input packet did not go through list processing path
+		0 input packet that passed the weak ES interface address match
+		226 input packets with no interface address match
+	15347769 packets sent from this host
+		187 packets sent with fabricated ip header
+		0 output packet dropped due to no bufs, etc.
+		385 output packets discarded due to no route
+		0 output datagram fragmented
+		0 fragment created
+		36 datagrams that can't be fragmented
+		0 tunneling packet that can't find gif
+		0 datagram with bad address in header

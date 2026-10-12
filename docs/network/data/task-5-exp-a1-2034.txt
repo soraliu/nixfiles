@@ -1,0 +1,31 @@
+# A1·NAS eth0 MTU 1500→2034 变更 + 验证 — 2026-10-12 12:32:31
+# 纪律: 快照(见 task-5-exp-00) → 变更 → 验证 → 观察 60s 内连通三项 → (A1附加+A3 后) 回滚 → 再验证
+
+$ ssh root@192.168.31.3 "ip link set eth0 mtu 2034"
+SET_OK
+
+$ ssh root@192.168.31.3 "ip -d link show eth0 | grep mtu"
+3: eth0: <BROADCAST,MULTICAST,PROMISC,UP,LOWER_UP> mtu 2034 qdisc mq state UP mode DEFAULT group default qlen 1000
+    link/ether 6c:1f:f7:55:f6:8d brd ff:ff:ff:ff:ff:ff promiscuity 2  allmulti 1 minmtu 68 maxmtu 16334 addrgenmode stable_secret numtxqueues 32 numrxqueues 32 gso_max_size 65536 gso_max_segs 65535 tso_max_size 65536 tso_max_segs 65535 gro_max_size 65536 parentbus pci parentdev 0000:03:00.0 
+
+$ /sbin/ifconfig en11 | head -1   # Mac 侧对照, 未动应为 1500
+en11: flags=8863<UP,BROADCAST,SMART,RUNNING,SIMPLEX,MULTICAST> mtu 1500
+
+# 连通三项 (变更后即时 + 观察 60s)
+
+$ ping -c 3 192.168.31.3
+PING 192.168.31.3 (192.168.31.3): 56 data bytes
+64 bytes from 192.168.31.3: icmp_seq=0 ttl=64 time=0.563 ms
+64 bytes from 192.168.31.3: icmp_seq=1 ttl=64 time=0.533 ms
+64 bytes from 192.168.31.3: icmp_seq=2 ttl=64 time=0.534 ms
+--- 192.168.31.3 ping statistics ---
+3 packets transmitted, 3 packets received, 0% packet loss
+round-trip min/avg/max/stddev = 0.533/0.543/0.563/0.000 ms
+
+$ curl -m 8 -s -o /dev/null -w '%{http_code}' https://www.apple.com
+200
+curl_exit=0
+
+$ ssh root@192.168.31.3 "echo ssh_alive; uptime"
+ssh_alive
+ 12:32:35 up 141 days, 13:04,  0 user,  load average: 0.75, 0.53, 0.50

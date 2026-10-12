@@ -1,0 +1,30 @@
+# A1·iperf3 UDP 大信号透传轮 — 2026-10-12T12:43:42
+# 设计: NAS(eth0 2034) → Mac: iperf3 UDP -l 2022 --dont-fragment -b 300M -t 2 (~2s 内 ~37MB 帧量)
+# Mac 侧 iperf3 -s 收包无关紧要 — 判据仅看驱动层 ΔIbytes ≈ +60-75MB (透传) 或 ≈ 0 (不透传)
+
+# Mac iperf3 server pid=78485 (userland 端口 5202, 实验完 kill)
+
+| # | type | ΔIpkts | ΔIbytes |
+|---|------|-------|---------|
+| 1 | idle2s | 260 | 254605 |
+warning: UDP block size 2022 exceeds TCP MSS 1448, may result in fragmentation / drops
+Connecting to host 192.168.31.120, port 5202
+[  5] local 192.168.31.3 port 33145 connected to 192.168.31.120 port 5202
+iperf3: error - unable to write to stream socket: Message too long
+| 1 | udp2022flood | 38 | 29309 |
+
+| 2 | idle2s | 275 | 273248 |
+warning: UDP block size 2022 exceeds TCP MSS 1448, may result in fragmentation / drops
+Connecting to host 192.168.31.120, port 5202
+[  5] local 192.168.31.3 port 39854 connected to 192.168.31.120 port 5202
+iperf3: error - unable to write to stream socket: Message too long
+| 2 | udp2022flood | 18 | 1965 |
+
+| 3 | idle2s | 217 | 195766 |
+warning: UDP block size 2022 exceeds TCP MSS 1448, may result in fragmentation / drops
+Connecting to host 192.168.31.120, port 5202
+[  5] local 192.168.31.3 port 32987 connected to 192.168.31.120 port 5202
+iperf3: error - unable to write to stream socket: Message too long
+| 3 | udp2022flood | 20 | 3565 |
+
+# server 已停
