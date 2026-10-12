@@ -5,7 +5,7 @@
 # - 直达层:zellij `shared` 块的 Alt-* 和弦移植为 herdr 直达绑定(数组同义)
 # - herdr 特有功能(workspace/agent/worktree/通知/侧栏...)保留默认,Q6
 # - 外观用 herdr 默认,Q5
-{ pkgs, unstablePkgs, lib, ... }: let
+{ pkgs, unstablePkgs, lib, secretsUser ? "soraliu", ... }: let
   tomlFormat = pkgs.formats.toml { };
 
   # 仅覆盖「zellij/herdr 概念重叠」的键;未列出的 action 全部沿用 herdr 默认
@@ -93,6 +93,17 @@
     # 备选:<"system"> 经 terminal-notifier 弹系统横幅,<"terminal"> 让外层终端弹通知,<"off"> 关闭。
     ui.toast.delivery = "herdr";
   };
+  # herdr-web-ui (devswha/herdr-web-ui) 的明文 env 模板;HERDR_WEB_TOKEN 属个人 secret,
+  # 由 sops 解密后在 activation 中拼接(见下),不再出现在 nix store —— 模板本身无敏感信息。
+  # HOST=0.0.0.0: 在 token 已设的前提下同时暴露 LAN+tailnet,公网侧由 vpn_primary 上的
+  # Caddy(herdr.soraliu.dev 反代 + header_up -Tailscale-User-Login)收口。
+  herdrWebUiEnvContent = pkgs.writeText "herdr-web-ui-env" ''
+    HOST=0.0.0.0
+    PORT=7317
+    HERDR_WEB_APP_NAME=lan-m3
+    HERDR_WEB_TELEMETRY=0
+  '';
+
 in {
   # herdr 主体(通知已在上方改为 herdr 内部 toast,不再需要 terminal-notifier)
   home.packages = [ unstablePkgs.herdr ];
@@ -139,4 +150,44 @@ in {
       ln -sfn "$_bin" "$HOME/.local/bin/herdr-palette" 2>/dev/null || true
     fi
   '';
+} // lib.optionalAttrs (secretsUser == "soraliu") {
+  # ======================================================================
+  # herdr-web-ui (手机/浏览器客户端): 仅 soraliu 环境安装。
+  # token 用属主 age key 加密(secrets/users/soraliu/herdr/web-ui-token.enc),
+  # 其余 env 行由 nix 明文管理 —— clawbot 等独立 secretsUser 的环境不解密不安装。
+  # ======================================================================
+
+  # 1) 构建期解密 token 到 ~/.config/herdr-web-ui/token (0600)
+  programs.sops.decryptFiles = [{
+    from = "secrets/users/soraliu/herdr/web-ui-token.enc";
+    to = ".config/herdr-web-ui/token";
+    mode = "0600";
+  }];
+
+  # 2) 幂等安装插件(已装则跳过);失败不阻断 switch。
+  # 手动恢复:`herdr plugin install devswha/herdr-web-ui --yes`(需 GitHub 可达,必要时挂代理)。
+  home.activation.installHerdrWebUiPlugin = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+    _herdr="${unstablePkgs.herdr}/bin/herdr"
+    export PATH="''${HOME_PROFILE_DIRECTORY:-$HOME/.nix-profile}/bin:$PATH"
+    if ! "$_herdr" plugin list </dev/null 2>/dev/null | grep -q "devswha.herdr-web-ui"; then
+      "$_herdr" plugin install devswha/herdr-web-ui --yes </dev/null >/dev/null 2>&1 || true
+    fi
+  '';
+
+  # 3) 组装 env: 明文模板 + 解密后的 token → 插件配置目录的 .env (幂等重写)。
+  # herdr-web-ui 0.3.25+ 优先读 .env(旧版读 env);插件卸载重装不影响(herdr plugin config-dir 持久)。
+  home.activation.genHerdrWebUiEnv =
+    lib.hm.dag.entryAfter [ "writeBoundary" "installHerdrWebUiPlugin" ] ''
+      umask 077
+      _env_dir="$HOME/.config/herdr/plugins/config/devswha.herdr-web-ui"
+      mkdir -p "$_env_dir"
+      _token="$(cat "$HOME/.config/herdr-web-ui/token" 2>/dev/null || true)"
+      if [ -z "$_token" ]; then
+        echo "herdr-web-ui: token missing (sops decrypt failed? see ~/.config/herdr-web-ui/token), .env not rewritten" >&2
+      else
+        cat "${herdrWebUiEnvContent}" > "$_env_dir/.env"
+        echo "HERDR_WEB_TOKEN=$_token" >> "$_env_dir/.env"
+        unset _token
+      fi
+    '';
 }
