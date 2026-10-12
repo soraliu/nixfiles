@@ -104,7 +104,8 @@
     HERDR_WEB_TELEMETRY=0
   '';
 
-in {
+in lib.mkMerge [
+  {
   # herdr 主体(通知已在上方改为 herdr 内部 toast,不再需要 terminal-notifier)
   home.packages = [ unstablePkgs.herdr ];
 
@@ -150,11 +151,16 @@ in {
       ln -sfn "$_bin" "$HOME/.local/bin/herdr-palette" 2>/dev/null || true
     fi
   '';
-} // lib.optionalAttrs (secretsUser == "soraliu") {
+  } # end main set
+
+  (lib.mkIf (secretsUser == "soraliu") {
   # ======================================================================
   # herdr-web-ui (手机/浏览器客户端): 仅 soraliu 环境安装。
   # token 用属主 age key 加密(secrets/users/soraliu/herdr/web-ui-token.enc),
   # 其余 env 行由 nix 明文管理 —— clawbot 等独立 secretsUser 的环境不解密不安装。
+  # 注意: 必须用 lib.mkMerge + lib.mkIf 做条件整合,而非在 module return set 上
+  # `// lib.optionalAttrs` 硬合并 —— 后者是 plain attrset last-win 合并,会把主段
+  # (含 home.packages 等全部定义)丢给 module system 之外的旧求值结果。
   # ======================================================================
 
   # 1) 构建期解密 token 到 ~/.config/herdr-web-ui/token (0600)
@@ -190,4 +196,5 @@ in {
         unset _token
       fi
     '';
-}
+  }) # end lib.mkIf (secretsUser == "soraliu") — herdr-web-ui
+]
