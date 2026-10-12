@@ -1,7 +1,7 @@
 # 内网 Jumbo MTU 与旁路由 VPN 传输效率研究报告
 
 > 研究执行：2026-10-12（研究合成 v1）／同日更新 v2（并入 GATE-1 实验 E1 结果）｜ SDD workspace：`.superpowers/sdd/jumbo-mtu-research/`（六份详细报告 = 五份研究 + E1 实验报告，含 review 记录，git-ignored）
-> 证据链约定：本报告所有数字/结论均溯源到六份 task 报告（标注如「Task 1 §1」「E1 §2」），task 报告引用 `docs/network/data/` 原始数据文件（75 个）。本文不引入报告之外的新事实；所有【推断】标签沿用原报告证据分级。
+> 证据链约定：本报告所有数字/结论均溯源到六份 task 报告（标注如「Task 1 §1」「E1 §2」），task 报告引用的原始数据文件共 75 个（PR 裁剪未入库；正文提及的 `docs/network/data/*` 路径即指该未归档数据集，关键数值已固化在正文表格）。本文不引入报告之外的新事实；所有【推断】标签沿用原报告证据分级。
 
 ## TL;DR 结论矩阵
 
@@ -26,7 +26,7 @@
 
 环境澄清（避免误判，Task 1 §2/§3）：Mac 的 utun7 = Nebula overlay（mtu 1300，承载 k8s API），不承载 `192.168.31.0/24` 业务流量；系统代理此刻 disabled、桌面 mihomo 未运行（pm2 空表）——对 MTU 研究无干扰，但影响 H4 前置（§9）。
 
-### 1.2 物理拓扑（plan 原图 + 实测标注）
+### 1.2 物理拓扑（实测标注）
 
 ```mermaid
 flowchart LR
@@ -72,7 +72,9 @@ flowchart LR
 
 关键 review 修正（已在各 task 报告内体现，本文沿用不回退）：① retransmits 前向=N/A / 反向真值 64/257；② CPU 主口径钉 iperf3 内建 `cpu_utilization_percent`；③ Task 3/4 收益量化重标定为两档制（2034 现实档 / 9000 供他机参考档）；④ M4 同封顶 2034 保持【推断】标签不升格为实证（Task 3 fix round 1 / Task 4 fix round 1）。
 
-### 1.4 数据文件索引（75 个，`docs/network/data/`）
+### 1.4 数据文件索引（75 个，未入库）
+
+> **注**：原始数据文件经 PR 裁剪未纳入仓库，此表保留作研究方法存档；正文引用的 data/task-N-* 文件均属该未归档数据集。
 
 | 组 | 文件（组内列举） | 数量 | 支撑章节 |
 |---|---|---|---|
@@ -426,7 +428,7 @@ P3 A/B 对照全套基线重放（**判读锚点**：吞吐持平≠下降、pps
 
 六份详细报告（五份研究 + E1 实验）+ review/fix 记录位于 SDD workspace（git-ignored，主工作区本地保留）：
 
-| 报告 | workspace 路径（相对仓库根） | 对应数据（`docs/network/data/`，随本报告入 git） |
+| 报告 | workspace 路径（相对仓库根） | 对应数据（未入库，见 §1.4 索引） |
 |---|---|---|
 | Task 1 内网拓扑与能力矩阵 | `.superpowers/sdd/jumbo-mtu-research/task-1-report.md`（+ task-1-review.md） | task-1-*（13 个） |
 | Task 2 容器与 VPN 数据面 | `.superpowers/sdd/jumbo-mtu-research/task-2-report.md`（+ task-2-review.md） | task-2-*（13 个） |
@@ -435,7 +437,7 @@ P3 A/B 对照全套基线重放（**判读锚点**：吞吐持平≠下降、pps
 | Task 5 基准设计与只读基线 | `.superpowers/sdd/jumbo-mtu-research/task-5-report.md`（+ review + rereview ×2） | task-5-*（30 个） |
 | E1（GATE-1 实验）LAN 透传判定 | `.superpowers/sdd/jumbo-mtu-research/task-5-exp-report.md`（§五 时间线 / §六 偏差清单） | task-5-exp-*（19 个） |
 
-workspace 另含 `progress.md`（ledger）、`data/`（与 `docs/network/data/` 同源，75 个）、各 task-brief.md。**PR 合并后**：75 个数据文件（56 研究 + 19 实验）与 ledger 随分支进入 git；六份详细报告因 `.superpowers/` 被 ignore 不随 PR 流转——本报告 §1.4/§11.1 的映射表 + 各节「Task N §x / E1 §x」标注即为 PR 内数据 ↔ 详细结论的检索入口；如需永久保留详细报告副本，应另行归档（超出本研究范围）。
+workspace 另含 `progress.md`（ledger）、`data/`（与 `docs/network/data/` 同源，75 个）、各 task-brief.md。**PR 裁剪决定**：75 个数据文件与 ledger 不随 PR 入 git（原始数据不入库）；六份详细报告因 `.superpowers/` 被 ignore 不随 PR 流转——本报告 §1.4/§11.1 的映射表 + 各节「Task N §x / E1 §x」标注即为 PR 内数据 ↔ 详细结论的检索入口；如需永久保留详细报告副本，应另行归档（超出本研究范围）。
 
 ### 11.2 复现命令索引（核心项；全量见各 task 报告附录）
 

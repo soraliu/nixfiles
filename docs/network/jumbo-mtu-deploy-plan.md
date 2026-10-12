@@ -1,7 +1,7 @@
 # 内网 Jumbo MTU 落地方案(Task 6a · GATE-2 评审稿)
 
 > 编写:2026-10-12 | 状态:**待 GATE-2(用户 approve)** — approve 后 Task 6b 照本文档执行
-> 输入材料(全部已定稿):`docs/network/jumbo-mtu-research.md`(研究 v2,下称「研究报告」)、`docs/network/switch-research.md`(下称「switch-research」)、`.superpowers/sdd/jumbo-mtu-research/task-{2,4,5,5-exp}-report.md`(下称 Task 2/4/5/exp 报告)、`docker/immortalwrt/`(现有 infra 代码)、`plan/jumbo-mtu-research.md`(SDD 计划)
+> 输入材料(全部已定稿):`docs/network/jumbo-mtu-research.md`(研究 v2,下称「研究报告」)、`docs/network/switch-research.md`(下称「switch-research」)、`.superpowers/sdd/jumbo-mtu-research/task-{2,4,5,5-exp}-report.md`(下称 Task 2/4/5/exp 报告)、`docker/immortalwrt/`(现有 infra 代码)、SDD 计划(未入库)
 > 溯源约定:所有断言标注来源(如「研究报告 §4.3」「Task 2 §A4」);本文档不引入输入材料之外的新事实;推断性内容显式标注【推断】。命令均为可复制执行级。
 
 ---
