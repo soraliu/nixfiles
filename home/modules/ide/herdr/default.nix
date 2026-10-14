@@ -140,10 +140,16 @@ in lib.mkMerge [
     export PATH="''${HOME_PROFILE_DIRECTORY:-$HOME/.nix-profile}/bin:$PATH"
     # 1) 确保二进制已构建(缺则重装)
     if ! ls "$HOME"/.config/herdr/plugins/github/ramarivera.palette-*/target/release/herdr-palette >/dev/null 2>&1; then
-      "$_herdr" plugin install ramarivera/herdr-palette --yes </dev/null >/dev/null 2>&1 || true
+      if ! "$_herdr" plugin install ramarivera/herdr-palette --yes </dev/null >/dev/null 2>&1; then
+        echo "Warning: herdr plugin install ramarivera/herdr-palette failed; palette will not be linked" >&2
+      fi
     fi
     # 2) 链接 cargo 子 manifest(裸命令)覆盖根 manifest(相对路径),并软链二进制到 ~/.local/bin
-    _bin="$(ls "$HOME"/.config/herdr/plugins/github/ramarivera.palette-*/target/release/herdr-palette 2>/dev/null | head -1)"
+    # NOTE: 赋值必须带 `|| true` —— activation 运行于 `set -eu -o pipefail`,
+    # palette 未装成时 bash 把不匹配的 glob 字面量传给 ls,ls 退出码 2 会
+    # 经由命令替换赋值直接杀死整个 activation
+    # (lan-m4 clawbot 报 "Exited(2)" 的根因)
+    _bin="$(ls "$HOME"/.config/herdr/plugins/github/ramarivera.palette-*/target/release/herdr-palette 2>/dev/null | head -1)" || true
     if [ -n "$_bin" ] && [ -x "$_bin" ]; then
       _root="$(dirname "$(dirname "$(dirname "$_bin")")")"
       "$_herdr" plugin link "$_root/cargo" >/dev/null 2>&1 || true
