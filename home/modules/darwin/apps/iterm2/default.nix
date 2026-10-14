@@ -38,9 +38,11 @@ in  {
       fi
 
       # 告诉 iTerm2 从自定义目录加载配置
-      defaults write com.googlecode.iterm2 PrefsCustomFolder -string "${configDir}" || \
+      # 注意: activate 脚本的 PATH 只含 nix store 路径, 不含 /usr/bin,
+      # 必须用绝对路径调用 macOS 系统命令 defaults, 否则 command not found
+      /usr/bin/defaults write com.googlecode.iterm2 PrefsCustomFolder -string "${configDir}" || \
         echo "Warning: failed to set iTerm2 PrefsCustomFolder"
-      defaults write com.googlecode.iterm2 LoadPrefsFromCustomFolder -bool true || \
+      /usr/bin/defaults write com.googlecode.iterm2 LoadPrefsFromCustomFolder -bool true || \
         echo "Warning: failed to enable iTerm2 LoadPrefsFromCustomFolder"
     '';
   };
