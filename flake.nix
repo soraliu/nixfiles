@@ -66,7 +66,7 @@
     claude-code = {
       url = "github:sadjow/claude-code-nix";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
-      inputs.flake-utils.follows = "flake-utils";
+      # 上游已移除 flake-utils input, 不再 override (否则报 non-existent input 警告)
     };
 
     codex-cli = {
