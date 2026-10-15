@@ -109,8 +109,28 @@ in lib.mkMerge [
   # herdr 主体(通知已在上方改为 herdr 内部 toast,不再需要 terminal-notifier)
   home.packages = [ unstablePkgs.herdr ];
 
-  home.file.".config/herdr/config.toml".source =
-    tomlFormat.generate "config.toml" herdrConfig;
+  # config.toml 必须是「真实可写文件」: herdr 运行期会写它(TUI 上报权限错误), 而
+  # home.file 产物是 symlink → /nix/store 只读。HM 25.11 的 home.file 没有 copy 模式
+  # (linkGeneration 固定 ln -Tsf), 改为 activation 里复制一份普通文件。
+  # 覆盖前若目标已是普通文件且内容与 nix 声明不同 → 先备份到固定名 .backup(保留
+  # 最近一次被覆盖内容, 不堆积); 插件注册在 plugins.json/plugins/, 不受影响。
+  # 幂等: rm -f 不 follow symlink, 只删链接/文件本身。
+  # activation 运行于 set -eu -o pipefail, 严禁用 [ -L ... ] && rm 的短路写法
+  # (条件为假时返回非零会杀死整个 activation, 参见上方 installHerdrPalettePlugin
+  # 的 lan-m4 教训注释)。home.file 条目移除后残留旧 symlink 由 HM cleanOldGen
+  # 自动 cleanup; 此处 rm -f 兜底, 与 DAG 相对顺序无关。
+  home.activation.copyHerdrConfigToml = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+    _dst="$HOME/.config/herdr/config.toml"
+    _src="${tomlFormat.generate "config.toml" herdrConfig}"
+    mkdir -p "$(dirname "$_dst")"
+    # 目标已存在、是普通文件、内容与 nix 声明不同 → 先备份再覆盖
+    if [ -e "$_dst" ] && [ ! -L "$_dst" ] && ! cmp -s "$_src" "$_dst"; then
+      cp -f "$_dst" "$_dst.backup"
+    fi
+    rm -f "$_dst"
+    cp "$_src" "$_dst"
+    chmod 644 "$_dst"
+  '';
 
   # zsh 补全:nixpkgs herdr 包自带 _herdr;此处复制到 zinit 的补全目录,
   # 方便 zinit 的 fpath + compinit 加载(若已自带则保持覆盖均为无害覆盖)。
