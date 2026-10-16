@@ -66,13 +66,15 @@ def mergeprov($live; $nx):
 
     # ---------- omp: ~/.omp/agent/models.yml (apiKey 内嵌 provider 上) ----------
     # YAML → JSON → 合并+注入密钥 → YAML; 首次 switch 会重排手写排版, 之后幂等
+    # 注意: jq 程序在 shell 双引号串里, 其中的 jq 变量($p/$keymap)必须写成 \$p/\$keymap,
+    # 否则会被 shell 当 shell 变量展开, 在 activation 的 set -u 下直接崩掉。
     _t="$HOME/.omp/agent/models.yml"
     mkdir -p "$HOME/.omp/agent"
     [ -f "$_t" ] || printf '{}\n' > "$_t"
     if "$_yq" -o=json -I=0 '.' "$_t" > "$_t.nix-merge.tmp" && \
        "$_jq" --slurpfile cat "$_catalog" --slurpfile keymap "$_keys" \
          "$_mergefilter
-          | .providers |= with_entries(.key as $p | if ($keymap[0][$p] != null) then .value.apiKey = $keymap[0][$p] else . end)" \
+          | .providers |= with_entries(.key as \$p | if (\$keymap[0][\$p] != null) then .value.apiKey = \$keymap[0][\$p] else . end)" \
          "$_t.nix-merge.tmp" > "$_t.nix-merge2.tmp" && \
        "$_yq" -o=yaml -P '.' "$_t.nix-merge2.tmp" > "$_t.nix-yml.tmp"; then
       mv "$_t.nix-yml.tmp" "$_t"
