@@ -21,6 +21,7 @@ in
     ../modules/ai/codex
     ../modules/ai/imagegen
     ../modules/ai/pi
+    ../modules/ai/omp
     ../modules/ai/context7
 
     ../modules/ide/git
