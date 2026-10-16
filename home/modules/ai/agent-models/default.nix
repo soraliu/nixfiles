@@ -66,16 +66,22 @@ def mergeprov($live; $nx):
     fi
 
     # ---------- omp: ~/.omp/agent/models.yml (apiKey 内嵌 provider 上) ----------
-    # YAML → JSON → 合并+注入密钥 → YAML; 首次 switch 会重排手写排版, 之后幂等
-    # 注意: jq 程序在 shell 双引号串里, 其中的 jq 变量($p/$keymap)必须写成 \$p/\$keymap,
-    # 否则会被 shell 当 shell 变量展开, 在 activation 的 set -u 下直接崩掉。
+    # YAML → JSON → 合并+注入密钥 → 剥离 omp 未识别的 compat 键 → YAML;
+    # 首次 switch 会重排手写排版, 之后幂等。
+    # 注意: jq 程序在 shell 双引号串里, 其中的 jq 变量($p/$keymap/$k/$deny)必须写成
+    # \$p/\$keymap/\$k/\$deny, 否则会被 shell 当 shell 变量展开, 在 activation 的 set -u 下直接崩掉。
+    # catalog 是 pi 超集(带 zaiToolStream 等 pi 新 compat 键), 但 omp 18.10.4 不认识这些键,
+    # 每次启动都会刷一串 "Unknown compat key" 警告; 因此只在 omp 侧按 deny-list 把这些键
+    # 从写入的 models.yml 里剥离(pi 侧不受影响, 全量保留)。omp 升级识别后再把列表清空即可。
+    _ompdeny='["zaiToolStream","supportsOpenAIGrammarTools","supportsAdditionalTools","supportsToolSearch","supportsExplicitPromptCacheMode"]'
     _t="$HOME/.omp/agent/models.yml"
     mkdir -p "$HOME/.omp/agent"
     [ -f "$_t" ] || printf '{}\n' > "$_t"
     if "$_yq" -o=json -I=0 '.' "$_t" > "$_t.nix-merge.tmp" && \
-       "$_jq" --slurpfile cat "$_catalog" --slurpfile keymap "$_keys" \
+       "$_jq" --slurpfile cat "$_catalog" --slurpfile keymap "$_keys" --argjson deny "$_ompdeny" \
          "$_mergefilter
-          | .providers |= with_entries(.key as \$p | if (\$keymap[0][\$p] != null) then .value.apiKey = \$keymap[0][\$p] else . end)" \
+          | .providers |= with_entries(.key as \$p | if (\$keymap[0][\$p] != null) then .value.apiKey = \$keymap[0][\$p] else . end)
+          | .providers |= map_values(.models |= map(.compat |= (if . == null then . else with_entries(select(.key as \$k | (\$deny | index(\$k)) == null)) end)))" \
          "$_t.nix-merge.tmp" > "$_t.nix-merge2.tmp" && \
        "$_yq" -o=yaml -P '.' "$_t.nix-merge2.tmp" > "$_t.nix-yml.tmp"; then
       mv "$_t.nix-yml.tmp" "$_t"

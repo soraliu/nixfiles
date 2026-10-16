@@ -39,7 +39,7 @@ _dec = pkgs.callPackage ../../../../pkgs/sops/decrypt.nix {
 | --- | --- |
 | `~/.pi/agent/models.json` | jq:catalog 按 `_mergefilter` 合并(纯目录文件) |
 | `~/.pi/agent/auth.json` | jq:`. * ($keymap[0] \| map_values({type:"api_key", key:.}))`,只新增/更新被声明 provider 的条目 |
-| `~/.omp/agent/models.yml` | yq(YAML→JSON) → jq(merge + 按 keymap 注入 `provider.apiKey`) → yq(-o=yaml -P),首次 switch 会重排手写排版,之后字节级幂等 |
+| `~/.omp/agent/models.yml` | yq(YAML→JSON) → jq(merge + 注入 `provider.apiKey` + 剥离 `_ompdeny` 中 omp 未识别的 compat 键) → yq(-o=yaml -P),首次 switch 重排排版,之后字节级幂等 |
 
 ### 3. 合并语义(model 级)
 
@@ -50,6 +50,7 @@ _dec = pkgs.callPackage ../../../../pkgs/sops/decrypt.nix {
 - **models**:live + catalog 的 models 拼接后按 `id` reduce 建表,同 id **nix 定义覆盖**;输出保持首次出现顺序(live 在前,catalog 新增追加)。
 - **本机独有条目**(手工新增的 provider/model,如 pi 的 `zai-coding-cn` auth 登录条目)永不删除。
 - **从 nix 删除一个 model/provider 不清理本机残留**——声明式只做增量收敛,删除需手工同步清 target 文件。
+- **omp 侧 compat 键剥离**:catalog 是 pi 超集,但 omp 18.10.4 未识别的键(`zaiToolStream`、`supportsToolSearch` 等)写回 models.yml 前按 `_ompdeny` deny-list 剥离,避免每次启动刷 "Unknown compat key" 警告;pi 侧全量保留不受影响。
 
 ### 4. 降级路径
 
@@ -86,7 +87,7 @@ just switch-home ide
 
 ## 已知边界
 
-- omp 18.10.4 暂不识别 pi 侧新 compat 键(`zaiToolStream`、`supportsToolSearch` 等),加载时打 `Unknown compat key ... configuration still loaded` 警告,功能不受影响;omp 跟进 pi-mono 新键后自然消失。
+- omp 18.10.4 暂不识别 pi 侧新 compat 键,故 omp 侧按 deny-list(`default.nix` 的 `_ompdeny`)剥离后写入;omp 升级跟进 pi-mono schema 后把列表清空即可恢复全量传播(下 switch 会自动把这些键补回 omp 的 models.yml)。
 - sops 构建期解密产物存在于 `/nix/store`(仓库既有约定,单用户机器可接受)——若未来某个工具 schema 收紧导致启动报错,删该工具对应 merge 段改人工迁移。
 
 验证记录见 PR #57:merge 断言、omp/pi 端到端、连续 switch 字节级幂等均实测通过。
