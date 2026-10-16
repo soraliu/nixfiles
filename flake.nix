@@ -265,7 +265,7 @@
           wsl-infer    = mkHome { modules = homeModules.wsl-infer; homeUser = "root"; };
 
           # clawbot — ide + openclaw, independent profile
-          clawbot      = mkHome { modules = homeModules.clawbot; homeUser = "clawbot"; extraSpecialArgs = mkHomeExtraSpecialArgs { secretsUser = "clawbot"; }; };
+          clawbot      = mkHome { modules = homeModules.clawbot; homeUser = "root"; extraSpecialArgs = mkHomeExtraSpecialArgs { secretsUser = "clawbot"; }; };
 
           # servers
           vpn-server   = mkHome { modules = homeModules.vpn-server; homeUser = "root"; };
