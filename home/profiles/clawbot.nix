@@ -54,4 +54,10 @@ in
       exec "''${HOME_PROFILE_DIRECTORY}/bin/zsh"
     fi
   '';
+
+  # GNOME Terminal (Ubuntu 桌面默认终端, 未显式配置 profile 字体) 跟随系统等宽字体:
+  # 指到 nerd font 的 Mono 变体, p10k 图标随终端默认字体直接渲染, 无需手动选择
+  dconf.settings = lib.mkIf (!isDarwin) {
+    "org/gnome/desktop/interface".monospace-font-name = "SauceCodePro Nerd Font Mono 11";
+  };
 }
