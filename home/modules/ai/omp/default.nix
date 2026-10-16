@@ -1,15 +1,15 @@
 { unstablePkgs, lib, ... }:
 let
-  # pi-session-prs fork(marcoskichel 上游, omp-compat 分支): diff 为 omp 兼容性三处改动 —
-  # 1) agent_settled -> agent_end 事件名; 2) hyperlink 改本地 OSC8 实现; 3) 新增 /prs list。
-  # 效果: footer 按 state 分组显示本 session 的 PRs, /prs 选开浏览器, /prs list 输出
-  # markdown 链接列表(TUI 渲染为可点击 OSC 8 hyperlink, herdr pane 内可直接点击)。
+  # pi-session-prs fork(marcoskichel 上游, omp-compat 分支): PR 行经 setWidget(aboveEditor)
+  # 渲染在 statusline 上方一行(紧贴 session-title 行), 按 state 分组(●/✔/✕);
+  # 终端支持时 PR 编号为 OSC 8 可点击链接(herdr 内 ⌘+点击), 否则降级纯文本; /prs 选开浏览器; /prs list
+  # 在 transcript 输出 markdown 链接列表。fork 另含 omp 兼容: agent_end 事件名 + 本地 OSC8 实现。
   # 上游 npm 包未发布 omp 适配, 故 pin 到 fork commit 的 git checkout 本地安装。
   pi-session-prs = unstablePkgs.fetchFromGitHub {
     owner = "soraliu";
     repo = "pi-session-prs";
-    rev = "c228b62e12911c623f71c133676fb21916a7cb9a";
-    hash = "sha256-5SWzUrHFY5OpvW6q+Pvj0fcNT5525eiHQjMzPnz8tYQ=";
+    rev = "90e9248d2f02340349d907c2e9cbd31a63437df3";
+    hash = "sha256-DPEQCnpT1eub16qS3VKON8XX6og3hVmAu3naZTrSTXI=";
   };
 in
 {
@@ -35,5 +35,27 @@ in
       "$_omp" plugin install ${pi-session-prs} </dev/null >/dev/null 2>&1 \
         || echo "Warning: omp plugin install pi-session-prs failed; install manually after switch" >&2
     fi
+  '';
+
+  # ~/.omp/agent/config.yml: omp 主配置; 全量为静态偏好(无运行时数据),
+  # 声明式管理, 每次以 home-manager 版本为准(手改会被 switch 覆盖)。
+  # agent-models 模块只合并 models.yml, 不触碰本文件。
+  config.home.file.".omp/agent/config.yml".text = ''
+    modelRoles:
+      default: 1xtoken/glm-5.3
+    symbolPreset: unicode
+    composer:
+      shape: band
+    theme:
+      dark: titanium
+    setupVersion: 2
+    task:
+      eager: preferred
+    terminal:
+      showProgress: false
+    statusLine:
+      preset: full
+    dev:
+      autoqaConsent: granted
   '';
 }
