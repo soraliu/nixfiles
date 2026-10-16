@@ -112,14 +112,19 @@ init-ide-on-darwin-dev: pre-init-nix pre-init-age (switch-darwin "soraliu") darw
 init-ide-on-darwin-work: init-ide-on-darwin-dev darwin-post-install-pkgs-work darwin-post-restore-raycast
 [private]
 init-ide-on-darwin-personal: init-ide-on-darwin-work darwin-post-install-pkgs-personal
+# clawbot: darwin 走 nix-darwin, linux 走 standalone home-manager
 [private]
-init-clawbot-on-darwin: pre-init-nix pre-init-age (switch-darwin "clawbot")
+[macos]
+init-clawbot: pre-init-nix pre-init-age (switch-darwin "clawbot")
+[private]
+[linux]
+init-clawbot: pre-init-nix pre-init-age (switch-home "clawbot") post-init-zsh
 [private]
 init-ide-on-mobile: mobile-pre-init-nix-on-doird (switch-home "ide-mobile")
 [private]
 eject-darwin: (switch-home "eject") darwin-uninstall-pkgs
 
-# profile: vpn-server, drive-server, ide, ide-on-darwin-dev, ide-on-darwin-work, ide-on-darwin-personal, wsl-ubuntu, wsl-ubuntu-infer, clawbot-on-darwin, ide-on-mobile
+# profile: vpn-server, drive-server, ide, ide-on-darwin-dev, ide-on-darwin-work, ide-on-darwin-personal, wsl-ubuntu, wsl-ubuntu-infer, clawbot, ide-on-mobile
 init profile="ide":
   just init-{{profile}}
 
