@@ -1,7 +1,7 @@
 { pkgs, lib, secretsUser ? "soraliu", ... }:
 
 # omp/pi 双栈共享的「支持的模型」单一事实来源:
-#   catalog.json(非密钥, 明文入库) + sops 密钥 → switch 时 merge 进各工具全局 config。
+#   sops 加密的 catalog(模型目录母本, 含 provider 私密字段) + 密钥表 → 构建期解密, switch 时 merge 进各工具全局 config。
 # 合并语义(用户拍板 model 级):
 #   - 同名 provider: 对象字段(baseUrl/api/compat 等)nix 优先; models 按 id 合并,
 #     同 id 以 nix 定义覆盖(改即生效), 本机独有 model 永久保留;
@@ -15,15 +15,16 @@ lib.mkIf (secretsUser == "soraliu") {
     _jq="${pkgs.jq}/bin/jq"
     _yq="${pkgs.yq-go}/bin/yq"
 
-    # 构建期已解密的密钥表 {provider: apiKey}; catalog 为明文母本
-    _keys="${pkgs.callPackage ../../../../pkgs/sops/decrypt.nix {
+    # 构建期已解密(均 sops 加密入 secrets/): 密钥表 {provider: apiKey} + catalog 模型目录母本
+    _dec="${pkgs.callPackage ../../../../pkgs/sops/decrypt.nix {
       inherit pkgs;
-      files = [{
-        from = "secrets/.config/ai/agent-models-keys.enc.json";
-        to = "keys.json";
-      }];
-    }}/keys.json"
-    _catalog="${toString ./catalog.json}"
+      files = [
+        { from = "secrets/.config/ai/agent-models-keys.enc.json"; to = "keys.json"; }
+        { from = "secrets/.config/ai/agent-models-catalog.enc.json"; to = "catalog.json"; }
+      ];
+    }}"
+    _keys="$_dec/keys.json"
+    _catalog="$_dec/catalog.json"
 
     # provider/models 的 model 级合并 filter(已实测: 幂等 + 本机独有条目保留)
     _mergefilter='
