@@ -60,9 +60,4 @@ in
   dconf.settings = lib.mkIf (!isDarwin) {
     "org/gnome/desktop/interface".monospace-font-name = "SauceCodePro Nerd Font Mono 11";
   };
-
-  # .105 的 Determinate Nix 3.23 (2.35) 新增 activity type 10113, nom ≤ 2.2.0 解析直接崩
-  # (DeterminateSystems/nix-src#659; 上游修复 maralorn/nix-output-monitor#321 仅在 master 未
-  # release). nh 尊重 NO_NOM 环境; nom 发出含修复的 release 后删除本行即可恢复进度显示
-  home.sessionVariables = lib.mkIf (!isDarwin) { NO_NOM = "1"; };
 }

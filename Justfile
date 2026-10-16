@@ -40,6 +40,10 @@ mobile-pre-init-nix-on-doird:
 	./bin/android/pre-init-nix-on-droid.sh
 
 # -------------------- home-manager - standalone --------------------
+#
+# 注: nh 调用统一加 --no-nom: Determinate Nix 3.23 (2.35) 起的新 activity type 让 nom ≤ 2.2.0
+# 解析崩溃 (DeterminateSystems/nix-src#659, 修复 maralorn/nix-output-monitor#321 未 release);
+# nom 发修复版后移除 --no-nom 即可恢复进度显示
 # profile: ide, ide-mirror, ide-cn, ide-mobile, wsl-infer, clawbot, vpn-server, drive-server, eject
 [private]
 record-switch cmd:
@@ -48,7 +52,7 @@ record-switch cmd:
 
 switch-home profile="ide":
 	just record-switch "just switch-home {{profile}}"
-	nix run .#nh -- home switch . -c {{profile}} -b backup
+	nix run .#nh -- home switch . -c {{profile}} -b backup --no-nom
 
 # 本地构建 + nix copy 到远端 + 远程执行 activationPackage/activate
 # 用法: just switch-home-remote vpn-relayer root@1.2.3.4
@@ -71,13 +75,13 @@ switch-home-remote profile host:
 # profile: ide, wsl-infer
 switch-nixos profile="ide":
 	just record-switch "just switch-nixos {{profile}}"
-	nix run .#nh -- os switch . -H {{profile}}
+	nix run .#nh -- os switch . -H {{profile}} --no-nom
 
 # -------------------- Darwin --------------------
 # configuration: soraliu, soraliu-mirror, clawbot
 switch-darwin configuration="soraliu":
 	just record-switch "just switch-darwin {{configuration}}"
-	nix run .#nh -- darwin switch . -H {{configuration}}
+	nix run .#nh -- darwin switch . -H {{configuration}} --no-nom
 
 # -------------------- Android --------------------
 switch-android:
