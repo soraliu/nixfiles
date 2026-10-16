@@ -1,8 +1,9 @@
-{ omp, system, ... }: {
-  # oh-my-pi (omp): pi-mono 的姊妹发行版,双栈并存试用(plans/omp-switch.md)
-  # 包 output 为 packages.<system>.omp(上游 flake 同时提供 homeManagerModules,
-  # 但试用期 settings 留在 ~/.omp 平文件管理,不声明式化)
+{ unstablePkgs, ... }: {
+  # oh-my-pi (omp): pi-mono 的姊妹发行版, 双栈并存试用(plans/omp-switch.md)
+  # 改用 nixpkgs-unstable 的 pkgs.omp (#47 原先的 flake input 方案每次更新都要
+  # 本地源码重编 bun/rust 全链; nixpkgs 官方包走 cache.nixos.org 二进制缓存, 零编译。
+  # 版本随 nixpkgs-unstable pin 滚动, 滞后上游 tag 约数周, 试用期可接受)
   config.home.packages = [
-    omp.packages.${system}.omp
+    unstablePkgs.omp
   ];
 }

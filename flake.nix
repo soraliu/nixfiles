@@ -82,14 +82,6 @@
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
 
-    omp = {
-      # oh-my-pi: pi 的姊妹发行版(fork, can1357/Stencil Labs), 双栈并存试用。
-      # 配置目录 ~/.omp 与 pi 的 ~/.pi 完全隔离; pi 保留为 herdr/telegram/plannotator 宿主
-      # 构建链较重(bun2nix + rust-overlay), 若 follows 构建失败可去掉 follows 用上游 lock
-      url = "github:can1357/oh-my-pi";
-      inputs.nixpkgs.follows = "nixpkgs-unstable";
-    };
-
     # Determinate Nix 3.x (lazy-trees + parallel-eval)
     # 官方建议 NOT to set inputs.nixpkgs.follows — 会触发 FlakeHub cache miss
     determinate = {
@@ -110,7 +102,6 @@
     , claude-code
     , codex-cli
     , pi
-    , omp
     , determinate
     , ...
     }: with flake-utils.lib; eachDefaultSystem (system:
@@ -154,7 +145,7 @@
 
       # flake inputs + 共享变量，传递给各工厂函数的 specialArgs / extraSpecialArgs
       mkSharedArgs = homeUser: {
-        inherit unstablePkgs homeUser claude-code codex-cli pi omp;
+        inherit unstablePkgs homeUser claude-code codex-cli pi;
       };
 
       mkHomeExtraSpecialArgs =
