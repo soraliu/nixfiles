@@ -15,6 +15,8 @@ in
 
     ../modules/ai/cc
     ../modules/ai/codex
+    ../modules/ai/pi
+    ../modules/ai/omp
 
     ../modules/ide/git
     ../modules/ide/zsh
