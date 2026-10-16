@@ -50,7 +50,7 @@ in
   # chsh 只对之后的新登录生效. 交互式 bash 落地 profile zsh 后, home-manager 的 .zshenv 会重建
   # session vars, 因此本跳板与 sys/shell 模块 initExtra 的顺序无关.
   programs.bash.initExtra = lib.mkIf (!isDarwin) ''
-    if [ -n "''${PS1:-}" ] && [ -x "''${HOME_PROFILE_DIRECTORY:-}/bin/zsh" ]; then
+    if [ -n "''${PS1:-}" ] && [ -z "''${BASH_EXECUTION_STRING:-}" ] && [ -x "''${HOME_PROFILE_DIRECTORY:-}/bin/zsh" ]; then
       exec "''${HOME_PROFILE_DIRECTORY}/bin/zsh"
     fi
   '';
