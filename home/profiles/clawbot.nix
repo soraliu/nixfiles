@@ -1,4 +1,4 @@
-{ system, lib, unstablePkgs, ... }:
+{ system, pkgs, lib, unstablePkgs, ... }:
 
 let
   isDarwin = system == "x86_64-darwin" || system == "aarch64-darwin";
@@ -58,25 +58,33 @@ in
 
   # GNOME Terminal (Ubuntu 桌面默认终端, 未显式配置 profile 字体) 跟随系统等宽字体:
   # 指到 nerd font 的 Mono 变体, p10k 图标随终端默认字体直接渲染, 无需手动选择
-  #
-  # 配色不跟随系统/主题, 固定为内置 "GNOME dark" 方案 (Ubuntu 24.04 gnome-terminal 3.52
-  # 内置 fg/bg 定义, 与在 GUI 里手选 Built-in schemes: GNOME dark 完全等价; palette 就是
-  # 该版本默认 GNOME palette, 无需再写). default profile 恒为出厂 UUID (gschema 内置默认),
-  # 直接对它写键即可.
-  dconf.settings =
-    let
-      gnomeTermProfile = "b1dcc9dd-5262-4d8d-a863-c897e6d979b9";
-    in
-    lib.mkIf (!isDarwin) {
-      "org/gnome/desktop/interface".monospace-font-name = "SauceCodePro Nerd Font Mono 11";
+  dconf.settings = lib.mkIf (!isDarwin) {
+    "org/gnome/desktop/interface".monospace-font-name = "SauceCodePro Nerd Font Mono 11";
+  };
 
-      "org/gnome/terminal/legacy/profiles:" = {
-        default = gnomeTermProfile;
-      };
-      "org/gnome/terminal/legacy/profiles:/:${gnomeTermProfile}" = {
-        use-theme-colors = false;
-        foreground-color = "#d0cfcc";
-        background-color = "#171421";
-      };
-    };
+  # 配色不跟随系统/主题, 固定为内置 "GNOME dark" 方案: 色值取自 gnome-terminal 3.52.0
+  # (Ubuntu 24.04 实装版本) 的内置定义, 等价于 GUI 手选 Built-in schemes: GNOME dark
+  # (palette 即该版本默认 GNOME palette, 保持不动).
+  # dconf 的 profile 按 UUID 寻址且无通配/间接层, 声明式的 dconf.settings 写不了"当前
+  # default profile", 故在 activation 时动态解析机器当前的 default 再写键 —— 不写死出厂
+  # UUID, 换机器或手动改过 default 均无需改配置.
+  # 注意: 与 dconf.settings 不同, 此段不参与 hm 卸载 cleanup, 丢弃配色时需手动 reset 三键.
+  home.activation.gnomeTerminalGnomeDark = lib.mkIf (!isDarwin)
+    (lib.hm.dag.entryAfter [ "dconfSettings" ] ''
+      _gs="${pkgs.glib}/bin/gsettings"
+      # 无 session bus (headless 激活) 时起临时 bus; gsettings 依赖 session dbus
+      declare -a _wrap=()
+      if ! [[ -v DBUS_SESSION_BUS_ADDRESS ]]; then
+        _wrap+=("${pkgs.dbus}/bin/dbus-run-session" "--")
+      fi
+      # 未装 gnome-terminal (无 schema) 的机器上 gsettings get 报错, 静默跳过
+      _profile="$("''${_wrap[@]}" "$_gs" get org.gnome.Terminal.ProfilesList default 2>/dev/null || true)"
+      _profile="''${_profile//\'/}" # gsettings get 的输出带单引号
+      if [ -n "$_profile" ]; then
+        _path="org.gnome.Terminal.Legacy.Profile:/org/gnome/terminal/legacy/profiles:/:''${_profile}/"
+        "''${_wrap[@]}" "$_gs" set "$_path" use-theme-colors false
+        "''${_wrap[@]}" "$_gs" set "$_path" foreground-color '#d0cfcc'
+        "''${_wrap[@]}" "$_gs" set "$_path" background-color '#171421'
+      fi
+    '');
 }
