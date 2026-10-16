@@ -58,7 +58,25 @@ in
 
   # GNOME Terminal (Ubuntu 桌面默认终端, 未显式配置 profile 字体) 跟随系统等宽字体:
   # 指到 nerd font 的 Mono 变体, p10k 图标随终端默认字体直接渲染, 无需手动选择
-  dconf.settings = lib.mkIf (!isDarwin) {
-    "org/gnome/desktop/interface".monospace-font-name = "SauceCodePro Nerd Font Mono 11";
-  };
+  #
+  # 配色不跟随系统/主题, 固定为内置 "GNOME dark" 方案 (Ubuntu 24.04 gnome-terminal 3.52
+  # 内置 fg/bg 定义, 与在 GUI 里手选 Built-in schemes: GNOME dark 完全等价; palette 就是
+  # 该版本默认 GNOME palette, 无需再写). default profile 恒为出厂 UUID (gschema 内置默认),
+  # 直接对它写键即可.
+  dconf.settings =
+    let
+      gnomeTermProfile = "b1dcc9dd-5262-4d8d-a863-c897e6d979b9";
+    in
+    lib.mkIf (!isDarwin) {
+      "org/gnome/desktop/interface".monospace-font-name = "SauceCodePro Nerd Font Mono 11";
+
+      "org/gnome/terminal/legacy/profiles:" = {
+        default = gnomeTermProfile;
+      };
+      "org/gnome/terminal/legacy/profiles:/:${gnomeTermProfile}" = {
+        use-theme-colors = false;
+        foreground-color = "#d0cfcc";
+        background-color = "#171421";
+      };
+    };
 }
