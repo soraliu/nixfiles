@@ -31,6 +31,7 @@ in
     ../modules/lang/python.nix
     ../modules/lang/go.nix
     ../modules/lang/db.nix
+    ../modules/lang/rust.nix
 
     # Paperclip pm2 service module
     # ../modules/sys/pm2/paperclip.nix
