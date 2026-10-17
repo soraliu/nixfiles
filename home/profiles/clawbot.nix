@@ -33,6 +33,9 @@ in
     ../modules/lang/db.nix
     ../modules/lang/rust.nix
 
+    # 桌面(GNOME/XFCE)环境软件: 检测到桌面环境的 Linux 默认装 Chrome 等浏览器
+    ../modules/gnome
+
     # Paperclip pm2 service module
     # ../modules/sys/pm2/paperclip.nix
 
