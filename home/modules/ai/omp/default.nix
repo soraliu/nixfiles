@@ -5,7 +5,7 @@
   ...
 }:
 let
-  # pi-session-prs fork(marcoskichel 上游, omp-compat 分支): PR 行经 setWidget(belowEditor)
+  # omp-session-prs(上游 marcoskichel/pi-session-prs 的 fork, main 分支): PR 行经 setWidget(belowEditor)
   # 渲染在 editor 带下方一行, 按 state 分组(●/✔/✕); 终端支持时 PR 编号为 OSC 8 可点击链接(herdr 内
   # Ctrl+点击), 否则降级纯文本; /prs 选开浏览器; /prs list 在 transcript 输出 markdown 链接列表。
   # fork 另含 omp 兼容: agent_end 事件名 + 本地 OSC8 实现。
@@ -15,9 +15,10 @@ let
   # 空行; belowEditor 容器无 spacer, PR 行紧贴 editor 带。
   # f961586: PR 集合经 pi.appendEntry(custom entry, 不进 LLM)随 session transcript 持久化, resume 时
   # 从最新快照恢复 —— 不依赖 gh/分支/worktree 存活(PR 合并即删 worktree 的流程下尤为重要)。
-  pi-session-prs = unstablePkgs.fetchFromGitHub {
+  # 插件 id 仍是 pi-session-prs(package.json name), 与本仓 rename 无关。
+  omp-session-prs = unstablePkgs.fetchFromGitHub {
     owner = "soraliu";
-    repo = "pi-session-prs";
+    repo = "omp-session-prs";
     rev = "f961586c14a2713a08fd8cacc026348f45e02349";
     hash = "sha256-deZzFekn6T+kNeCYOb1yBP51mFAaneNBjZvQCWBfXvM=";
   };
@@ -54,9 +55,9 @@ in
       "$_omp" plugin install npm:@plannotator/pi-extension </dev/null >/dev/null 2>&1 \
         || echo "Warning: omp plugin install npm:@plannotator/pi-extension failed; install manually after switch" >&2
     fi
-    # pi-session-prs 从 nix store 的 fork checkout 本地安装(link 模式), 依赖 gh CLI 在 PATH
+    # omp-session-prs(插件 id pi-session-prs)从 nix store 的 fork checkout 本地安装(link 模式), 依赖 gh CLI 在 PATH
     if ! "$_omp" plugin list --json </dev/null 2>/dev/null | grep -q "pi-session-prs"; then
-      "$_omp" plugin install ${pi-session-prs} </dev/null >/dev/null 2>&1 \
+      "$_omp" plugin install ${omp-session-prs} </dev/null >/dev/null 2>&1 \
         || echo "Warning: omp plugin install pi-session-prs failed; install manually after switch" >&2
     fi
   '';
