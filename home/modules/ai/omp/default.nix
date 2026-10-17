@@ -13,11 +13,13 @@ let
   # 上游 pi-tui, 其静态探测看不见 herdr(隐藏外层终端)误报 false; herdr 实际自渲染 OSC 8 并 Ctrl+点击打开。
   # 868241a: aboveEditor→belowEditor —— omp 给 aboveEditor widget 硬编码前置 Spacer(1), PR 行上方多一个
   # 空行; belowEditor 容器无 spacer, PR 行紧贴 editor 带。
+  # f961586: PR 集合经 pi.appendEntry(custom entry, 不进 LLM)随 session transcript 持久化, resume 时
+  # 从最新快照恢复 —— 不依赖 gh/分支/worktree 存活(PR 合并即删 worktree 的流程下尤为重要)。
   pi-session-prs = unstablePkgs.fetchFromGitHub {
     owner = "soraliu";
     repo = "pi-session-prs";
-    rev = "868241a72f31eaf04b0636b8592e1873d614ebca";
-    hash = "sha256-IG7moxUS1EG4PjnQAnC3ky8ZIniNmiY/1mE0FVe/MTw=";
+    rev = "f961586c14a2713a08fd8cacc026348f45e02349";
+    hash = "sha256-deZzFekn6T+kNeCYOb1yBP51mFAaneNBjZvQCWBfXvM=";
   };
 
   # omp config.yml 声明母本(sops 密文, 可含私密字段), 构建期解密到 /nix/store, switch 时 merge 进本机文件。
