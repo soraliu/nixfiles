@@ -6,6 +6,58 @@
   ...
 }: let
   isDarwin = pkgs.stdenv.hostPlatform.isDarwin;
+
+  # yazi vfs.toml 声明母本(sops 密文, 含内网 IP/user/key 路径等私密字段), 构建期解密到
+  # /nix/store, switch 时 merge 进本机 ~/.config/yazi/vfs.toml。yazi v25.12.29 起原生
+  # sftp VFS 靠此文件; HM 的 programs.yazi 无 vfs 选项(25.11 已核实), 密文也不可进
+  # eval 明文, 故不走 home.file 覆写, 逻辑与 omp config / agent-models 同款。
+  _yaziVfsDec = pkgs.callPackage ../../../../pkgs/sops/decrypt.nix {
+    inherit pkgs;
+    files = [
+      {
+        from = "secrets/.config/yazi/vfs.enc.toml";
+        to = "yazi-vfs.toml";
+      }
+    ];
+  };
+
+  # merge 工具: tomlkit 保留手写排版/注释, 字节级幂等(优于 yq round-trip —— yq 的
+  # TOML 输出编码器至今未实现, jq 又不吃 TOML, 老链路走不通)。
+  _yaziVfsMerge = pkgs.writers.writePython3Bin "yazi-vfs-merge" {
+    libraries = [pkgs.python3Packages.tomlkit];
+    flakeIgnore = ["E501"];
+  } ''
+    import sys
+    import tomlkit
+
+
+    def merge(base, decl):
+        for k, v in decl.items():
+            if isinstance(v, dict) and isinstance(base.get(k), dict):
+                merge(base[k], v)
+            else:
+                base[k] = v
+
+
+    decl_p, tgt_p = sys.argv[1], sys.argv[2]
+    try:
+        with open(decl_p) as f:
+            decl = tomlkit.parse(f.read())
+    except Exception as e:
+        print(f"yazi-vfs-merge: WARN: decl {decl_p} unparseable: {e}", file=sys.stderr)
+        sys.exit(0)
+    try:
+        with open(tgt_p) as f:
+            base = tomlkit.parse(f.read())
+    except FileNotFoundError:
+        base = tomlkit.document()
+    except Exception as e:
+        print(f"yazi-vfs-merge: WARN: {tgt_p} unparseable, keep intact: {e}", file=sys.stderr)
+        sys.exit(0)
+    merge(base, decl)
+    with open(tgt_p, "w") as f:
+        f.write(tomlkit.dumps(base))
+  '';
 in {
   # yazi: Rust 终端文件管理器, 本体/插件全部取 nixpkgs-unstable —— 与 yaziPlugins
   # 集合 pin 在同一个 nixpkgs commit 里, `just update-unstable-pkg` 时同步前进,
@@ -14,7 +66,7 @@ in {
   # - wrapper 自带预览工具链: jq/poppler/7zz/ffmpeg/fd/ripgrep/fzf/zoxide/
   #   imagemagick/chafa/resvg, 装完即可预览视频/PDF/图片/压缩包
   # - shell 集成: HM 在 zsh 注入 `yy` 函数, 退出时 cd 到最后浏览目录
-  programs.yazi = {
+  config.programs.yazi = {
     enable = true;
     package = unstablePkgs.yazi;
     # ouch.yazi 插件的运行时依赖(压缩/预览), 进 wrapper PATH
@@ -163,4 +215,16 @@ in {
         ];
     };
   };
+
+  # ~/.config/yazi/vfs.toml: sftp remote 声明, switch 时 merge —— 密文侧字段覆盖同名
+  # 本机字段(改密文即生效), 本机独有条目/注释/排版永久保留, 密文删除不清残留;
+  # 目标乱码时保原样仅告警, 不阻断 switch。umask 077 → 600。
+  config.home.activation.mergeYaziVfs = lib.hm.dag.entryAfter ["writeBoundary"] ''
+    umask 077
+    _t="$HOME/.config/yazi/vfs.toml"
+    mkdir -p "$HOME/.config/yazi"
+    [ -f "$_t" ] || : > "$_t"
+    "${_yaziVfsMerge}/bin/yazi-vfs-merge" "${_yaziVfsDec}/yazi-vfs.toml" "$_t"
+    chmod 600 "$_t"
+  '';
 }
