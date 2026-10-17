@@ -9,7 +9,7 @@ let
   isDarwin = system == "x86_64-darwin" || system == "aarch64-darwin";
 in
 {
-  imports = [ ./alacritty.nix ];
+  imports = [ ./alacritty.nix ./fcitx5-rime.nix ];
 
   config = lib.mkIf (!isDarwin) {
     home.packages = [
