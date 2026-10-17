@@ -33,8 +33,8 @@ in
     ../modules/lang/db.nix
     ../modules/lang/rust.nix
 
-    # 桌面(GNOME/XFCE)环境软件: 检测到桌面环境的 Linux 默认装 Chrome 等浏览器
-    ../modules/gnome
+    # 桌面环境(DE)通用软件: 字体/浏览器/终端/输入法/启动器
+    ../modules/desktop
 
     # Paperclip pm2 service module
     # ../modules/sys/pm2/paperclip.nix
@@ -43,12 +43,6 @@ in
     (if isDarwin then ../modules/darwin/apps/rime else "")
     (if isDarwin then ../modules/darwin/apps/iterm2 else "")
   ]);
-
-  # ---- 非 darwin(standalone home-manager, 如 Ubuntu)补齐: 字体 + 交互式 bash → zsh ----
-  # 字体与 systems/darwin.nix 的 fonts.packages 保持同源同款 (unstablePkgs.nerd-fonts.sauce-code-pro);
-  # darwin 由 nix-darwin 系统级管理, 此处不重复安装
-  home.packages = lib.optionals (!isDarwin) [ unstablePkgs.nerd-fonts.sauce-code-pro ];
-  fonts.fontconfig.enable = !isDarwin;
 
   # xrdp 等桌面会话的 SHELL 环境继承自 daemon(chsh 之前的 bash), 图形终端按 $SHELL 环境变量拉 shell;
   # chsh 只对之后的新登录生效. 交互式 bash 落地 profile zsh 后, home-manager 的 .zshenv 会重建
