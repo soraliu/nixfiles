@@ -62,7 +62,7 @@ _dec = pkgs.callPackage ../../../../pkgs/sops/decrypt.nix {
 
 - 只处理默认 agent 目录(`~/.omp/agent`、`~/.pi/agent`);`--profile`/环境变量改写 agentDir 的场景不覆盖。
 - 与运行中的 pi/omp 不加锁:进程持有启动时快照,merge 结果下次启动生效。
-- 不触碰运行时状态/缓存:pi `settings.json`、omp `config.yml`、pi `models-store.json`。
+- 不触碰运行时状态/缓存:pi `settings.json`、pi `models-store.json`;omp `config.yml` 本模块也不碰 —— 由 omp 模块(`home/modules/ai/omp`)以 sops 密文 `secrets/.config/ai/omp-config.enc.json` 同款逻辑 merge 管理。
 
 ## 日常维护
 
