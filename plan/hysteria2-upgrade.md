@@ -21,7 +21,7 @@
 | Ansible 服务端 | `~/Github/personal-k3s-ops` 的 `ansible/roles/vpn_server/` | hysteria 2.7.1 + xray 26.2.6；binary 从 GitHub release 下载，checksum 硬编码于 `ansible/roles/vpn_server/defaults/main.yml`（下载基址仍是旧名 `apernet/hysteria`，已改名 `HyNetworks/hysteria`） |
 | 部署入口 | `ansible/playbooks/edge/vpn.yml` → group `vpn_nodes`，共 4 台（vpn_premium <vpn_premium_ip> / vpn_primary <vpn_primary_ip> / vpn_secondary <vpn_secondary_ip> / vpn_hangzhou <vpn_hangzhou_ip>） | sops secrets 经 `community.sops.load_vars` 注入 |
 | hysteria 配置 | `ansible/secrets.yaml`: `VPN_HYSTERIA_CONFIG_YAML` + bing.com crt/key（sops 密文） | 现有字段待执行时解密确认（无 port hopping/obfs） |
-| 旁路由客户端 | `~/.nixfiles/docker/immortalwrt/`（Dockerfile + default.nix） | ImmortalWrt 24.10.4 容器 @192.168.31.2，nikki + mihomo **v1.19.27**（✅ 支持 ports/hop-interval/obfs，内核无需动）；tproxy 模式 |
+| 旁路由客户端 | `~/.nixfiles/docker/immortalwrt/`（Dockerfile + default.nix） | ImmortalWrt 24.10.4 容器（旁路由，内网地址略），nikki + mihomo **v1.19.27**（✅ 支持 ports/hop-interval/obfs，内核无需动）；tproxy 模式 |
 | 桌面客户端 | `~/.nixfiles/home/modules/network/clash-meta/default.nix` | mihomo from unstablePkgs（同参数支持） |
 | 客户端配置源 | `~/.nixfiles/secrets/.config/clash/config-whitelist.enc.yaml`（sops，桌面与旁路由共用一份） | hy2 出站节点待加字段 |
 | sysctl | `roles/vpn_server/tasks/sysctl.yml` + hysteria 模块 activation | ✅ rmem/wmem 64MB 已就位 |
@@ -90,7 +90,7 @@ ignoreClientBandwidth: true   # 拒绝客户端走私 Brutal 带宽，默认走 
 
 - **VPS 侧（3 台）**：worktree 内改完后 `ansible-playbook edge/vpn.yml`（会 restart hysteria/xray，每台断连几秒~1 分钟）
 - **桌面 mihomo**：sops 配置更新后走既有 home-manager `programs.sops.decryptFiles` 流程 + pm2 restart clash-meta（无需改 nix 代码）
-- **旁路由容器（用户拍板：SSH 直改，不重建镜像）**：`ssh root@192.168.31.2` 直接修改 `/etc/nikki/profiles/config.yaml`（hy2 节点加 ports/hop-interval/obfs 字段）→ 重启 nikki（`/etc/init.d/nikki restart`）。配套纪律：`.nixfiles` 里的 enc 源文件仍同步更新（本计划已含），避免日后偶发重建镜像时旧配置回归 |
+- **旁路由容器（用户拍板：SSH 直改，不重建镜像）**：`ssh root@<旁路由-内网地址>` 直接修改 `/etc/nikki/profiles/config.yaml`（hy2 节点加 ports/hop-interval/obfs 字段）→ 重启 nikki（`/etc/init.d/nikki restart`）。配套纪律：`.nixfiles` 里的 enc 源文件仍同步更新（本计划已含），避免日后偶发重建镜像时旧配置回归 |
 
 ### 5. Xray 备线强化（回应：v26.3.27 新特性能否开启）
 
@@ -140,7 +140,7 @@ ignoreClientBandwidth: true   # 拒绝客户端走私 Brutal 带宽，默认走 
 - [x] 5. `~/.nixfiles`：开 worktree 分支 → sops 编辑 `config-whitelist.enc.yaml` 的 hy2 节点 → 重新加密
 - [x] 6. Ansible dry-run（`--check`）过 4 台后正式部署（先 primary 确认再推其余，含 vpn_premium，视当时手感）
 - [x] 7. 桌面端激活新 mihomo 配置（pm2 restart）
-- [x] 8. 旁路由：`ssh root@192.168.31.2` 直改 `/etc/nikki/profiles/config.yaml`（同 enc 内容）+ `/etc/init.d/nikki restart`
+- [x] 8. 旁路由：`ssh root@<旁路由-内网地址>` 直改 `/etc/nikki/profiles/config.yaml`（同 enc 内容）+ `/etc/init.d/nikki restart`
 - [x] 9. 全链验证（见下）
 - [ ] 10. 两仓库分别提 PR（squash 合并原则）；本 plan 文件 mv 进 `.nixfiles` worktree 随 PR 提交，主工作区不残留
 
