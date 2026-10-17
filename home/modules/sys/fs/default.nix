@@ -1,6 +1,7 @@
-{ pkgs, unstablePkgs, ... }:
+{ pkgs, ... }:
 
 {
+  # yazi 已迁移至 ide/yazi 模块(unstable + yaziPlugins 全家桶), sys/fs 不再直接安装
   home.packages = with pkgs; [
     dust # modern du alternative with intuitive output, Github: https://github.com/bootandy/dust
     gdu # fast disk usage analyzer with TUI, Github: https://github.com/dundee/gdu
@@ -9,9 +10,7 @@
     exiftool # used by yazi preview
     chafa # modern terminal graphics, replaces ueberzug/catimg, Github: https://github.com/hpjansson/chafa
     bat # like cat, but supports syntax highlighting, Github: https://github.com/sharkdp/bat
-  ] ++ (with unstablePkgs; [
-    yazi # modern terminal file manager, replaces joshuto, Github: https://github.com/sxyazi/yazi
-  ]);
+  ];
 
   home.sessionVariables = {
     BAT_THEME = "Coldark-Dark"; # used by `bat`
