@@ -73,6 +73,8 @@ in
   #   - 声明(密文)字段覆盖同名本机字段(改密文即生效);
   #   - 本机独有字段(运行时状态/手改)永久保留, 不被 switch 清掉;
   #   - 从密文删除的字段不清理本机残留(声明式只做增量收敛); 数组无 id 概念, 整体被密文侧替换。
+  #   - mnemopi.dbPath 由模块按 $HOME 注入(跨机安全), 密文不含 dbPath;
+  #     merge 语义不变——密文字段覆盖同名本机字段, 本机独有字段保留。
   config.home.activation.mergeOmpConfig = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
     umask 077
     _jq="${pkgs.jq}/bin/jq"
@@ -85,7 +87,9 @@ in
     mkdir -p "$HOME/.omp/agent"
     [ -f "$_t" ] || printf '{}\n' > "$_t"
     if "$_yq" -o=json -I=0 '.' "$_t" > "$_t.nix-merge.tmp" && \
-       "$_jq" --slurpfile decl "$_dec/omp-config.json" '. * $decl[0]' "$_t.nix-merge.tmp" > "$_t.nix-merge2.tmp" && \
+       "$_jq" --arg home "$HOME" --slurpfile decl "$_dec/omp-config.json" \
+         '. * $decl[0] | .mnemopi.dbPath = ($home + "/.mnemopi/mnemopi.db")' \
+         "$_t.nix-merge.tmp" > "$_t.nix-merge2.tmp" && \
        "$_yq" -o=yaml -P '.' "$_t.nix-merge2.tmp" > "$_t.nix-yml.tmp"; then
       mv "$_t.nix-yml.tmp" "$_t"
       rm -f "$_t.nix-merge.tmp" "$_t.nix-merge2.tmp"
