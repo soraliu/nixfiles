@@ -19,11 +19,13 @@ let
   # omp-session-prs.state, 读侧保留 legacy key(pi-session-prs.state)识别 rename 前的旧 session。
   # de77816: session_start 先渲染恢复的快照再跑 gh 查询(transcript URL 候选并行 lookup)——
   # 否则长 transcript 下首个渲染被串行 gh pr view(单个 15s 超时上限)拖到几分钟, resume 后 PR 行迟迟不出现。
+  # 974a2b8: 恢复改读 ctx.sessionManager.getEntries()(内存)而非 getSessionFile()——id 前缀/continue/
+  # picker 式 resume 在 session_start 时 journal 还停在空白 draft 文件, 读文件落空导致快照不恢复。
   omp-session-prs = unstablePkgs.fetchFromGitHub {
     owner = "soraliu";
     repo = "omp-session-prs";
-    rev = "de7781624d5a483fb072f11a7f5da68d0ab8c1fc";
-    hash = "sha256-qvnrCisZs3PUGMMpRX9bffIV0xS+N3ZPmhxPbMFXgZA=";
+    rev = "974a2b86ba463fcfdc91db438ba61ad54fb849da";
+    hash = "sha256-iuOfdEdb2lWDXPzYar88yO6VIqz7ZKx8qDeFP8Cbzdg=";
   };
 
   # omp config.yml 声明母本(sops 密文, 可含私密字段), 构建期解密到 /nix/store, switch 时 merge 进本机文件。
