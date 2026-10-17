@@ -15,12 +15,13 @@ let
   # 空行; belowEditor 容器无 spacer, PR 行紧贴 editor 带。
   # f961586: PR 集合经 pi.appendEntry(custom entry, 不进 LLM)随 session transcript 持久化, resume 时
   # 从最新快照恢复 —— 不依赖 gh/分支/worktree 存活(PR 合并即删 worktree 的流程下尤为重要)。
-  # 插件 id 仍是 pi-session-prs(package.json name), 与本仓 rename 无关。
+  # 7ff116b: 插件 id 与仓库名对齐(package.json name → omp-session-prs); 快照 customType 改
+  # omp-session-prs.state, 读侧保留 legacy key(pi-session-prs.state)识别 rename 前的旧 session。
   omp-session-prs = unstablePkgs.fetchFromGitHub {
     owner = "soraliu";
     repo = "omp-session-prs";
-    rev = "f961586c14a2713a08fd8cacc026348f45e02349";
-    hash = "sha256-deZzFekn6T+kNeCYOb1yBP51mFAaneNBjZvQCWBfXvM=";
+    rev = "7ff116bf2ccbc171ebbcbe5c3e6ad085732e61b4";
+    hash = "sha256-OTvOfjCjwbUC0l144Fll6TTQQtmPvsqg/WLjkkNH72Q=";
   };
 
   # omp config.yml 声明母本(sops 密文, 可含私密字段), 构建期解密到 /nix/store, switch 时 merge 进本机文件。
@@ -55,10 +56,10 @@ in
       "$_omp" plugin install npm:@plannotator/pi-extension </dev/null >/dev/null 2>&1 \
         || echo "Warning: omp plugin install npm:@plannotator/pi-extension failed; install manually after switch" >&2
     fi
-    # omp-session-prs(插件 id pi-session-prs)从 nix store 的 fork checkout 本地安装(link 模式), 依赖 gh CLI 在 PATH
-    if ! "$_omp" plugin list --json </dev/null 2>/dev/null | grep -q "pi-session-prs"; then
+    # omp-session-prs(插件 id 与仓库同名)从 nix store 的 fork checkout 本地安装(link 模式), 依赖 gh CLI 在 PATH
+    if ! "$_omp" plugin list --json </dev/null 2>/dev/null | grep -q "omp-session-prs"; then
       "$_omp" plugin install ${omp-session-prs} </dev/null >/dev/null 2>&1 \
-        || echo "Warning: omp plugin install pi-session-prs failed; install manually after switch" >&2
+        || echo "Warning: omp plugin install omp-session-prs failed; install manually after switch" >&2
     fi
   '';
 
