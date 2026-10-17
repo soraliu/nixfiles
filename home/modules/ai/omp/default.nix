@@ -1,4 +1,4 @@
-{ unstablePkgs, pkgs, lib, secretsUser ? "soraliu", ... }:
+{ unstablePkgs, pkgs, lib, ... }:
 let
   # pi-session-prs fork(marcoskichel 上游, omp-compat 分支): PR 行经 setWidget(aboveEditor)
   # 渲染在 statusline 上方一行(紧贴 session-title 行), 按 state 分组(●/✔/✕);
@@ -15,7 +15,9 @@ let
   };
 
   # omp config.yml 声明母本(sops 密文, 可含私密字段), 构建期解密到 /nix/store, switch 时 merge 进本机文件。
-  # clawbot 等其他 secretsUser 无 age 密钥走不到这里 —— mkIf 惰性, 解密 derivation 不会被求值。
+  # ide 系与 clawbot 共用同一把 age 密钥(pre-init-age 从 WebDAV 恢复到 /tmp/.age/keys.txt), 故共用同一密文;
+  # agent-models 按 user 分家是因为它管的是 apiKey 目录, omp config 无 per-user 数据。将来要分家再挪
+  # secrets/users/<user>/ 另建密文。前提: 构建机须先跑过 pre-init-age, 否则本 derivation 求值即失败。
   _ompConfigDec = pkgs.callPackage ../../../../pkgs/sops/decrypt.nix {
     inherit pkgs;
     files = [
@@ -54,8 +56,7 @@ in
   #   - 声明(密文)字段覆盖同名本机字段(改密文即生效);
   #   - 本机独有字段(运行时状态/手改)永久保留, 不被 switch 清掉;
   #   - 从密文删除的字段不清理本机残留(声明式只做增量收敛); 数组无 id 概念, 整体被密文侧替换。
-  config.home.activation.mergeOmpConfig =
-    lib.mkIf (secretsUser == "soraliu") (lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+  config.home.activation.mergeOmpConfig = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
       umask 077
       _jq="${pkgs.jq}/bin/jq"
       _yq="${pkgs.yq-go}/bin/yq"
@@ -75,27 +76,5 @@ in
         rm -f "$_t.nix-merge.tmp" "$_t.nix-merge2.tmp" "$_t.nix-yml.tmp"
         echo "omp: WARN: $_t 无法解析, 保持原文件不变" >&2
       fi
-    '');
-
-  # clawbot 等无 age 密钥的环境: 构建期解密不可用, 保留旧的静态直写(内容与密文母本同源, 演进以密文为准)。
-  config.home.file = lib.mkIf (secretsUser != "soraliu") {
-    ".omp/agent/config.yml".text = ''
-    modelRoles:
-      default: 1xtoken/glm-5.3
-    symbolPreset: unicode
-    composer:
-      shape: band
-    theme:
-      dark: titanium
-    setupVersion: 2
-    task:
-      eager: preferred
-    terminal:
-      showProgress: false
-    statusLine:
-      preset: full
-    dev:
-      autoqaConsent: granted
   '';
-  };
 }
