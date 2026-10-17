@@ -21,11 +21,14 @@ let
   # 否则长 transcript 下首个渲染被串行 gh pr view(单个 15s 超时上限)拖到几分钟, resume 后 PR 行迟迟不出现。
   # 974a2b8: 恢复改读 ctx.sessionManager.getEntries()(内存)而非 getSessionFile()——id 前缀/continue/
   # picker 式 resume 在 session_start 时 journal 还停在空白 draft 文件, 读文件落空导致快照不恢复。
+  # 004e410: 恢复逻辑同时挂 omp 的 session_switch 事件 —— picker/continue 链路 session_start 早于目标
+  # session 加载完成(TUI `/resume` 选择器实测), 切换完成后重跑 bootstrap 才能真正恢复; upstream pi 0.84
+  # 无此事件且 on() 是宽松注册, 双宿主安全。
   omp-session-prs = unstablePkgs.fetchFromGitHub {
     owner = "soraliu";
     repo = "omp-session-prs";
-    rev = "974a2b86ba463fcfdc91db438ba61ad54fb849da";
-    hash = "sha256-iuOfdEdb2lWDXPzYar88yO6VIqz7ZKx8qDeFP8Cbzdg=";
+    rev = "004e41066ccb1ca1553e1ef7d9c5a311ea9b4f37";
+    hash = "sha256-7HB6bcEO/xoSia0wVrpKsaITYMBy5l3SoznMLu/N/Qs=";
   };
 
   # omp config.yml 声明母本(sops 密文, 可含私密字段), 构建期解密到 /nix/store, switch 时 merge 进本机文件。
