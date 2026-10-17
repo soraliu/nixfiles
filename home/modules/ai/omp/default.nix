@@ -4,12 +4,14 @@ let
   # 渲染在 statusline 上方一行(紧贴 session-title 行), 按 state 分组(●/✔/✕);
   # 终端支持时 PR 编号为 OSC 8 可点击链接(herdr 内 ⌘+点击), 否则降级纯文本; /prs 选开浏览器; /prs list
   # 在 transcript 输出 markdown 链接列表。fork 另含 omp 兼容: agent_end 事件名 + 本地 OSC8 实现。
-  # 上游 npm 包未发布 omp 适配, 故 pin 到 fork commit 的 git checkout 本地安装。
+  # 93df0fd: herdr 会话(HERDR_ENV/HERDR_*_ID)显式视为可点击 —— 安装的插件从自己的
+  # node_modules 解析上游 pi-tui, 其静态探测看不见 herdr(隐藏外层终端)误报 false;
+  # herdr 实际自渲染 OSC 8 并 Ctrl+点击打开。
   pi-session-prs = unstablePkgs.fetchFromGitHub {
     owner = "soraliu";
     repo = "pi-session-prs";
-    rev = "90e9248d2f02340349d907c2e9cbd31a63437df3";
-    hash = "sha256-DPEQCnpT1eub16qS3VKON8XX6og3hVmAu3naZTrSTXI=";
+    rev = "93df0fd8b8f957f66c9d8998e39062ad4dca1385";
+    hash = "sha256-6zorkCge4Ei4ePXyo0nYkk/HCeUZIRtHY/pJzf8fsII=";
   };
 in
 {
