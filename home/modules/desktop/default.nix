@@ -9,7 +9,7 @@ let
   isDarwin = system == "x86_64-darwin" || system == "aarch64-darwin";
 in
 {
-  imports = [ ./terminal.nix ./fcitx5-rime.nix ./rofi.nix ];
+  imports = [ ./default-apps.nix ./fcitx5-rime.nix ./rofi.nix ];
 
   config = lib.mkIf (!isDarwin) {
     home.packages = [
@@ -27,5 +27,8 @@ in
       })
     ];
     fonts.fontconfig.enable = true;
+
+    # 非 NixOS 上的归一化(XDG 目录/GTK module path 等), HM 官方 genericLinux target
+    targets.genericLinux.enable = true;
   };
 }
