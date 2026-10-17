@@ -18,7 +18,7 @@ in
     i18n.inputMethod = {
       enable = true;
       type = "fcitx5";
-      fcitx5.addons = with pkgs; [ fcitx5-rime fcitx5-configtool ];
+      fcitx5.addons = with pkgs; [ fcitx5-rime qt6Packages.fcitx5-configtool ];
       # profile 里显式把 rime 加入输入法组(不写则组里只有默认键盘, rime 不可选)
       fcitx5.settings.inputMethod = {
         GroupOrder."0" = "Default";
