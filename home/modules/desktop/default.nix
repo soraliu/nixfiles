@@ -9,6 +9,8 @@ let
   isDarwin = system == "x86_64-darwin" || system == "aarch64-darwin";
 in
 {
+  imports = [ ./alacritty.nix ];
+
   config = lib.mkIf (!isDarwin) {
     home.packages = [
       # 等宽字体, 与 systems/darwin.nix fonts.packages 同源同款
