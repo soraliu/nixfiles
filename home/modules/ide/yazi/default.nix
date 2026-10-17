@@ -34,7 +34,20 @@ in {
         # [UI] 全边框(圆角)
         full-border = unstablePkgs.yaziPlugins.full-border;
         # [UI] header/status 双行自定义
-        yatline = unstablePkgs.yaziPlugins.yatline;
+        # nixpkgs 还停在 v0.5.0: 该版本 main.lua 调 File:icon()/cwd.is_search 等
+        # yazi v26 已废弃的 API, 启动后每次重绘刷 "Deprecated API" 通知。
+        # 上游 PR#80 (dc44b73) 已全部修复, 待 nixpkgs bump yatline 后移除此 pin。
+        yatline = unstablePkgs.yaziPlugins.yatline.overrideAttrs (old: {
+          version = "0-unstable-2026-10-06";
+          src = pkgs.fetchFromGitHub {
+            owner = "imsi32";
+            repo = "yatline.yazi";
+            rev = "dc44b737791c07a8e2de54d8838cfe304853d780";
+            hash = "sha256-U7MAZSc0iPiRvLZM8tKbNd749pblarB1Y48lH13uLuU=";
+          };
+          # 原包 meta.changelog 引用 src.tag, rev pin 后不存在, 一并覆盖
+          meta = old.meta // {changelog = "https://github.com/imsi32/yatline.yazi/commits/main";};
+        });
         # [git] 文件列表 linemode 显示 git 变更状态
         git = unstablePkgs.yaziPlugins.git;
         # [git] g i 打开 lazygit(本体由 ide/git 模块提供)
