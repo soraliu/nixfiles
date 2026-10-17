@@ -9,7 +9,7 @@ let
   isDarwin = system == "x86_64-darwin" || system == "aarch64-darwin";
 in
 {
-  imports = [ ./alacritty.nix ./fcitx5-rime.nix ./rofi.nix ];
+  imports = [ ./terminal.nix ./fcitx5-rime.nix ./rofi.nix ];
 
   config = lib.mkIf (!isDarwin) {
     home.packages = [
@@ -19,10 +19,11 @@ in
       unstablePkgs.noto-fonts-cjk-sans
       # 浏览器(盒上原本一个都没有, 即"浏览器打不开"根因); 走 unstable 因为 google-chrome
       # 的 src 是 dl.google.com 固定版本 .deb, release 旧 pin 会 404; --no-sandbox 因为
-      # 桌面会话 root 登录(xrdp) + nix store chrome-sandbox 无法 setuid(crbug.com/638180),
-      # 经上游 commandLineArgs 参数注入
+      # 桌面会话 root 登录(xrdp) + nix store chrome-sandbox 无法 setuid(crbug.com/638180);
+      # --disable-gpu 因为云 VM 无 /dev/dri/renderD128, nix mesa 客户端从 server IGLX
+      # 拿不到 GLX fbconfig, 默认 GPU 初始化失败 chrome 起不来, xrdp 下软渲染反正无加速
       (unstablePkgs.google-chrome.override {
-        commandLineArgs = "--no-sandbox";
+        commandLineArgs = "--no-sandbox --disable-gpu";
       })
     ];
     fonts.fontconfig.enable = true;
