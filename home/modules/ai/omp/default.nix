@@ -1,4 +1,4 @@
-{ unstablePkgs, lib, ... }:
+{ unstablePkgs, pkgs, lib, secretsUser ? "soraliu", ... }:
 let
   # pi-session-prs fork(marcoskichel 上游, omp-compat 分支): PR 行经 setWidget(aboveEditor)
   # 渲染在 statusline 上方一行(紧贴 session-title 行), 按 state 分组(●/✔/✕);
@@ -12,6 +12,15 @@ let
     repo = "pi-session-prs";
     rev = "93df0fd8b8f957f66c9d8998e39062ad4dca1385";
     hash = "sha256-6zorkCge4Ei4ePXyo0nYkk/HCeUZIRtHY/pJzf8fsII=";
+  };
+
+  # omp config.yml 声明母本(sops 密文, 可含私密字段), 构建期解密到 /nix/store, switch 时 merge 进本机文件。
+  # clawbot 等其他 secretsUser 无 age 密钥走不到这里 —— mkIf 惰性, 解密 derivation 不会被求值。
+  _ompConfigDec = pkgs.callPackage ../../../../pkgs/sops/decrypt.nix {
+    inherit pkgs;
+    files = [
+      { from = "secrets/.config/ai/omp-config.enc.json"; to = "omp-config.json"; }
+    ];
   };
 in
 {
@@ -39,10 +48,38 @@ in
     fi
   '';
 
-  # ~/.omp/agent/config.yml: omp 主配置; 全量为静态偏好(无运行时数据),
-  # 声明式管理, 每次以 home-manager 版本为准(手改会被 switch 覆盖)。
-  # agent-models 模块只合并 models.yml, 不触碰本文件。
-  config.home.file.".omp/agent/config.yml".text = ''
+  # ~/.omp/agent/config.yml: omp 主配置(omp 运行时会回写, 如主题/UI 偏好), 不再静态全量覆写;
+  # 声明母本 = secrets/.config/ai/omp-config.enc.json, switch 时 merge 进本机已有配置,
+  # 逻辑与 agent-models 同款(其只管 models.yml, 本文件由本模块负责):
+  #   - 声明(密文)字段覆盖同名本机字段(改密文即生效);
+  #   - 本机独有字段(运行时状态/手改)永久保留, 不被 switch 清掉;
+  #   - 从密文删除的字段不清理本机残留(声明式只做增量收敛); 数组无 id 概念, 整体被密文侧替换。
+  config.home.activation.mergeOmpConfig =
+    lib.mkIf (secretsUser == "soraliu") (lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+      umask 077
+      _jq="${pkgs.jq}/bin/jq"
+      _yq="${pkgs.yq-go}/bin/yq"
+      _dec="${_ompConfigDec}"
+
+      # YAML → JSON → jq '*' deep-merge(嵌套对象递归, 密文侧优先) → YAML;
+      # 首次 switch 会重排 store 链接时代的手写排版, 之后字节级幂等。
+      _t="$HOME/.omp/agent/config.yml"
+      mkdir -p "$HOME/.omp/agent"
+      [ -f "$_t" ] || printf '{}\n' > "$_t"
+      if "$_yq" -o=json -I=0 '.' "$_t" > "$_t.nix-merge.tmp" && \
+         "$_jq" --slurpfile decl "$_dec/omp-config.json" '. * $decl[0]' "$_t.nix-merge.tmp" > "$_t.nix-merge2.tmp" && \
+         "$_yq" -o=yaml -P '.' "$_t.nix-merge2.tmp" > "$_t.nix-yml.tmp"; then
+        mv "$_t.nix-yml.tmp" "$_t"
+        rm -f "$_t.nix-merge.tmp" "$_t.nix-merge2.tmp"
+      else
+        rm -f "$_t.nix-merge.tmp" "$_t.nix-merge2.tmp" "$_t.nix-yml.tmp"
+        echo "omp: WARN: $_t 无法解析, 保持原文件不变" >&2
+      fi
+    '');
+
+  # clawbot 等无 age 密钥的环境: 构建期解密不可用, 保留旧的静态直写(内容与密文母本同源, 演进以密文为准)。
+  config.home.file = lib.mkIf (secretsUser != "soraliu") {
+    ".omp/agent/config.yml".text = ''
     modelRoles:
       default: 1xtoken/glm-5.3
     symbolPreset: unicode
@@ -60,4 +97,5 @@ in
     dev:
       autoqaConsent: granted
   '';
+  };
 }
