@@ -1,6 +1,6 @@
 # home/modules/desktop
 
-clawbot 的 Linux 桌面盒（192.168.31.105，Ubuntu 24.04 + XFCE + xrdp）的桌面环境（DE）通用配置：字体、浏览器、终端、输入法。只由 `home/profiles/clawbot.nix` 引用，其余 profile 不导入；darwin 侧对应软件走 `../modules/darwin/apps/`。
+clawbot 的 Linux 桌面盒（Ubuntu 24.04 + XFCE + xrdp，机器地址见 `~/.ssh/config` 或内部运维记录，不入库）的桌面环境（DE）通用配置：字体、浏览器、终端、输入法。只由 `home/profiles/clawbot.nix` 引用，其余 profile 不导入；darwin 侧对应软件走 `../modules/darwin/apps/`。
 
 ## 「检测到桌面环境」的落地
 
