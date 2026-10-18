@@ -3,6 +3,11 @@
 let
   podmanBin = "${pkgs.podman}/bin/podman";
 
+  # machine 资源配额: applehv 下 guest RAM 会被 vfkit 整块 pinned 在宿主物理内存,
+  # guest 闲置也拿不回来, 配额必须贴实际负载给 (postgres + buildkit + sandbox ~4G 富余)。
+  # init 传初值, 已存在的 machine 在下次停止后由 machine set 收敛到这里的声明值。
+  machineMemoryMiB = 8192;
+  machineCpus = 4;
   # init + start 合并到 launchd agent 里执行, 不放在 home.activation:
   # 1) launchd agent 以目标用户身份运行, 环境干净, 不会阻塞 switch 关键路径.
   # 2) activation 里跑 podman machine 会把 switch 耦合到 VM 启动成败 (downloads 500MB, VM boot 风险).
@@ -34,7 +39,7 @@ let
 
     if [ -z "$state" ]; then
       echo "[podman-machine-up] machine 不存在, init + start" >&2
-      ${podmanBin} machine init || {
+      ${podmanBin} machine init --memory ${toString machineMemoryMiB} --cpus ${toString machineCpus} || {
         echo "[podman-machine-up] machine init 失败" >&2
         exit 1
       }
@@ -46,7 +51,14 @@ let
       exit 0
     fi
 
-    echo "[podman-machine-up] machine 存在但已停止, 执行 start" >&2
+    # 已存在且已停止: 先用 machine set 把配额收敛到声明值再启动。
+    # set 幂等且仅对停止状态的 machine 生效 (本分支恰好保证); 失败只告警不阻断启动,
+    # 避免 podman 版本差异导致 VM 起不来。
+    echo "[podman-machine-up] machine 存在但已停止, 收敛配额 (${toString machineMemoryMiB}MiB/${toString machineCpus}C) 后启动" >&2
+    ${podmanBin} machine set --memory ${toString machineMemoryMiB} --cpus ${toString machineCpus} \
+      || echo "[podman-machine-up] machine set 失败, 按现有配额启动" >&2
+
+    echo "[podman-machine-up] 执行 start" >&2
     exec ${podmanBin} machine start
   '';
 in
