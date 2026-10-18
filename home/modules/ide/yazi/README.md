@@ -12,6 +12,30 @@ just update-unstable-pkg && just switch-home ide   # darwin: just switch-darwin 
 
 HM 在 zsh 注入 `yy` 函数(cd-on-quit wrapper):`yy` 启动,退出后 shell 自动 cd 到最后浏览的目录。直接敲 `yazi` 则不带这个行为。
 
+## SSH remote(sftp VFS)
+
+yazi v25.12.29 起原生支持 remote 文件管理(内置 `sftp://` scheme)。本模块把声明母本放在
+sops 密文 `secrets/.config/yazi/vfs.enc.toml`,构建期解密进 `/nix/store`,switch 时经
+`yazi-vfs-merge`(tomlkit)merge 到本机 `~/.config/yazi/vfs.toml`(600):
+
+```sh
+yazi sftp://lan-105    # 进入密文里声明的 [sftp.lan-105]
+```
+
+远端目录 `y` yank → 本地 `p` 即下载,反向即上传;`w` 任务面板看进度。merge 语义与 omp
+config 相同:密文字段覆盖同名本机字段,本机独有 host 条目/手改永久保留,密文删除不清残留。
+
+新增/编辑 remote(改完 switch 生效):
+
+```sh
+SOPS_AGE_KEY_FILE=/tmp/.age/keys.txt sops secrets/.config/yazi/vfs.enc.toml
+just switch-home ide
+```
+
+局限:yazi 不读 `~/.ssh/config`,每台机器都要在密文里写 `host/user/port/key_file`(agent
+认证默认走 `$SSH_AUTH_SOCK`,本机 agent 无 key 故显式 `key_file`);remote 侧 `search`
+暂不可用(上游 [#3395](https://github.com/sxyazi/yazi/issues/3395))。
+
 ## 键位速查(本模块覆盖项)
 
 | 键 | 动作 | 插件 |
