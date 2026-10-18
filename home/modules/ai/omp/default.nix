@@ -104,13 +104,4 @@ in
       echo "omp: WARN: $_t 无法解析, 保持原文件不变" >&2
     fi
   '';
-
-  # ~/.mnemopi(omp/mnemopi 记忆数据根, dbPath 见上方 activation 注入) 走 linker 与 gdrive 同步,
-  # 同 karabiner/raycast/rime 一套基础设施: 非 mirror 机器(ide 系)symlink 到 Google Drive 客户端
-  # 目录双向随客户端走; mirror 机器(ide-mirror/ide-mobile/clawbot)是 rclone copy 单向下行, 本地
-  # 写入会被远端覆盖 —— 多机写场景以一台非 mirror 机器为主写机, 其余只读。
-  config.programs.linker.links = [{
-    source = "gdrive:Sync/Config/Darwin/.mnemopi";
-    link = config.home.homeDirectory + "/.mnemopi";
-  }];
 }
