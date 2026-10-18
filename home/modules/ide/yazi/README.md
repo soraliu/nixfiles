@@ -28,7 +28,7 @@ config 相同:密文字段覆盖同名本机字段,本机独有 host 条目/手�
 新增/编辑 remote(改完 switch 生效):
 
 ```sh
-SOPS_AGE_KEY_FILE=/tmp/.age/keys.txt sops secrets/.config/yazi/vfs.enc.toml
+sops secrets/.config/yazi/vfs.enc.toml
 just switch-home ide
 ```
 
@@ -38,18 +38,18 @@ just switch-home ide
 
 ## 键位速查(本模块覆盖项)
 
-| 键 | 动作 | 插件 |
-|---|---|---|
-| `l` | 进入目录 / 打开文件 | smart-enter |
-| `p` | 粘贴到 hover 目录或当前目录 | smart-paste |
-| `F` | 连续过滤 | smart-filter |
-| `T` | 预览面板最大化 / 还原 | toggle-pane |
-| `C` | 压缩选中文件 | ouch |
-| `g` `i` | 打开 lazygit | lazygit |
-| `u` `a` / `u` `g` / `u` `G` | 加书签 / 按键跳转 / fzf 跳转 | yamb |
-| `u` `d` / `u` `r` / `u` `A` | 删书签 / 重命名 / 清空 | yamb |
-| `+` / `-` | 预览图放大 / 缩小 | zoom |
-| `b` `a` / `b` `r` | macOS 标记 / 取消标记(仅 darwin) | mactag |
+| 键                          | 动作                             | 插件         |
+| --------------------------- | -------------------------------- | ------------ |
+| `l`                         | 进入目录 / 打开文件              | smart-enter  |
+| `p`                         | 粘贴到 hover 目录或当前目录      | smart-paste  |
+| `F`                         | 连续过滤                         | smart-filter |
+| `T`                         | 预览面板最大化 / 还原            | toggle-pane  |
+| `C`                         | 压缩选中文件                     | ouch         |
+| `g` `i`                     | 打开 lazygit                     | lazygit      |
+| `u` `a` / `u` `g` / `u` `G` | 加书签 / 按键跳转 / fzf 跳转     | yamb         |
+| `u` `d` / `u` `r` / `u` `A` | 删书签 / 重命名 / 清空           | yamb         |
+| `+` / `-`                   | 预览图放大 / 缩小                | zoom         |
+| `b` `a` / `b` `r`           | macOS 标记 / 取消标记(仅 darwin) | mactag       |
 
 除上述前缀键外其余均为 yazi 原生默认(`h/j/k/l` 导航、`y` 复制、`x` 剪切、`Space` 选择、`/` 搜索、`z` zoxide 跳转等)。
 
