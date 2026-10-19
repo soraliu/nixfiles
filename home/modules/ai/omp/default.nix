@@ -34,6 +34,17 @@ let
     hash = "sha256-b8FPxgAgBhjeBZoVaRxMSf5Ibv9n8EWPfAU1s196d3Q=";
   };
 
+  # omp-editor-stash(本机移植的 pi-powerline-footer Editor Stash 独立版): Alt+S 编辑器草稿
+  # stash/restore/update toggle + 状态条 stash 指示 + /stash-history 选择器(持久化 ≤12 条,
+  # ~/.omp/agent/editor-stash/stash-history.json); Ctrl+Alt+H 同绑定选择器。会话边界挂
+  # session_start + omp 专属 session_switch(pi 侧宽松注册无害), /new 后 active stash 正确清空。
+  omp-editor-stash = unstablePkgs.fetchFromGitHub {
+    owner = "soraliu";
+    repo = "omp-editor-stash";
+    rev = "a835a6f7fbdd6dc4861818de5d0d913afc8bcf01";
+    hash = "sha256-MrKvK8+kkawfzN3Xnqxa+Yj4EyRZ0twVmnij/NVWwEY=";
+  };
+
   # omp config.yml 声明母本(sops 密文, 可含私密字段), 构建期解密到 /nix/store, switch 时 merge 进本机文件。
   # ide 系与 clawbot 共用同一把 age 密钥(pre-init-age 从 WebDAV 恢复到 /tmp/.age/keys.txt), 故共用同一密文;
   # agent-models 按 user 分家是因为它管的是 apiKey 目录, omp config 无 per-user 数据。将来要分家再挪
@@ -70,6 +81,12 @@ in
     if ! "$_omp" plugin list --json </dev/null 2>/dev/null | grep -q "omp-session-prs"; then
       "$_omp" plugin install ${omp-session-prs} </dev/null >/dev/null 2>&1 \
         || echo "Warning: omp plugin install omp-session-prs failed; install manually after switch" >&2
+    fi
+
+    # omp-editor-stash(插件 id 与仓库同名)从 nix store 安装, 与 omp-session-prs 同款 link 模式
+    if ! "$_omp" plugin list --json </dev/null 2>/dev/null | grep -q "omp-editor-stash"; then
+      "$_omp" plugin install ${omp-editor-stash} </dev/null >/dev/null 2>&1 \
+        || echo "Warning: omp plugin install omp-editor-stash failed; install manually after switch" >&2
     fi
   '';
 
