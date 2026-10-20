@@ -22,6 +22,7 @@ in
     ../modules/ai/imagegen
     ../modules/ai/pi
     ../modules/ai/omp
+    ../modules/ai/plannotator
     ../modules/ai/agent-models
     ../modules/ai/context7
 
@@ -30,7 +31,6 @@ in
     ../modules/ide/neovim
     ../modules/ide/zellij
     ../modules/ide/herdr
-    ../modules/ide/yazi
     ../modules/ide/search
     ../modules/ide/copilot.nix
     ../modules/ide/iac.nix

@@ -17,6 +17,7 @@ in
     ../modules/ai/codex
     ../modules/ai/pi
     ../modules/ai/omp
+    ../modules/ai/plannotator
 
     ../modules/ide/git
     ../modules/ide/zsh
