@@ -24,6 +24,7 @@ in
     ../modules/ide/neovim
     ../modules/ide/zellij
     ../modules/ide/herdr
+    ../modules/ide/yazi
     ../modules/ide/search/fzf
     ../modules/ide/search/ripgrep
     ../modules/ide/copilot.nix
