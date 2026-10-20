@@ -22,6 +22,7 @@ in
     ../modules/ai/imagegen
     ../modules/ai/pi
     ../modules/ai/omp
+    ../modules/ai/plannotator
     ../modules/ai/agent-models
     ../modules/ai/context7
 

@@ -69,15 +69,12 @@ in
   ];
 
   # omp 用户级扩展经 omp plugin install 初始化(幂等:缺才装;失败仅告警不阻断 switch)。
-  # 手动恢复: omp plugin install npm:@plannotator/pi-extension
+  # (plannotator 已改走 CLI + Agent Skills: ../modules/ai/plannotator; 已装的 pi-extension
+  #  插件一次性手动卸载, nix 不做第三方状态反向收敛)
+  # omp-session-prs(插件 id 与仓库同名)从 nix store 的 fork checkout 本地安装(link 模式), 依赖 gh CLI 在 PATH
   config.home.activation.installOmpPlugins = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
     _omp="${unstablePkgs.omp}/bin/omp"
     export PATH="''${HOME_PROFILE_DIRECTORY:-$HOME/.nix-profile}/bin:$PATH"
-    if ! "$_omp" plugin list --json </dev/null 2>/dev/null | grep -q "plannotator"; then
-      "$_omp" plugin install npm:@plannotator/pi-extension </dev/null >/dev/null 2>&1 \
-        || echo "Warning: omp plugin install npm:@plannotator/pi-extension failed; install manually after switch" >&2
-    fi
-    # omp-session-prs(插件 id 与仓库同名)从 nix store 的 fork checkout 本地安装(link 模式), 依赖 gh CLI 在 PATH
     if ! "$_omp" plugin list --json </dev/null 2>/dev/null | grep -q "omp-session-prs"; then
       "$_omp" plugin install ${omp-session-prs} </dev/null >/dev/null 2>&1 \
         || echo "Warning: omp plugin install omp-session-prs failed; install manually after switch" >&2
