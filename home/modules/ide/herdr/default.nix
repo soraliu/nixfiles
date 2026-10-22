@@ -178,16 +178,20 @@ in lib.mkMerge [
     fi
   '';
 
-  # 链接自建 herdr-agent-notifier 插件(soraliu/herdr-agent-notifier 本地仓库):
+  # 安装自建 herdr-agent-notifier 插件(soraliu/herdr-agent-notifier,GitHub 托管):
   # agent done/blocked 时写入常驻 strip pane(替代 5s 即逝的内置 toast),Enter 跳转。
-  # 本地 link 型插件:代码在 ~/Github/herdr-agent-notifier,activation 只做幂等 link 刷新;
-  # 仓库缺失时告警跳过,不阻断 switch。node 由 ide profile 提供。
-  home.activation.linkHerdrAgentNotifierPlugin = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+  # GitHub-managed 安装:herdr 克隆到 ~/.config/herdr/plugins/github/<id>-<hash>/,
+  # 其他机器 switch 即得,不依赖本地 ~/Github 检出。幂等判据「github:soraliu/... 源已注册」;
+  # 升级插件:重跑 herdr plugin install soraliu/herdr-agent-notifier(替换 managed checkout)。
+  # 本地开发路径:unlink 后 herdr plugin link ~/Github/herdr-agent-notifier。
+  # node 由 volta/ide 提供;失败不阻断 switch。
+  home.activation.installHerdrAgentNotifierPlugin = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
     _herdr="${unstablePkgs.herdr}/bin/herdr"
-    if [ -f "$HOME/Github/herdr-agent-notifier/herdr-plugin.toml" ]; then
-      "$_herdr" plugin link "$HOME/Github/herdr-agent-notifier" >/dev/null 2>&1 || true
-    else
-      echo "Warning: ~/Github/herdr-agent-notifier missing; agent-notifier plugin not linked" >&2
+    if ! "$_herdr" plugin list </dev/null 2>/dev/null | grep -q "github:soraliu/herdr-agent-notifier"; then
+      "$_herdr" plugin unlink soraliu.agent-notifier >/dev/null 2>&1 || true
+      if ! "$_herdr" plugin install soraliu/herdr-agent-notifier --yes </dev/null >/dev/null 2>&1; then
+        echo "Warning: herdr plugin install soraliu/herdr-agent-notifier failed; agent-notifier not installed" >&2
+      fi
     fi
   '';
   } # end main set
