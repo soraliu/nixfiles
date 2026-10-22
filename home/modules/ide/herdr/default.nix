@@ -177,6 +177,19 @@ in lib.mkMerge [
       ln -sfn "$_bin" "$HOME/.local/bin/herdr-palette" 2>/dev/null || true
     fi
   '';
+
+  # 链接自建 herdr-agent-notifier 插件(soraliu/herdr-agent-notifier 本地仓库):
+  # agent done/blocked 时写入常驻 strip pane(替代 5s 即逝的内置 toast),Enter 跳转。
+  # 本地 link 型插件:代码在 ~/Github/herdr-agent-notifier,activation 只做幂等 link 刷新;
+  # 仓库缺失时告警跳过,不阻断 switch。node 由 ide profile 提供。
+  home.activation.linkHerdrAgentNotifierPlugin = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+    _herdr="${unstablePkgs.herdr}/bin/herdr"
+    if [ -f "$HOME/Github/herdr-agent-notifier/herdr-plugin.toml" ]; then
+      "$_herdr" plugin link "$HOME/Github/herdr-agent-notifier" >/dev/null 2>&1 || true
+    else
+      echo "Warning: ~/Github/herdr-agent-notifier missing; agent-notifier plugin not linked" >&2
+    fi
+  '';
   } # end main set
 
   (lib.mkIf (secretsUser == "soraliu") {
