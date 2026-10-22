@@ -218,5 +218,5 @@ tabs = "alt"                                               # → Alt+1..9 切标
   3. working→done 两事件可 40ms 内并发触发两个 hook 进程,读-改-写竞态会丢 done —— `mutateState` 用 mkdir 原子锁 + 5s 陈旧接管串行化(20 并发压测 seq 无丢失)。
   4. pane spawn env 不含 `HERDR_PLUGIN_STATE_DIR` 之外的目录提示;状态目录实际是 `~/.local/state/herdr/plugins/<id>`(XDG_STATE_HOME 语义),fallback 已按此实现。
 - **activation 接入**:`home.activation.installHerdrAgentNotifierPlugin`(entryAfter writeBoundary)幂等安装:判据「`github:soraliu/herdr-agent-notifier` 源已注册」,未注册(含旧 local link)则 unlink 后 `plugin install soraliu/herdr-agent-notifier --yes </dev/null`;其他机器 switch 即得,无需本地检出。升级插件:重跑一次 install(替换 managed checkout);本地开发:unlink 后 `plugin link ~/Github/herdr-agent-notifier`。node 由 volta 提供(pane spawn 经 PATH 解析)。
-- **strip 键位**:Enter/1-9 跳转+清除、↑/↓ 选择、`d` 清除当前、`D` 清空、`q`/Esc 退出(退出后需手动重开或等下次事件;暂无自动重开机制 —— 插件 hook 无法直接操作 pane,需 server 侧配合,见插件 README TODO)。
+- **strip 自动打开(插件 0.2.0,commit 5bdbf73+)**:done/blocked 时 hook 经 socket 调 `plugin.pane.open`(split 下方、`focus:false` 不抢焦点)自动打开 strip;`state.strip_pane_id` 存活则跳过(异步锁串行化并发 done,不会重复开)。`q`/Esc 退出后,下一个 done/blocked 事件自动重开。strip 键位:Enter/1-9 跳转+清除、↑/↓ 选择、`d` 清除当前、`D` 清空。初始版本(0.1.0)的缺口:只写状态不开 pane,常驻面从未出现 —— 已修复。
 - **内置 toast 保留**:`ui.toast.delivery="herdr"` 不变 —— strip 是常驻兜底,toast 仍是即时提示(点击跳转对可见 toast 依然有效)。两者共存无冲突。
