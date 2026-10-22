@@ -207,3 +207,16 @@ tabs = "alt"                                               # → Alt+1..9 切标
   3. 软链二进制到交互 PATH:`ln -sfn <binary> ~/.local/bin/herdr-palette`。`~/.local/bin` 已在交互 / 服务器 PATH(由 `home/modules/sys/shell/default.nix` 注入)、且未被 HM 内容托管(不会被 reconcile 清掌)→ herdr 服务器 spawn 时能找到 `herdr-palette`。
   - 自愈旧坏状(根 manifest 注册、spawn 报 PATH)：merge 一次 `switch-darwin soraliu` 即修复(2/3 步每次 switch 刷新);`herdr-palette` 不在 nixpkgs(stable/unstable 均无)放暂时只能走 cargo 构建 + 软链。
   - 需 cargo(ide profile 的 rust 模块已带)+ 联网;首次构建分钟级,之后瞬时;失败不阻断 switch(`|| true`)。交互验证:`alt+p` 应打开 Palette 覆盖层;手动排查见 `home/modules/ide/herdr/default.nix` 注释。
+
+## 后续修订（agent 完成通知常驻 strip 插件）
+
+- **问题**:内置 in-app toast(`ui.toast.delivery="herdr"`)停留时长硬编码(Finished 5s / NeedsAttention 8s,`notification_duration()`),到点自动消失;用户赶到时点击已无目标,`prefix+o`(`open_notification_target`)同样只对**当前可见** toast 生效,没有"最近通知"记忆。0.9.3→0.9.5 上游均无 duration 配置。
+- **方案**:自建插件 [herdr-agent-notifier](https://github.com/soraliu/herdr-agent-notifier)(本地仓库 `~/Github/herdr-agent-notifier`,非 GitHub 安装):`[[events]] on="pane.agent_status_changed"` 钩子 + 常驻 `[[panes]] strip`(split 下方条状 pane)。done/blocked 写入 `~/.local/state/herdr/plugins/soraliu.agent-notifier/notifications.json`;strip 500ms 轮询渲染;Enter/数字键 `pane.focus` 跳转并清条目。永不自动消失。
+- **踩坑记录**(上游 0.9.3 插件 API,均已在插件内修复):
+  1. hook 收到的 `HERDR_PLUGIN_EVENT_JSON` 是**订阅流 shape**:`event` 字段为下划线形式 `pane_agent_status_changed` 且 `data` 内嵌 `type` 字段 —— 不是文档 EventEnvelope 的点号形式;解析两种都认。
+  2. agent label 要从事件 `data.agent` 取(hook context 只有 pane/workspace);done 事件的 `agent_status` 判定依赖 pane seen 语义(焦点在该 tab 时完成呈现 idle 不入列 —— 用户在看,无需提醒,合理)。
+  3. working→done 两事件可 40ms 内并发触发两个 hook 进程,读-改-写竞态会丢 done —— `mutateState` 用 mkdir 原子锁 + 5s 陈旧接管串行化(20 并发压测 seq 无丢失)。
+  4. pane spawn env 不含 `HERDR_PLUGIN_STATE_DIR` 之外的目录提示;状态目录实际是 `~/.local/state/herdr/plugins/<id>`(XDG_STATE_HOME 语义),fallback 已按此实现。
+- **activation 接入**:`home.activation.linkHerdrAgentNotifierPlugin`(entryAfter writeBoundary)幂等 `herdr plugin link ~/Github/herdr-agent-notifier`;仓库缺失告警跳过不阻断 switch。node 由 volta 提供(pane spawn 经 PATH 解析)。
+- **strip 键位**:Enter/1-9 跳转+清除、↑/↓ 选择、`d` 清除当前、`D` 清空、`q`/Esc 退出(退出后需手动重开或等下次事件;暂无自动重开机制 —— 插件 hook 无法直接操作 pane,需 server 侧配合,见插件 README TODO)。
+- **内置 toast 保留**:`ui.toast.delivery="herdr"` 不变 —— strip 是常驻兜底,toast 仍是即时提示(点击跳转对可见 toast 依然有效)。两者共存无冲突。
