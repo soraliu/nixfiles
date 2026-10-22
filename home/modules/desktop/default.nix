@@ -9,7 +9,7 @@ let
   isDarwin = system == "x86_64-darwin" || system == "aarch64-darwin";
 in
 {
-  imports = [ ./default-apps.nix ./fcitx5-rime.nix ];
+  imports = [ ./default-apps.nix ./fcitx5-rime.nix ./xrdp-session.nix ];
 
   config = lib.mkIf (!isDarwin) {
     home.packages = [
