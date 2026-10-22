@@ -72,14 +72,20 @@
       # 索引跳转:Alt+1..9 切标签(对齐 zellij Alt 1-9 → GoToTab)
       indexed = { tabs = "alt"; };
 
-      # Herdr Palette 插件(Raycast 风 fuzzy 命令/goto 面板):Alt+p 直达打开。
-      # 需先一次性安装:herdr plugin install ramarivera/herdr-palette(cargo 编译;ide profile 已带 Rust)
+      # 插件直达动作:Alt+p 打开 Herdr Palette(Raycast 风 fuzzy 面板,需已安装);
+      # Alt+o 开关 agent-notifier 通知浮层(soraliu/herdr-agent-notifier 0.3.0+ popup toggle)。
       command = [
         {
           key = "alt+p";
           type = "plugin_action";
           command = "ramarivera.palette.open";
           description = "Open Herdr Palette";
+        }
+        {
+          key = "alt+o";
+          type = "plugin_action";
+          command = "soraliu.agent-notifier.toggle";
+          description = "Toggle agent notification list";
         }
       ];
     };
