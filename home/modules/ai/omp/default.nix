@@ -59,6 +59,14 @@ let
     ];
   };
   ompArgv0 = pkgs.writeShellScriptBin "omp" ''
+    # herdr 内禁用 omp 自带通知通道(PI_NOTIFICATIONS, pi 遗产 env):omp 在 herdr 里会
+    # spawn `herdr notification show` 发 toast,而 herdr 检测到 omp 进程后又会对同一完成
+    # 发原生状态 toast("omp finished", 带跳转 target) —— 修复 argv[0] 检测后两者并存,
+    # 每次完成弹两条重复通知。herdr 内以原生 toast 为准(与 pi 行为一致: pi 无此通道);
+    # herdr 外 PI_NOTIFICATIONS 不设, 终端 OSC/BEL 通知照常。
+    if [ "''${HERDR_ENV:-}" = "1" ]; then
+      export PI_NOTIFICATIONS=off
+    fi
     exec -a omp "${unstablePkgs.bun}/bin/bun" "${unstablePkgs.omp}/lib/omp/packages/coding-agent/dist/cli.js" "$@"
   '';
 in
