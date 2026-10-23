@@ -45,7 +45,7 @@ table.insert(plugins, {
         vim.keymap.set('n', 'p', api.node.navigate.parent, opts('Parent Directory'))
         vim.keymap.set('n', 'P', api.fs.paste, opts('Paste'))
         vim.keymap.set('n', 'm', api.fs.rename_full, opts('Rename: Full Path'))
-        -- <C-o>: 在新 herdr tab 用 mcat 预览光标文件(md/图片/视频/pdf...)
+        -- <C-o>: preview the file under cursor with mcat in a new herdr tab (md/images/video/pdf...)
         local function open_in_herdr_tab()
           local node = api.tree.get_node_under_cursor()
           if not (node and node.absolute_path) or node.nodes then
@@ -54,8 +54,35 @@ table.insert(plugins, {
           if vim.env.HERDR_ENV ~= '1' then
             return vim.notify('Only available inside herdr', vim.log.levels.WARN)
           end
+          -- reuse the existing preview tab with the same label instead of creating a new one
           local label = 'mcat: ' .. vim.fn.fnamemodify(node.absolute_path, ':t')
-          local out = vim.fn.system({ 'herdr', 'tab', 'create', '--label', label, '--focus' })
+          local list_ok, tabs = pcall(vim.fn.system, {
+            'herdr', 'tab', 'list', '--workspace', vim.env.HERDR_WORKSPACE_ID,
+          })
+          if list_ok and tabs ~= '' then
+            local ok, parsed_list = pcall(vim.json.decode, tabs)
+            if ok and parsed_list and parsed_list.result and parsed_list.result.tabs then
+              for _, t in ipairs(parsed_list.result.tabs) do
+                if t.label == label then
+                  vim.fn.jobstart({ 'herdr', 'tab', 'focus', t.tab_id })
+                  return
+                end
+              end
+            end
+          end
+          local ok_create, out = pcall(vim.fn.system, {
+            'herdr',
+            'tab',
+            'create',
+            '--workspace',
+            vim.env.HERDR_WORKSPACE_ID,
+            '--label',
+            label,
+            '--focus',
+          })
+          if not ok_create then
+            return vim.notify('herdr tab create failed', vim.log.levels.ERROR)
+          end
           local ok, parsed = pcall(vim.json.decode, out)
           if not ok or not (parsed and parsed.result and parsed.result.root_pane) then
             return vim.notify('herdr tab create failed', vim.log.levels.ERROR)
