@@ -4,7 +4,7 @@
     ../search/ripgrep
   ];
 
-  home.packages = [ pkgs.glow ];
+  home.packages = [ pkgs.mcat ];
 
   programs.neovim = {
     enable = true;
@@ -26,8 +26,6 @@
         vim.cmd([[
           let g:sqlite_clib_path = '${pkgs.sqlite.out}/lib/${if pkgs.stdenv.isDarwin then "libsqlite3.dylib" else "libsqlite3.so"}'
         ]])
-        -- glow binary path for glow.nvim
-        vim.g.glow_binary_path = '${lib.getExe pkgs.glow}'
       ''
 
 
@@ -45,6 +43,7 @@
       (builtins.readFile ./nvim-autopairs.lua) # Auto pair symbols
       (builtins.readFile ./git.lua) # Git Related
       (builtins.readFile ./improvement.lua) # Improvements of using neovim
+      (builtins.readFile ./markdown.lua) # Markdown preview & render
 
       (builtins.readFile ./lazy-post.lua) # Execute lazy.nvim setup, this line must be at the end of all lazy.nvim plugins Lua config
 
