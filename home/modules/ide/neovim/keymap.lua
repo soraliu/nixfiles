@@ -64,8 +64,8 @@ function keysRegisterImprovements()
     { '<space>s',  group = 'Show Pages/Search' },
     -- Repo: goolord/alpha-nvim
     { '<space>sh', '<cmd>Alpha<cr>',                           desc = 'Show Home Page' },
-    -- Repo: ellisonleao/glow.nvim
-    { '<space>sp', '<cmd>Glow<cr>',                            desc = 'Preview Markdown' },
+    -- Repo: selimacerbas/mdkite.nvim
+    { '<space>sp', '<cmd>MdKite toggle<cr>',                   desc = 'Preview Markdown' },
     -- telescope luasnip
     { '<space>ss', '<cmd>Telescope luasnip<cr>',               desc = 'Search luasnip' },
     -- telescope notify
