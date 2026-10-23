@@ -58,15 +58,26 @@ let
       }
     ];
   };
+  ompArgv0 = pkgs.writeShellScriptBin "omp" ''
+    exec -a omp "${unstablePkgs.bun}/bin/bun" "${unstablePkgs.omp}/lib/omp/packages/coding-agent/dist/cli.js" "$@"
+  '';
 in
 {
   # oh-my-pi (omp): pi-mono 的姊妹发行版, 双栈并存试用(plans/omp-switch.md)
   # 改用 nixpkgs-unstable 的 pkgs.omp (#47 原先的 flake input 方案每次更新都要
   # 本地源码重编 bun/rust 全链; nixpkgs 官方包走 cache.nixos.org 二进制缓存, 零编译。
   # 版本随 nixpkgs-unstable pin 滚动, 滞后上游 tag 约数周, 试用期可接受)
-  config.home.packages = [
-    unstablePkgs.omp
-  ];
+  #
+  # argv[0] wrapper: herdr 的 agent 进程检测读 KERN_PROCARGS2 的 argv[0](macOS 等价
+  # /proc/cmdline)。pi 是 Node, 启动时 process.title="pi" 会重写 argv[0]; omp 跑在
+  # bun 上, 其 process.title 赋值不写回 kernel procargs —— nixpkgs wrapper exec bun 后
+  # 进程名永远是 "bun", herdr 识别不出 Agent::Omp, omp pane 的 herdr-omp-agent-state
+  # 扩展上报被 route_full_lifecycle_hook_report 拒收(process_present=false),
+  # pane.agent_status_changed 永不触发, agent-notifier 列表对 omp 恒空。
+  # 用 exec -a omp 把 argv[0] 固定为 "omp"(实测: 上报被接受, 事件流恢复)。
+  # 直接 exec 原包 store 路径里的 bun+cli.js, 保持 wrapper 单层(argv[0] 不再被
+  # 嵌套 wrapper 的 exec 抹掉)。
+  config.home.packages = [ ompArgv0 ];
 
   # omp 用户级扩展经 omp plugin install 初始化(幂等:缺才装;失败仅告警不阻断 switch)。
   # (plannotator 已改走 CLI + Agent Skills: ../modules/ai/plannotator; 已装的 pi-extension
