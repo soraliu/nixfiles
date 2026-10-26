@@ -5,7 +5,9 @@ table.insert(plugins, {
   -- Repo: selimacerbas/mdkite.nvim
   -- Browser live preview: mermaid (interactive SVG), local images, KaTeX, scroll sync
   'selimacerbas/mdkite.nvim',
-  dependencies = { 'selimacerbas/kitehost.nvim' },
+  -- lazy=true 不会传递给 dependencies, kitehost 不显式声明 lazy 会在每个 nvim 启动时加载
+  -- (并在退出时打 "kitehost: stopped all instances." 通知); 跟随 mdkite 按需加载即可
+  dependencies = { { 'selimacerbas/kitehost.nvim', lazy = true } },
   lazy = true,
   cmd = { 'MdKite' },
   keys = {
