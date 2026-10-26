@@ -18,6 +18,7 @@ in
     ../modules/ai/pi
     ../modules/ai/omp
     ../modules/ai/plannotator
+    ../modules/ai/agent-models
 
     ../modules/ide/git
     ../modules/ide/zsh
