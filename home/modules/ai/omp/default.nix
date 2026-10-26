@@ -47,8 +47,8 @@ let
 
   # omp config.yml 声明母本(sops 密文, 可含私密字段), 构建期解密到 /nix/store, switch 时 merge 进本机文件。
   # ide 系与 clawbot 共用同一把 age 密钥(pre-init-age 从 WebDAV 恢复到 /tmp/.age/keys.txt), 故共用同一密文;
-  # agent-models 按 user 分家是因为它管的是 apiKey 目录, omp config 无 per-user 数据。将来要分家再挪
-  # secrets/users/<user>/ 另建密文。前提: 构建机须先跑过 pre-init-age, 否则本 derivation 求值即失败。
+  # agent-models(models.yml + apiKey)与 omp config 同策略: 密文在用户共享的 secrets/.config/ai/, ide 系与
+  # clawbot 一体共享。前提: 构建机须先跑过 pre-init-age, 否则本 derivation 求值即失败。
   _ompConfigDec = pkgs.callPackage ../../../../pkgs/sops/decrypt.nix {
     inherit pkgs;
     files = [

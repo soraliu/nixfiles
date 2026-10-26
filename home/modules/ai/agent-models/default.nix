@@ -1,4 +1,4 @@
-{ pkgs, lib, secretsUser ? "soraliu", ... }:
+{ pkgs, lib, ... }:
 
 # omp/pi 双栈共享的「支持的模型」单一事实来源:
 #   sops 加密的 catalog(模型目录母本, 含 provider 私密字段) + 密钥表 → 构建期解密, switch 时 merge 进各工具全局 config。
@@ -8,8 +8,9 @@
 #   - 本机独有 provider(如 pi 的 zai-coding-cn auth 条目)永不删除;
 #   - 从 nix 删除一个 model 不会清理本机残留(声明式只做增量收敛)。
 # 不触碰: pi settings.json / omp config.yml(运行时状态)、pi models-store.json(运行时缓存)。
-# clawbot(secretsUser="clawbot")不启用。
-lib.mkIf (secretsUser == "soraliu") {
+# 密文(secrets/.config/ai/)按用户共享, 所有导入本模块的 profile(ide 系与 clawbot)同享同一套
+# providers/apiKey; 需要分家时再挪 secrets/users/<user>/ 另建密文并按 secretsUser 分流。
+{
   home.activation.mergeAgentModels = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
     umask 077
     _jq="${pkgs.jq}/bin/jq"
