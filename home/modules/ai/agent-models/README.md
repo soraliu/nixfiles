@@ -9,11 +9,11 @@ omp(`~/.omp/agent/models.yml`)与 pi(`~/.pi/agent/models.json` + `~/.pi/agent/au
 
 | 文件 | 作用 |
 | --- | --- |
-| `default.nix`(本目录) | 合并模块本体,ide 系 profile 经 `home/profiles/ide.nix` 挂载 |
+| `default.nix`(本目录) | 合并模块本体,ide 系 profile 经 `home/profiles/ide.nix`、clawbot 经 `home/profiles/clawbot.nix` 挂载 |
 | `secrets/.config/ai/agent-models-catalog.enc.json` | 模型目录母本 sops 密文:{provider: {baseUrl, api, compat, models:[…]}}(含 provider 私密字段) |
 | `secrets/.config/ai/agent-models-keys.enc.json` | 密钥表 sops 密文:`{provider: apiKey}` |
 
-ide/ide-cn/ide-mirror/ide-mobile、`darwinConfigurations.soraliu*` 与 `switch-nixos ide` 均自动获得;clawbot / vpn-server / drive-server / eject 不导入该模块,且模块内还有 `secretsUser == "soraliu"` 守卫,clawbot 环境整体 no-op(将来给 clawbot 部署需另建专属 catalog/keys,不共用)。
+ide/ide-cn/ide-mirror/ide-mobile、`darwinConfigurations.soraliu*` 与 `switch-nixos ide` 均自动获得;clawbot(Linux 桌面盒 / darwin)也导入并共享同一套 catalog/keys(密文位于用户共享的 `secrets/.config/ai/`,无 per-user 分家);vpn-server / drive-server / eject 不导入该模块,不受影响。将来需要分家时再挪 `secrets/users/<user>/` 另建密文并按 `secretsUser` 分流。
 
 ## 工作原理
 
@@ -72,7 +72,7 @@ sops secrets/.config/ai/agent-models-catalog.enc.json
 # 或编辑密钥表(新增/更换 provider apiKey)
 sops secrets/.config/ai/agent-models-keys.enc.json
 
-# 2. 应用(ide 系;本机独有条目不受影响)
+# 2. 应用(ide 系与 clawbot;本机独有条目不受影响)
 just switch-home ide
 ```
 
@@ -82,7 +82,7 @@ just switch-home ide
 | --- | --- |
 | 新增/修改某 model(含 compat 字段) | 改 catalog → switch;同 id 即覆盖,改即生效 |
 | 新增 provider | catalog 加条目 + keys 加密钥(pi 走 auth.json;omp 侧的 apiKey 靠 keymap 注入,漏配则该 provider 在 omp 无密钥) |
-| 换新机器 | 正常 `just switch-home ide`,目标文件缺失自动全量生成 |
+| 换新机器 | 正常 `just switch-home ide` / `just switch-home clawbot`,目标文件缺失自动全量生成 |
 | 从声明里删除某 model | 改 catalog → switch 后**本机残留仍在**,需手工清 |
 
 ## 已知边界
