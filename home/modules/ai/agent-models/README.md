@@ -12,6 +12,8 @@ omp(`~/.omp/agent/models.yml`)与 pi(`~/.pi/agent/models.json` + `~/.pi/agent/au
 | `default.nix`(本目录) | 合并模块本体,ide 系 profile 经 `home/profiles/ide.nix`、clawbot 经 `home/profiles/clawbot.nix` 挂载 |
 | `secrets/.config/ai/agent-models-catalog.enc.json` | 模型目录母本 sops 密文:{provider: {baseUrl, api, compat, models:[…]}}(含 provider 私密字段) |
 | `secrets/.config/ai/agent-models-keys.enc.json` | 密钥表 sops 密文:`{provider: apiKey}` |
+| `secrets/.config/ai/omp-config.enc.json` | omp 模块合并到 `config.yml`；`modelRoles.vision` 指定读图模型 |
+| `secrets/.config/ai/pi-config.enc.json` | pi 模块合并到 `settings.json`；声明 `defaultProvider/defaultModel`，其他本机设置保留 |
 
 ide/ide-cn/ide-mirror/ide-mobile、`darwinConfigurations.soraliu*` 与 `switch-nixos ide` 均自动获得;clawbot(Linux 桌面盒 / darwin)也导入并共享同一套 catalog/keys(密文位于用户共享的 `secrets/.config/ai/`,无 per-user 分家);vpn-server / drive-server / eject 不导入该模块,不受影响。将来需要分家时再挪 `secrets/users/<user>/` 另建密文并按 `secretsUser` 分流。
 
@@ -62,7 +64,7 @@ _dec = pkgs.callPackage ../../../../pkgs/sops/decrypt.nix {
 
 - 只处理默认 agent 目录(`~/.omp/agent`、`~/.pi/agent`);`--profile`/环境变量改写 agentDir 的场景不覆盖。
 - 与运行中的 pi/omp 不加锁:进程持有启动时快照,merge 结果下次启动生效。
-- 不触碰运行时状态/缓存:pi `settings.json`、pi `models-store.json`;omp `config.yml` 本模块也不碰 —— 由 omp 模块(`home/modules/ai/omp`)以 sops 密文 `secrets/.config/ai/omp-config.enc.json` 同款逻辑 merge 管理。
+- 本模块不触碰 pi `settings.json`、`models-store.json` 或 omp `config.yml`。模型角色由各工具模块另行合并：omp 使用 `omp-config.enc.json`，pi 使用 `pi-config.enc.json`；均保留未声明的本机设置。
 
 ## 日常维护
 
@@ -84,6 +86,24 @@ just switch-home ide
 | 新增 provider | catalog 加条目 + keys 加密钥(pi 走 auth.json;omp 侧的 apiKey 靠 keymap 注入,漏配则该 provider 在 omp 无密钥) |
 | 换新机器 | 正常 `just switch-home ide` / `just switch-home clawbot`,目标文件缺失自动全量生成 |
 | 从声明里删除某 model | 改 catalog → switch 后**本机残留仍在**,需手工清 |
+
+### DeepSeek V4.1 Flash 协议
+
+`1xtoken/deepseek-v4.1-flash-1017` 使用 `api: openai-completions`。模型级 `api` 会覆盖 provider 默认值；误设为 `openai-responses` 会向 `/responses` 发送 `input` 而非 `messages`，本次实测返回 HTTP 400 `messages cannot be empty`。
+
+- 推理档位保留 `low/high/max`；`maxTokensField: max_tokens`，不发送 `tool_choice`。
+- 历史 assistant 回传原始 `reasoning_content`，包括工具调用轮；设置 `requiresReasoningContentForAllAssistantTurns: true`、`requiresReasoningContentForToolCalls: true` 和 `allowsSyntheticReasoningContentForToolCalls: false`，不能用合成占位推理替代。
+- 保留图片输入与 `stripImageInput: false`，不改变现有上下文窗口。
+
+依据 omp [18.10.4 模型配置](https://github.com/can1357/oh-my-pi/blob/v18.10.4/docs/models.md)、[DeepSeek provider 规则](https://github.com/can1357/oh-my-pi/blob/v18.10.4/packages/catalog/src/compat/rules/providers/deepseek.kdl)与[模型规则](https://github.com/can1357/oh-my-pi/blob/v18.10.4/packages/catalog/src/compat/rules/classes/deepseek.kdl)。官方规则不是 1xtoken 的可用性保证：修改后需重新启动 omp，实测文本回复与工具调用往返。
+
+2026-11-04 验证：执行 `./.nix-switch` 成功；新进程 `low/max` 文本回复及 `high` 读取临时文件后的工具结果续答均通过。omp 的 `read image.png?q=...` 与 pi 默认模型的图片附件均正确识别测试图片文字；长上下文未实测。
+
+### vision 模型与 pi 默认模型
+
+- omp 的 `modelRoles.vision` 指向 `1xtoken/deepseek-v4.1-flash-1017`，仅控制图片分析，不改变其他模型角色；不要与用于图片生成的 `image` 角色混淆。
+- pi 1.1.0 没有独立 vision 槽位，图片由当前模型处理。按用户确认，`pi-config.enc.json` 将 `defaultProvider` 设为 `1xtoken`、`defaultModel` 设为 `deepseek-v4.1-flash-1017`，因此新会话的文字和图片任务都默认使用该模型。
+- 修改对应密文后执行 `./.nix-switch`。pi 已有会话会恢复自身模型选择；新建会话使用新默认，也可通过 `/model` 手动切换。`--profile` 或自定义 agent 目录不在本模块的管理范围内。
 
 ## 已知边界
 

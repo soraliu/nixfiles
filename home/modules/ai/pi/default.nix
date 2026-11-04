@@ -1,4 +1,4 @@
-{ pi, system, lib, ... }: {
+{ pi, pkgs, system, lib, ... }: {
   # v1.0.1 起改用上游官方 flake(github:earendil-works/pi/stable),
   # 包 output 为 packages.<system>.pi(原 lukasl-dev/pi.nix 打包仓库为 .coding-agent)
   config.home.packages = [
@@ -15,6 +15,24 @@
   # 默认写到项目目录下的 .pi/tasks|fusion|delegate，弄脏 git 且频繁变化；
   # 设置后统一落到 ~/.pi 下，项目目录不再出现 .pi
   config.home.sessionVariables.PI_BG_RUNTIME_ROOT = "$HOME/.pi";
+
+  # pi 没有独立 vision 角色；默认模型同时处理文字与图片，其他运行时设置保留。
+  config.home.activation.mergePiConfig = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+    umask 077
+    _decl="${pkgs.callPackage ../../../../pkgs/sops/decrypt.nix {
+      inherit pkgs;
+      files = [{ from = "secrets/.config/ai/pi-config.enc.json"; to = "pi-config.json"; }];
+    }}/pi-config.json"
+    _t="$HOME/.pi/agent/settings.json"
+    mkdir -p "$HOME/.pi/agent"
+    [ -f "$_t" ] || printf '{}\n' > "$_t"
+    if "${pkgs.jq}/bin/jq" --slurpfile decl "$_decl" '. * $decl[0]' "$_t" > "$_t.nix-merge.tmp"; then
+      mv "$_t.nix-merge.tmp" "$_t"
+    else
+      rm -f "$_t.nix-merge.tmp"
+      echo "pi: WARN: $_t 无法解析, 保持原文件不变" >&2
+    fi
+  '';
 
   # pi 用户级扩展经 pi install 初始化(幂等:缺才装;失败仅告警不阻断 switch)。
   # 本机现役 0.27.15 已装则守卫直接跳过,版本维持现状;升级仍走 pi update。
