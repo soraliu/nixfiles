@@ -93,6 +93,7 @@ run:
     --name="{{IMMORTALWRT_IMAGE_NAME}}" \
     --network="{{IMMORTALWRT_NETWORK_NAME}}" \
     --privileged \
+    --sysctl net.ipv4.conf.all.src_valid_mark=0 \
     --restart=always \
     "{{IMMORTALWRT_IMAGE_NAME}}" \
     /sbin/init
