@@ -8,7 +8,7 @@
 
 | 决策点 | 结论 |
 |---|---|
-| obfs | **开 Salamander**（免疫解密式封锁；证书沿用 bing.com 自签，客户端 skip-cert-verify 不变） |
+| obfs | ~~**开 Salamander**（免疫解密式封锁；证书沿用 bing.com 自签，客户端 skip-cert-verify 不变）~~ —— **已被 2026-11-13 决策取代：两端关闭 obfs**，见文末「决策取代」 |
 | 版本 | hysteria 2.7.1 → **2.13.0**；xray 26.2.6 → **26.3.27**（stable） |
 | 范围 | **4 台** VPS（vpn_premium <vpn_premium_ip> / vpn_primary <vpn_primary_ip> / vpn_secondary <vpn_secondary_ip> / vpn_hangzhou <vpn_hangzhou_ip>，全部在 `vpn_nodes` group）+ 两类客户端；vpn_premium 同时承担 tailnet DERP/relay，hy2 升级不影响其余服务（仅 restart hysteria/xray） |
 | 端口池 | **UDP 20000-30000**，系统防火墙由 Ansible 管理 |
@@ -183,3 +183,29 @@ brutalctl add <客户端公网IP>/32 200   # 单位 Mbps，设为实测线路的
 ### 与 Xray 备线的组合现状
 
 - 本计划已把 xray 升到 26.3.27 stable；若日后 XHTTP/REALITY 连接提速需求明确 → 服务端装 tcp-brutal + 规则化（上表手册），客户端零改动（v2 无需应用配合）。
+
+---
+
+## 决策取代（2026-11-13）：关闭 obfs，改纯 Hysteria 2 多会话
+
+上文「已拍板决策」中的「开 obfs / Hy2+VLESS 混编」已被用户新要求取代。本文档其余章节保留为历史背景（版本升级、端口池、sysctl、Xray 备线等结论未变），**不得**据上文重新打开 obfs。
+
+### 现行声明
+
+- **客户端**（`secrets/.config/clash/config-whitelist.enc.yaml`）：
+  - 节点总数 26 = 22 个 `hysteria2` 叶子 + 4 个原始 VLESS（`Xray-Primary/Secondary/Hangzhou/US`）。六个混编副本 `Xray-Primary-vl2/3/4`、`Xray-Secondary-vl2/3/4` 已删除，定义与引用均为零。
+  - `Primary` 扩到 12 个会话（`Primary`、`Primary-hy2…Primary-hy12`），`Secondary` 扩到 8 个（`Secondary`、`Secondary-hy2…Secondary-hy8`）；每个副本只改 `name`，复用原节点连接参数。
+  - `TUNED-PRIMARY` / `TUNED-SECONDARY` 为 `load-balance` + `round-robin`，成员分别是 12 / 8 个唯一 Hy2 叶子；`TUNED-FB` 精确为 `[TUNED-PRIMARY,TUNED-SECONDARY]`，TUNED 链递归不可达 `AUTO` / VLESS / `DIRECT` / `COMPATIBLE`。
+  - 所有 Hy2 删除 `obfs`、`obfs-password`、`obfs-min-packet-size`、`obfs-max-packet-size` 与独立的 `handshake-timeout`，保留 `ports: 20000-30000` + `hop-interval: 30`，TLS/SNI 保持原样。
+  - 显式探测参数：TUNED 两组 `url=https://www.gstatic.com/generate_204` / 204 / 60s / 8000ms / `lazy: true` / `max-failed-times: 3`；`TUNED-FB` 同上但 10000ms / `lazy: false`；`AUTO`（仍在 TUNED 链外）120s / 8000ms / `lazy: true` / `tolerance: 50`。
+- **服务端**（`k3s-ops/ansible`）：`secrets.yaml::VPN_HYSTERIA_CONFIG_YAML` 删除整个 obfs 映射（`listen: :20000-30000`、`udpIdleTimeout: 90s`、`ignoreClientBandwidth: true`、TLS/masquerade/auth 不变）；role 删除 `vpn_server_hysteria_obfs_required` 及 config/verify 中的强制 obfs 任务；`playbooks/edge/vpn.yml` 与 role 前置断言加 `tags: [always]`，verify 前加 `meta: flush_handlers`，使 `--tags config,verify` 能取到 secret 并先执行已通知的 restart。
+
+### 部署范围
+
+四台 VPS（`vpn_secondary` → `vpn_premium` / `vpn_hangzhou` → `vpn_primary`，均用 `ansible-playbook -i inventories/personal/hosts.yaml playbooks/edge/vpn.yml --limit <host> --tags config,verify`）与两台旁路由（`192.168.31.2` 原子替换 `/etc/nikki/profiles/config.yaml` 后 `/etc/init.d/nikki restart`；`192.168.31.101` 更新 `nikki.subscription.url` 的 gist raw revision 后 `update_subscription` + `reload`）。PVE、NAS、集群与镜像重建不在范围。
+
+### 必须披露的限制与风险
+
+- **`.2` 旧镜像未重建**：`docker/immortalwrt` 镜像里仍带旧 profile（含 obfs）。镜像重建、容器重置或从镜像重新部署会**恢复旧配置**并导致与无 obfs 服务端握手失败；届时应重跑本轮 profile 下发，而不是依赖镜像内旧文件。本轮未做任何镜像构建。
+- **抗封锁能力下降**：关闭 obfs 后 QUIC Initial / SNI 重新暴露，SNI 审查与 QUIC 指纹识别是 obfs 原本遮蔽的面；这属于用户明确取舍，不以「吞吐提升」作为抗封锁改善的依据。
+- **吞吐口径**：`docs/exp/vpn/*/results.jsonl` 字段名写 `mbps`，实际公式为 `bytes / wall / 1048576`，单位是 **MiB/s**；无 obfs Primary 12 会话峰值中位 60.734、8 会话 49.763 MiB/s。本轮不复测 obfs A/B，也不把历史数值当验收门槛。
