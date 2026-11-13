@@ -193,11 +193,12 @@ brutalctl add <客户端公网IP>/32 200   # 单位 Mbps，设为实测线路的
 ### 现行声明
 
 - **客户端**（`secrets/.config/clash/config-whitelist.enc.yaml`）：
-  - 节点总数 26 = 22 个 `hysteria2` 叶子 + 4 个原始 VLESS（`Xray-Primary/Secondary/Hangzhou/US`）。六个混编副本 `Xray-Primary-vl2/3/4`、`Xray-Secondary-vl2/3/4` 已删除，定义与引用均为零。
-  - `Primary` 扩到 12 个会话（`Primary`、`Primary-hy2…Primary-hy12`），`Secondary` 扩到 8 个（`Secondary`、`Secondary-hy2…Secondary-hy8`）；每个副本只改 `name`，复用原节点连接参数。
-  - `TUNED-PRIMARY` / `TUNED-SECONDARY` 为 `load-balance` + `round-robin`，成员分别是 12 / 8 个唯一 Hy2 叶子；`TUNED-FB` 精确为 `[TUNED-PRIMARY,TUNED-SECONDARY]`，TUNED 链递归不可达 `AUTO` / VLESS / `DIRECT` / `COMPATIBLE`。
+  - 节点总数 38 = 34 个 `hysteria2` 叶子 + 4 个原始 VLESS（`Xray-Primary/Secondary/Hangzhou/US`）。六个混编副本 `Xray-Primary-vl2/3/4`、`Xray-Secondary-vl2/3/4` 已删除，定义与引用均为零。
+  - `Primary` 扩到 12 个会话（`Primary`、`Primary-hy2…Primary-hy12`），`Premium`（东京 GoMami，`server: premium.soraliu.dev`）12 个（`Premium`、`Premium-hy2…Premium-hy12`），`Secondary` 扩到 8 个（`Secondary`、`Secondary-hy2…Secondary-hy8`）；每个副本只改 `name`，复用原节点连接参数。Premium 另改 `server`，`password` / `sni: bing.com` / `ports: 20000-30000` / `hop-interval: 30` / `skip-cert-verify` 与 Primary 逐值相同（服务端 `auth` 同源，故无需换凭据）。
+  - `TUNED-PREMIUM` / `TUNED-PRIMARY` / `TUNED-SECONDARY` 为 `load-balance` + `round-robin`，成员分别是 12 / 12 / 8 个唯一 Hy2 叶子。`TUNED-FB` 精确为 `[TUNED-PRIMARY,TUNED-SECONDARY,TUNED-PREMIUM]`：Premium 只作**最后兜底**（2026-11-13 23:0x 端到端实测 premium 8 并发 3.68 / 3.83 MB/s、primary 同刻 42.21 MB/s、家庭直连 22.19 MB/s；premium 服务端自身→CF 58.6 MB/s、CPU 0.5%、ICMP 0% 丢包 70.7ms，瓶颈是 premium 的国际出口约 30 Mbit）。本条取代上一版「`TUNED-FB` = `[TUNED-PRIMARY,TUNED-SECONDARY]`」的声明，也取代本卡初版「Premium 首选」的说法；TUNED 链递归不可达 `AUTO` / VLESS / `DIRECT` / `COMPATIBLE`，`AUTO` 组定义与成员未动。
+  - `PROXY`（`select`）成员精确为 `[TUNED-FB,TUNED-PREMIUM,TUNED-PRIMARY,TUNED-SECONDARY,AUTO,Primary,Secondary,Hangzhou,US,Xray-Primary,Xray-Secondary,Xray-Hangzhou,Xray-US]`：除首位的 `TUNED-FB` 外，三个 TUNED-* 组也可手动固定，选中后直达该组、不经 `TUNED-FB` 的 fallback。`STREAM` 组未动（仍为 `[TUNED-FB,Secondary,US,Xray-Secondary,Xray-US]`）。
   - 所有 Hy2 删除 `obfs`、`obfs-password`、`obfs-min-packet-size`、`obfs-max-packet-size` 与独立的 `handshake-timeout`，保留 `ports: 20000-30000` + `hop-interval: 30`，TLS/SNI 保持原样。
-  - 显式探测参数：TUNED 两组 `url=https://www.gstatic.com/generate_204` / 204 / 60s / 8000ms / `lazy: true` / `max-failed-times: 3`；`TUNED-FB` 同上但 10000ms / `lazy: false`；`AUTO`（仍在 TUNED 链外）120s / 8000ms / `lazy: true` / `tolerance: 50`。
+  - 显式探测参数：TUNED 三组（含 `TUNED-PREMIUM`）`url=https://www.gstatic.com/generate_204` / 204 / 60s / 8000ms / `lazy: true` / `max-failed-times: 3`；`TUNED-FB` 同上但 10000ms / `lazy: false`；`AUTO`（仍在 TUNED 链外）120s / 8000ms / `lazy: true` / `tolerance: 50`。
 - **服务端**（`k3s-ops/ansible`）：`secrets.yaml::VPN_HYSTERIA_CONFIG_YAML` 删除整个 obfs 映射（`listen: :20000-30000`、`udpIdleTimeout: 90s`、`ignoreClientBandwidth: true`、TLS/masquerade/auth 不变）；role 删除 `vpn_server_hysteria_obfs_required` 及 config/verify 中的强制 obfs 任务；`playbooks/edge/vpn.yml` 与 role 前置断言加 `tags: [always]`，verify 前加 `meta: flush_handlers`，使 `--tags config,verify` 能取到 secret 并先执行已通知的 restart。
 
 ### 部署范围
